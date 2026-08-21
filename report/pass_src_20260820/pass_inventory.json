@@ -1,0 +1,3182 @@
+[
+  {
+    "name": "apply_gumbel_max_trick",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/apply_gumbel_max_trick.py",
+    "line": 26,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "b2b_gemm_pass",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/b2b_gemm.py",
+    "line": 36,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "b2b_gemm_handler",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/b2b_gemm.py",
+    "line": 605,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "folded_op",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/binary_folding.py",
+    "line": 479,
+    "signals": [],
+    "evidence": "register_binary_folding_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_bmm",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py",
+    "line": 228,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_addmm",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py",
+    "line": 247,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_mm",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py",
+    "line": 271,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "efficient_conv_bn_eval_graph_transform_inlined",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/efficient_conv_bn_eval.py",
+    "line": 158,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "efficient_conv_bn_eval_graph_transform_decomposed",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/efficient_conv_bn_eval.py",
+    "line": 273,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "efficient_conv_bn_eval_graph_transform",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/efficient_conv_bn_eval.py",
+    "line": 373,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "binary_folding_pass",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/freezing_patterns.py",
+    "line": 34,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "freezing_passes",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/freezing_patterns.py",
+    "line": 37,
+    "signals": [
+      "mkldnn"
+    ],
+    "evidence": "name heuristic",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "int8_woq_fusion_pattern",
+    "stage": "inductor-extension",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/freezing_patterns.py",
+    "line": 206,
+    "signals": [],
+    "evidence": "register_replacement",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "matmul_fuse_pattern",
+    "stage": "inductor-extension",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/freezing_patterns.py",
+    "line": 229,
+    "signals": [],
+    "evidence": "register_replacement",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "matmul_fuse_pattern_two",
+    "stage": "inductor-extension",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/freezing_patterns.py",
+    "line": 252,
+    "signals": [],
+    "evidence": "register_replacement",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "addmm_fuse_pattern_second",
+    "stage": "inductor-extension",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/freezing_patterns.py",
+    "line": 279,
+    "signals": [],
+    "evidence": "register_replacement",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "unnecessary_dtype_convert",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/freezing_patterns.py",
+    "line": 308,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_get_dedup_rs_pass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/fsdp.py",
+    "line": 101,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "dedup_reduce_scatter",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/fsdp.py",
+    "line": 109,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_get_dedup_rs_pass._",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/fsdp.py",
+    "line": 152,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "group_batch_fusion_passes",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/group_batch_fusion.py",
+    "line": 1679,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "patterns",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/micro_pipeline_tp.py",
+    "line": 27,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "micro_pipeline_tp_pass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/micro_pipeline_tp.py",
+    "line": 1299,
+    "signals": [
+      "collective"
+    ],
+    "evidence": "name heuristic",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "randperm_index_add_pattern",
+    "stage": "inductor-extension",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/misc_patterns.py",
+    "line": 50,
+    "signals": [],
+    "evidence": "register_replacement",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "randperm_index_full_pattern",
+    "stage": "inductor-extension",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/misc_patterns.py",
+    "line": 71,
+    "signals": [],
+    "evidence": "register_replacement",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "randperm_index_pattern",
+    "stage": "inductor-extension",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/misc_patterns.py",
+    "line": 92,
+    "signals": [],
+    "evidence": "register_replacement",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "e8m0_rceil_pattern",
+    "stage": "inductor-extension",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/misc_patterns.py",
+    "line": 139,
+    "signals": [
+      "cuda"
+    ],
+    "evidence": "register_replacement",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "e8m0_rceil_log2_pattern",
+    "stage": "inductor-extension",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/misc_patterns.py",
+    "line": 198,
+    "signals": [
+      "cuda"
+    ],
+    "evidence": "register_replacement",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "grouped_gemm_pass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 208,
+    "signals": [
+      "mkldnn"
+    ],
+    "evidence": "name heuristic",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_register_unary_fusion_lowering.fn",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 474,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_register_leaky_relu_fusion_lowering.fn",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 494,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_register_hardtanh_fusion_lowering.fn",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 542,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_register_binary_unary_fusion_lowering.fn",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 772,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_register_binary_unary_maybe_inplace_fusion_lowering.fn",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 854,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "reshape_linear_reshape_pattern",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 1094,
+    "signals": [
+      "mkldnn",
+      "dynamic_shape"
+    ],
+    "evidence": "register_freezing_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "linear_bias_pattern",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 1178,
+    "signals": [
+      "mkldnn"
+    ],
+    "evidence": "register_freezing_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_register_weight_pack_pass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 1403,
+    "signals": [
+      "mkldnn",
+      "dynamic_shape"
+    ],
+    "evidence": "name heuristic",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "convolution",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 1408,
+    "signals": [
+      "mkldnn",
+      "dynamic_shape"
+    ],
+    "evidence": "register_freezing_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "mkldnn_rnn_layer",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 1460,
+    "signals": [
+      "mkldnn"
+    ],
+    "evidence": "register_freezing_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "linear",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/mkldnn_fusion.py",
+    "line": 1527,
+    "signals": [
+      "mkldnn",
+      "dynamic_shape"
+    ],
+    "evidence": "register_freezing_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "qconv",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/quantization.py",
+    "line": 426,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "qlinear",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/quantization.py",
+    "line": 539,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "qlinear_binary",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/quantization.py",
+    "line": 598,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "qconv_binary",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/quantization.py",
+    "line": 772,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "qmaxpool2d",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/quantization.py",
+    "line": 920,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "qcat",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/quantization.py",
+    "line": 1066,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "qreshape",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/quantization.py",
+    "line": 1112,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "woq_int8",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/quantization.py",
+    "line": 1208,
+    "signals": [],
+    "evidence": "register_freezing_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "woq_int8",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/quantization.py",
+    "line": 1273,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_build_pattern_pass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/reduced_atomic_contention.py",
+    "line": 565,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "partitioned_scatter_optimization",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/reduced_atomic_contention.py",
+    "line": 571,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "replacement",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/reduced_atomic_contention.py",
+    "line": 581,
+    "signals": [],
+    "evidence": "functional pattern registration",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "partitioned_scatter_optimization_pass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/reduced_atomic_contention.py",
+    "line": 621,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "patterns",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/replace_random.py",
+    "line": 21,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "replace_random_passes",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/replace_random.py",
+    "line": 59,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fuse_seed_creation_pass",
+    "stage": "inductor-extension",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/replace_random.py",
+    "line": 65,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fuse_offset_creation_pass",
+    "stage": "inductor-extension",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/replace_random.py",
+    "line": 68,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fuse_offset_creation_pass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/replace_random.py",
+    "line": 74,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fuse_seed_creation_pass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/replace_random.py",
+    "line": 121,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "replace_random",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/replace_random.py",
+    "line": 185,
+    "signals": [
+      "cuda"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "replace_randint",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/replace_random.py",
+    "line": 245,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "construct_pattern_matcher_pass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 100,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_split_default",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 229,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "remove_split_with_size_one",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 241,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_unbind_default",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 284,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_cat_default",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 321,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_stack_default",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 383,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_squeeze_default",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 429,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_reshape_default",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 469,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_clamp_default",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 498,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_detach_default",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 531,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_splits",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 599,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_split_squeeze",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1307,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_unbind_stack",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1373,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "simplify_split_cat",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1438,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_getitem_cat",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1523,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "mutate_cat_node",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1630,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_split_default_aten",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1707,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_split_with_size_default_aten",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1757,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_split_cat_aten",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1803,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_select_cat_aten",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1907,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalize_cat_default_aten",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 1959,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_unbind_stack_aten",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 2013,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "split_cat_to_slices",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 2369,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "unbind_cat_to_view",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 2452,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "split_stack_to_cats",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 2626,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "unbind_stack_to_slices",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 2699,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "move_reshape_out_of_split_stack",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 2797,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "move_view_after_cat",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 2935,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "replace_einsum_to_pointwise",
+    "stage": "inductor-extension",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/split_cat.py",
+    "line": 3037,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "AscendCustomPostPass",
+    "stage": "inductor-extension",
+    "mechanism": "extension-function",
+    "source": "torch_npu/_inductor/fx_passes/graph_match_pass.py",
+    "line": 5,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_1",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 43,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_2",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 65,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_3",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 87,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_4",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 109,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_5",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 129,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_6",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 150,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_7",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 171,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_8",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 208,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_9",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 237,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_10",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 267,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_11",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 297,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_12",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 318,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_13",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 341,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_14",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 358,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_15",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 384,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_16",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 421,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_17",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 464,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_18",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 504,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_19",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 552,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_20",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 588,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_21",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 628,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_22",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 654,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_23",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 684,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_24",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 716,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_25",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 752,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_26",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 782,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_27",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 820,
+    "signals": [
+      "memory_alias"
+    ],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_28",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 857,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_29",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 876,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_sfdp_pattern_30",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/fuse_attention.py",
+    "line": 906,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "early_patterns",
+    "stage": "joint_graph",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 49,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "patterns",
+    "stage": "joint_graph",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 50,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "joint_custom_pre_pass",
+    "stage": "joint_graph",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 718,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "remove_noop_ops",
+    "stage": "joint_graph",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 725,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "constant_fold_uniform_value",
+    "stage": "joint_graph",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 728,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "joint_custom_post_pass",
+    "stage": "joint_graph",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 763,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fix_iota_device",
+    "stage": "joint_graph",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 788,
+    "signals": [
+      "cuda",
+      "mkldnn"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "pointless_convert",
+    "stage": "joint_graph",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 842,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "pointless_view",
+    "stage": "joint_graph",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 918,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "pointless_view_pair",
+    "stage": "joint_graph",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 936,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "pointless_permute_pair",
+    "stage": "joint_graph",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 957,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "bmm_to_mm",
+    "stage": "joint_graph",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 979,
+    "signals": [
+      "cuda",
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "mul_softmax_pattern",
+    "stage": "joint_graph",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 1107,
+    "signals": [],
+    "evidence": "functional pattern registration",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "div_softmax_pattern",
+    "stage": "joint_graph",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 1142,
+    "signals": [],
+    "evidence": "functional pattern registration",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "scatter_upon_const_tensor",
+    "stage": "joint_graph",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/joint_graph.py",
+    "line": 1203,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "addmm_pattern",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/pad_mm.py",
+    "line": 197,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "mm_pattern",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/pad_mm.py",
+    "line": 812,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "bmm_pattern",
+    "stage": "joint_graph",
+    "mechanism": "generated-pattern-family",
+    "source": "torch/_inductor/fx_passes/pad_mm.py",
+    "line": 885,
+    "signals": [],
+    "evidence": "gen_register_replacement family",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "run_register_pre_custom_passes",
+    "stage": "npu-custom",
+    "mechanism": "extension-function",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/__init__.py",
+    "line": 13,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "run_register_post_custom_passes",
+    "stage": "npu-custom",
+    "mechanism": "extension-function",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/__init__.py",
+    "line": 28,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "register_custom_pass",
+    "stage": "npu-custom",
+    "mechanism": "extension-function",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/register_custom_pass.py",
+    "line": 28,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "dvm_graph_fusion",
+    "stage": "npu-dvm",
+    "mechanism": "backend-graph-pass",
+    "source": "torch_npu/_inductor/dvm/graph_fusion.py",
+    "line": 345,
+    "signals": [],
+    "evidence": "explicit backend graph transformation",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "annotate_mm_transpose_flags",
+    "stage": "npu-dvm-subpass",
+    "mechanism": "backend-subpass",
+    "source": "torch_npu/_inductor/dvm/fx_pass.py",
+    "line": 26,
+    "signals": [],
+    "evidence": "explicit backend graph transformation",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_k1_matmul_to_mul",
+    "stage": "npu-dvm-subpass",
+    "mechanism": "backend-subpass",
+    "source": "torch_npu/_inductor/dvm/fx_pass.py",
+    "line": 70,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "explicit backend graph transformation",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "insert_sum_fp32_prepost_cast_prims",
+    "stage": "npu-dvm-subpass",
+    "mechanism": "backend-subpass",
+    "source": "torch_npu/_inductor/dvm/fx_pass.py",
+    "line": 117,
+    "signals": [],
+    "evidence": "explicit backend graph transformation",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "insert_promote_cast_by_pos_prims",
+    "stage": "npu-dvm-subpass",
+    "mechanism": "backend-subpass",
+    "source": "torch_npu/_inductor/dvm/fx_pass.py",
+    "line": 191,
+    "signals": [],
+    "evidence": "explicit backend graph transformation",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "expand_to_reshape",
+    "stage": "npu-dvm-subpass",
+    "mechanism": "backend-subpass",
+    "source": "torch_npu/_inductor/dvm/fx_pass.py",
+    "line": 245,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "explicit backend graph transformation",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "DvmMlirPostGradPass",
+    "stage": "npu-mlir",
+    "mechanism": "backend-graph-pass",
+    "source": "torch_npu/_inductor/ascend_npu_ir/ascend_npu_ir/npu/npu_inductor_plugin.py",
+    "line": 213,
+    "signals": [],
+    "evidence": "explicit backend graph transformation",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_sum_cast_to_dtype",
+    "stage": "npu-mlir-subpass",
+    "mechanism": "backend-subpass",
+    "source": "torch_npu/_inductor/ascend_npu_ir/ascend_npu_ir/npu/utils.py",
+    "line": 352,
+    "signals": [],
+    "evidence": "explicit backend graph transformation",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "npu_fusion_attention_graph",
+    "stage": "npu-pattern",
+    "mechanism": "extension-function",
+    "source": "torch_npu/_inductor/fx_passes/pattern_match/npu_fusion_attention_graph.py",
+    "line": 160,
+    "signals": [],
+    "evidence": "name heuristic",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_elide_int_float_int_roundtrip_pass",
+    "stage": "npu-triton-experimental",
+    "mechanism": "extension-function",
+    "source": "torch_npu/_inductor/triton_experimental/fx_passes.py",
+    "line": 25,
+    "signals": [
+      "npu",
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "name heuristic",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_install_elide_int_float_int_pass",
+    "stage": "npu-triton-experimental",
+    "mechanism": "extension-function",
+    "source": "torch_npu/_inductor/triton_experimental/fx_passes.py",
+    "line": 378,
+    "signals": [
+      "npu"
+    ],
+    "evidence": "name heuristic",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_disable_addmm_fusion_pass",
+    "stage": "npu-triton-experimental",
+    "mechanism": "extension-function",
+    "source": "torch_npu/_inductor/triton_experimental/fx_passes.py",
+    "line": 534,
+    "signals": [
+      "npu"
+    ],
+    "evidence": "name heuristic",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_disable_pad_mm_pass",
+    "stage": "npu-triton-experimental",
+    "mechanism": "extension-function",
+    "source": "torch_npu/_inductor/triton_experimental/overrides.py",
+    "line": 74,
+    "signals": [
+      "npu",
+      "dynamic_shape"
+    ],
+    "evidence": "name heuristic",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "reorder_for_locality",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 196,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "post_grad_custom_pre_pass",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 209,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "remove_profiler_ops",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 230,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "respecialize_current_device",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 236,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "post_grad_custom_pre_pass",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 242,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "remove_noop_ops",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 245,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "remove_assert_ops",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 246,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "partitioned_scatter_optimization",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 254,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fuse_ddp_communication",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 286,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "post_grad_custom_post_pass",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 301,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "chain_random_ops_ordering",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 306,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "stable_sort",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 310,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "move_constructors_to_cuda",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 312,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decomp_comms",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 337,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "dedup_reduce_scatters",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 344,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "bucket_reduce_scatters",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 357,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "bucket_all_reduce",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 369,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "bucket_all_gathers",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 389,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "overlap_scheduling",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 447,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "replace_collectives_with_low_contention",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 458,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "reinplace_inplaceable_ops",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 464,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fix_auto_functionalized_dtype_views",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 469,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_triton_kernel_wrapper_functional",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 473,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_auto_functionalized",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 476,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_scan_to_while_loop",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 479,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_map_to_while_loop",
+    "stage": "post_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 482,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "graph_pass",
+    "stage": "post_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 525,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_map_to_while_loop._",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 532,
+    "signals": [
+      "mkldnn",
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "graph_pass",
+    "stage": "post_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 718,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_scan_to_while_loop._",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 725,
+    "signals": [
+      "mkldnn",
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "prepare_softmax_pattern",
+    "stage": "post_grad",
+    "mechanism": "replacement-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 873,
+    "signals": [],
+    "evidence": "register_replacement",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "mm_plus_mm",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1016,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "pointless_cumsum_replacement",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1039,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "cat_slice_cat",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1089,
+    "signals": [
+      "fallback"
+    ],
+    "evidence": "register_lowering_pattern",
+    "static_status": "backend-sensitive",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "graph_pass",
+    "stage": "post_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1485,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_triton_kernel_wrapper_functional._",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1492,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "graph_pass",
+    "stage": "post_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1579,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_auto_functionalized._",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1586,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "decompose_auto_functionalized._",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1613,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "splitwithsizes_cat_replace",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1731,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "cat_splitwithsizes_replace",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1786,
+    "signals": [],
+    "evidence": "register_lowering_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "reciprocal_sqrt_to_rsqrt",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1800,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "unfuse_bias_add_to_pointwise",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1905,
+    "signals": [
+      "cuda",
+      "dynamic_shape"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "needs-npu-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "unfuse_bias_baddbmm_to_pointwise",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 1955,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "addmm",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 2033,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "_fuse_addcdiv_to_fma",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 2078,
+    "signals": [
+      "triton"
+    ],
+    "evidence": "register_graph_pattern",
+    "static_status": "backend-sensitive",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "reuse_partial",
+    "stage": "post_grad",
+    "mechanism": "pattern-entry",
+    "source": "torch/_inductor/fx_passes/post_grad.py",
+    "line": 2119,
+    "signals": [],
+    "evidence": "register_graph_pattern",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_four_op_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 217,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_cast",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 265,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_cat",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 293,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_clone",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 350,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_detach",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 388,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_expand",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 407,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_reduce",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 449,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_sink_view",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 480,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_slice",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 586,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_squeeze",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 606,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_to_copy",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 639,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "view_fold_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 703,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_where",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 753,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_redundant_ops",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 779,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "cat_to_view_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 940,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "repeat_to_expand_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 1172,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fold_iota_arithmetic_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 1433,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "broadcast_const_mask_compress",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 1572,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "masked_add_compose_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 1727,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "bool_cast_mul_to_where_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 1871,
+    "signals": [
+      "dynamic_shape",
+      "memory_alias"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "sign_diff_hamming_fuse_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 2005,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "batch_embedding_fusion_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 2547,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fused_matmul_relu_pass",
+    "stage": "post_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 2821,
+    "signals": [
+      "npu",
+      "memory_alias"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "apply_gumbel_max_trick_pass",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 48,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "efficient_conv_bn_eval_pass",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 52,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fuse_split_linear_add_pass",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 56,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fuse_chunk_squeeze_cat_pass",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 59,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "remove_reshape_pass",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 62,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "normalization_pass_aten",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 67,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_splits_pass_aten",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 68,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "split_cat_pass_aten",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 69,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "unbind_stack_pass_aten",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 70,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_getitem_cat_pass_aten",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 71,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "merge_stack_tahn_unbind_pass_aten",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 74,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "mutate_cat_pass_aten",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 77,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "remove_split_with_size_one_pass_aten",
+    "stage": "pre_grad",
+    "mechanism": "pattern-registry",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 78,
+    "signals": [],
+    "evidence": "PatternMatcherPass",
+    "static_status": "generic-needs-validation",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "group_batch_fusion_passes",
+    "stage": "pre_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 379,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "efficient_conv_bn_eval_pass",
+    "stage": "pre_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 415,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "apply_gumbel_max_trick_pass",
+    "stage": "pre_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 418,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "pre_grad_custom_pass",
+    "stage": "pre_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 423,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "linear_permute_fusion",
+    "stage": "pre_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 466,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "permute_linear_fusion",
+    "stage": "pre_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 468,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "permute_matmul_fusion",
+    "stage": "pre_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 470,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "remove_identity",
+    "stage": "pre_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 477,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fuse_conv_bn",
+    "stage": "pre_grad",
+    "mechanism": "pipeline",
+    "source": "torch/_inductor/fx_passes/pre_grad.py",
+    "line": 479,
+    "signals": [],
+    "evidence": "GraphTransformObserver",
+    "static_status": "generic-pipeline",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "cat_slice_cat_fold_pass",
+    "stage": "pre_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 65,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "pad_slice_fold",
+    "stage": "pre_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 157,
+    "signals": [],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "dtype_optimal_pass",
+    "stage": "pre_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 844,
+    "signals": [
+      "dynamic_shape"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  },
+  {
+    "name": "fusion_attention_v3_pass",
+    "stage": "pre_grad",
+    "mechanism": "npu-custom-pass",
+    "source": "torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py",
+    "line": 916,
+    "signals": [
+      "npu"
+    ],
+    "evidence": "register_custom_pass",
+    "static_status": "npu-specific",
+    "runtime_status": "not-run",
+    "runtime_note": ""
+  }
+]
