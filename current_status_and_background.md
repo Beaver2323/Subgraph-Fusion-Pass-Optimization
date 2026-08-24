@@ -2,13 +2,13 @@
 
 ## 1. 当前结论
 
-截至 2026-08-21，本任务已经完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、候选问题分级、P0 gate 用例设计和变更控制框架。当前 Benchmark 运行环境已安装 torch_npu 当前源码构建 wheel（`--no-deps`），并完成 CPU/NPU eager 与 Inductor 最小验证。P0 的 addmm/default 与 mm_plus_mm/experimental 已完成 dtype、shape、真实转置、dynamic replay、bias/shape guard 和隔离 backward 的功能与 paired performance 网格。T-011 完成 `strict_sum` lowering 接口修复；T-012 至 T-022 完成 mm_plus_mm different-K 的 fallback 分解、standalone Triton candidate、三 dtype/真实转置/dynamic/backward、扩展性能、正式设计和 large hold。T-023 已把 NPU-only、default-off、extern fallback-first 的 different-K template 接入源码构建 wheel，并关闭首批功能、集成 single-task、fresh-process paired 性能和 memory root cause；T-024 完成 workspace/tile/grouped-program 搜索，没有找到同时通过显存和 task-duration 门槛的候选。PyTorch 和 Triton 产品功能源码未改。
+截至 2026-08-24，本任务已完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、P0 gate/功能/性能闭环，以及 P1 B2 首批 7 个 custom pass 的结构与真实 NPU 审计。T-011 修复 `strict_sum`；T-012 至 T-024 完成 different-K mm_plus_mm 的 default-off 条件性接入；T-025/T-026 证明 pad family 功能可承接但性能否决；T-027 至 T-031 发现并关闭 `fold_reduce`、`cat_to_view_pass` 的 storage alias 问题，完成三轮单 pass 性能与最终 wheel 回归。当前 Benchmark 环境安装的是 T-031 源码构建 wheel（`--no-deps`）；PyTorch 和 Triton 产品功能源码未改，torch_npu 有已登记的 Python pass/lowering/template 修改。
 
 **用户已要求从暂停检查点继续。** 历史恢复基线为
 [PAUSED_CHECKPOINT_20260821.md](PAUSED_CHECKPOINT_20260821.md)，恢复后的 E-030 至
-E-091 已完成。T-014 至 T-024 期间所有正式性能结论均来自运行前后空闲设备、fresh-process paired 采样；隔离失效或环境失败的原始结果保留但不进入 verdict。当前结论是 `integration-supported-beneficial-opt-in-memory-tradeoff-environment-pending`：shape-A/unaligned p50 改善 `15.29%/18.04%`，但 candidate peak allocated 比 baseline 均多 `270,336 B`，严格显存门槛失败；large 保持 neutral hold，dynamic/empty/arbitrary-stride/same-K保留 fallback。当前 editable PyTorch / Triton launcher / torch_npu-CANN header 组合仍不能无垫片 fresh compile host launcher，所以正式矩阵使用 `conditional-supported-beneficial`，而不是无条件支持。
+E-115 已完成。T-014 至 T-031 的正式性能结论均来自运行前后空闲设备、fresh-process paired 采样；隔离失效或环境失败的原始结果保留但不进入 verdict。different-K 当前是 `integration-supported-beneficial-opt-in-memory-tradeoff-environment-pending`：shape-A/unaligned p50 改善 `15.29%/18.04%`，但 candidate peak allocated 比 baseline 均多 `270,336 B`；B2 的 fold_reduce/cat 则已按各自数据收敛。当前 editable PyTorch / Triton launcher / torch_npu-CANN header 组合仍不能无垫片 fresh compile host launcher，所以 different-K 正式矩阵继续使用 `conditional-supported-beneficial`。
 
-当前 251 条矩阵记录分为：可直接构造用例 164 条、阶段 observer 41 条、registry container 25 条、人工审查 21 条。7 条 P0 gate 记录已有动态证据：3 条 pad pattern 因上游 device gate 明确排除 NPU，verdict 为 `unsupported`；addmm/default 的 8 个代表配置全部超过 10% p50 收益，并在 `strict_sum` 修复后完成 vector/full bias backward，最终 verdict 为 `supported-beneficial`；mm_plus_mm 已有 default-off different-K 集成，首批两点性能有益但 memory gate 与无 shim 环境项未关，verdict 为 `conditional-supported-beneficial`。矩阵总计 246 条 `not-run`、3 条 `unsupported`、1 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`。旧 `/Dynamo` 194 条清单只保留作历史对照。
+当前 251 条矩阵记录分为：可直接构造用例 164 条、阶段 observer 41 条、registry container 25 条、人工审查 21 条。verdict 为 244 条 `not-run`、3 条 `unsupported`、1 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、1 条 `supported-neutral-resource-beneficial`、1 条 `supported-pass-disabled-performance-rejected`。新增两条分别是 alias-safe `cat_to_view_pass` 和最终保留原 sum 的 `fold_reduce`。旧 `/Dynamo` 194 条清单只保留作历史对照。
 
 此前因其他进程修改共享环境而冻结动态测试；用户确认环境稳定后已恢复。当前动态测试按用户指定固定从 `/home/z50063656/Benchmark/env.sh` 启动 Conda `benchmark-py311`，测试进程仍从 `/home/z50063656/tmp` 发起。T-022/T-023 区分了“runtime 与已缓存 kernel 可用”和“fresh host launcher 编译合同完整”两个层次：新 launcher仍需匹配 PyTorch C++20、Triton Ascend、torch_npu 与 CANN headers，不能用审计垫片冒充正式环境已修复。
 
@@ -82,7 +82,7 @@ E-091 已完成。T-014 至 T-024 期间所有正式性能结论均来自运行�
 
 - `report/pass_src_20260820/pass_inventory.json`：机器可读清单。
 - `report/pass_src_20260820/pass_inventory.md`：人工审阅索引。
-- `report/pass_src_20260820/pass_evaluation_matrix.csv`：251 条逐项验收合同；当前 246 条 `not-run`、3 条 `unsupported`、1 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`；addmm 已关闭最终 verdict，mm_plus_mm 已完成 default-off 集成但保留 memory/no-shim 条件。
+- `report/pass_src_20260820/pass_evaluation_matrix.csv`：251 条逐项验收合同；当前 244 条 `not-run`，另有 7 条已形成 verdict；addmm、different-K、三个 pad family、fold_reduce 与 cat_to_view 均已登记最终或条件性结论。
 - `audit_passes.py`：不导入 torch 的静态清单生成器。
 
 当前源码基线为 PyTorch `release/2.14@8e86e0a`、torch_npu `master@83cc452`、Triton Ascend `release/3.2.2@8bd9f38`。torch_npu 的 torchair/inductor-npu-ext 子模块未初始化，因此旧清单中的 5 条 npu-ext 记录没有冒充为当前源码可用项。
@@ -103,9 +103,9 @@ E-091 已完成。T-014 至 T-024 期间所有正式性能结论均来自运行�
 
 4. P1 B2 custom pass 首批
 
-   T-027 已运行现有 dynamic-shape FX 文件，32/32 通过；其中7个pass共15个直接结构正负例，只推进到`structure-trigger-confirmed`。T-028随后在default backend、no-grad推理、fresh NPU compile中确认`fold_reduce`入口sum计数1、出口0，compiled误差0；首次grad-enabled worker被inference gate合法跳过，并保留为mode诊断证据。当前只有`fold_reduce` positive达到NPU trigger/codegen正确，negative、另外6个pass和所有性能仍`not-run`。
+   T-027 至 T-031 已把结构测试扩为 33/33，并完成 7 个 pass 的 fresh NPU 正负例。`fold_expand` 与 `repeat_to_expand_pass` 功能通过、性能待测；`view_fold_pass`、`fold_slice`、`fold_four_op_pass` 的正例在目标 pass 前已被前序 pipeline 消除，记 reachability-neutral。`fold_reduce` 和 `cat_to_view_pass` 初始数值虽为 0 误差，却错误复用了输入 storage；T-029 clone 修复关闭正确性 blocker。T-030 三轮 paired 显示 fold_reduce clone p50/p99 回退 3.06%/6.72%，最终 T-031 保留原 sum并禁用该折叠；cat clone p50 +2.29%、p99 -0.78%，task 3→1、allocated peak 减少 4,195,840 B，保留为 latency-neutral/resource-beneficial。最终 wheel 的 33 个 UT 与四个关键 NPU 正负例全部通过。
 
-三个候选都已在 `change_control.md` 登记。addmm 的跨切面 reduction 修复已经 T-011 实施并验证；mm_plus_mm different-K 已完成 default-off wheel integration、首批功能/性能/memory与 workspace 替代搜索，只保留正式无 shim 环境复验；pad family 是下一条主线，仍处于先测收益、后评审实现的提案阶段。
+所有产品修改都已先在 `change_control.md` 登记。addmm、different-K、pad family 与 B2 首批 alias 分支均已有成功、失败或中性结论；当前主线转入 B2 其余 20 个 custom pass，而 T-023 只保留正式无 shim 环境复验。
 
 ### 2.3 探针框架
 
@@ -135,7 +135,7 @@ P0 语义层先完成 6 个 inference case 和 3 个 forward/backward case。inf
 
 2026-08-21 T-023 结束复核时，PyTorch 产品源码未改；Triton Ascend 产品源码未改。torch_npu commit 未变，tracked diff 包含 T-011 `lowering.py` 和 T-023 的 `__init__.py`、`config.py`、`fx_passes/post_grad.py`、`kernel/__init__.py`，另有新 kernel 与目标 UT；既有未跟踪代码生成文件不纳入功能 diff。构建过程的临时 torchgen link/workspace均已清理，ACL 子模块恢复；详细记录见 `change_control.md:E-057` 至 `E-071`。
 
-该组合已从 `/home/z50063656/tmp` 完成 CPU eager、CPU Inductor、NPU eager、NPU Inductor smoke，以及 P0 动态 gate、代表功能/性能矩阵、T-011 训练回归和 T-012 至 T-024 审计。当前安装的是 T-023 store-index 修复版 wheel，SHA256 为 `d0ee10794f8cb63d528c86f27294a2a52a4b8b5f484eb6be53323d22b2157718`；T-011 与首版 T-023 wheel均保存在任务 artifacts 供回滚。
+该组合已从 `/home/z50063656/tmp` 完成 CPU/NPU eager 与 Inductor smoke、P0、T-011 至 T-031 审计。当前安装的是 T-031 最终源码 wheel，SHA256 为 `29c3c105453a36d8f2eb648eeb0a2d35cfd0cb871c34697c6aaf17fb1a96a6f5`；修改前 wheel 与 T-029 正确但性能差的 clone candidate wheel都保存在任务 artifacts 供回滚。
 
 T-022 进一步确认“已安装 runtime 可运行”不等于“fresh Triton host launcher 可编译”：editable PyTorch 指向的源码树当前缺少 `torch/include`；wheel headers 已要求 C++20，而 Triton Ascend 3.2.0 launcher 固定 `-std=c++17`；installed torch_npu headers 还引用 CANN 9.0.1 没有声明的两个 conditional graph 类型。审计专用 compiler shim 只用于隔离 profiler/benchmark，不能进入产品或最终环境结论。正式 integration 最终需要一套 headers/编译标准匹配的 wheel 或完整源码构建环境。
 
@@ -268,12 +268,13 @@ torch.compile(
 5. different-K fallback profile、standalone 两 shape 正确性、单 task profiler 和三轮 paired benchmark 已完成；fp16/contiguous/static p50 改善 15.60%/17.12%，但 additional peak 多约 1.38 MiB。
 6. bf16/fp32、真实 transposed/non-contiguous、dynamic replay、backward、正式接入设计，以及 large profiler/tile/memory 分解均已完成；large 最终为 supported-neutral-hold，中小 static cohort 保留 beneficial gate。
 7. different-K default-off template、源码 wheel、首批功能/性能/memory和 workspace 替代搜索已完成；状态为 `conditional-supported-beneficial`。不再重复 T-014 至 T-024，环境支线只需在匹配 headers 的独立环境做无 shim fresh compile smoke。
-8. 当前主线进入 pad family 的 NPU capability 与收益实验；随后执行 P1 的 NPU custom、DVM/MLIR、attention，并分批覆盖 pre_grad、joint_graph、post_grad、lowering/scheduler。
+8. pad family 与 P1 B2 首批 7 条已闭环；当前主线是为 B2 其余 20 个 custom pass 建立结构正负例，再进入 B3 DVM/MLIR 与 B4 attention。已闭环 case 不重跑，除非环境或源码基线改变。
 
 ## 10. 当前文件导航
 
 - `PAUSED_CHECKPOINT_20260821.md`：本次暂停的环境、工作树、设备状态和精确恢复点；恢复工作时首先阅读。
 - `README.md`：入口与运行约束。
+- `outcome_index.md`：已执行工作的成功、失败、中性、未归因和环境类索引。
 - `change_control.md`：环境、提案和源码修改冻结记录。
 - `replacement_plan.md`：NPU 替代实现总体策略。
 - `audit_passes.py`：静态清单生成器。
@@ -294,6 +295,9 @@ torch.compile(
 - `report/t022_mmplus_different_k_large_profile_20260821.md`：large 三 tile device profiler、paired 稳态、内存分解和环境限制。
 - `report/t023_mmplus_different_k_integration_20260821.md`：default-off wheel 接入、功能、集成 paired 性能、workspace 根因与条件性结论。
 - `report/t024_mmplus_different_k_workspace_20260821.md`：七种 workspace/tile/grouped-program 配置和停止结论。
+- `report/t025_t026_pad_family_20260821.md`：pad 三 family 的 capability 可用、性能失败与停止结论。
+- `report/t028_p1_b2_npu_compile_20260821.md`：B2 首批 7 pass 的 NPU 正负例、alias blocker 和最终闭环。
+- `report/t029_t030_b2_alias_fix_performance_20260824.md`：alias 修复、三轮性能、失败/中性尝试与 T-031 最终 wheel。
 - `t014_mmplus_different_k_triton.py`：不同 K standalone Triton 微原型。
 - `t015_mmplus_different_k_candidate_profile.py`：candidate-only NPU profiler。
 - `t016_mmplus_different_k_candidate_benchmark.py`：fallback/candidate 三轮 paired benchmark。
@@ -303,6 +307,8 @@ torch.compile(
 - `t023_mmplus_different_k_integration_performance.py`：fresh-process profiler、paired worker 与 allocator trace。
 - `t023_mmplus_different_k_integration_performance_aggregate.py`：六 worker 纯读取聚合器。
 - `t024_mmplus_different_k_workspace_screen.py`：workspace/tile/grouped-program audit-only 筛选器。
+- `t028_b2_custom_pass_compile.py`：B2 正负例、图计数与 dtype/stride/storage alias 门禁。
+- `t030_b2_alias_performance.py`、`t030_b2_alias_performance_aggregate.py`：fold_reduce/cat 的 fresh-process 单 pass paired 性能与聚合。
 - `t022_launcher_cc_wrapper.sh`、`t022_cann_header_compat.h`：仅限审计的 fresh host launcher 编译垫片，不能进入产品。
 - `p0_case_design.md`：五个 P0 family 的触发条件、正负用例和验收边界。
 - `p1_batch_design.md`：66 条 P1 的分组、已有测试证据与动态验收顺序。

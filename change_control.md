@@ -783,6 +783,152 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
 - E-106（T-028 fold_reduce positive闭环）：audit worker通过`py_compile`、帮助入口和100列检查。在物理NPU 1的fresh cache、default backend、no-grad推理和统一audit shim下，registry wrapper恰调用1次；入口图含1个`aten.sum.dim_IntList`，原`fold_reduce`执行后为0，graph gate通过。输入`(6,1,4)` fp16的compiled输出shape不变，eager对比max/mean absolute error均为0，首次compile+run `2812.37 ms`。成功case未读取`output_code.py`。矩阵中fold_reduce推进到`npu-trigger-confirmed`、runtime codegen正确，performance与最终verdict仍`not-run`；下一步先加symbolic-dim negative，要求pass被调用但sum保持，再扩另外6个pass。
 - E-107（T-028 fold_reduce negative登记）：只扩展audit worker的`--shape-profile negative`，输入`(6,4)`并对symbolic dim0做keepdim sum。目标wrapper仍必须恰调用1次，入口/出口`aten.sum.dim_IntList`计数都为1；compiled与eager正确。positive默认与既有命令兼容，产品源码不改；fresh目录运行，失败才读本轮`output_code.py`。
 - E-108（T-028 fold_reduce功能闭环）：negative fresh worker在物理NPU 1、default backend、no-grad推理和audit shim下完成。目标wrapper恰调用1次，`aten.sum.dim_IntList`入口/出口计数均为1，证明无法静态判定size=1的symbolic reduce没有被误删；compiled输出shape `(1,4)`，max/mean absolute error均为0。首次compile+run `21,361.85 ms`受fresh Triton编译环境影响，只记录不作性能结论。成功case未读取`output_code.py`。fold_reduce现具结构UT与NPU positive/negative功能证据，performance/final verdict仍`not-run`；T-028下一步扩`fold_expand`等6个pass。
+- E-109（T-028 六个 pass 扩展登记，2026-08-24）：继续扩展 audit-only
+  `t028_b2_custom_pass_compile.py`，覆盖 `fold_expand`、`view_fold_pass`、
+  `fold_slice`、`repeat_to_expand_pass`、`fold_four_op_pass` 和
+  `cat_to_view_pass`，不修改 PyTorch、torch_npu、Triton 产品源码或当前 wheel。
+  每个 pass 建立一个 positive 和一个 negative：目标 registry wrapper 必须恰调用
+  1 次；positive 要求目标节点按 pass 语义消除或替换，negative 要求节点保持；
+  `repeat_to_expand_pass` positive 还必须确认 repeat 消失且 expand 出现。所有 case
+  使用 default backend、`torch.no_grad()`、dynamic compile、独立 fresh process/cache，
+  从 `/home/z50063656/tmp` 发起并与 eager 做 fp16 数值比较。首次 compile+run 只记录，
+  不作性能结论；功能闭环后另行登记单 pass on/off 三轮 paired benchmark。失败时只读
+  本轮 debug artifact 分类为未触发、前序 pass 改写、图门禁、lowering/codegen、精度或
+  环境，不用 monkeypatch 产品逻辑伪造通过。
+- E-110（T-028 首批扩展与 harness 分类修正，2026-08-24）：受限权限下的首个
+  `fold_expand` positive 在设备枚举阶段报 `aclInit 507008`，0 个 pass 执行，保留为
+  environment-blocked；相同命令在允许驱动访问的物理 NPU 1 重跑后通过。随后 12 个
+  positive/negative 中，`fold_expand`、`repeat_to_expand_pass`、`cat_to_view_pass`
+  两侧均直接通过，`fold_slice` negative 与 `fold_four_op_pass` negative 通过；所有已执行
+  case 的 eager/compiled max/mean absolute error 均为 0。四个原始 error 均为审计门禁
+  或 reachability 分类，不是数值/codegen 失败：`view_fold_pass` positive 和
+  `fold_slice` positive 的目标节点在进入目标 wrapper 前已不存在；`view_fold_pass`
+  negative 在 wrapper 前已被规范成 `aten.reshape.default`，而旧门禁只统计
+  `aten.view.default`；`fold_four_op_pass` positive 的 `x + zeros_like(x)` 在进入 Inductor
+  后端前已化为恒等图，registry wrapper 调用数为 0。按失败规则已只读对应四个 debug
+  目录：前两者的 `fx_graph_readable.py` 已只剩 relu，view negative 的 readable graph
+  含 view、wrapper event 含 reshape、最终 transformed graph 保留 reshape；four-op positive
+  没有生成 Inductor graph artifact。下一步只修改 audit worker：view 门禁聚合
+  view/reshape/_unsafe_view；数值正确但目标在 wrapper 前消失或整个 backend 未进入时明确
+  记为 `npu-compile-target-not-reached`，不伪装为目标 pass 成功，也不把它继续报成产品
+  error。使用新目录只复跑这四项，产品源码和 wheel 仍不改。
+- E-111（T-028 输出 alias 语义补充合同，2026-08-24）：首批数值/图结果不能直接关闭
+  功能结论。`fold_reduce(keepdim=True)` 在源码中可直接用输入替换 sum，而 eager sum
+  返回新 storage；`cat_to_view_pass` 可直接用 parent 替换 eager cat，新旧 storage alias
+  也可能不同。两者都存在“数值相同但输出 mutation/alias 语义变化”的风险。只扩展
+  audit worker，在 eager reference 与 compiled output 上记录 dtype、stride，以及 output
+  是否与原输入共享 storage；要求 compiled 三项与 reference 完全一致，否则状态为功能
+  error。用 fresh 目录复跑 `fold_reduce` 和 `cat_to_view_pass` 的 positive/negative；
+  alias 失败时按规则读取本轮 `output_code.py` 确认 wrapper 是否直接返回输入，并保持
+  performance/verdict 为 `not-run`。不通过修改测试输入、插入 clone 或放宽断言掩盖问题。
+- E-112（T-028 alias blocker 闭环，2026-08-24）：`fold_reduce` positive 与
+  `cat_to_view_pass` positive 均复现真实功能失败。两者 eager/compiled 的数值误差为 0，
+  dtype/stride一致，但 eager output 都不与输入共享 storage，compiled output 都与输入共享；
+  两份 `output_code.py` 均明确 `return (arg2_1,)`。对应 negative 保持原节点，数值、dtype、
+  stride、alias 全部匹配。结论不是性能中性，而是触发路径 correctness blocker；两条矩阵
+  记录在修复前标为 `unsupported-correctness-alias`，禁止进入 paired performance。
+  `fold_expand` 与 `repeat_to_expand_pass` 的输出 consumer 分别是 relu/mul，现有语义合同
+  通过；`view_fold_pass`/`fold_slice`/`fold_four_op_pass` 当前 positive 未到达目标 pass，
+  只记 reachability-neutral；不得把这些中性结果写成目标 pass 已优化成功。
+
+### T-029：B2 alias correctness 修复提案
+
+- 状态：`completed-intermediate`。目标只修复 T-028 已实测的
+  `fold_reduce` 与 `cat_to_view_pass` 输出 storage 语义，不扩大其他 pass 范围，不使用
+  Triton，也不调整 Benchmark 环境版本。
+- `fold_reduce`：当前 `_get_fold_result()` 对 `keepdim=True` 直接返回输入，对
+  `keepdim=False` 返回输入的 squeeze view；两者都把 eager reduction 的新 storage 变成
+  alias。候选是在删除 size-one reduction 时先建立 contiguous clone，再按 keepdim 决定
+  直接返回 clone 或 squeeze clone；同时补 dtype 参数边界，不能把带 dtype conversion 的
+  sum 无条件替换成同 dtype clone。
+- `cat_to_view_pass`：full-cover identity 分支当前直接返回 parent，而 eager cat 必须产生
+  新 storage。候选把这两个 identity 分支改为 contiguous clone(parent)；rotation 分支已用
+  roll 产生新 storage，本轮不改。这样仍可删除 slice/cat 结构，但是否比原 cat 更快必须
+  后续 paired benchmark 决定。
+- 拟修文件：
+  `torch_npu/_inductor/fx_passes/utils/get_binary_fold_result.py`、
+  `torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py` 和
+  `test/_inductor/test_dynamic_shape_fx_passes.py`。先补结构断言，确保两个 positive 出现
+  clone、negative 不误改；再用源码覆盖的纯 FX UT 验证，最后重建 torch_npu wheel 并
+  `--no-deps` 安装，从 `/home/z50063656/tmp` 重跑四个 NPU alias case。
+- 验收：数值、dtype、stride、output-input alias 全部与 eager 相同；目标 pass 确实调用，
+  原 sum/cat 被删除且 clone 出现。功能通过后才登记单 pass on/off 三轮 paired；若 clone
+  使性能无收益，则结论为 correctness-fixed-supported-neutral，不为了性能再次破坏 alias。
+- 回滚：只撤销上述三文件的 T-029 增量；不撤销 T-011、T-023、动态 shape 既有实现，
+  不清理未知生成文件或他人工作树修改。
+
+### E-113：T-029 安装态验证门禁（2026-08-24）
+
+- `fold_reduce` 正例除要求 `aten.sum.dim_IntList` 从 1 降为 0 外，还要求
+  pass 后至少保留 1 个 `aten.clone.default`；负例继续要求 reduce 不被折叠。
+- `cat_to_view_pass` 全覆盖正例除要求 `aten.cat.default` 从 1 降为 0 外，
+  还要求 pass 后至少保留 1 个 `aten.clone.default`；非全覆盖负例继续保留 cat。
+- 四个正负例都必须同时通过数值、dtype、stride 和输出/输入 storage alias
+  一致性门禁；只满足图结构或数值一致仍判失败。
+- 验证对象必须是新构建并以 `--no-deps --force-reinstall` 安装的 wheel，
+  wheel 内两份修复文件的哈希需与源码一致，避免源码覆盖测试造成假阳性。
+
+### T-030：B2 alias 修复后的单 pass 性能合同
+
+- 状态：`completed`。只新增 audit worker/aggregate 和结果文档，
+  不再修改产品源码或环境版本。
+- 对象：`fold_reduce` 正例 `(1024, 1, 1024)` 与 `cat_to_view_pass` 全覆盖正例
+  `(2048, 1024)`，fp16、contiguous、default backend、`torch.no_grad()`、dynamic compile。
+- baseline 在 registry 原位置用观测 wrapper 跳过目标 pass，candidate 调用原 pass；
+  两侧都要求 wrapper 恰好调用一次。baseline 必须保留 sum/cat 且不新增 clone，
+  candidate 必须删除 sum/cat 并新增 clone。
+- 每个 family 使用 3 轮 fresh process paired，顺序 `B1,C1,C2,B2,B3,C3`，
+  每个 worker warmup 10、runs 100；记录 mean/stdev/p50/p99、输出分配扣除后的
+  peak allocated/reserved、首次 compile+run。每侧第 1 轮额外采集 10 active steps 的
+  NPU task profile。
+- 两侧都必须在计时前后通过数值、dtype、stride、output-input alias 门禁。p50
+  改善超过 10%、p99 不回退超过 5%、显存无不可接受增长才标 beneficial；否则按数据
+  标为 supported-neutral 或 performance-regressed，不以一次 compile 时间作性能结论。
+- 测试从 `/home/z50063656/tmp` 发起，使用物理 NPU 1；开始、结束均检查进程表。
+  审计 launcher shim 继续只作为已登记环境兼容手段，不提升无 shim 环境结论。
+
+### T-031：fold_reduce 性能回退后的产品收敛提案
+
+- 状态：`completed-verified`。T-030 已证明 alias-safe clone 相对保留
+  size-one sum 的 p50/p99 分别回退 3.06%/6.72%，且没有 task 或显存收益。
+- 产品策略：让 `fold_reduce` 保留原 reduction，不再执行 size-one reduce→clone/squeeze
+  替换；保留 `_get_fold_result` 的 alias-safe 实现，避免未来复用时重新引入直返输入错误。
+  `cat_to_view_pass` 的 clone 修复不回滚，因为它 task 3→1 且显存减少约 4 MiB。
+- 测试调整：fold_reduce 静态 size-one 正例改为断言 sum 保留、clone 不出现；dtype 和
+  symbolic negative 同样保留。安装态 NPU 正例门禁改为 sum 1→1、clone 0，alias 仍须
+  与 eager 一致。cat 正负例门禁保持 T-029 合同。
+- 完成源码静态/33 个 FX 测试后重建并 `--no-deps --force-reinstall` wheel；最终 wheel
+  需重跑 fold_reduce/cat 四个 NPU case。若均通过，fold_reduce 记为
+  `supported-pass-disabled-performance-rejected`，cat 记为
+  `supported-neutral-resource-beneficial`。
+- 回滚只涉及 fold_reduce 的 no-op 收敛与对应测试/audit 门禁；不改环境版本，不清理
+  生成文件，不触碰 T-011/T-023 和 cat 的正确性修复。
+
+### E-114：T-029/T-030 执行结果（2026-08-24）
+
+- T-029 wheel SHA256 为
+  `51f484457e555544c171167ff5a652478995f4acc3d749f6accf0a091a00e4df`，安装态
+  33/33 FX UT 和 fold_reduce/cat 四个 alias case 通过；首次受限安装态 UT 的
+  `aclInit 507008` 在驱动可见层重跑通过，保留为环境中性证据。
+- T-030 两个 family 均完成 3 轮 fresh-process、warmup 10/runs 100 与一轮 10-step
+  profiler。fold_reduce clone p50/p99 回退 3.06%/6.72%，task 1→1、显存不变；
+  cat clone p50 +2.29%、p99 -0.78%，task 3→1、allocated peak 减少 4,195,840 B。
+- fold_reduce clone 是“功能成功、性能失败”的中间方案；cat clone 是“延迟中性、资源
+  有益”的保留方案。两者不得合并写成统一的 pass 优化成功。
+
+### E-115：T-031 最终 wheel 验证（2026-08-24）
+
+- 源码静态检查、lintrunner 与源码覆盖 FX UT 33/33 通过；最终 wheel SHA256 为
+  `29c3c105453a36d8f2eb648eeb0a2d35cfd0cb871c34697c6aaf17fb1a96a6f5`，wheel/source
+  文件哈希一致并以 `--no-deps --force-reinstall` 安装。
+- 最终安装态 FX UT 33/33 通过；fold_reduce/cat 正负四个 NPU case 均数值误差 0，
+  dtype、stride、storage alias 与 eager 一致，图门禁通过。
+- fold_reduce 最终 sum `1→1`、clone `0`，verdict 为
+  `supported-pass-disabled-performance-rejected`；cat positive 为 cat `1→0`、
+  clone `0→1`，negative cat `1→1`，verdict 为
+  `supported-neutral-resource-beneficial`。
+- T-029 性能失败 candidate wheel 已备份为
+  `artifacts/torch_npu_t029_alias_safe_clone_candidate.whl`；最终环境安装的是 T-031 wheel。
 
 ## 提案记录
 

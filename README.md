@@ -8,10 +8,11 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
 
 1. [从头学习指南](inductor_pass_npu_beginner_guide.md)：编译链、背景知识、源码入口和实验方法。
 2. [当前状态与环境](current_status_and_background.md)：运行环境、已完成结论和当前进行位置。
-3. [项目审计总览](audit_overview.md)：清单、P0/P1 工作流和报告导航。
-4. [任务范围与源码地图](task_scope_and_code_map.md)：需要阅读、修改和验证的源码区域。
-5. [变更控制记录](change_control.md)：每次实验、修改范围、回滚方法和证据日志。
-6. [替代与优化计划](replacement_plan.md)：何时保留 pass、修 gate、复用 vendor op 或考虑 Triton。
+3. [成果、失败与中性索引](outcome_index.md)：快速区分有效成果、否决方案、未归因和环境阻塞。
+4. [项目审计总览](audit_overview.md)：清单、P0/P1 工作流和报告导航。
+5. [任务范围与源码地图](task_scope_and_code_map.md)：需要阅读、修改和验证的源码区域。
+6. [变更控制记录](change_control.md)：每次实验、修改范围、回滚方法和证据日志。
+7. [替代与优化计划](replacement_plan.md)：何时保留 pass、修 gate、复用 vendor op 或考虑 Triton。
 
 ## 当前进度
 
@@ -22,8 +23,12 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
   `conditional-supported-beneficial`。
 - `pad_mm/pad_bmm/pad_addmm`：测试侧绕过 device gate 后功能正确，但 p50 分别回退
   72.65%/65.31%/120.63%，因此保持产品 gate，不实现独立 Triton padding 替身。
-- P1 B2：7 个 custom pass 的 FX 结构测试 32/32 通过；`fold_reduce` 已完成 default
-  backend NPU positive/negative 功能闭环，其他 pass 和性能仍在进行。
+- P1 B2 首批：FX 测试 33/33 通过。`fold_reduce` 的直返输入存在 alias 错误，clone
+  虽修复正确性但 p50/p99 回退 3.06%/6.72%，最终 wheel 保留原 sum并禁用折叠。
+  `cat_to_view_pass` 使用 alias-safe clone 后 p50 +2.29%、task 3→1、额外 allocated
+  peak 减少 4,195,840 B，当前为 `supported-neutral-resource-beneficial`。
+- 矩阵当前为 244 条 `not-run`，另有 7 条最终或条件性 verdict；下一步是 B2 其余
+  20 个 custom pass，再进入 DVM/MLIR 和 attention。
 
 机器可读矩阵位于
 [pass_evaluation_matrix.csv](report/pass_src_20260820/pass_evaluation_matrix.csv)，填写规则和
@@ -36,7 +41,8 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
 - [different-K workspace 审计](report/t024_mmplus_different_k_workspace_20260821.md)
 - [pad family 功能与性能结论](report/t025_t026_pad_family_20260821.md)
 - [P1 B2 首批结构验收](report/t027_p1_b2_structure_20260821.md)
-- [P1 B2 NPU compile（进行中）](report/t028_p1_b2_npu_compile_20260821.md)
+- [P1 B2 NPU compile 与 alias 闭环](report/t028_p1_b2_npu_compile_20260821.md)
+- [B2 alias 修复、性能与最终 wheel](report/t029_t030_b2_alias_fix_performance_20260824.md)
 
 ## 当前验证环境
 
@@ -46,6 +52,9 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
 - Triton runtime module 3.2.0
 - CANN 9.0.1
 - 8 × Ascend910B2
+
+当前安装的最终 torch_npu wheel SHA256 为
+`29c3c105453a36d8f2eb648eeb0a2d35cfd0cb871c34697c6aaf17fb1a96a6f5`。
 
 仓库当前保存文档、报告和小型机器可读清单；不包含 wheel、编译缓存、profiler 原始数据、
 设备运行缓存或任何访问凭据。实验命令应从 `/home/z50063656/tmp` 启动，避免在

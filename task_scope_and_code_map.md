@@ -106,6 +106,20 @@ T-026在首批M/N/K非对齐static fp16 contiguous shape上完成三轮测量：
 
 因此这里首先要查 capability 条件和性能，而不是从零写 addmm。测试要覆盖 bias broadcast、alpha/beta、连续/转置输入、静态/动态 shape，以及 fusion 前后的 kernel 数。
 
+### B2 alias-sensitive custom pass
+
+入口位于 `src/torch_npu/torch_npu/_inductor/fx_passes/ascend_custom_passes/ascend_graph_pass.py`。
+T-028 证明只看数值会漏掉 storage alias 错误；T-029/T-031 因而修改：
+
+- `cat_to_view_pass` 的 full-cover identity 分支不再直返 parent，而是 contiguous clone；
+- `fold_reduce` 最终保留原 sum，不再执行 size-one reduction 折叠；
+- `utils/get_binary_fold_result.py::_get_fold_result` 保留 alias-safe clone 实现，避免未来
+  复用时重新引入直返输入错误；
+- `test/_inductor/test_dynamic_shape_fx_passes.py` 用结构断言固定最终策略。
+
+性能决定了两条路线不能合并处理：cat 的 task/显存受益，fold_reduce clone 则 p99 回退
+6.72%。这里不需要再写 Triton copy，因为候选已经是单 Triton pointwise，且原 sum 更快。
+
 ## 测试和性能证据
 
 所有测试从 `/home/z50063656/tmp` 启动，不能在 torch_npu 源码目录中导入 torch。每个 backend 使用 fresh process，避免全局 patch 和 cache 串扰。
@@ -127,4 +141,5 @@ T-026在首批M/N/K非对齐static fp16 contiguous shape上完成三轮测量：
 - `Pass/src` 与旧扫描同口径时为 189 条；少的 5 条全部来自当前未初始化的 torchair 子模块，不是主干 pass 回退。
 - 在同口径基础上补入 8 个 DVM/MLIR 图变换、53 个函数式/生成式 pattern 和 1 个 pad-mm 控制 gate，当前概念级清单为 251 条。
 - 当前矩阵中 direct case 164 条、observer 41 条、registry container 25 条、人工审查 21 条；生成变体不重复计数。
-- 环境已确认稳定并完成 P0、T-011 至 T-024；当前主线进入 pad family capability/收益实验，T-023只保留匹配 headers 环境的无 shim复验。
+- 环境已确认稳定并完成 P0、T-011 至 T-031；pad family和B2首批7条已闭环。当前主线
+  是 B2 其余20条，随后进入B3/B4；T-023只保留匹配 headers 环境的无 shim复验。

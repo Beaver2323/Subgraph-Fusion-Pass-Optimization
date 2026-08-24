@@ -10,7 +10,10 @@
 | B3_DVM_MLIR | 8 | DVM/MLIR 图融合、规范化和精度变换 |
 | B4_ATTENTION | 31 | 上游 30 个 SDPA pattern family + 1 个 NPU graph attention 包装入口 |
 
-T-027 已为 B2 中7条记录补齐device-independent结构层动态结论，仍没有任何一条因此被判为NPU端到端可用。源码里有测试不等于NPU pass可用；必须继续补齐实际NPU触发、前后图、正确性、generated code/fallback和性能证据。
+T-027 至 T-031 已为 B2 中 7 条记录补齐 33 个 device-independent 测试、真实 NPU
+正负例、storage alias 门禁，并对 fold_reduce/cat 完成单 pass paired 性能。源码里有测试
+仍不等于 NPU pass 可用；本批结果之所以能下结论，是因为图、数值、alias 和性能证据已
+按不同 pass 分层闭环。
 
 ## B2：27 个 NPU custom pass
 
@@ -42,12 +45,26 @@ T-027 已为 B2 中7条记录补齐device-independent结构层动态结论，仍
 - `fold_four_op_pass`
 - `cat_to_view_pass`
 
-这些测试证明部分 static/symbolic FX 变换边界，不证明 NPU 编译、lowering 或性能。其余 20 个 custom pass 没有在当前源码树中找到同名的直接 pass UT；即便存在模型级间接覆盖，也需要单独建立最小触发图。
+这些测试最初只证明 static/symbolic FX 变换边界；T-028 至 T-031 又补上真实 NPU 证据。
+其余 20 个 custom pass 没有在当前源码树中找到同名的直接 pass UT；即便存在模型级间接
+覆盖，也需要单独建立最小触发图。
+
+首批 7 条当前结论：
+
+| pass | 功能/到达性 | 性能/最终状态 |
+|---|---|---|
+| `fold_expand` | 正例删除 identity expand，负例保留 broadcast expand | 功能通过，性能待测 |
+| `repeat_to_expand_pass` | 正例 repeat→expand，物理 copy 负例保留 repeat | 功能通过，性能待测 |
+| `cat_to_view_pass` | alias-safe cat→clone，正负例全部通过 | p50 +2.29%，task 3→1、显存约 -4 MiB；resource-beneficial/latency-neutral |
+| `fold_reduce` | 原直返输入 alias 错；clone 正确但最终保留 sum | clone p50/p99 -3.06%/-6.72%；pass disabled/performance-rejected |
+| `view_fold_pass` | 正例在目标 pass 前消失，负例 reshape 保留 | reachability-neutral |
+| `fold_slice` | 正例在目标 pass 前消失，负例 partial slice 保留 | reachability-neutral |
+| `fold_four_op_pass` | 正例在 backend registry 前化为恒等，负例 add 保留 | reachability-neutral |
 
 B2 的建议执行顺序：
 
-1. 先跑 14 个冗余/恒等消除的结构 UT，记录节点计数和负例。
-2. 再跑 4 个 layout/搬运规约的 NPU compile，检查 copy/view/expand 生成代码。
+1. 首批 7 条不重复执行；为剩余冗余/恒等 pass 补结构 UT，记录节点计数、alias 和负例。
+2. 再跑剩余 layout/搬运规约的 NPU compile，检查 copy/view/expand 生成代码。
 3. 对 6 个 dtype/index/mask pass 增加极值、非连续和 dynamic shape 参数。
 4. 最后测 3 个复合融合；性能 baseline 必须关闭单个 pass，而不是拿 eager 与整图 compile 比。
 
@@ -105,7 +122,7 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
 
 ## P1 动态验收顺序
 
-环境解冻后按以下顺序执行：
+当前稳定环境下按以下顺序继续：
 
 1. 重新确认运行时源码 commit/导入路径与 `Pass/src` 一致。
 2. 对 B2/B3 先跑不依赖性能的结构正负例，确认 harness/observer 有效。
@@ -116,7 +133,10 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
 
 ## 当前静态结论
 
-- P1 66 条已经完成执行分组和证据缺口定义；T-027现已完成首批7条的结构UT，32/32通过。
-- 这7条只标为`structure-trigger-confirmed`，没有任何一条因此被标成NPU端到端可用。
+- P1 66 条已完成执行分组；T-027 至 T-031 完成首批 7 条的 33/33 FX UT、真实 NPU
+  正负例及两条 alias/performance 分支。
+- `cat_to_view_pass` 已形成 resource-beneficial/latency-neutral 结论；`fold_reduce` 的
+  正确但慢 clone 已否决并在最终 wheel 禁用折叠。另两条功能通过，三条到达性中性。
 - 两个值得优先验证的静态风险是 PRE attention pass 的重复执行，以及 `npu_fa` scale positional/keyword 路径不一致。
-- 共享环境仍冻结，本批次没有运行 NPU，也没有修改 PyTorch、torch_npu 或 Triton Ascend 源码。
+- 当前下一步是 B2 其余 20 条；之后进入 B3 和 B4。T-031 已修改并重建 torch_npu
+  wheel，PyTorch 与 Triton Ascend 产品源码未改。

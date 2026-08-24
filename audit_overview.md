@@ -2,7 +2,7 @@
 
 This directory is the audit, evidence, and report area for the local PyTorch
 and torch_npu source trees. The project working directory is
-`/home/z50063656/Pass`. T-011 and T-023 contain pre-registered torch_npu source
+`/home/z50063656/Pass`. T-011, T-023, and T-029/T-031 contain pre-registered torch_npu source
 changes; all other audit prototypes stay in this directory, and every product
 change is governed by `change_control.md`.
 
@@ -24,10 +24,12 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   test-only device-gate bypass but regress 65–121% at p50, so the gate remains.
   The next main batch is P1; the matching fresh-launcher environment remains an
   explicit T-023 follow-up rather than being hidden by the audit compiler shim.
-  P1 has started: T-027 completed 32/32 device-independent FX tests for seven
-  B2 custom passes, and T-028 has confirmed the first `fold_reduce` positive in
-  a real default-backend NPU compile. Its negative and the other six passes are
-  still pending, so no P1 final verdict has been assigned.
+  P1 B2 has started: T-027 through T-031 now cover 33/33 FX tests and fresh NPU
+  positive/negative cases for seven custom passes. Alias auditing rejected the
+  original direct-input `fold_reduce`/`cat_to_view` rewrites. The final wheel
+  disables the performance-regressed `fold_reduce` rewrite and keeps an
+  alias-safe `cat_to_view` clone that reduces tasks 3→1 and allocated peak by
+  4,195,840 B while remaining latency-neutral.
 
 - Do not modify PyTorch, torch_npu, or Triton functional source before the
   exact proposal, rollback boundary, and verification plan are recorded in
@@ -45,11 +47,13 @@ The current dynamic runtime is Conda `benchmark-py311`, activated by
 Triton runtime 3.2.0, CANN 9.0.1, and 8 Ascend 910B2 devices. Runtime NPU tests
 pass, but T-022 found that a fresh Triton host launcher cannot be compiled by
 this exact mixed header contract without an audit-only shim; product validation
-must not rely on that shim. The installed T-023 fix wheel SHA256 is
-`d0ee10794f8cb63d528c86f27294a2a52a4b8b5f484eb6be53323d22b2157718`.
+must not rely on that shim. The installed T-031 final wheel SHA256 is
+`29c3c105453a36d8f2eb648eeb0a2d35cfd0cb871c34697c6aaf17fb1a96a6f5`.
 
 Read [current_status_and_background.md](current_status_and_background.md) before
 choosing a wheel or source build and before restarting any probe.
+For a one-page separation of successful, rejected, neutral, and environment
+attempts, read [outcome_index.md](outcome_index.md).
 
 For a source-backed, from-scratch learning path, start with
 [inductor_pass_npu_beginner_guide.md](inductor_pass_npu_beginner_guide.md). It
@@ -118,6 +122,14 @@ peak allocated is 270,336 B above baseline because Triton Ascend allocates
 passes both the strict memory and task-duration gates. The template therefore
 remains default-off with a 131072-element output cap; the formal matrix verdict
 is conditional until a matching no-shim launcher environment is verified.
+
+The first P1 B2 checkpoint is in
+[T-028](report/t028_p1_b2_npu_compile_20260821.md) and the
+[T-029/T-030/T-031 closure report](report/t029_t030_b2_alias_fix_performance_20260824.md).
+The important distinction is explicit: `fold_reduce -> clone` was a correct but
+performance-regressed intermediate attempt; `cat_to_view -> clone` is retained
+as `supported-neutral-resource-beneficial`. Three other positives were removed
+before their target pass and remain reachability-neutral, not attributed wins.
 
 ## 1. Generate the full source inventory
 
