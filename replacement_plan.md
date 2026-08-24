@@ -4,7 +4,7 @@
 
 ## 当前结论
 
-当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。addmm 与 fold_cat 为 `supported-beneficial`；different-K mm_plus_mm 为 `conditional-supported-beneficial`；pad 三个 family 功能可承接但 p50 回退 65%–121%，replacement 已否决。P1 中，fold_reduce 的 alias-safe clone 又因 p99 回退 6.72% 被否决，最终保留原 sum；cat_to_view 的 alias-safe clone task 3→1、显存约减 4 MiB，延迟收益 2.29%，保留为 resource-beneficial/latency-neutral；fold_cat 直接复用现有 pass，p50/p99 改善 10.14%/10.32%、task 2→1、显存约减 2 MiB，不需要替身。全量记录见 `report/pass_src_20260820/`。
+当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。addmm 与 fold_cat 为 `supported-beneficial`；different-K mm_plus_mm 为 `conditional-supported-beneficial`；pad 三个 family 功能可承接但 p50 回退 65%–121%，replacement 已否决。P1 中，fold_reduce 的 alias-safe clone 又因 p99 回退 6.72% 被否决，最终保留原 sum；cat_to_view 的 alias-safe clone task 3→1、显存约减 4 MiB，延迟收益 2.29%，保留为 resource-beneficial/latency-neutral；fold_cat 直接复用现有 pass，p50/p99 改善 10.14%/10.32%、task 2→1、显存约减 2 MiB，不需要替身；fold_where 功能正确但端到端 p50/p99 仅改善 1.16%/3.12%、task和显存不变，为 `supported-neutral`，同样不应手写 Triton。全量记录见 `report/pass_src_20260820/`。
 
 源码证据表明，当前后端已经存在若干明确的 NPU 约束：
 
@@ -15,6 +15,7 @@
 | `addmm` fusion | Triton experimental override 可将已注册的 add+mm -> addmm entries 的 `extra_check` 置 false | 与 NPU `addmm` lowering、CATLASS 和 fallback 三路做新鲜 paired benchmark |
 | `fold_reduce` | 直返输入违反 alias；clone 正确但 p50/p99 回退 3.06%/6.72% | 最终保留原 sum、禁用折叠；现有 sum 比 Triton copy 更快，不做替身 |
 | `cat_to_view_pass` | alias-safe clone 正负例通过，p50 +2.29%，task 3→1、allocated peak -4,195,840 B | 保留 clone 修复，记 latency-neutral/resource-beneficial；不再手写重复 copy kernel |
+| `fold_where` | where→clone 保持新 storage；device kernel 时间下降约 26.46%，但端到端 p50 仅 +1.16%、task/显存不变 | 保留既有 FX pass并记 `supported-neutral`；固定开销主导时手写另一条 Triton copy 没有意义 |
 | NPU custom FX pass | `ascend_custom_passes` 注册 27 个 pass，主要是 fold/view/cat/reduce/attention/embedding 等图重写 | 先做图正确性和 kernel 数量检查；这些 pass 通常不需要手写 Triton |
 | `inductor-npu-ext` | 通过 `pre_grad_custom_pass` / `post_grad_custom_pre_pass` 注册 legacy scatter、pad-slice、batch-embedding pass | 作为 AscendC 后端独立测量，不能与 Triton backend 的结果混用 |
 | attention | NPU 有 `fusion_attention_v3_pass` 和 `npu_fusion_attention_graph` | 优先复用 `npu_fusion_attention_v3` vendor op；手写 Triton 只作为缺失 shape/layout 的兜底 |
@@ -56,7 +57,7 @@
 
 ## 下一步执行
 
-当前主线不再重跑全量旧探针。pad family和B2前11条已完成结构/NPU分流，fold_cat 已形成性能成功结论；下一步按`p1_batch_design.md`为B2其余16个custom pass补最小结构正负例，再做真实NPU compile；之后进入B3 DVM/MLIR与B4 attention。T-023环境支线只在匹配headers的独立环境做无shim fresh compile smoke。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
+当前主线不再重跑全量旧探针。pad family和B2前16条已完成结构/NPU分流，fold_cat 已形成性能成功、fold_where 已形成性能中性结论；下一步按`p1_batch_design.md`为B2其余11个custom pass补最小结构正负例，再做真实NPU compile；之后进入B3 DVM/MLIR与B4 attention。T-023环境支线只在匹配headers的独立环境做无shim fresh compile smoke。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
 
 ```bash
 python /home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py \

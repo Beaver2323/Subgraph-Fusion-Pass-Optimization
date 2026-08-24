@@ -10,8 +10,8 @@
 | B3_DVM_MLIR | 8 | DVM/MLIR 图融合、规范化和精度变换 |
 | B4_ATTENTION | 31 | 上游 30 个 SDPA pattern family + 1 个 NPU graph attention 包装入口 |
 
-T-027 至 T-033 已为 B2 中 11 条记录补齐 41 个 device-independent 测试、真实 NPU
-正负例、storage alias 门禁，并对 fold_reduce/cat_to_view/fold_cat 完成单 pass paired 性能。源码里有测试
+T-027 至 T-035 已为 B2 中 16 条记录补齐 51 个 device-independent 测试、真实 NPU
+正负例、storage alias/对象身份门禁，并对 fold_reduce/cat_to_view/fold_cat/fold_where 完成单 pass paired 性能。源码里有测试
 仍不等于 NPU pass 可用；本批结果之所以能下结论，是因为图、数值、alias 和性能证据已
 按不同 pass 分层闭环。
 
@@ -35,7 +35,7 @@ T-027 至 T-033 已为 B2 中 11 条记录补齐 41 个 device-independent 测�
 
 ### 已有测试证据与缺口
 
-`test/_inductor/test_dynamic_shape_fx_passes.py` 当前对以下 11 个 pass 有直接结构或可达性断言：
+`test/_inductor/test_dynamic_shape_fx_passes.py` 当前对以下 16 个 pass 有直接结构或可达性断言：
 
 - `fold_expand`
 - `view_fold_pass`
@@ -48,9 +48,14 @@ T-027 至 T-033 已为 B2 中 11 条记录补齐 41 个 device-independent 测�
 - `fold_cat`
 - `fold_clone`
 - `fold_detach`
+- `fold_sink_view`
+- `fold_squeeze`
+- `fold_to_copy`
+- `fold_where`
+- `fold_redundant_ops`
 
 前 7 条最初只证明 static/symbolic FX 变换边界；T-028 至 T-031 又补上真实 NPU 证据，
-T-032/T-033 随后覆盖第二批 4 条。其余 16 个 custom pass 没有在当前源码树中找到同名的直接 pass UT；即便存在模型级间接
+T-032/T-033 随后覆盖第二批 4 条，T-034/T-035 覆盖第三批 5 条。其余 11 个 custom pass 没有在当前源码树中找到同名的直接 pass UT；即便存在模型级间接
 覆盖，也需要单独建立最小触发图。
 
 首批 7 条当前结论：
@@ -74,9 +79,19 @@ T-032/T-033 随后覆盖第二批 4 条。其余 16 个 custom pass 没有在当
 | `fold_clone` | clone→relu positive 在目标 pass 前消失；输出 clone 保留 | partial reachability；暂无可归因性能 |
 | `fold_detach` | positive 前序消除，直接输出整图旁路；detach 语义保持 | reachability-neutral |
 
+第三批 5 条当前结论：
+
+| pass | 功能/到达性 | 性能/最终状态 |
+|---|---|---|
+| `fold_sink_view` | non-identity reshape/relu 拓扑真实交换，多用户负例保持 | 功能通过，性能待测 |
+| `fold_squeeze` | matching dim 组合删除，different dim 保持；对象身份合同通过 | 功能通过，性能待测 |
+| `fold_to_copy` | positive 前序消除，negative 前序规范化为 prims cast | reachability-neutral |
+| `fold_where` | where `1→0`、clone `0→1`，distinct branches 保持 | p50/p99 +1.16%/+3.12%，task/显存不变；`supported-neutral` |
+| `fold_redundant_ops` | redundant reshape/squeeze 删除，shape-changing 负例保持 | 功能通过，性能待测 |
+
 B2 的建议执行顺序：
 
-1. 已完成的 11 条不重复执行；为剩余冗余/恒等 pass 补结构 UT，记录节点计数、alias 和负例。
+1. 已完成的 16 条不重复执行；为剩余 layout、dtype/index/mask 和复合 pass 补结构 UT，记录节点计数、alias 和负例。
 2. 再跑剩余 layout/搬运规约的 NPU compile，检查 copy/view/expand 生成代码。
 3. 对 6 个 dtype/index/mask pass 增加极值、非连续和 dynamic shape 参数。
 4. 最后测 3 个复合融合；性能 baseline 必须关闭单个 pass，而不是拿 eager 与整图 compile 比。
@@ -146,11 +161,12 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
 
 ## 当前静态结论
 
-- P1 66 条已完成执行分组；T-027 至 T-033 完成前 11 条的 41/41 FX UT、真实 NPU
-  正负例及三条 paired performance 分支。
+- P1 66 条已完成执行分组；T-027 至 T-035 完成前 16 条的 51/51 FX UT、真实 NPU
+  正负例及四条 paired performance 分支。
 - `cat_to_view_pass` 已形成 resource-beneficial/latency-neutral 结论；`fold_reduce` 的
   正确但慢 clone 已否决并在最终 wheel 禁用折叠；`fold_cat` 已形成
-  `supported-beneficial`。另两条功能通过，六条到达性/可归因性中性。
+  `supported-beneficial`；`fold_where` 为 `supported-neutral`。另五条功能通过，多条前序
+  消除/规范化 case 保持到达性或可归因性中性。
 - 两个值得优先验证的静态风险是 PRE attention pass 的重复执行，以及 `npu_fa` scale positional/keyword 路径不一致。
-- 当前下一步是 B2 其余 16 条；之后进入 B3 和 B4。T-031 已修改并重建 torch_npu
+- 当前下一步是 B2 其余 11 条；之后进入 B3 和 B4。T-031 已修改并重建 torch_npu
   wheel，PyTorch 与 Triton Ascend 产品源码未改。

@@ -126,6 +126,13 @@ peak 减少 2,097,664 B，因此现有 pass 已是 `supported-beneficial`，不�
 `fold_cast`、`fold_clone`、`fold_detach` 的代表 positive 则在目标 pass 前被前序 pipeline
 消除或旁路，当前只记 reachability-neutral，不能把前序收益归因给这些 pass。
 
+T-034/T-035 继续验证 `fold_sink_view`、`fold_squeeze`、`fold_to_copy`、`fold_where` 和
+`fold_redundant_ops`。前四条实际到达的 positive/negative 均通过数值、stride、alias 与
+对象身份合同；`fold_to_copy` 在目标 pass 前被消除或转为 prims cast。`fold_where` 的
+where→clone 虽让 device kernel 时间下降约 26.46%，但端到端 p50/p99 只改善 1.16%/3.12%、
+task和显存不变，最终为 `supported-neutral`。这类纯图规约继续修改 FX pass 即可，不应为了
+单独复制写一条新的 Triton kernel。
+
 ## 测试和性能证据
 
 所有测试从 `/home/z50063656/tmp` 启动，不能在 torch_npu 源码目录中导入 torch。每个 backend 使用 fresh process，避免全局 patch 和 cache 串扰。
@@ -147,6 +154,6 @@ peak 减少 2,097,664 B，因此现有 pass 已是 `supported-beneficial`，不�
 - `Pass/src` 与旧扫描同口径时为 189 条；少的 5 条全部来自当前未初始化的 torchair 子模块，不是主干 pass 回退。
 - 在同口径基础上补入 8 个 DVM/MLIR 图变换、53 个函数式/生成式 pattern 和 1 个 pad-mm 控制 gate，当前概念级清单为 251 条。
 - 当前矩阵中 direct case 164 条、observer 41 条、registry container 25 条、人工审查 21 条；生成变体不重复计数。
-- 环境已确认稳定并完成 P0、T-011 至 T-033；pad family和B2前11条已完成结构/NPU
-  分流，fold_cat 已关闭性能结论。当前主线是 B2 其余16条，随后进入B3/B4；T-023只
+- 环境已确认稳定并完成 P0、T-011 至 T-035；pad family和B2前16条已完成结构/NPU
+  分流，fold_cat 已关闭有益性能、fold_where 已关闭中性性能结论。当前主线是 B2 其余11条，随后进入B3/B4；T-023只
   保留匹配 headers 环境的无 shim复验。

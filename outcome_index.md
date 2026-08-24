@@ -13,6 +13,7 @@
 | cat_to_view_pass | alias-safe，task 3→1，allocated peak -4,195,840 B | `supported-neutral-resource-beneficial` | `report/t029_t030_b2_alias_fix_performance_20260824.md` |
 | fold_expand | 正例删除 identity expand，负例保留广播 expand | 功能通过，性能待测 | `report/t028_p1_b2_npu_compile_20260821.md` |
 | repeat_to_expand_pass | broadcast-only repeat→expand，物理 copy 负例不改 | 功能通过，性能待测 | `report/t028_p1_b2_npu_compile_20260821.md` |
+| fold_sink_view/fold_squeeze/fold_redundant_ops | 正例真实改图，负例保持，完整 alias/对象身份合同通过 | 功能通过，性能待测 | `report/t034_b2_view_copy_compile_20260824.md` |
 
 ## 已否决或失败的尝试
 
@@ -33,6 +34,9 @@
 | same-K mm_plus_mm transposed/dynamic | p50 +6.4%/+8.74% | 支持但未过 10% 性能门槛 |
 | view_fold/fold_slice/fold_four 正例 | 目标节点在目标 pass 前已被消除 | reachability-neutral，收益不能归因给目标 pass |
 | fold_cast/fold_clone/fold_detach 正例 | 目标节点在目标 pass 前已被规范化消除或整图旁路 | 完整语义通过，但收益不能归因给目标 pass |
+| fold_to_copy 正/负例 | same-dtype copy 前序消除，dtype conversion 前序规范化为 prims cast | 完整语义通过，但 custom pass 当前可达性中性 |
+| fold_where 三轮 paired | p50 +1.16%、p99 +3.12%，task 1→1、显存不变 | `supported-neutral`；kernel 更快但端到端未过 10% 门槛 |
+| T-034 首轮 view 门禁 | 编译前 view 已规范化为 reshape，且首个 sink 正例是恒等 view | 审计假设错误；v2 修正后全过，不计产品失败 |
 | 首次 grad-enabled B2 worker | inference-only POST driver 未调用目标 pass | 合法模式分流，不是产品失败 |
 | 受限执行层 NPU case | `aclInit 507008`，驱动可见层同命令通过 | sandbox/设备可见性环境阻塞 |
 | fresh Triton launcher 无 shim | PyTorch C++20、Triton C++17、torch_npu/CANN headers 不匹配 | 环境合同未闭环；审计 shim 不能冒充产品环境成功 |
@@ -41,13 +45,13 @@
 
 - 最终 torch_npu wheel SHA256：
   `29c3c105453a36d8f2eb648eeb0a2d35cfd0cb871c34697c6aaf17fb1a96a6f5`。
-- 安装态旧 FX UT：33/33；当前测试源码扩展为 41/41。T-032 的 8 个 NPU case 与
-  T-033 的 6 个性能 worker 全部通过图/完整语义门禁。
+- 安装态旧 FX UT：33/33；当前测试源码扩展为 51/51。T-032/T-034 的最终有效 NPU
+  正负例与 T-033/T-035 的 12 个性能 worker 全部通过图/完整语义门禁。
 - 性能失败的 T-029 clone candidate wheel 单独保留在
   `artifacts/torch_npu_t029_alias_safe_clone_candidate.whl`，不是当前安装态。
 
 ## 下一步
 
-为 B2 其余 16 个 custom pass 建立最小结构正负例，优先覆盖 alias、dtype、dynamic shape
+为 B2 其余 11 个 custom pass 建立最小结构正负例，优先覆盖 alias、dtype、dynamic shape
 和默认开关；结构层通过后再逐项进入 fresh NPU compile。随后执行 B3 DVM/MLIR 与 B4
 attention。T-023 的无 shim 环境复验作为独立环境支线，不阻塞主线。

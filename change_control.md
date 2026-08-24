@@ -1024,6 +1024,78 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
 - 证据位于 `results/t033_fold_cat_performance_20260824/`；矩阵 verdict 已从 `not-run`
   更新为 `supported-beneficial`。
 
+### T-034：B2 第三批 view/copy/where 冗余 pass 审计
+
+- 状态：`closed-functional-audit-complete`。本轮覆盖
+  `fold_sink_view`、`fold_squeeze`、`fold_to_copy`、`fold_where`、
+  `fold_redundant_ops` 五条 custom pass；先补结构正负例，再做 default backend NPU
+  registry 可达性与完整语义验证。初始阶段不修改产品实现、不重建或重装 wheel。
+- 只读结构实验均符合源码设计：view→relu 被改写为 relu→view，多用户 view 不改；
+  同 dim unsqueeze→squeeze 被删除，dim 不同则保持；内部同 dtype `_to_copy` 被删除，真实
+  dtype conversion 保持；`where(mask,x,x)` 变为 clone，分支不同的 where 保持；
+  view→squeeze 输出 shape 回到原输入时整链删除，否则保持。
+- 重点语义：`fold_squeeze` 和 `fold_redundant_ops` 若最终直返图输入，可能把 eager 的
+  “不同 Tensor 对象但共享 storage 的 view”变成输入对象本身；这与数值和 storage alias
+  都无关，必须比较 object identity。`fold_where` positive 必须保留 eager where 的新 storage，
+  预期由 clone 承接；`fold_to_copy` 直接图输出必须保持 copy，不得被内部-copy规则误删。
+- 拟修改审计资产：在 `test/_inductor/test_dynamic_shape_fx_passes.py` 增加 10 个结构
+  正负例；新增 `t034_b2_view_copy_compile.py`，复用 T-032 的多输入/tuple 输出完整语义
+  合同。若目标节点在 registry 前被消除，记 `target-node-not-reached`；若实际到达后出现
+  object/alias/dtype/stride/`requires_grad` 不一致，登记独立产品修复提案后才可修改 pass。
+- NPU 方法：每 case/variant 使用独立 fresh process/cache，`torch.no_grad()`、dynamic
+  compile、default backend，从 `/home/z50063656/tmp` 启动；目标 wrapper 执行时必须恰为
+  1 次，图计数和完整语义同时通过。T-034 不采性能；只有真正到达且功能通过的 positive
+  才进入后续单 pass 三轮 paired。
+
+### T-035：fold_where 单 pass 性能验证
+
+- 状态：`closed-supported-neutral`。T-034 已证明 `where(mask, x, x)` 在 default
+  backend 的 custom registry 中真实由 1 个 `aten.where.self` 改写为 1 个
+  `aten.clone.default`，且数值、dtype、stride、storage alias、对象身份和
+  `requires_grad` 全部与 eager 一致；本任务只测该既有 pass，不修改产品实现、不重建 wheel。
+- workload 固定为 fp16 contiguous `x=[2048,2048]` 与 bool contiguous 同 shape mask，静态
+  shape、forward/no-grad、直接输出 `where(mask,x,x)`。baseline 只在 registry wrapper 中跳过
+  `fold_where`，candidate 执行原 pass；两侧其他编译配置完全相同，图门禁分别要求
+  `where 1→1, clone 0→0` 与 `where 1→0, clone 0→1`。
+- 每侧 3 个 fresh worker，执行顺序 `B1,C1,C2,B2,B3,C3`；每轮 warmup 10、runs 100，记录
+  mean±stdev、p50、p99、首次编译和 allocated/reserved peak。B1/C1 另采 warmup 1、active 10
+  的 NPU task profile；每轮测量前后均复查 T-034 完整语义合同。
+- 判定沿用 T-033：candidate p50 改善严格超过 10%、p99 不回退超过 5%、allocated peak 不增，
+  才记 `supported-beneficial`；若延迟未过门槛但 task/显存明确减少且 p99 合格，记
+  `supported-neutral-resource-beneficial`；p50 或 p99 回退超过 5% 则记性能回退。所有性能
+  结论必须记录 CANN 9.0.1、Ascend910B2、warmup、runs 和三轮统计。
+
+### E-118：T-034 第三批功能关闭（2026-08-24）
+
+- device-independent 结构测试新增 10 条，完整文件由 41/41 扩为 51/51。10 个最终有效
+  default-backend NPU 正负例均通过数值、dtype、stride、storage alias、对象身份和
+  `requires_grad` 合同；物理 NPU 1 在批次开始和结束时均无外部进程。
+- `fold_sink_view` positive 真实完成 reshape→relu 到 relu→reshape 的拓扑交换，多用户
+  negative 保持；`fold_squeeze` 和 `fold_redundant_ops` positive 分别删除匹配组合，negative
+  保持；编译边界仍保持 eager 的共享 storage/不同对象语义。`fold_where` 真实由 where
+  `1→0`、clone `0→1`，保持新 storage；distinct-branch negative 保持 where `1→1`。
+- `fold_to_copy` 的 same-dtype positive 在目标 pass 前已消失，dtype-conversion negative 在
+  目标 pass 前已规范化为 `prims.convert_element_type`；两侧语义正确，但不得把收益归因给
+  `fold_to_copy`，记 reachability-neutral。
+- 首轮 4 个 graph-gate error 来自审计假设错误：动态 pipeline 把 view 规范化为 reshape，
+  sink-view 正例还是恒等 view。修正 workload/门禁后的 v2 fresh worker 全部通过；原始错误
+  目录保留为中性尝试，不计产品失败。证据见
+  `results/t034_b2_view_copy_compile_20260824/` 与 T-034 报告。
+
+### E-119：T-035 fold_where 性能关闭（2026-08-24）
+
+- 六个 fresh worker 按 `B1,C1,C2,B2,B3,C3` 完成；每轮 warmup 10、runs 100，B1/C1
+  另有 warmup 1、active 10 的 NPU profile。全部图门禁和测量前后完整语义合同通过。
+- 三轮中位 baseline/candidate mean 为 `0.249119±0.005972 ms` /
+  `0.246128±0.005860 ms`；p50 为 `0.247985/0.245115 ms`，改善 `1.16%`；p99 为
+  `0.274870/0.266300 ms`，改善 `3.12%`。未达到预登记 p50 严格超过 10% 的门槛。
+- 两侧均为每 step 1 个 Triton task，additional allocated peak 均为 `8,389,120 B`，reserved
+  delta 均为 0。10 个 active step 的 device duration 从 `97.14 μs` 降到 `71.44 μs`，
+  但 task/显存未减少，kernel 收益被端到端固定开销掩盖。
+- 结论：`fold_where` 在该 fp16/contiguous/static cohort 为 `supported-neutral`。保留既有
+  pass，不为此场景手写 Triton；baseline 的 `tl.where` int8 condition 弃用 warning 另作
+  lowering 兼容性事项。证据位于 `results/t035_fold_where_performance_20260824/`。
+
 ## 提案记录
 
 ### P-001：`mm_plus_mm` NPU 支持

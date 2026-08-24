@@ -23,14 +23,16 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
   `conditional-supported-beneficial`。
 - `pad_mm/pad_bmm/pad_addmm`：测试侧绕过 device gate 后功能正确，但 p50 分别回退
   72.65%/65.31%/120.63%，因此保持产品 gate，不实现独立 Triton padding 替身。
-- P1 B2 前两批：FX 测试 41/41 通过。`fold_reduce` 的直返输入存在 alias 错误，clone
+- P1 B2 前三批：FX 测试 51/51 通过。`fold_reduce` 的直返输入存在 alias 错误，clone
   虽修复正确性但 p50/p99 回退 3.06%/6.72%，最终 wheel 保留原 sum并禁用折叠。
   `cat_to_view_pass` 使用 alias-safe clone 后 p50 +2.29%、task 3→1、额外 allocated
   peak 减少 4,195,840 B，当前为 `supported-neutral-resource-beneficial`。
   `fold_cat` 的 nested cat `2→1`，p50/p99 改善 10.14%/10.32%、task 2→1、额外
   allocated peak 减少 2,097,664 B，当前为 `supported-beneficial`。
-- 矩阵当前为 243 条 `not-run`，另有 8 条最终或条件性 verdict；下一步是 B2 其余
-  16 个 custom pass，再进入 DVM/MLIR 和 attention。
+  第三批另验证 5 条 view/copy/where pass；`fold_where` 功能正确但 p50/p99 仅改善
+  1.16%/3.12%、task 和显存不变，当前为 `supported-neutral`。
+- 矩阵当前为 242 条 `not-run`，另有 9 条最终、条件性或中性 verdict；下一步是 B2
+  其余 11 个 custom pass，再进入 DVM/MLIR 和 attention。
 
 机器可读矩阵位于
 [pass_evaluation_matrix.csv](report/pass_src_20260820/pass_evaluation_matrix.csv)，填写规则和
@@ -47,6 +49,8 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
 - [B2 alias 修复、性能与最终 wheel](report/t029_t030_b2_alias_fix_performance_20260824.md)
 - [B2 第二批结构与 NPU 编译](report/t032_b2_redundancy_compile_20260824.md)
 - [fold_cat 单 pass NPU 性能](report/t033_fold_cat_performance_20260824.md)
+- [B2 第三批结构与 NPU 编译](report/t034_b2_view_copy_compile_20260824.md)
+- [fold_where 单 pass NPU 性能](report/t035_fold_where_performance_20260824.md)
 
 ## 当前验证环境
 
