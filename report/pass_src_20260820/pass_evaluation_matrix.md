@@ -2,7 +2,7 @@
 
 - 输入清单：`/home/z50063656/Pass/inductor_pass_npu_audit/report/pass_src_20260820/pass_inventory.json`
 - 记录数：**251**
-- 当前阶段：评估合同已生成；7 条 P0 gate 记录已有动态证据。3 条 pad pattern 因 device gate 排除 NPU，产品 verdict 仍为 `unsupported`；T-025测试侧绕过后证明mm/bmm/addmm功能可承接，但T-026三轮p50分别回退`72.65%/65.31%/120.63%`，replacement均为`rejected-performance-regression`。`addmm fusion` 的8个代表配置均为p50正收益，`strict_sum`修复后backward闭环，最终为`supported-beneficial`。`mm_plus_mm` same-K experimental网格8/8功能正确、6个beneficial；different-K的T-014至T-022已关闭三dtype、真实转置、dynamic/backward、扩展性能、正式设计和large hold。T-023已安装NPU-only、default-off、extern fallback-first template wheel，row/column、AOTAutograd和五类negative通过；shape-A/unaligned集成p50改善`15.29%/18.04%`，但candidate比baseline均多`270,336 B` peak allocated，根因为`65,536 B × 6` Triton Ascend workspace。T-024没找到同时通过显存和task-duration gate的配置。fresh launcher仍需匹配PyTorch C++20、Triton Ascend、torch_npu与CANN headers，所以verdict为`conditional-supported-beneficial`，默认关闭。矩阵总计246条`not-run`、3条`unsupported`、1条`supported-beneficial`、1条`conditional-supported-beneficial`。
+- 当前阶段：评估合同已生成；P0 gate、different-K、pad family 和 B2 前 11 条已有动态证据。3 条 pad pattern 因 device gate 排除 NPU，产品 verdict 仍为 `unsupported`；T-025测试侧绕过后证明mm/bmm/addmm功能可承接，但T-026三轮p50分别回退`72.65%/65.31%/120.63%`，replacement均为`rejected-performance-regression`。`addmm fusion` 的8个代表配置均为p50正收益，`strict_sum`修复后backward闭环，最终为`supported-beneficial`。different-K的T-023 default-off template在shape-A/unaligned集成p50改善`15.29%/18.04%`，但candidate比baseline均多`270,336 B` peak allocated，T-024又没有找到同时通过显存和task-duration gate的配置；fresh launcher环境合同也尚未闭环，因此保持`conditional-supported-beneficial`。B2中，`fold_reduce`的正确clone方案因性能回退被否决，`cat_to_view_pass`为latency-neutral/resource-beneficial；T-032/T-033进一步证明`fold_cat`在代表shape上p50/p99改善`10.14%/10.32%`、task 2→1、allocated peak减少`2,097,664 B`，关闭为`supported-beneficial`。矩阵总计243条`not-run`、3条`unsupported`、2条`supported-beneficial`、1条`conditional-supported-beneficial`、1条`supported-neutral-resource-beneficial`、1条`supported-pass-disabled-performance-rejected`。
 
 ## 测试单元
 
@@ -53,4 +53,5 @@
 允许的最终 verdict：`not-run`、`not-applicable`、`environment-blocked`、
 `unsupported`、`supported-neutral`、`supported-beneficial`、
 `conditional-supported-beneficial`、
-`supported-regression`。
+`supported-neutral-resource-beneficial`、
+`supported-pass-disabled-performance-rejected`、`supported-regression`。

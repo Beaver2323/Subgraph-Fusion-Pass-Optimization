@@ -120,6 +120,12 @@ T-028 证明只看数值会漏掉 storage alias 错误；T-029/T-031 因而修�
 性能决定了两条路线不能合并处理：cat 的 task/显存受益，fold_reduce clone 则 p99 回退
 6.72%。这里不需要再写 Triton copy，因为候选已经是单 Triton pointwise，且原 sum 更快。
 
+T-032/T-033 又验证了同文件中的 `fold_cat`：同维、单用户 nested cat 在目标 pass 内由
+2 个 cat 展平为 1 个，三轮 paired p50/p99 改善 10.14%/10.32%，task 2→1，allocated
+peak 减少 2,097,664 B，因此现有 pass 已是 `supported-beneficial`，不需要替身实现。
+`fold_cast`、`fold_clone`、`fold_detach` 的代表 positive 则在目标 pass 前被前序 pipeline
+消除或旁路，当前只记 reachability-neutral，不能把前序收益归因给这些 pass。
+
 ## 测试和性能证据
 
 所有测试从 `/home/z50063656/tmp` 启动，不能在 torch_npu 源码目录中导入 torch。每个 backend 使用 fresh process，避免全局 patch 和 cache 串扰。
@@ -141,5 +147,6 @@ T-028 证明只看数值会漏掉 storage alias 错误；T-029/T-031 因而修�
 - `Pass/src` 与旧扫描同口径时为 189 条；少的 5 条全部来自当前未初始化的 torchair 子模块，不是主干 pass 回退。
 - 在同口径基础上补入 8 个 DVM/MLIR 图变换、53 个函数式/生成式 pattern 和 1 个 pad-mm 控制 gate，当前概念级清单为 251 条。
 - 当前矩阵中 direct case 164 条、observer 41 条、registry container 25 条、人工审查 21 条；生成变体不重复计数。
-- 环境已确认稳定并完成 P0、T-011 至 T-031；pad family和B2首批7条已闭环。当前主线
-  是 B2 其余20条，随后进入B3/B4；T-023只保留匹配 headers 环境的无 shim复验。
+- 环境已确认稳定并完成 P0、T-011 至 T-033；pad family和B2前11条已完成结构/NPU
+  分流，fold_cat 已关闭性能结论。当前主线是 B2 其余16条，随后进入B3/B4；T-023只
+  保留匹配 headers 环境的无 shim复验。

@@ -24,12 +24,15 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   test-only device-gate bypass but regress 65–121% at p50, so the gate remains.
   The next main batch is P1; the matching fresh-launcher environment remains an
   explicit T-023 follow-up rather than being hidden by the audit compiler shim.
-  P1 B2 has started: T-027 through T-031 now cover 33/33 FX tests and fresh NPU
-  positive/negative cases for seven custom passes. Alias auditing rejected the
+  P1 B2 has started: T-027 through T-033 now cover 41/41 FX tests and fresh NPU
+  positive/negative cases for eleven custom passes. Alias auditing rejected the
   original direct-input `fold_reduce`/`cat_to_view` rewrites. The final wheel
   disables the performance-regressed `fold_reduce` rewrite and keeps an
   alias-safe `cat_to_view` clone that reduces tasks 3→1 and allocated peak by
-  4,195,840 B while remaining latency-neutral.
+  4,195,840 B while remaining latency-neutral. The second cohort identifies
+  `fold_cast`/`fold_clone`/`fold_detach` as partial-reachability cases and closes
+  `fold_cat` as `supported-beneficial`: p50/p99 improve 10.14%/10.32%, tasks
+  drop 2→1, and allocated peak falls by 2,097,664 B.
 
 - Do not modify PyTorch, torch_npu, or Triton functional source before the
   exact proposal, rollback boundary, and verification plan are recorded in
@@ -130,6 +133,9 @@ The important distinction is explicit: `fold_reduce -> clone` was a correct but
 performance-regressed intermediate attempt; `cat_to_view -> clone` is retained
 as `supported-neutral-resource-beneficial`. Three other positives were removed
 before their target pass and remain reachability-neutral, not attributed wins.
+The second cohort is in the
+[T-032 compile report](report/t032_b2_redundancy_compile_20260824.md) and
+[T-033 fold_cat performance report](report/t033_fold_cat_performance_20260824.md).
 
 ## 1. Generate the full source inventory
 

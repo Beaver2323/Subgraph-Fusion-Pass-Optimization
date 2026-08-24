@@ -930,6 +930,100 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
 - T-029 性能失败 candidate wheel 已备份为
   `artifacts/torch_npu_t029_alias_safe_clone_candidate.whl`；最终环境安装的是 T-031 wheel。
 
+### T-032：B2 第二批冗余规约 pass 结构与 NPU 可达性审计
+
+- 状态：`completed`。本轮覆盖
+  `fold_cast`、`fold_cat`、`fold_clone`、`fold_detach` 四条尚未形成动态结论的 custom
+  pass；先补 device-independent 结构正负例，再用 default backend、fresh process 做
+  NPU 编译与 registry 观察。本轮初始阶段不修改四个 pass 的产品实现、不重建或重装
+  torch_npu wheel。
+- 已完成只读图实验：`fold_cast` 的同 dtype `prims.convert_element_type` 从 1 降为 0，
+  fp16→fp32 转换保持 1；`fold_cat` 的同维、单用户嵌套 cat 从 2 个展平为 1 个，多用户
+  inner cat 保持 2 个；`fold_clone` 的 `clone→relu` 从 1 降为 0，而直接图输出的 clone
+  保持 1。三组变换后的 CPU GraphModule 与 eager 数值、dtype、stride 和输出/输入 alias
+  关系一致。
+- `fold_detach` 边界：`make_fx` 已在目标 pass 前把显式 `aten.detach` 规范化为
+  `aten.alias`，因此常规后端图很可能属于 `target-node-not-reached`，不能通过直接调用 pass
+  冒充 NPU 优化成功。直接返回 detach 时，eager 输出虽与输入共享 storage，却是
+  `requires_grad=False` 的不同 Tensor 对象；若错误直返输入，数值和 storage alias 都可能
+  通过，但 `requires_grad`/对象身份会变化。本轮必须额外记录这些语义字段。
+- 拟修改审计资产：在
+  `test/_inductor/test_dynamic_shape_fx_passes.py` 增加前三条 pass 的结构正负例，并为
+  `fold_detach` 增加“前序规范化/直接调用语义边界”测试；新增独立
+  `t032_b2_redundancy_compile.py`，支持多输入、tuple 输出以及 dtype/stride/storage alias/
+  object identity/`requires_grad` 合同。只有测试暴露真实产品缺陷时，才另行登记修复提案；
+  不在本条登记下直接改 pass 实现。
+- NPU 合同：每个 case/variant 使用独立 fresh process/cache，从
+  `/home/z50063656/tmp` 启动，`torch.no_grad()`、dynamic compile、default backend；目标
+  registry wrapper 若执行必须恰为 1 次。positive/negative 图计数、eager/compiled 数值和
+  完整语义合同必须同时通过。目标节点在 wrapper 前被消除时记
+  `npu-compile-target-not-reached`；lowering/codegen、精度或语义失败分别记录，不混写为
+  pass 不支持。
+- 性能边界：T-032 先关闭结构、可达性与功能，不采性能结论。只有 positive 真正到达且
+  功能通过的 pass 才进入单 pass on/off、warmup 10/runs 100、3 轮 paired benchmark；
+  报告 mean±stdev/p50/p99、首次编译、任务数和峰值显存。设备被外部进程占用时不采性能，
+  不终止其他任务。
+
+### E-116：T-032 结构与 NPU 编译结果（2026-08-24）
+
+- `test_dynamic_shape_fx_passes.py` 新增 8 个结构/语义边界测试，完整文件从 33/33
+  提升为 41/41；测试从 `/home/z50063656/tmp` 启动，使用 Benchmark 环境已安装的
+  T-031 source-built torch_npu wheel。新增测试源码尚未重建进 wheel，但调用的 pass 实现
+  与当前安装态一致。
+- 物理 NPU 1 在批次前后均无外部进程。8 个 fresh worker 全部以
+  `npu-compile-complete` 或预期的 `npu-compile-target-not-reached` 结束；所有 tensor/tuple
+  输出的数值误差为 0，dtype、stride、每个输入的 storage alias、对象身份和
+  `requires_grad` 均与 eager 一致。
+- `fold_cat` 正例真正到达：同维、单用户 nested cat 从 2 个变为 1 个；多用户负例保持
+  2 个。它是本批唯一满足单 pass 性能准入条件的对象。
+- `fold_cast` 同 dtype positive 在目标 pass 前已消失，fp16→fp32 negative 到达并保持
+  cast 1→1；`fold_clone` 的内部 clone positive 在目标 pass 前已消失，直接输出 clone
+  negative 到达并保持 1→1；两者记 partial reachability，不归因性能收益。
+- `fold_detach` 的 detach→relu positive 在目标 pass 前已消失，直接 detach 输出整图绕过
+  registry；compiled 仍正确保持 output/input 共享 storage、不同 Tensor 对象和
+  `requires_grad=False`。因此当前记 reachability-neutral，不把直接调用 pass 的潜在语义
+  风险误写成实际 NPU pipeline failure。
+- 证据位于 `results/t032_b2_redundancy_compile_20260824/`；逐条矩阵已更新但最终 verdict
+  仍为 `not-run`，其中 `fold_cat` 等待性能，另外三条等待能实际到达目标 pass 的代表图。
+
+### T-033：fold_cat 单 pass paired 性能合同
+
+- 状态：`completed-supported-beneficial`。只新增 audit worker、聚合器、结果和文档，
+  不修改 `fold_cat` 产品实现，不重建或重装 wheel。
+- workload：fp16 contiguous，三个输入分别为 `(2048,256)`、`(2048,256)`、
+  `(2048,512)`，计算 `cat([cat([a,b], dim=1), c], dim=1)`；最终输出为
+  `(2048,1024)`。该 shape 使 baseline 内层 cat 产生约 2 MiB 中间输出，便于观察减少一次
+  cat 的任务与显存效果。
+- 对照：baseline 在 registry 原位置包装并跳过 `fold_cat`，要求 cat `2→2`；candidate
+  调用原 pass，要求 cat `2→1`。两侧 wrapper 必须恰调用一次，并同时通过数值、dtype、
+  stride、storage alias、对象身份与 `requires_grad` 合同。
+- 采样：3 轮 fresh-process paired，固定顺序 `B1,C1,C2,B2,B3,C3`；每个 worker
+  warmup 10、runs 100，逐次 NPU synchronize，记录 mean±stdev/p50/p99、首次 compile、
+  allocated/reserved peak。第 1 轮两侧另采 10 active steps 的 NPU task profile。
+- 判定：candidate p50 改善严格超过 10%、p99 不回退超过 5%、峰值显存不恶化且图门禁
+  稳定，才记 `supported-beneficial`；若延迟未过门槛但 task/显存明确减少，记
+  `supported-neutral-resource-beneficial`；任何正确性或长尾失败优先判失败。所有性能结论
+  需记录 CANN 9.0.1、Ascend910B2 和完整采样参数。
+
+### E-117：T-033 fold_cat 性能关闭（2026-08-24）
+
+- 六个 fresh worker 按 `B1,C1,C2,B2,B3,C3` 全部完成；每轮 warmup 10、runs 100，
+  B1/C1 各有 warmup 1、active 10 的 NPU profile。物理 NPU 1 在批次开始和结束时均无
+  外部进程；六轮的图门禁、测量前后完整语义合同和数值正确性全部通过。
+- 三轮中位 baseline/candidate mean 为 `0.300154±0.006694 ms` /
+  `0.269550±0.005401 ms`；p50 为 `0.298020/0.267790 ms`，改善 `10.14%`；p99 为
+  `0.322720/0.289430 ms`，改善 `10.32%`。candidate p50 严格超过预登记 10% 门槛，
+  p99 无回退。
+- profiler 中 baseline 每 step 2 个 `aclnnCat_ConcatD_ConcatD`，candidate 每 step 1 个；
+  10 个 active step 的 device task duration 合计由 `95.94 μs` 降为 `56.16 μs`。compiled
+  additional allocated peak 的三轮中位数由 `6,292,480 B` 降为 `4,194,816 B`，减少
+  `2,097,664 B`；additional reserved peak 两侧均为 0。
+- 结论：`fold_cat` 在已登记的 fp16、contiguous、static shape 上为
+  `supported-beneficial`。这是已有产品 pass 的验证成功，不需要手写 Triton 或产品源码
+  修改；结论尚不外推到其他 dtype、非连续输入、dynamic width 或多层/多用户组合。
+- 证据位于 `results/t033_fold_cat_performance_20260824/`；矩阵 verdict 已从 `not-run`
+  更新为 `supported-beneficial`。
+
 ## 提案记录
 
 ### P-001：`mm_plus_mm` NPU 支持

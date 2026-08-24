@@ -4,7 +4,7 @@
 
 ## 当前结论
 
-当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。addmm 为 `supported-beneficial`；different-K mm_plus_mm 为 `conditional-supported-beneficial`；pad 三个 family 功能可承接但 p50 回退 65%–121%，replacement 已否决。P1 首批中，fold_reduce 的 alias-safe clone 又因 p99 回退 6.72% 被否决，最终保留原 sum；cat_to_view 的 alias-safe clone task 3→1、显存约减 4 MiB，延迟收益 2.29%，保留为 resource-beneficial/latency-neutral。全量记录见 `report/pass_src_20260820/`。
+当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。addmm 与 fold_cat 为 `supported-beneficial`；different-K mm_plus_mm 为 `conditional-supported-beneficial`；pad 三个 family 功能可承接但 p50 回退 65%–121%，replacement 已否决。P1 中，fold_reduce 的 alias-safe clone 又因 p99 回退 6.72% 被否决，最终保留原 sum；cat_to_view 的 alias-safe clone task 3→1、显存约减 4 MiB，延迟收益 2.29%，保留为 resource-beneficial/latency-neutral；fold_cat 直接复用现有 pass，p50/p99 改善 10.14%/10.32%、task 2→1、显存约减 2 MiB，不需要替身。全量记录见 `report/pass_src_20260820/`。
 
 源码证据表明，当前后端已经存在若干明确的 NPU 约束：
 
@@ -56,7 +56,7 @@
 
 ## 下一步执行
 
-当前主线不再重跑全量旧探针。pad family和B2首批7条已闭环，下一步按`p1_batch_design.md`为B2其余20个custom pass补最小结构正负例，再做真实NPU compile；之后进入B3 DVM/MLIR与B4 attention。T-023环境支线只在匹配headers的独立环境做无shim fresh compile smoke。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
+当前主线不再重跑全量旧探针。pad family和B2前11条已完成结构/NPU分流，fold_cat 已形成性能成功结论；下一步按`p1_batch_design.md`为B2其余16个custom pass补最小结构正负例，再做真实NPU compile；之后进入B3 DVM/MLIR与B4 attention。T-023环境支线只在匹配headers的独立环境做无shim fresh compile smoke。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
 
 ```bash
 python /home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py \
