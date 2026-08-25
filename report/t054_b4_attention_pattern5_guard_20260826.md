@@ -49,3 +49,13 @@ guard 方案本身为 `supported-beneficial`，但 `_sfdp_pattern_5_half_inferen
 
 正式 aggregate 位于
 `results/t054_b4_attention_pattern5_guard_performance_20260826/aggregate/aggregate.json`。
+
+## 中性方法记录
+
+- 第一次 build 命令在 source `env.sh` 前设置 `set -e`，因此在构建启动前退出；旧 wheel 未被
+  覆盖。调整顺序后的有效 build 才生成上述新 wheel。
+- 第一组 installed smoke 在 backend loader 导入前恢复 generator，得到 `restored=0`，实际 B/C
+  都是 guard 图，目录保留但不计性能。retry 先显式加载 backend，再恢复保存的原 generator，
+  得到 `restored=1`、counter 1 和 8 tasks 后才运行正式六轮。
+- 邻近回归第一次把 case 1 传给不支持该 choice 的代表脚本，在 argparse 阶段退出、未编译；
+  随后使用独立 pattern 1 脚本有效通过。

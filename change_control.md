@@ -2021,6 +2021,9 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
 - pattern 1/13/21 邻近 fresh regression 的 exact/总 counter 均为 1，数值通过；1/13 保持
   vendor FlashAttention，21 保持原 math fallback。最初邻近命令误把 case 1 传给不含该 choice
   的代表脚本，在 argparse 阶段退出、未编译；随后用独立 pattern 1 脚本有效通过。
+- 第一组 T-054 old-rewrite smoke 在 backend loader 导入前尝试恢复 generator，`restored=0`，实际
+  两侧都是 guard 图；该目录不计性能。测试辅助函数改为先显式加载 backend、再恢复保存的原
+  generator，新目录得到 `restored=1`、counter 1 和 8 tasks 后才进入正式六轮。
 - P-013 状态升级为 `verified-pass-disabled-performance-rejected`：guard 本身为
   `supported-beneficial` 修复，但被守护的 pattern 5 rewrite 仍是性能负优化，矩阵按最终产品
   行为记 `supported-pass-disabled-performance-rejected`。详细证据见
