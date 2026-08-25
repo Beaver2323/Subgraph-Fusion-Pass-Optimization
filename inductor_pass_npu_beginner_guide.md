@@ -73,7 +73,9 @@
 - mm_plus_mm different-K 的 T-014 至 T-024 已覆盖三 dtype、真实 transposed stride、dynamic replay、backward、正式接入、集成 paired、memory root cause和 workspace 替代搜索。T-023 的 default-off candidate在 shape-A/unaligned p50 改善 15.29%/18.04%，但比 baseline多 270,336 B peak allocated；T-024 没找到同时守住显存和 task-duration gate的配置。正式 verdict 为 <code>conditional-supported-beneficial</code>，large/dynamic/empty/arbitrary-stride/same-K继续 fallback。这说明“算子可用”和“可以默认启用”是两个不同结论。
 - P1 B2 全部 27 条已完成 85/85 FX UT 和真实 NPU 正负/alias/dtype/overflow/broadcast/IEEE/vendor 例。T-043～T-046 最后关闭复合 pass：batch embedding 修复 step/dtype/storage 后 P50 +23.50%/+43.90%、tasks 9→3/13→3，但 peak/compile 增加；legacy→v3 attention 在 910B2 P50/P99 回退 4.85%/31.72%，最终非 A5 停用；fused matmul+relu 在 B2 不适用。
 - B3 的 8 条 DVM/MLIR 记录已完成。P-012 修复 sum dtype 逃逸和 expand 的直接调用合同；NPU graph-fusion 15/15、DVM backend 32/32。aggregate DVM fusion 的 P50/P99 改善 24.20%/39.93%；K=1 helper 已被上游预分解，expand helper 在当前 partitioner 不可达；完整 MLIR 缺 `torch_mlir`。
-- 当前矩阵总计 223 条 <code>not-run</code>、2 条 <code>not-applicable</code>、4 条 <code>unsupported</code>、8 条 <code>supported-beneficial</code>、1 条 <code>conditional-supported-beneficial</code>、9 条 <code>supported-neutral</code>、2 条 <code>supported-neutral-resource-beneficial</code>、2 条 <code>supported-pass-disabled-performance-rejected</code>。
+- B4 已完成 8 个代表 attention family 的精确 matcher、数值和 codegen smoke。pattern 1 的 fp16 静态 inference P50/P99 改善 46.70%/44.26%，task 4→1、allocated peak 减少 87.31%，成为首条 B4 `supported-beneficial`。T-052 还确认 5/21/29 是 additive float-mask 安全 math fallback，无 mask pattern 30 直接走 vendor attention。
+- pattern 13 同样落到 vendor attention，但 P50 只改善 0.99%；task 3→1、首次编译改善 91.37%、allocated peak 减少 87.31%，所以是 `supported-neutral-resource-beneficial`。
+- 当前矩阵总计 221 条 <code>not-run</code>、2 条 <code>not-applicable</code>、4 条 <code>unsupported</code>、9 条 <code>supported-beneficial</code>、1 条 <code>conditional-supported-beneficial</code>、9 条 <code>supported-neutral</code>、3 条 <code>supported-neutral-resource-beneficial</code>、2 条 <code>supported-pass-disabled-performance-rejected</code>。
 
 ### 5. 从头阅读现有文档的路线
 
@@ -99,8 +101,11 @@
 18. [T-042 bool view guard 报告](report/t042_bool_view_guard_integration_20260825.md)：学习如何用最小 capability guard 保留性能正域、停用负域并完成 wheel 闭环。
 19. [T-043～T-046 composite 报告](report/t043_t046_b2_composite_passes_20260825.md)：学习 schema/meta/alias 修复、性能与内存冲突，以及为何同一 vendor kernel 的接口替换应按芯片停用。
 20. [T-047/T-048 DVM/MLIR 报告](report/t047_t048_b3_dvm_mlir_20260826.md)：学习 aggregate 与 subpass 的调用关系、直接可用但产品不可达、上游预分解，以及可用性 pass 为什么没有安全性能 baseline。
-21. [p1_batch_design.md](p1_batch_design.md)：进入下一批 attention。
-22. [change_control.md](change_control.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
+21. [T-049/T-050 attention 首轮报告](report/t049_t050_b4_attention_first_20260826.md)：学习 matcher 命中与 vendor kernel 落地的区别、等价 pattern 接管、scale divisor 合同和 paired isolate。
+22. [T-051 pattern 13 性能报告](report/t051_b4_attention_pattern13_performance_20260826.md)：学习同一 vendor kernel 为何在不同 family 可能只有资源收益、没有稳态时延收益。
+23. [T-052 float-mask 分流报告](report/t052_b4_attention_float_mask_dispatch_20260826.md)：学习 matcher 命中后的设备 capability 分支，以及为何一般 additive mask 不能直接转 bool。
+24. [p1_batch_design.md](p1_batch_design.md)：查看 attention 全批设计和剩余覆盖。
+25. [change_control.md](change_control.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
 
 根目录旧 <code>report/pass_inventory.md</code> 属于历史诊断；当前静态基线是 <code>report/pass_src_20260820/</code>，动态环境由 <code>/home/z50063656/Benchmark/env.sh</code> 启动 Conda <code>benchmark-py311</code>。T-022/T-023 还要求区分 runtime 已可用与 fresh Triton host launcher 编译合同是否完整。
 
@@ -691,7 +696,7 @@ different-K 能匹配 post-grad pattern，但原 lowering 会安全退回两个 
 
 测试侧受控capability绕过没有修改产品源码：三family正例真实变换且正确，aligned负例不误触发；但三轮配对性能和显存均失败。因此P-002已关闭为`capability-available-performance-rejected`，保持gate且不手写Triton padding。
 
-#### P1 B2/B3 已完成，当前进入 B4
+#### P1 B2/B3 已完成，B4 已关闭首条性能记录
 
 T-027 至 T-031 已把首批 7 个 B2 custom pass 推进到 33/33 个结构测试和真实 NPU
 正负例。这里最值得学习的不是“删掉了几个节点”，而是一次完整的结论纠偏：
@@ -792,6 +797,27 @@ aggregate DVM fusion 则有合法 default baseline：同一 add→mul→sum→ad
 所以 kernel 数只是资源指标之一，最终仍看端到端 gate。完整源码、修复和证据见
 [T-047/T-048 报告](report/t047_t048_b3_dvm_mlir_20260826.md)。
 
+T-049/T-050 又展示了 attention 审计的关键分层。七个代表 family 的 exact matcher 和
+`fuse_attention` counter 都为 1，但只有 pattern 1/13 最终直接执行 vendor FlashAttention；
+18/28 还带辅助 Triton，5/21/29 则被 NPU dispatcher 重新展开成 BMM + Triton。因此 counter
+证明“图重写发生了”，generated code/profiler 才证明“硬件融合落地了”。pattern 1 的 baseline
+还必须同时关闭等价 pattern 3，否则另一个 matcher 会接管同一图，使所谓 pass-off 实际仍是
+pass-on。正确隔离后，P50/P99 改善 46.70%/44.26%，task 4→1，说明已有 vendor kernel 明显优于
+数学展开，不需要手写 Triton。详见
+[T-049/T-050 报告](report/t049_t050_b4_attention_first_20260826.md)。
+
+T-051 进一步说明“落到同一个 vendor kernel”仍不能跨 family 外推性能。pattern 13 的 candidate
+也只有一个 FlashAttention task，但其 baseline 已只有 2 BMM + 1 softmax，三轮 P50 只改善
+0.99%；它的 task、首次编译和 allocated peak 却分别改善 3→1、91.37% 和 87.31%。所以项目
+把它写成 `supported-neutral-resource-beneficial`，保留真实资源价值，也不夸大 latency。
+详见 [T-051 报告](report/t051_b4_attention_pattern13_performance_20260826.md)。
+
+T-052 则把“为什么有的 pattern 又展开”落到设备源码：5/21/29 replacement 保留的是 additive
+float bias，而 torch_npu 两条 vendor SDPA 分支只接受 bool/None，随后按设计走 math fallback。
+无 mask pattern 30 在 fresh cache 中 exact 命中 vendor attention。这里不能把 float mask 粗暴转
+bool，因为加性偏置与屏蔽语义不同；详见
+[T-052 报告](report/t052_b4_attention_float_mask_dispatch_20260826.md)。
+
 这里的背景知识是：逐元素相等只验证了“这批输入的值”。一个 PyTorch 算子的完整可观察
 合同还包括 dtype、shape、stride、storage alias、对象身份、梯度以及 NaN/Inf/overflow
 边界。另一方面，FX 节点数减少也不保证 kernel 数减少，因为 scheduler 可能早已把原链
@@ -800,7 +826,7 @@ aggregate DVM fusion 则有合法 default baseline：同一 add→mul→sum→ad
 按 [p1_batch_design.md](p1_batch_design.md) 顺序：
 
 1. DVM/MLIR 的 8 条记录已完成结构层、后端层和可隔离 aggregate 性能；
-2. 下一步 attention 先跑 1、5、13、18、21、28、29 七个代表 family，再扩到 30 个；
+2. attention 八个代表 family 已完成，pattern 1/13 已完成性能，float-mask 根因已定位；下一步做 pattern 5 paired，再扩到 30 个；
 3. 只对暴露出的真实 lowering/kernel 缺口提出替代。
 
 #### 后续：只对真实缺口实施替代
@@ -867,4 +893,4 @@ torch.compile
 2. **gate 练习**：从 <code>pad_mm.py::check_device()</code> 向上追到 pattern 注册，向下追到 replacement，解释为什么 <code>force_shape_pad=True</code> 仍无效。
 3. **性能练习**：阅读 fold_cat 的六个 worker JSON，自己计算 p50/p99 三轮中位数、task 2→1 和约 2 MiB 中间张量消失的关系，并解释为什么 eager-vs-compiled 不能作为单 pass baseline。
 
-这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后继续读 [T-043～T-046 composite 报告](report/t043_t046_b2_composite_passes_20260825.md) 和 [T-047/T-048 DVM/MLIR 报告](report/t047_t048_b3_dvm_mlir_20260826.md)。当前 B2 27 条与 B3 8 条已闭环，下一步进入 B4 attention；T-023 只剩匹配环境的无 shim 复验，不要重新执行已闭环的 P0、pad、B2 或 B3 case。
+这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后继续读 [T-049/T-050 attention 报告](report/t049_t050_b4_attention_first_20260826.md)、[T-051 pattern 13 报告](report/t051_b4_attention_pattern13_performance_20260826.md) 和 [T-052 float-mask 报告](report/t052_b4_attention_float_mask_dispatch_20260826.md)。当前 B2/B3 已闭环，B4 两条性能和 dispatcher 根因已关闭；下一步做 pattern 5 paired 与剩余 family，不要重跑已闭环 case。

@@ -2,13 +2,13 @@
 
 ## 1. 当前结论
 
-截至 2026-08-26，本任务已完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、P0 gate/功能/性能闭环、P1 B2 全部 27 个 custom pass，以及 B3 全部 8 个 DVM/MLIR pass 的首轮审计。T-047/P-012 修复 DVM sum 的 dtype 逃逸和 expand 的直接调用合同，新 wheel 的 source/installed 目标测试 6/6、DVM graph-fusion 15/15、DVM backend 32/32。T-048 证明 aggregate DVM fusion 的 P50/P99 改善 24.20%/39.93%、首次编译 20.32→2.81 s、allocated peak 不增加；同时确认 K=1 子 pass 已被上游预分解、expand 在当前 partitioner 不可达，完整 MLIR backend 因缺 `torch_mlir` 阻塞。当前 Benchmark 环境安装的是 P-012 源码构建 wheel（`--no-deps`）。
+截至 2026-08-26，本任务已完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、P0 gate/功能/性能闭环、P1 B2 全部 27 个 custom pass、B3 全部 8 个 DVM/MLIR pass，并进入 B4 attention。当前 8 个代表 family 精确触发并数值通过；1/13/30 落到纯 vendor attention，18/28 为辅助 Triton + vendor，5/21/29 被 dispatcher 重新展开为 BMM + Triton。pattern 1 为 `supported-beneficial`，pattern 13 为 `supported-neutral-resource-beneficial`。T-052 已确认 5/21/29 的根因是 additive float mask 不满足 vendor bool/None gate，属于安全 math fallback。当前仍是 P-012 源码 wheel（`--no-deps`）；B4 没有产品源码修改。
 
 **用户已要求从暂停检查点继续。** 历史恢复基线为
 [PAUSED_CHECKPOINT_20260821.md](PAUSED_CHECKPOINT_20260821.md)，恢复后的 E-030 至
-E-143 已完成。正式性能结论均来自运行前后空闲设备、fresh-process paired 采样；隔离失效、审计门禁错误或环境失败的原始结果保留但不进入 verdict。B2 27 条和 B3 8 条已形成各自功能/性能、reachability 或 environment/device-gated 结论。当前 editable PyTorch / Triton launcher / torch_npu-CANN header 组合仍不能无垫片 fresh compile host launcher，所以带 Triton fresh launcher 的结论继续明确标注 development/audit-shim。
+E-146 已完成。正式性能结论均来自运行前后空闲设备、fresh-process paired 采样；隔离失效、审计门禁错误或环境失败的原始结果保留但不进入 verdict。B2 27 条和 B3 8 条已闭环，B4 已关闭两条性能记录。当前 editable PyTorch / Triton launcher / torch_npu-CANN header 组合仍不能无垫片 fresh compile host launcher，所以带 Triton fresh launcher 的结论继续明确标注 development/audit-shim。
 
-当前 251 条矩阵 verdict 为 223 条 `not-run`、2 条 `not-applicable`、4 条 `unsupported`、8 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、9 条 `supported-neutral`、2 条 `supported-neutral-resource-beneficial`、2 条 `supported-pass-disabled-performance-rejected`。新增的第八个直接 beneficial 项是 `dvm_graph_fusion`；B3 的 K=1 helper 因上游已完成同一分解而 not-applicable，expand helper 因当前 capability 列表不可达而 unsupported。旧 `/Dynamo` 194 条清单只保留作历史对照。
+当前 251 条矩阵 verdict 为 221 条 `not-run`、2 条 `not-applicable`、4 条 `unsupported`、9 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、9 条 `supported-neutral`、3 条 `supported-neutral-resource-beneficial`、2 条 `supported-pass-disabled-performance-rejected`。pattern 1 是新增的第九个直接 beneficial 项；pattern 13 是新增的第三个 resource-beneficial 项。旧 `/Dynamo` 194 条清单只保留作历史对照。
 
 此前因其他进程修改共享环境而冻结动态测试；用户确认环境稳定后已恢复。当前动态测试按用户指定固定从 `/home/z50063656/Benchmark/env.sh` 启动 Conda `benchmark-py311`，测试进程仍从 `/home/z50063656/tmp` 发起。T-022/T-023 区分了“runtime 与已缓存 kernel 可用”和“fresh host launcher 编译合同完整”两个层次：新 launcher仍需匹配 PyTorch C++20、Triton Ascend、torch_npu 与 CANN headers，不能用审计垫片冒充正式环境已修复。
 
@@ -82,7 +82,7 @@ E-143 已完成。正式性能结论均来自运行前后空闲设备、fresh-pr
 
 - `report/pass_src_20260820/pass_inventory.json`：机器可读清单。
 - `report/pass_src_20260820/pass_inventory.md`：人工审阅索引。
-- `report/pass_src_20260820/pass_evaluation_matrix.csv`：251 条逐项验收合同；当前 223 条 `not-run`，另有 28 条已形成 verdict；B2 27 条与 B3 8 条已全部形成最终、到达性或环境/device-gated 结论。
+- `report/pass_src_20260820/pass_evaluation_matrix.csv`：251 条逐项验收合同；当前 221 条 `not-run`，另有 30 条已形成 verdict；B2/B3 已闭环，B4 已形成 1 条 beneficial 和 1 条 resource-beneficial。
 - `audit_passes.py`：不导入 torch 的静态清单生成器。
 
 当前源码基线为 PyTorch `release/2.14@8e86e0a`、torch_npu `master@83cc452`、Triton Ascend `release/3.2.2@8bd9f38`。torch_npu 的 torchair/inductor-npu-ext 子模块未初始化，因此旧清单中的 5 条 npu-ext 记录没有冒充为当前源码可用项。
@@ -150,9 +150,26 @@ E-143 已完成。正式性能结论均来自运行前后空闲设备、fresh-pr
    在真实 compile 前已被上游分解，expand helper 则被当前 capability list 排除；完整 MLIR
    backend 缺 `torch_mlir`。证据见 `report/t047_t048_b3_dvm_mlir_20260826.md`。
 
+   T-049/T-050 已进入 B4。七个代表 attention family 都有 exact matcher、数值和最终 codegen
+   证据，但只有 1/13 直接落到无辅助 Triton 的 vendor FlashAttention；5/21/29 的 matcher 虽命中，
+   最终仍是 BMM + Triton 数学路径。pattern 1 正式 paired 的 P50/P99 改善 46.70%/44.26%，
+   首次编译改善 95.72%，additional allocated peak 减少 87.31%，关闭为 beneficial。scale 审计
+   证明 positional/keyword 等价且沿用 legacy divisor 合同。证据见
+   `report/t049_t050_b4_attention_first_20260826.md`。
+
+   T-051 对 pattern 13 做相同隔离。P50 仅改善 0.99%，P99 回退 0.05%，未过 latency 门槛；
+   但 task 3→1、首次编译改善 91.37%、allocated peak 减少 87.31%，因此关闭为
+   `supported-neutral-resource-beneficial`。证据见
+   `report/t051_b4_attention_pattern13_performance_20260826.md`。
+
+   T-052 证明 pattern 5/21/29 都因 float additive mask 落入 torch_npu SDPA math fallback；两个
+   vendor branch 只接受 bool/None。无 mask pattern 30 exact 命中单个 vendor attention。一般 float
+   bias 不能无损转 bool，当前不扩大 gate。证据见 `report/t052_b4_attention_float_mask_dispatch_20260826.md`。
+
 所有产品修改都已先在 `change_control.md` 登记。addmm、different-K、pad family、B2 27 条
-与 B3 8 条均已有成功、失败、中性、到达性或环境/device-gated 证据；当前主线进入 B4
-attention family，而 T-023 只保留正式无 shim 环境复验。
+与 B3 8 条均已有成功、失败、中性、到达性或环境/device-gated 证据；当前主线继续 B4，下一步
+对 pattern 5 做 pass-on/off paired，并扩展剩余 family。T-023 只保留正式无 shim
+环境复验。
 
 ### 2.3 探针框架
 
@@ -182,7 +199,7 @@ P0 语义层先完成 6 个 inference case 和 3 个 forward/backward case。inf
 
 2026-08-21 T-023 结束复核时，PyTorch 产品源码未改；Triton Ascend 产品源码未改。torch_npu commit 未变，tracked diff 包含 T-011 `lowering.py` 和 T-023 的 `__init__.py`、`config.py`、`fx_passes/post_grad.py`、`kernel/__init__.py`，另有新 kernel 与目标 UT；既有未跟踪代码生成文件不纳入功能 diff。构建过程的临时 torchgen link/workspace均已清理，ACL 子模块恢复；详细记录见 `change_control.md:E-057` 至 `E-071`。
 
-该组合已从 `/home/z50063656/tmp` 完成 CPU/NPU eager 与 Inductor smoke、P0、T-011 至 T-048 审计。当前安装的是 P-012 源码 wheel，SHA256 为 `61b0031cbb027548f60745dcf0a2484503a360347dec6bd3cc2f3f2bc823ebca`；它包含此前 B2 guard，以及 DVM sum/expand 自包含合同修复。P-011 wheel 已保存在 `artifacts/torch_npu_t046_before_t047_p012.whl`，SHA256 为 `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`；更早的审计 wheel 也仍保留。
+该组合已从 `/home/z50063656/tmp` 完成 CPU/NPU eager 与 Inductor smoke、P0、T-011 至 T-052 审计。当前安装的是 P-012 源码 wheel，SHA256 为 `61b0031cbb027548f60745dcf0a2484503a360347dec6bd3cc2f3f2bc823ebca`；它包含此前 B2 guard，以及 DVM sum/expand 自包含合同修复。P-011 wheel 已保存在 `artifacts/torch_npu_t046_before_t047_p012.whl`，SHA256 为 `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`；更早的审计 wheel 也仍保留。
 
 T-022 进一步确认“已安装 runtime 可运行”不等于“fresh Triton host launcher 可编译”：editable PyTorch 指向的源码树当前缺少 `torch/include`；wheel headers 已要求 C++20，而 Triton Ascend 3.2.0 launcher 固定 `-std=c++17`；installed torch_npu headers 还引用 CANN 9.0.1 没有声明的两个 conditional graph 类型。审计专用 compiler shim 只用于隔离 profiler/benchmark，不能进入产品或最终环境结论。正式 integration 最终需要一套 headers/编译标准匹配的 wheel 或完整源码构建环境。
 
@@ -316,7 +333,8 @@ torch.compile(
 6. bf16/fp32、真实 transposed/non-contiguous、dynamic replay、backward、正式接入设计，以及 large profiler/tile/memory 分解均已完成；large 最终为 supported-neutral-hold，中小 static cohort 保留 beneficial gate。
 7. different-K default-off template、源码 wheel、首批功能/性能/memory和 workspace 替代搜索已完成；状态为 `conditional-supported-beneficial`。不再重复 T-014 至 T-024，环境支线只需在匹配 headers 的独立环境做无 shim fresh compile smoke。
 8. pad family、P1 B2 全部 27 条和 B3 DVM/MLIR 8 条已完成结构/NPU/性能或环境分流。
-   当前进入 B4 attention；完整 MLIR 只在补齐 `torch_mlir` 的独立环境复验。已闭环 case 不重跑，
+   B4 八个代表 family 功能与 pattern 1/13 性能已完成；当前做 pattern 5 paired 并扩展剩余 family。
+   完整 MLIR 只在补齐 `torch_mlir` 的独立环境复验。已闭环 case 不重跑，
    除非环境或源码基线改变。
 
 ## 10. 当前文件导航
@@ -359,6 +377,9 @@ torch.compile(
 - `report/t041_mask_hamming_performance_20260825.md`：四个 safe-positive case 的 24/24 paired 性能与 direct/view 分流。
 - `report/t042_bool_view_guard_integration_20260825.md`：bool direct 性能 guard、新 wheel、76/76 与 3/3 NPU 安装态闭环。
 - `report/t047_t048_b3_dvm_mlir_20260826.md`：B3 8 条源码关系、P-012、47 条 NPU 测试、reachability 与 DVM aggregate paired 性能。
+- `report/t049_t050_b4_attention_first_20260826.md`：scale divisor 合同、7 个代表 matcher/codegen 与 pattern 1 paired 性能。
+- `report/t051_b4_attention_pattern13_performance_20260826.md`：三维 BMM family 的时延中性、task/编译/内存收益。
+- `report/t052_b4_attention_float_mask_dispatch_20260826.md`：float-mask math fallback 根因与无 mask pattern 30 对照。
 - `t014_mmplus_different_k_triton.py`：不同 K standalone Triton 微原型。
 - `t015_mmplus_different_k_candidate_profile.py`：candidate-only NPU profiler。
 - `t016_mmplus_different_k_candidate_benchmark.py`：fallback/candidate 三轮 paired benchmark。

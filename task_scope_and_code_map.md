@@ -178,6 +178,17 @@ helper 被当前 capability list 排除，完整 MLIR 缺 `torch_mlir`；详见
 `report/t047_t048_b3_dvm_mlir_20260826.md`。这些缺口分别属于上游冗余、partition reachability
 和环境依赖，不应直接写 Triton。
 
+T-049 至 T-052 已进入 B4 attention。源码阅读要继续区分
+`fuse_attention.py` 的 matcher replacement、NPU SDPA dispatcher 和最终 vendor/Triton
+codegen：八个代表 family 都精确触发，但 5/21/29 因 float mask 展开为 BMM + Triton；1/13/30 是
+纯 vendor path。pattern 1 的 fp16 静态 inference paired P50/P99 改善 46.70%/44.26%、
+task 4→1、allocated peak 减少 87.31%，证明现有 vendor kernel 已是正确替代，不需要重写
+Triton attention。pattern 13 的 P50 只改善 0.99%，但 task 3→1、首次编译改善 91.37%、
+allocated peak 减少 87.31%，说明同一 vendor kernel 的 latency verdict 也不能跨 family 外推。
+详见 `report/t049_t050_b4_attention_first_20260826.md` 与
+`report/t051_b4_attention_pattern13_performance_20260826.md`、
+`report/t052_b4_attention_float_mask_dispatch_20260826.md`。
+
 ## 测试和性能证据
 
 所有测试从 `/home/z50063656/tmp` 启动，不能在 torch_npu 源码目录中导入 torch。每个 backend 使用 fresh process，避免全局 patch 和 cache 串扰。
@@ -199,6 +210,7 @@ helper 被当前 capability list 排除，完整 MLIR 缺 `torch_mlir`；详见
 - `Pass/src` 与旧扫描同口径时为 189 条；少的 5 条全部来自当前未初始化的 torchair 子模块，不是主干 pass 回退。
 - 在同口径基础上补入 8 个 DVM/MLIR 图变换、53 个函数式/生成式 pattern 和 1 个 pad-mm 控制 gate，当前概念级清单为 251 条。
 - 当前矩阵中 direct case 164 条、observer 41 条、registry container 25 条、人工审查 21 条；生成变体不重复计数。
-- 环境已确认稳定并完成 P0、T-011 至 T-048；pad family、B2 27 条和 B3 8 条已完成结构/
-  NPU/性能或环境分流。当前进入 B4 attention；完整 MLIR 和 T-023 无 shim 只在匹配依赖/
+- 环境已确认稳定并完成 P0、T-011 至 T-052；pad family、B2 27 条和 B3 8 条已完成结构/
+  NPU/性能或环境分流。B4 八个代表 family 功能、pattern 1/13 性能与 float-mask 根因已完成，
+  下一步为 pattern 5 paired 与剩余 family；完整 MLIR 和 T-023 无 shim 只在匹配依赖/
   headers 的独立环境复验。

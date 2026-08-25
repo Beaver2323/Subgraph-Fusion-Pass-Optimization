@@ -1812,6 +1812,147 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
   `conditional-supported-beneficial`、9 `supported-neutral`、2
   `supported-neutral-resource-beneficial`、2 `supported-pass-disabled-performance-rejected`。
 
+### T-049：B4 attention 入口、代表 pattern 与 scale 语义审计登记
+
+- 先只新增 audit-only 脚本和结果，不改 PyTorch/torch_npu/Triton 产品源码。所有运行仍从
+  `/home/z50063656/tmp` 启动，使用当前 P-012 source-built wheel；真实 NPU 只选择采样时空闲卡。
+- 第一道 gate 审计第 31 条 `npu_fusion_attention_graph`：同一确定性 fp16 输入分别调用
+  `torch.ops.npu_graph.npu_fa` 的 positional scale、keyword scale 和底层
+  `torch_npu.npu_fusion_attention(scale=...)`，记录输出 value/dtype/shape 与三方最大误差。
+  positional/keyword 是同一 schema 的两种等价调用方式，结果必须一致；只检查 shape 不足以
+  证明 scale 合同。另记录 scale=0、默认 scale 和非 1 scale 的异常/有限性边界。
+- 源码已显示 `npu_fa(*args, **kwargs)` 只在 `len(args)>8` 时倒数 `args[8]`，keyword `scale`
+  原样下传；其 `IndexError` 分支在此前置条件下不可达。底层官方本地文档又明确 `scale` 是直接
+  乘到 QK 的系数。动态对照前只登记为高风险，不预判应该统一为倒数还是原样。
+- 第二道 gate 盘点上游 30 个 `_sfdp_pattern_*` 的注册设备、inference/training 变体、extra
+  check 与 NPU replacement 路径；先选 1、5、13、18、21、28、29 七个 family smoke。必须同时
+  观察 `fuse_attention` counter、变换后 SDPA 节点、generated NPU attention kernel 和数值，
+  才能写“触发且可用”。未触发、fallback 与设备 kernel 缺口分开记录。
+- 代表 smoke 若融合 attention 之外还生成 mask/cast/clone 等 Triton 辅助 kernel，无 shim fresh
+  launcher 可能复现 E-050/E-071 的 editable PyTorch header 缺口。原始失败必须保留并先读
+  transformed FX/output code；允许在新 cache 中复用 T-022 已登记的 audit-only C++20/CANN header
+  wrapper，只用于区分“pass/vendor kernel 不可用”和“共享环境 launcher 合同”，不得据此宣称
+  当前环境无 shim 可用或发布性能结论。
+- 只有 scale 对照确认真实语义缺陷，才另建产品提案，范围优先限制到
+  `npu_fusion_attention_graph.py` 与目标测试。功能闭环前不做 attention 性能，也不手写 Triton；
+  现有 vendor attention 已存在时，Triton 只在 vendor path 不可用且能证明端到端收益后考虑。
+
+### T-050：B4 pattern 1 单 pass paired 性能登记
+
+- T-049 已证明 `_sfdp_pattern_1_half_inference` 的 matcher/总 counter 均为 1，生成代码为
+  `npu_fusion_attention_v3`，Profiler 为 `aclnnFlashAttentionScore`，数值误差
+  `0.0009765625`。它是七个代表 family 中首个无需辅助 Triton 就在当前 wheel 完整通过的
+  无 mask 基础路径，因此先做第一个可归因 paired benchmark。
+- baseline 与 candidate 使用同一 default backend、同一 `(4,8,128,64)` fp16 静态 inference
+  图、同一输入和相同 fresh-process/cache。首次 isolate 只关闭 pattern 1 后，pattern 3 的
+  inference variant 接管同一无 dropout 图；该次数字不计入性能。因此正式 baseline 同时把
+  `pattern_name` 为 `_sfdp_pattern_1_half_inference` 或 `_sfdp_pattern_3_half_inference` 的 entry
+  `extra_check` 临时改为 false；收益只归因给 1/3 等价 inference family，不伪分到单条。
+  candidate 保持产品默认。worker 退出即回滚，不改 PyTorch/torch_npu/Triton 源码。
+- 两侧各 3 个 fresh worker，顺序 `B1,C1,C2,B2,B3,C3`，warmup 10、runs 100；记录首次
+  compile+run、mean/stdev/P50/P99、allocated/reserved peak、exact pattern/总 counter、generated
+  code、10-step profiler kernel/task。数值、shape、dtype、finite 必须先通过。
+- baseline 展开的 BMM/softmax 需要 Triton launcher，因此两侧统一使用 T-022 audit-only
+  C++20/CANN header wrapper与 installed PyTorch headers，避免把环境差异混进 A/B；性能结论仅属于
+  当前开发态合同，正式无 shim 环境仍单列。beneficial gate 为 P50 改善大于 10%、P99 不回退
+  超过 5%、additional allocated peak 不增加；否则按 neutral/resource/rejected 分层。
+
+### E-144：T-049 attention scale 与七个代表 family 功能证据（2026-08-26）
+
+- `npu_fa` 的 positional/keyword scale 由 dispatcher 按 schema 规范化，0.5/1/2 三组输出完全
+  相同。scale 0.5/2 与底层 vendor 同 scale 最大误差 `0.1217041015625`，与 vendor inverse-scale
+  误差为 0；结合历史 pattern 的 `.div(inv_scale_factor)`，确认 wrapper 参数沿用 legacy divisor
+  合同，不是 keyword 逃逸 bug。scale=0 两种调用均抛 `ZeroDivisionError`，暂记无效除数边界。
+- pattern 1/5/13/18/21/28/29 七个 family 的目标 matcher 与 `fuse_attention` counter 均为 1，
+  value/structure 合同通过，最大绝对误差依次为 0.0009765625、0.0009765625、0.002197265625、
+  0.001953125、0.001953125、0.001220703125、0.0009765625。
+- pattern 1/13 最终为 vendor FlashAttention；18/28 为辅助 Triton + vendor attention；5/21/29
+  被 NPU dispatcher 重新展开为 BMM + Triton。matcher 命中不能冒充 vendor kernel 落地，后六条
+  未跑 paired 性能前保持 `not-run` verdict，只回填功能/codegen 字段。
+- pattern 5/18/21/28/29 无 shim 初跑在辅助 Triton launcher 因 editable PyTorch include view 缺
+  `ATen/ATen.h` 失败；失败产物保留。T-022 audit-only wrapper 有效重跑用于归因，不等于正式环境
+  原生可用。第 31 条 wrapper 只完成 scale forward，backward/dynamic/performance 仍未关闭。
+
+### E-145：T-050 pattern 1 等价 inference family 性能闭环（2026-08-26）
+
+- 首次只关闭 pattern 1 后由 pattern 3 接管相同图，该 smoke 不计入性能。正式 baseline 同时关闭
+  两个等价 inference entry；三轮中 pattern/fusion counter 均为 0、生成 2 BMM + 2 Triton，
+  candidate counter 均为 1、生成单个 `aclnnFlashAttentionScore`，A/B 隔离成立。
+- 六个 fresh worker 按 `B1,C1,C2,B2,B3,C3`、warmup 10/runs 100 全部正确，最大绝对误差
+  `0.0009765625`。三轮中位 P50 `0.581895→0.310165 ms`（改善 46.70%），P99
+  `0.601770→0.335440 ms`（改善 44.26%），mean 改善 46.41%，首次 compile+run 改善 95.72%。
+- additional allocated peak `204,477,440→25,955,328 B`（减少 87.31%），reserved peak
+  `224,395,264→27,262,976 B`（减少 87.85%），device task/step 4→1。预登记三门全部通过。
+- 最终只把已直接覆盖的 `_sfdp_pattern_1` fp16 静态 inference 记为 `supported-beneficial`；关闭
+  pattern 3 是防止等价 matcher 接管的隔离手段，不能据此关闭其 training/dropout 覆盖。B4 首条
+  最终 verdict 使总矩阵变为 222 `not-run`、9 `supported-beneficial`，其余分类不变。证据见
+  `report/t049_t050_b4_attention_first_20260826.md` 与 T-050 aggregate JSON。
+
+### T-051：B4 pattern 13 三维 BMM attention 配对性能登记
+
+- 只新增 audit-only worker/aggregate 和结果，不改 PyTorch/torch_npu/Triton 产品源码。pattern 13
+  是 inference-only 三维 BMM family；T-049 已在 `(4,8,16)` fp16 上 exact counter=1、数值通过，
+  且无辅助 Triton 的 candidate 最终为 `aclnnFlashAttentionScore`。
+- 性能 cohort 使用 `(32,128,64)` fp16 Q/K/V，使三维首轴对应 4×8 个 attention head，与 T-050
+  的计算规模可比较但仍只归因 pattern 13。baseline 仅把
+  `_sfdp_pattern_13_half_inference` entry 的 `extra_check` 临时置 false；先做短 smoke，必须满足
+  baseline fuse/target counter=0 且生成 BMM+Triton、candidate=1 且生成 vendor attention。若其他
+  pattern 接管，则仿照 T-050 扩大到已证实的等价 entry，并在正式测试前修订登记。
+- 隔离通过后执行 baseline/candidate 各 3 个 fresh worker，顺序 `B1,C1,C2,B2,B3,C3`，warmup
+  10、runs 100。两侧统一使用 T-022 audit-only launcher/header wrapper，因为 pass-off softmax
+  会生成 Triton；结果只属于 development/audit-shim 合同。
+- 正确性先检查 value/dtype/shape/finite，fp16 容差 `atol=rtol=0.02`；再记录 exact/总 counter、
+  generated code、10-step task profile、首次 compile+run、P50/P99/mean/stdev 和 allocated/reserved
+  peak。beneficial gate 仍为 P50 改善 >10%、P99 回退不超过 5%、allocated peak 不增加。
+
+### E-146：T-051 pattern 13 资源有益/时延中性闭环（2026-08-26）
+
+- 隔离 smoke 与正式六轮都确认 baseline 只关闭 1 个 pattern 13 entry，exact/总 fusion counter
+  为 0、生成 2 BMM + 1 Triton softmax；candidate counter 为 1、生成单个
+  `aclnnFlashAttentionScore`。没有等价 matcher 接管。
+- 六轮 value/dtype/shape/finite 合同通过；baseline/candidate 最大绝对误差分别为
+  `0.001953125/0.01318359375`，均满足 fp16 `atol=rtol=0.02`。NPU1 测试前后无进程。
+- 三轮中位 P50 `0.335175→0.331850 ms`（改善 0.99%），P99
+  `0.363240→0.363420 ms`（回退 0.05%），mean 改善 1.37%；未过 10% latency 主门槛。
+- 首次 compile+run `34,134.41→2,944.29 ms`（改善 91.37%），additional allocated peak
+  `204,472,832→25,955,328 B`（减少 87.31%），reserved peak 减少 87.85%，task/step 3→1。
+  最终记 `supported-neutral-resource-beneficial`，不把资源收益冒充 latency beneficial。
+- 第一次正式批次启动把 `set -e` 放在共享 `env.sh` 之前而立即退出，未创建 worker/占用 NPU；
+  作为中性命令错误保留说明，不计产品失败。矩阵变为 221 `not-run`、3
+  `supported-neutral-resource-beneficial`，其余分类不变。详细证据见
+  `report/t051_b4_attention_pattern13_performance_20260826.md`。
+
+### T-052：B4 float-mask re-expansion 根因与 pattern 30 对照登记
+
+- 先只读 PyTorch replacement、torch_npu op-plugin SDPA dispatcher 和 T-049 generated code，不改
+  产品源码。目标是解释 pattern 5/21/29 为何 exact matcher=1 后仍展开为 BMM + Triton。
+- 源码 gate 必须区分无 mask/bool mask 与任意 additive float mask。若 vendor branch 明确只接受
+  bool/None，而三个 replacement 都把 additive mask 转成 query dtype，则 math fallback 是能力域
+  选择，不得误报为 matcher 或 lowering 缺失，也不能把一般 float bias 无条件转 bool。
+- 增加 audit-only pattern 30 无 mask `_safe_softmax` 对照；其结构与 pattern 29 接近但没有 mask。
+  在 NPU1 fresh process 要求 exact/总 counter=1、value/dtype/shape 通过，并观察最终是 vendor、
+  vendor+辅助 kernel 还是 math。若无 mask 能走 vendor，则进一步固定 float mask 是主分流因素。
+- 本任务只形成 capability/root-cause 证据。任意产品提案必须先证明 vendor 的 `pse` 或其他参数
+  能严格表达一般 additive mask，并完成正负/广播/Inf 精度与 paired 性能；否则保持安全 math
+  fallback，不以手写完整 attention 作为默认替代。
+
+### E-147：T-052 float-mask dispatcher 根因闭环（2026-08-26）
+
+- PyTorch pattern 5/21/29 replacement 都把 additive mask 转成 query 浮点 dtype；torch_npu
+  `ScaledDotProductAttentionKernelNpuOpApi.cpp` 的 FlashAttention 与 FusedInferAttention 两条
+  vendor 分支均只接受 bool mask 或 None，不满足后明确调用
+  `_scaled_dot_product_attention_math`。T-049 的 BMM+Triton 是安全 capability fallback。
+- 一般 float bias 不能无条件转 bool：有限加性偏置、0/1、`-inf` 和连续 position bias 的语义
+  不同。当前没有证据证明 vendor `pse` 可完整承接，因此不提出产品 gate 修改或完整 Triton
+  attention 替身。
+- pattern 30 无 mask fresh-cache 对照 exact/总 counter=1，最大误差 `0.0009765625`，generated
+  code/profiler 为单个 `npu_fusion_attention_v3`/`aclnnFlashAttentionScore`，进一步固定 mask
+  dtype 是 29/30 代表输入的主分流因素。矩阵只回填 pattern 30 功能/codegen，性能未测且 verdict
+  仍 `not-run`。
+- pattern 30 第一次未设 fresh cache、第二次只开 debug 仍命中已有 cache，counter 证据无效；
+  第三次独立 Inductor/Triton cache 才纳入结论。前两次作为中性审计方法记录保留。详细报告见
+  `report/t052_b4_attention_float_mask_dispatch_20260826.md`。
+
 ## 提案记录
 
 ### P-012：DVM sum/expand 子 pass 自包含能力门禁

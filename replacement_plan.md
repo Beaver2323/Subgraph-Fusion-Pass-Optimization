@@ -4,7 +4,7 @@
 
 ## 当前结论
 
-当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。P1 B2 的 27 条和 B3 DVM/MLIR 的 8 条已关闭。B3 aggregate DVM fusion 的 P50/P99 改善 24.20%/39.93%、首次编译 20.32→2.81 s、显存不增；sum dtype 与 expand 直接合同已由 P-012 修复。K=1 已由上游预分解，expand 在当前 partition capability 不可达，完整 MLIR 缺 `torch_mlir`。这里仍优先修正 FX pass 的语义、reachability 与收益域，不用 Triton 掩盖语义错误、环境依赖或 capability-list 问题。全量记录见 `report/pass_src_20260820/`。
+当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。P1 B2/B3 已关闭；B4 八个代表 attention family 功能通过。pattern 1 latency-beneficial，pattern 13 resource-beneficial；5/21/29 因 additive float mask 不满足 vendor bool/None gate而安全 math fallback，无 mask pattern 30 走 vendor。这里不用 Triton 掩盖语义错误、环境依赖或 capability 分流。全量记录见 `report/pass_src_20260820/`。
 
 源码证据表明，当前后端已经存在若干明确的 NPU 约束：
 
@@ -28,7 +28,7 @@
 | DVM/MLIR wrapper | DVM backend 无 `torch_mlir` 仍 32/32；完整 MLIR loader 被依赖阻塞 | DVM 结论保留；MLIR 在独立匹配环境补测，不能用 Triton 替代缺失 Python/MLIR 依赖 |
 | NPU custom FX pass | `ascend_custom_passes` 注册 27 个 pass，主要是 fold/view/cat/reduce/attention/embedding 等图重写 | 先做图正确性和 kernel 数量检查；这些 pass 通常不需要手写 Triton |
 | `inductor-npu-ext` | 通过 `pre_grad_custom_pass` / `post_grad_custom_pre_pass` 注册 legacy scatter、pad-slice、batch-embedding pass | 作为 AscendC 后端独立测量，不能与 Triton backend 的结果混用 |
-| attention | NPU 有 `fusion_attention_v3_pass` 和 `npu_fusion_attention_graph`；legacy→v3 在 B2 已性能拒绝 | 非 A5 保留 legacy，A5 再验证 v3；手写 Triton 只用于被证明的 kernel 能力缺口 |
+| attention | B2 legacy→v3 在 910B2 已性能拒绝；B4 pattern 1 latency-beneficial、pattern 13 resource-beneficial；5/21/29 matcher 后又展开为数学路径 | 非 A5 保留 legacy；1/13 继续 vendor；先定位 5/21/29 的 dispatcher capability，再判断扩大 vendor gate或优化辅助 kernel，当前不手写完整 attention |
 
 ## Pass 分层与替代策略
 
@@ -67,7 +67,7 @@
 
 ## 下一步执行
 
-当前主线不再重跑全量旧探针。pad family、B2 27 条和 B3 8 条已完成结构/NPU/性能或环境分流。下一步按 `p1_batch_design.md` 进入 B4 attention。完整 MLIR 与 T-023 环境支线只在匹配依赖/headers 的独立环境补测。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
+当前主线不再重跑全量旧探针。pad family、B2/B3 已完成，B4 八个代表 family 功能、pattern 1/13 性能与 float-mask 根因已关闭。下一步按 `p1_batch_design.md` 做 pattern 5 paired，再扩到剩余 attention。完整 MLIR 与 T-023 环境支线只在匹配依赖/headers 的独立环境补测。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
 
 ```bash
 python /home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py \

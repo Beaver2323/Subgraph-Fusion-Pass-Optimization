@@ -20,6 +20,8 @@
 | bool_cast_mul_to_where_pass | view-chain p50/p99 +36.30%/+39.90%；direct 性能负域已由 T-042 guard 停用 | `supported-beneficial`（exact-zero 整数/布尔 + 非空单用户 view chain） | `report/t041_mask_hamming_performance_20260825.md`、`report/t042_bool_view_guard_integration_20260825.md` |
 | batch_embedding_fusion_pass | 修复 step/dtype/alias；default/cat P50 +23.50%/+43.90%，tasks 9→3/13→3，但 peak/compile 增加 | `supported-neutral-resource-beneficial` | `report/t043_t046_b2_composite_passes_20260825.md` |
 | dvm_graph_fusion | 15/15 NPU；default→DVM P50/P99 +24.20%/+39.93%，首次编译 20.32→2.81 s，allocated peak 相同 | `supported-beneficial` | `report/t047_t048_b3_dvm_mlir_20260826.md` |
+| `_sfdp_pattern_1` | fp16 静态 inference 精确命中 vendor attention；P50/P99 +46.70%/+44.26%，task 4→1，allocated peak -87.31% | `supported-beneficial` | `report/t049_t050_b4_attention_first_20260826.md` |
+| `_sfdp_pattern_13` | 三维 BMM inference 落到 vendor attention；P50 仅 +0.99%，但 task 3→1、首次编译 +91.37%、allocated peak -87.31% | `supported-neutral-resource-beneficial` | `report/t051_b4_attention_pattern13_performance_20260826.md` |
 
 ## 已否决或失败的尝试
 
@@ -42,6 +44,7 @@
 | fusion_attention_v3_pass（910B2） | 与 legacy 同为单个 FlashAttentionScore task、显存相同，但 P50/P99 回退 4.85%/31.72% | T-046 在非 A5 停用升级并保持 legacy；不写重复 Triton attention |
 | DVM sum pass-off 冒烟 | 人工跳过 fp32 pre/post-cast 后生成 bare fp16 DVM sum，首次 native 执行 segfault | 只作为“sum pass 对可用性必需”的证据；不可计算 paired speedup |
 | expand_to_reshape aggregate | direct helper 已修复，但 capability 列表排除 expand/reshape/view，组合图都留在 custom op 外 | 当前 verdict `unsupported`；先评估 partition capability，不写 Triton |
+| attention 初版只关闭 pattern 1 | 等价 `_sfdp_pattern_3_half_inference` 接管同一图，baseline 实际仍融合 | 该 smoke 性能数字作废；正式 baseline 同时关闭 1/3 |
 
 ## 中性、未归因与环境类尝试
 
@@ -69,6 +72,11 @@
 | DVM K=1 子 pass isolate | 进入 torch_npu helper 前已是 `cast→mul→cast`，跳过 helper 后图不变 | direct FX 正确，但当前 compile 增量为零，记 `not-applicable/upstream-predecomposed` |
 | DVM backend 首次 32-case 启动 | autoload=0 且测试未显式 import torch_npu，全部在设备注册前失败 | 中性启动错误；autoload retry 32/32 |
 | 完整 MLIR backend | `_load_mlir_backend()` 显式要求 `torch_mlir`，当前环境未安装 | environment-blocked；DVM 自有 codegen 不受阻且 32/32 |
+| attention 5/18/21/28/29 无 shim 初跑 | 辅助 Triton fresh launcher 在 editable PyTorch include view 缺 `ATen/ATen.h` | 环境失败保留；audit-only shim 重跑只用于归因 |
+| attention pattern 5/21/29 | exact matcher 与数值通过，但 dispatcher 最终重新展开为 BMM + Triton | 功能通过、性能未测；不能把 matcher counter 冒充 vendor fusion |
+| `npu_fa` scale 怀疑 | positional/keyword 动态结果完全相同；wrapper 与 vendor inverse-scale 误差为 0 | 确认 legacy divisor 合同，不作产品修复；backward/dynamic 仍待测 |
+| pattern 5/21/29 re-expansion | replacement 保留 additive float mask；vendor SDPA 只接受 bool/None，因而走 math | 安全 capability fallback，不误报 lowering 缺失；一般 float bias 不转 bool |
+| pattern 30 前两次对照 | 未设置 fresh cache或只打开 debug，generated code可见但 counter 未重新执行 | 方法中性记录；独立 cache 第三次 exact counter=1 并落到 vendor attention |
 
 ## 当前安装态
 
@@ -81,5 +89,6 @@
 
 ## 下一步
 
-B2 27 条和 B3 8 条已闭环。下一步执行 B4 attention family；完整 MLIR 与 T-023 无 shim
-复验作为独立环境支线，不阻塞主线。
+B2 27 条和 B3 8 条已闭环，B4 八个代表 family 功能、pattern 1/13 性能和 float-mask 根因已完成。
+下一步做 pattern 5 paired，再扩展剩余 attention family；完整 MLIR 与 T-023 无 shim 复验作为独立环境
+支线，不阻塞主线。

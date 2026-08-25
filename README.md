@@ -72,6 +72,17 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   `supported-beneficial`. K=1 is already decomposed upstream; expand remains
   unreachable through the current partition capability; full MLIR remains
   blocked by the missing `torch_mlir` dependency.
+  T-049/T-052 verify exact matcher/numerics/codegen for eight representative
+  B4 attention families. Pattern 1/13 reach vendor attention directly, 18/28
+  retain auxiliary Triton kernels, and 5/21/29 re-expand to BMM + Triton.
+  T-050 closes pattern 1's static fp16 inference scope as
+  `supported-beneficial`: P50/P99 improve 46.70%/44.26%, tasks fall 4→1, and
+  additional allocated peak falls 87.31%. No product source changed in B4.
+  T-051 then closes pattern 13 as `supported-neutral-resource-beneficial`:
+  P50 improves only 0.99%, while tasks fall 3→1, first compile improves
+  91.37%, and additional allocated peak falls 87.31%.
+  T-052 traces 5/21/29 re-expansion to the vendor bool/None mask gate and
+  confirms no-mask pattern 30 reaches one vendor attention task.
 
 - Do not modify PyTorch, torch_npu, or Triton functional source before the
   exact proposal, rollback boundary, and verification plan are recorded in
@@ -208,6 +219,13 @@ performance rejection gate—is in the
 The B3 DVM/MLIR source map, P-012 fix, 47 NPU tests, reachability findings,
 and paired aggregate performance are in the
 [T-047/T-048 report](report/t047_t048_b3_dvm_mlir_20260826.md).
+The B4 scale contract, seven representative pattern/codegen smokes, invalid
+isolation attempts, and first attention paired result are in the
+[T-049/T-050 report](report/t049_t050_b4_attention_first_20260826.md).
+Pattern 13's paired latency/resource split is in the
+[T-051 report](report/t051_b4_attention_pattern13_performance_20260826.md).
+The float-mask dispatcher root cause and pattern-30 control are in the
+[T-052 report](report/t052_b4_attention_float_mask_dispatch_20260826.md).
 
 ## 1. Generate the full source inventory
 

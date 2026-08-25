@@ -20,6 +20,15 @@ T-047/T-048 又完成 B3 全部 8 条记录的结构、真实 NPU 和可归因�
 限制 sum 的 fp32 pre/post cast 到 fp16/bf16 安全域，补齐 `expand_to_reshape` 的返回、lint 与
 recompile 合同。DVM 聚合图在当前 910B2 上形成 `supported-beneficial` 结论。
 
+T-049/T-050 已完成 B4 首轮：7 个代表 family 精确触发并数值通过；pattern 1/13 落到纯
+vendor attention，18/28 带辅助 Triton，5/21/29 重新展开为数学路径。pattern 1 的 fp16 静态
+inference paired P50/P99 改善 46.70%/44.26%，关闭为 `supported-beneficial`。下一步从 pattern
+13 paired 继续，不重复 pattern 1。T-051 随后证明 pattern 13 的 P50 只改善 0.99%，但 task
+3→1、首次编译改善 91.37%、allocated peak 减少 87.31%，因此关闭为
+`supported-neutral-resource-beneficial`；下一步转向 5/21/29 dispatcher re-expansion。
+T-052 又补齐无 mask pattern 30，使代表 family 增至 8 个；源码确认 5/21/29 的 additive float
+mask 被 vendor bool/None gate拒绝后安全走 math，而 pattern 30 exact 命中 vendor attention。
+
 ## B2：27 个 NPU custom pass
 
 注册入口位于 `torch_npu/_inductor/fx_passes/ascend_custom_passes/`。按语义拆成四组：
@@ -196,9 +205,9 @@ partition 可达性而非缺一个 elementwise kernel，现阶段强行补 Trito
 
 PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern 测试，可以复用函数和期望 pattern 名，但其原始设备/后端结论不能直接搬成 NPU 结论。
 
-第 31 条 `npu_fusion_attention_graph` 不是与 30 个 generated pattern 等价的 pattern handler，而是 `torch_npu.npu_fusion_attention_graph` 的 autograd/custom-op 包装入口，当前应保持 `manual-review`。现有 `test/_inductor/test_npu_fusion_attention_graph.py` 主要检查 shape/meta 和直接 op 调用，没有证明 Inductor pattern 触发与生成代码。
+第 31 条 `npu_fusion_attention_graph` 不是与 30 个 generated pattern 等价的 pattern handler，而是 `torch_npu.npu_fusion_attention_graph` 的 autograd/custom-op 包装入口，继续保持 `manual-review`。T-049 已补 positional/keyword scale 数值对照：dispatcher 会按 schema 规范化两种调用，输出完全相同；wrapper 与 vendor inverse-scale 精确一致，确认参数沿用历史 divisor 合同，不是 keyword 逃逸。scale=0 两种调用都抛 `ZeroDivisionError`。forward 合同已明确，但 backward、dynamic 和性能仍待验证。
 
-静态审查还发现一个必须补精度断言的分支：`npu_fa` 只在 scale 作为第 9 个位置参数时执行倒数转换，关键字 `scale=` 路径没有同样处理；现有 `test_npu_fa_forward_scale_handling` 只检查 shape。因此先建立 positional/keyword 同语义数值对照，再判断是接口约定还是实现缺口，当前不直接修改。
+T-049/T-052 代表 smoke 已覆盖 1、5、13、18、21、28、29、30，八个 exact pattern counter 与总 counter 均为 1、数值通过。1/13/30 直接落到 vendor attention，18/28 是辅助 Triton + vendor，5/21/29 因 float mask 展开为 BMM + Triton。T-050 关闭 pattern 1 为 beneficial；T-051 的 pattern 13 为 resource-beneficial。详细证据见三份 B4 报告。
 
 ## P1 动态验收顺序
 
@@ -206,8 +215,8 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
 
 1. 重新确认运行时源码 commit/导入路径与 `Pass/src` 一致。
 2. B2/B3 的结构、功能、installed wheel 和 paired performance 已闭环，不重复消耗设备时间。
-3. B4 先选 pattern 1、5、13、18、21、28、29 做七个代表 family smoke，再扩到全部 30。
-4. 第 31 条 NPU wrapper 先做 positional/keyword scale 数值对照，再判断是否需要源码修改。
+3. B4 八个代表 family smoke、pattern 1/13 paired 和 float-mask 根因已完成；下一步做 pattern 5 paired，再扩到全部 30。
+4. 第 31 条 NPU wrapper 的 forward scale 合同已明确，下一步补 backward/dynamic；当前不修改源码。
 5. 只有功能、generated code 和 fallback 三项明确后，才做 pass-on/pass-off paired benchmark。
 6. 任一失败先分类为未触发、变换错误、lowering/codegen 缺口、精度、环境或性能，不直接跳到手写 Triton。
 
@@ -226,6 +235,6 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
   compression 关闭为 neutral。T-041/T-042 又把 masked-add/Hamming 关闭为 neutral，
   bool-cast 的 view-chain 关闭为 beneficial 并停用 direct 性能负域；另五条功能通过，多条
   前序消除/规范化 case 保持到达性或可归因性中性。
-- PRE attention 重复执行已修；剩余 attention 静态风险是 `npu_fa` scale positional/keyword 路径不一致，应在 B4 先做数值对照。
-- 当前下一步是 B4 的 31 条 attention 记录。当前 P-012 已修改并重建 torch_npu wheel；
+- PRE attention 重复执行已修；`npu_fa` positional/keyword 已由动态证据确认等价，scale 名称实际是 legacy divisor 合同。
+- 当前下一步是 pattern 5 paired 与 B4 剩余 attention 覆盖。当前 P-012 已修改并重建 torch_npu wheel；
   PyTorch 与 Triton Ascend 产品源码未改。

@@ -2,7 +2,7 @@
 
 - 输入清单：`/home/z50063656/Pass/inductor_pass_npu_audit/report/pass_src_20260820/pass_inventory.json`
 - 记录数：**251**
-- 当前阶段：评估合同已生成；P0、P1 B2 全部 27 条和 B3 DVM/MLIR 全部 8 条已有动态、直接结构或明确 environment/device-gated 证据。B3 中 `dvm_graph_fusion` 相对 default 的 P50/P99 改善 `24.20%/39.93%`、首次编译 `20.32→2.81 s`、allocated peak 相同，记 `supported-beneficial`；5 个 helper/wrapper 记 neutral；K=1 子 pass 因上游已预先变成 mul 而 not-applicable；`expand_to_reshape` 虽修复直接合同，但当前 partition capability 排除其 target，记 unsupported。完整 MLIR backend 仍缺 `torch_mlir`，DVM backend 则已 32/32。T-043～T-046 的 batch resource-benefit、attention B2 性能拒绝和此前 P0/B2 结论保持。矩阵总计 223 条 `not-run`、2 条 `not-applicable`、4 条 `unsupported`、8 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、9 条 `supported-neutral`、2 条 `supported-neutral-resource-beneficial`、2 条 `supported-pass-disabled-performance-rejected`。
+- 当前阶段：评估合同已生成；P0、P1 B2 全部 27 条和 B3 DVM/MLIR 全部 8 条已有动态、直接结构或明确 environment/device-gated 证据。B4 已完成 8 个代表 attention family 的精确 matcher/数值/codegen smoke。pattern 1 记 `supported-beneficial`；pattern 13 记 `supported-neutral-resource-beneficial`。T-052 又确认 5/21/29 因 additive float mask 不满足 vendor bool/None gate而安全 math fallback，无 mask pattern 30 则 exact 命中 vendor attention。其余只回填功能证据，未用 smoke 冒充性能 verdict。矩阵总计 221 条 `not-run`、2 条 `not-applicable`、4 条 `unsupported`、9 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、9 条 `supported-neutral`、3 条 `supported-neutral-resource-beneficial`、2 条 `supported-pass-disabled-performance-rejected`。
 
 ## 测试单元
 
