@@ -3,7 +3,7 @@
 This directory is the audit, evidence, and report area for the local PyTorch
 and torch_npu source trees. The project working directory is
 `/home/z50063656/Pass`. T-011, T-023, T-029/T-031, T-036, T-038, T-040, T-042,
-T-043, and T-046 contain pre-registered torch_npu source
+T-043, T-046, and T-047/P-012 contain pre-registered torch_npu source
 changes; all other audit prototypes stay in this directory, and every product
 change is governed by `change_control.md`.
 
@@ -64,6 +64,14 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   Legacy→v3 attention on 910B2 regresses P50/P99 by 4.85%/31.72% with the same
   single vendor kernel; the final wheel disables that replacement on non-A5 devices.
   Fused matmul+relu remains A5-only and is correctly not applicable on the available 910B2.
+  T-047/T-048 now close the eight B3 DVM/MLIR records. P-012 makes the DVM
+  sum/expand subpasses self-contained and the rebuilt wheel passes 6/6 source
+  and installed contract tests, 15/15 DVM graph-fusion NPU tests, and 32/32
+  DVM-backend tests. Aggregate DVM fusion improves P50/P99 by 24.20%/39.93%
+  with equal allocated peak and much shorter first compile, so it is
+  `supported-beneficial`. K=1 is already decomposed upstream; expand remains
+  unreachable through the current partition capability; full MLIR remains
+  blocked by the missing `torch_mlir` dependency.
 
 - Do not modify PyTorch, torch_npu, or Triton functional source before the
   exact proposal, rollback boundary, and verification plan are recorded in
@@ -84,7 +92,11 @@ this exact mixed header contract without an audit-only shim; product validation
 must not rely on that shim. The installed T-046 source wheel SHA256 is
 `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`;
 the previous P-010 wheel remains preserved as
-`artifacts/torch_npu_t043_before_t046_attention_b2_gate.whl` for rollback.
+`artifacts/torch_npu_t043_before_t046_attention_b2_gate.whl` for rollback. The
+current P-012 wheel SHA256 is
+`61b0031cbb027548f60745dcf0a2484503a360347dec6bd3cc2f3f2bc823ebca`;
+the P-011 rollback wheel is
+`artifacts/torch_npu_t046_before_t047_p012.whl`.
 
 Read [current_status_and_background.md](current_status_and_background.md) before
 choosing a wheel or source build and before restarting any probe.
@@ -193,6 +205,9 @@ bool view-chain capability/wheel closure is in the
 batch-embedding, fused-matmul-relu, and attention-v3 cohort—including the B2
 performance rejection gate—is in the
 [T-043–T-046 report](report/t043_t046_b2_composite_passes_20260825.md).
+The B3 DVM/MLIR source map, P-012 fix, 47 NPU tests, reachability findings,
+and paired aggregate performance are in the
+[T-047/T-048 report](report/t047_t048_b3_dvm_mlir_20260826.md).
 
 ## 1. Generate the full source inventory
 

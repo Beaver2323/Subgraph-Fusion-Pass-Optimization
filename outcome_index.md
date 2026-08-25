@@ -1,6 +1,6 @@
 # 成果、失败与中性尝试索引
 
-> 更新到 2026-08-25。这里汇总已执行的动态工作，不代表 251 条 pass 全部完成；逐条状态
+> 更新到 2026-08-26。这里汇总已执行的动态工作，不代表 251 条 pass 全部完成；逐条状态
 > 仍以 `report/pass_src_20260820/pass_evaluation_matrix.csv` 为准。
 
 ## 已形成正向成果
@@ -19,6 +19,7 @@
 | fold_iota_arithmetic_pass | 保留安全 iota 降宽并停用 Inf/overflow 不安全 cmp-sub；p50/p99 +55.78%/+54.51% | `supported-beneficial`（development/audit-shim） | `report/t038_dtype_index_mask_semantic_fix_20260825.md`、`report/t039_dtype_index_mask_performance_20260825.md` |
 | bool_cast_mul_to_where_pass | view-chain p50/p99 +36.30%/+39.90%；direct 性能负域已由 T-042 guard 停用 | `supported-beneficial`（exact-zero 整数/布尔 + 非空单用户 view chain） | `report/t041_mask_hamming_performance_20260825.md`、`report/t042_bool_view_guard_integration_20260825.md` |
 | batch_embedding_fusion_pass | 修复 step/dtype/alias；default/cat P50 +23.50%/+43.90%，tasks 9→3/13→3，但 peak/compile 增加 | `supported-neutral-resource-beneficial` | `report/t043_t046_b2_composite_passes_20260825.md` |
+| dvm_graph_fusion | 15/15 NPU；default→DVM P50/P99 +24.20%/+39.93%，首次编译 20.32→2.81 s，allocated peak 相同 | `supported-beneficial` | `report/t047_t048_b3_dvm_mlir_20260826.md` |
 
 ## 已否决或失败的尝试
 
@@ -39,6 +40,8 @@
 | bool cast-mul 浮点无 guard | false 位置的 `0*Inf/NaN` 是 NaN，where false 分支却是常量零 | 仅 exact-zero 整数/布尔 dtype 改写；浮点保持原图 |
 | bool cast-mul direct rewrite | p50/p99 回退 0.69%/19.02%，active10 device duration 62.56→73.86 μs | T-042 要求非空 view chain；direct 保持原图 |
 | fusion_attention_v3_pass（910B2） | 与 legacy 同为单个 FlashAttentionScore task、显存相同，但 P50/P99 回退 4.85%/31.72% | T-046 在非 A5 停用升级并保持 legacy；不写重复 Triton attention |
+| DVM sum pass-off 冒烟 | 人工跳过 fp32 pre/post-cast 后生成 bare fp16 DVM sum，首次 native 执行 segfault | 只作为“sum pass 对可用性必需”的证据；不可计算 paired speedup |
+| expand_to_reshape aggregate | direct helper 已修复，但 capability 列表排除 expand/reshape/view，组合图都留在 custom op 外 | 当前 verdict `unsupported`；先评估 partition capability，不写 Triton |
 
 ## 中性、未归因与环境类尝试
 
@@ -63,18 +66,20 @@
 | T-036 首个修复后 cat alias worker | `CPATH` 误指 editable 源码，缺少 `ATen/ATen.h` | 环境命令错误；改用 wheel headers 后全过，不计产品失败 |
 | T-040 首个 NPU worker | 同样误用了 editable PyTorch include view，缺少 `ATen/ATen.h` | 失败原样保留；改用 site-packages wheel headers 后 9/9 通过 |
 | T-040 installed 测试的 autoload-off 启动 | test stub 后再次加载 native torch_npu，`_npu_dtype_cast` schema 重复注册 | 启动方式错误；正常 autoload 下 installed 76/76 |
+| DVM K=1 子 pass isolate | 进入 torch_npu helper 前已是 `cast→mul→cast`，跳过 helper 后图不变 | direct FX 正确，但当前 compile 增量为零，记 `not-applicable/upstream-predecomposed` |
+| DVM backend 首次 32-case 启动 | autoload=0 且测试未显式 import torch_npu，全部在设备注册前失败 | 中性启动错误；autoload retry 32/32 |
+| 完整 MLIR backend | `_load_mlir_backend()` 显式要求 `torch_mlir`，当前环境未安装 | environment-blocked；DVM 自有 codegen 不受阻且 32/32 |
 
 ## 当前安装态
 
 - 最终 torch_npu wheel SHA256：
-  `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`。
-- 当前测试源码与安装态均为 85/85；T-046 的 B2 attention 关闭态 worker 通过
-  legacy/v3 `1/0→1/0` 与四输出完整语义门禁。P-010 旧 wheel 已保留为
-  `artifacts/torch_npu_t043_before_t046_attention_b2_gate.whl`。
+  `61b0031cbb027548f60745dcf0a2484503a360347dec6bd3cc2f3f2bc823ebca`。
+- P-012 source/installed 目标测试均 6/6，DVM graph-fusion 15/15、DVM backend 32/32。
+  P-011 旧 wheel 已保留为 `artifacts/torch_npu_t046_before_t047_p012.whl`。
 - 性能失败的 T-029 clone candidate wheel 单独保留在
   `artifacts/torch_npu_t029_alias_safe_clone_candidate.whl`，不是当前安装态。
 
 ## 下一步
 
-B2 27 条已闭环。下一步执行 B3 的 8 条 DVM/MLIR 结构与后端分层验证，随后执行 B4
-attention family；T-023 的无 shim 环境复验作为独立环境支线，不阻塞主线。
+B2 27 条和 B3 8 条已闭环。下一步执行 B4 attention family；完整 MLIR 与 T-023 无 shim
+复验作为独立环境支线，不阻塞主线。

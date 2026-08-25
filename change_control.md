@@ -1720,7 +1720,115 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
   `supported-neutral-resource-beneficial`、2 `supported-pass-disabled-performance-rejected`。
   B2 27 条至此关闭；主线下一步是 B3 DVM/MLIR。
 
+### T-047：B3 DVM/MLIR 八条 pass 的结构与环境路由登记
+
+- 目标覆盖矩阵 B3 的 8 条：DVM `dvm_graph_fusion` 及 5 个 `fx_pass.py` 子 pass，MLIR
+  `DvmMlirPostGradPass` 与 `fold_sum_cast_to_dtype`。本任务先只读源码、现有测试和运行依赖，
+  新增 audit-only CPU/FX 结构脚本与报告；不修改 torch_npu/PyTorch/Triton 产品源码。
+- 每条先明确调用者、输入 IR、返回/原地语义、正例、负例、symbolic/dtype/alias 风险；聚合
+  pass 与子 pass 分开记，不能用 `DvmMlirPostGradPass` 调用一次冒充其内部变换都命中。
+- 环境 Gate 0 分三路：纯 FX 可直接验证；DVM backend 需要 `torch.compile(backend="dvm")`
+  或对应 loader 能导入；MLIR 需要 `ascend_npu_ir`/torch-mlir 编译依赖完整。缺依赖记
+  environment-blocked，不把 import skip 当 pass，也不为测试修改共享环境。
+- 结构层至少覆盖：mm transpose flag 正/负、K=1 matmul 与 K≠1/symbolic、fp16/bf16 sum
+  cast 与 fp32 negative、混合 dtype promotion 与同 dtype negative、expand-as-reshape 与真广播、
+  sum+cast 单用户与多用户/dtype negative。后端层只有在结构通过后才从 NPU1 fresh process
+  验证生成 kernel/fallback 和数值；性能仍另登记，当前不提出 Triton 替身。
+
+### E-141：T-047 安装态 CPU/FakeTensor 首轮证据（2026-08-25）
+
+- `results/t047_b3_dvm_mlir_static_20260825/result.json` 使用当前 source-built wheel 的安装态
+  模块完成首轮结构审计。transpose flag、K=1 mm/bmm→mul、K≠1/动态 K 保持、混合 dtype
+  promotion、同 dtype 保持、DVM add→mul 子图融合、MLIR sum-cast fold 及 wrapper 链式调用均按
+  预期；已执行样例的 value/dtype/shape/stride 合同通过。
+- `insert_sum_fp32_prepost_cast_prims` 的直接调用域存在确定反例：int64
+  `[16_777_217, 1]` 经 FP32 累加后与 eager 相差 2；float64 显式 sum 与 eager 相差 1。当前
+  `GraphFusionPartitioner` 会先由 DVM dtype rule 排除这两类输入，所以不是已证实的现网 aggregate
+  逃逸；但子 pass 本身没有同等 guard，独立调用和未来调用者不安全。
+- `expand_to_reshape` 的 identity expand 会把 graph target 改成 reshape，但函数返回 `None`，也
+  不 lint/recompile；真实 broadcast 正确保持。当前 aggregate 的后续 graph/codegen 流程会直接读
+  graph，尚未观察到数值错误，但该函数声明与其他子 pass 的返回合同不一致，独立调用会看到 stale
+  `GraphModule.code`。
+- 当前环境没有 `torch_mlir`，因此纯 FX 的 `fold_sum_cast_to_dtype` 和 wrapper 可测，但完整 MLIR
+  backend 必须记 environment-blocked，不能以结构通过冒充设备编译通过。DVM backend 不沿用这个
+  torch-mlir Gate，后续仍可在 NPU1 单独验证。
+
+### E-142：P-012 wheel 与 B3 DVM 功能闭环（2026-08-26）
+
+- P-011 wheel 已归档为 `artifacts/torch_npu_t046_before_t047_p012.whl`，SHA256
+  `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`。P-012 新 wheel
+  SHA256 为 `61b0031cbb027548f60745dcf0a2484503a360347dec6bd3cc2f3f2bc823ebca`；1318
+  条 archive entry 且无重复，source `fx_pass.py`/既有 B2 pass 与 wheel byte-equal，包含
+  `_C`/`libtorch_npu.so`，不含 TorchAir、`libtensorpipe.so` 或 legacy egg-info。
+- 新 wheel 已按 `--no-deps --force-reinstall` 安装。source/installed P-012 目标测试均为 6/6；
+  source 隔离与 installed T-047 全量静态审计通过，int64/float64 反例 mismatch 均由 2/1
+  恢复为 0，identity expand 已返回同一 GM 且自动重编译。
+- NPU1 fresh installed `DvmGraphFusionPatch` 测试为 15/15，DVM backend/MLIR scheduler
+  测试为 32/32，覆盖静态/动态、fp16/bf16/fp32、K=1→mul、matmul、reduce、promotion、copy、
+  backward 与 NPUGraph。第一次 DVM backend 启动因显式关闭 autoload 且测试未 import
+  `torch_npu`，32 条均在设备注册前失败，作为中性启动证据保留；autoload retry 才是有效结果。
+- DVM backend 在没有 `torch_mlir` 时仍能使用自身 codegen 并通过 32/32；但
+  `TORCHINDUCTOR_NPU_BACKEND=mlir` 的 loader 明确要求 `torch_mlir`，完整 MLIR backend 仍为
+  environment-blocked。NPU1 两次有效测试结束后均无残留进程。
+- reachability 反例确认 `expand_to_reshape` 当前不进入 aggregate：add→identity-expand、
+  broadcast-expand→add 和 add→view 的 outer graph 都把 expand/view 留在 DVM custom op 外，
+  因 `GRAPH_FUSION_SUPPORT_OP` 未列 expand/reshape/view。该子 pass 的直接合同已修复，但 aggregate
+  收益必须记 `not-triggered-by-current-partitioner`，不能拿直接调用命中冒充产品触发。
+
+### T-048：B3 DVM graph-fusion 首轮隔离性能筛选
+
+- 只新增 audit-only worker/aggregator，不改产品源码。NPU1 空闲时使用 fresh process/cache、
+  default/fullgraph、同一 source-built wheel；每个 cohort 运行 baseline/candidate 各 3 轮，顺序
+  `B1,C1,C2,B2,B3,C3`，每轮 warmup 10、runs 100，并各保留一轮 10-step profiler、首次编译和
+  allocated/reserved peak。
+- `aggregate_basic` 比较 default Inductor 与 `DvmGraphFusionPatch`；它衡量 aggregate 方案，不把
+  收益拆给所有子 pass。`k1_decompose` 两侧都启用 graph fusion，仅 baseline 在进程内跳过
+  `decompose_k1_matmul_to_mul`；`sum_fp32_cast` 同理，仅 baseline 跳过
+  `insert_sum_fp32_prepost_cast_prims`，从而隔离子 pass 增量。
+- 每个 worker 必须记录 outer DVM custom-op gate 和子图 target before/after，且 value/dtype/shape/
+  stride 在测量前后通过。P50 改善须大于 10%、P99 回退不超过 5%、allocated peak 不增加才记
+  beneficial；task 减少但三门未全过只记 resource-beneficial。promotion/transpose/fold 先保留功能
+  结论，未找到可稳定隔离的 paired cohort 前不伪造单 pass 性能；expand 明确不可达。
+
+### E-143：T-048 aggregate 收益与子 pass 不可隔离证据（2026-08-26）
+
+- `aggregate_basic` 六个 fresh worker 全部图/语义 gate 通过。default→DVM 的三轮中位 P50
+  `0.279905→0.212175 ms`（改善 24.20%），P99 `0.374470→0.224960 ms`（改善
+  39.93%），mean `0.367714→0.213482 ms`，首次 compile+run
+  `20,319.58→2,807.76 ms`，additional allocated peak 均为 2,560 B。三门全部通过，
+  `dvm_graph_fusion` 记 `supported-beneficial`。
+- profiler 中 default 每步 1 个 `triton_per_fused_add_mul_sum_0`，10 步 device duration
+  205.46 us；DVM 每步 3 个 task（两个 `DvmAddBroadcastMulCastReduce`、一个 `DvmCastAdd`），
+  总 duration 109.02 us。task 数增加但总设备时间和端到端延迟均改善，不能按 kernel 数单项否决。
+- K=1 isolate 的 before 快照在该 torch_npu subpass 之前已经是 `cast→mul→cast`；baseline 跳过
+  `decompose_k1_matmul_to_mul` 后不变，原 gate 失败是审计假设错误，不是产品失败。该 pass 的
+  直接 FX 合同通过，但当前 compile 增量为零，矩阵记 `not-applicable/upstream-predecomposed`。
+- sum isolate candidate 的 `cast(fp32)→sum→cast(fp16)` 通过；人工跳过 pass 后生成 bare fp16
+  DVM sum，并在首次 native 执行 segfault。已按图模式要求读取 transformed FX 与
+  `output_code.py`，确认 outer custom op 和 `k.sum(...); k.store(..., dvm.float16)` 已生成。这个
+  baseline 不可用，停止 paired 性能，sum pass 记 availability-required 的 `supported-neutral`。
+- B3 八条最终为 1 beneficial、5 neutral、1 not-applicable、1 unsupported；总矩阵更新为 223
+  `not-run`、2 `not-applicable`、4 `unsupported`、8 `supported-beneficial`、1
+  `conditional-supported-beneficial`、9 `supported-neutral`、2
+  `supported-neutral-resource-beneficial`、2 `supported-pass-disabled-performance-rejected`。
+
 ## 提案记录
+
+### P-012：DVM sum/expand 子 pass 自包含能力门禁
+
+- 状态：`verified-sum-safe-expand-direct-contract-aggregate-expand-unreachable`。仅修改
+  `torch_npu/_inductor/dvm/fx_pass.py` 与对应 Python 测试；不改 schema、lowering、C++、DVM
+  kernel 或 Triton。修改前回滚边界为 P-011 wheel SHA256
+  `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`。
+- sum pass 只允许 DVM 支持的低精度浮点输入进入 FP32 pre/post-cast；fp32 保持，整数、bool、
+  float64 及不支持的显式 dtype 原图保持。正例仍覆盖 fp16/bf16 default 和显式 fp32，反例必须把
+  E-141 的 int64/float64 mismatch 恢复为 0，且不能依赖 aggregate partitioner 替子 pass 兜底。
+- expand pass 对缺失/非 Tensor meta 保守保持；只有 input/output shape 完全相同时改成 reshape，
+  发生修改后 lint/recompile，并始终返回原 `GraphModule`。真 broadcast 不改，identity 正例执行
+  value/dtype/shape/stride 等价并确认 generated code 已同步。
+- 先跑目标 source 测试与 T-047 source 隔离审计，再重建 source wheel、`--no-deps` 安装并复跑
+  installed 审计。NPU DVM aggregate 功能通过前不做性能；这两个修复是可用度/防逃逸修复，不宣称
+  性能提升，也不需要手写 Triton。
 
 ### P-011：fusion-attention-v3 非 A5 性能拒绝门禁
 

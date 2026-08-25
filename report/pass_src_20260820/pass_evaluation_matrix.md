@@ -2,7 +2,7 @@
 
 - 输入清单：`/home/z50063656/Pass/inductor_pass_npu_audit/report/pass_src_20260820/pass_inventory.json`
 - 记录数：**251**
-- 当前阶段：评估合同已生成；P0 与 P1 B2 全部 27 条已有动态或明确 device-gated 证据。T-043～T-046 修复 batch-embedding step/dtype/alias 与 attention schema/meta/重复执行：batch 两个 safe cohort P50 改善 `23.50%/43.90%`、tasks `9→3/13→3`，但 allocated peak 和首次编译增加，记 `supported-neutral-resource-beneficial`；legacy→v3 attention 在 910B2 P50/P99 回退 `4.85%/31.72%`，最终非 A5 停用；fused matmul+relu 在 910B2 为 `not-applicable`，不外推 A5。此前 addmm、different-K、pad family、alias/layout/dtype/mask/Hamming 的结论保持。矩阵总计 231 条 `not-run`、1 条 `not-applicable`、3 条 `unsupported`、7 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、4 条 `supported-neutral`、2 条 `supported-neutral-resource-beneficial`、2 条 `supported-pass-disabled-performance-rejected`。
+- 当前阶段：评估合同已生成；P0、P1 B2 全部 27 条和 B3 DVM/MLIR 全部 8 条已有动态、直接结构或明确 environment/device-gated 证据。B3 中 `dvm_graph_fusion` 相对 default 的 P50/P99 改善 `24.20%/39.93%`、首次编译 `20.32→2.81 s`、allocated peak 相同，记 `supported-beneficial`；5 个 helper/wrapper 记 neutral；K=1 子 pass 因上游已预先变成 mul 而 not-applicable；`expand_to_reshape` 虽修复直接合同，但当前 partition capability 排除其 target，记 unsupported。完整 MLIR backend 仍缺 `torch_mlir`，DVM backend 则已 32/32。T-043～T-046 的 batch resource-benefit、attention B2 性能拒绝和此前 P0/B2 结论保持。矩阵总计 223 条 `not-run`、2 条 `not-applicable`、4 条 `unsupported`、8 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、9 条 `supported-neutral`、2 条 `supported-neutral-resource-beneficial`、2 条 `supported-pass-disabled-performance-rejected`。
 
 ## 测试单元
 

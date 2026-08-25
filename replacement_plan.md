@@ -1,10 +1,10 @@
 # Inductor Pass 在 NPU 上的替代与优化计划
 
-> 状态：使用共享 `Benchmark/env.sh`，尚未创建单独环境。T-011、T-023、T-029/T-031、T-036、T-038、T-040、T-042、T-043 与 T-046 已按 `change_control.md` 的先登记合同完成 torch_npu 修改、source-built wheel 和 NPU 验证；其他源码仍遵守“先登记、后实施”。
+> 状态：使用共享 `Benchmark/env.sh`，尚未创建单独环境。T-011、T-023、T-029/T-031、T-036、T-038、T-040、T-042、T-043、T-046 与 T-047/P-012 已按 `change_control.md` 的先登记合同完成 torch_npu 修改、source-built wheel 和 NPU 验证；其他源码仍遵守“先登记、后实施”。
 
 ## 当前结论
 
-当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。P1 B2 的 27 条已全部关闭。新结果中，batch embedding 两个 safe cohort 的 P50 改善 23.50%/43.90%、tasks 9→3/13→3，但 allocated peak 和首次编译增加，只记 resource-beneficial；legacy→v3 attention 在 B2 P50/P99 回退 4.85%/31.72%，最终非 A5 停用；fused matmul+relu 在 B2 不适用。这里仍优先修正 FX pass 的语义与收益域，不用 Triton 掩盖语义错误、替代同一个 vendor kernel或复制已有单 task。全量记录见 `report/pass_src_20260820/`。
+当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。P1 B2 的 27 条和 B3 DVM/MLIR 的 8 条已关闭。B3 aggregate DVM fusion 的 P50/P99 改善 24.20%/39.93%、首次编译 20.32→2.81 s、显存不增；sum dtype 与 expand 直接合同已由 P-012 修复。K=1 已由上游预分解，expand 在当前 partition capability 不可达，完整 MLIR 缺 `torch_mlir`。这里仍优先修正 FX pass 的语义、reachability 与收益域，不用 Triton 掩盖语义错误、环境依赖或 capability-list 问题。全量记录见 `report/pass_src_20260820/`。
 
 源码证据表明，当前后端已经存在若干明确的 NPU 约束：
 
@@ -23,6 +23,9 @@
 | `batch_embedding_fusion_pass` | step/dtype/alias 修复后两个 safe cohort P50 +23.50%/+43.90%、tasks 9→3/13→3，但 peak 分别 +1,831,936/+13,628,416 B，首次编译约翻倍 | 保留保守 pass并明确资源/编译 trade-off；已有 vendor+Inductor kernel，无证据支持另写 Triton |
 | `fusion_attention_v3_pass` | B2 旧/v3 都是 1 个同名 FlashAttentionScore task、显存相同，v3 P50/P99 -4.85%/-31.72% | 非 A5 保留 legacy；A5 待真机。当前不是 kernel 缺失，不写 Triton attention |
 | `fused_matmul_relu_pass` | 910B2 下由 `is_ascend950` gate 正确不注册 | `not-applicable`；只在 A5 环境验证现有 fused vendor op，不绕过芯片门禁 |
+| `dvm_graph_fusion` | 15/15 NPU；相对 default P50/P99 +24.20%/+39.93%，compile 20.32→2.81 s，allocated peak 相同 | 保留现有 DVM codegen；虽 task 1→3，但总 device duration 更短，不用 Triton 复制 |
+| DVM sum/expand 子 pass | sum 越界 dtype 会损精度，bare fp16 DVM sum 不可用；expand helper 当前 aggregate 不可达 | P-012 做 dtype/调用合同修复；sum 不写替身，expand 先评估 partition capability 列表 |
+| DVM/MLIR wrapper | DVM backend 无 `torch_mlir` 仍 32/32；完整 MLIR loader 被依赖阻塞 | DVM 结论保留；MLIR 在独立匹配环境补测，不能用 Triton 替代缺失 Python/MLIR 依赖 |
 | NPU custom FX pass | `ascend_custom_passes` 注册 27 个 pass，主要是 fold/view/cat/reduce/attention/embedding 等图重写 | 先做图正确性和 kernel 数量检查；这些 pass 通常不需要手写 Triton |
 | `inductor-npu-ext` | 通过 `pre_grad_custom_pass` / `post_grad_custom_pre_pass` 注册 legacy scatter、pad-slice、batch-embedding pass | 作为 AscendC 后端独立测量，不能与 Triton backend 的结果混用 |
 | attention | NPU 有 `fusion_attention_v3_pass` 和 `npu_fusion_attention_graph`；legacy→v3 在 B2 已性能拒绝 | 非 A5 保留 legacy，A5 再验证 v3；手写 Triton 只用于被证明的 kernel 能力缺口 |
@@ -64,7 +67,7 @@
 
 ## 下一步执行
 
-当前主线不再重跑全量旧探针。pad family和B2全部27条已完成结构/NPU/性能分流。下一步按 `p1_batch_design.md` 进入B3 DVM/MLIR，再进入B4 attention。T-023环境支线只在匹配headers的独立环境做无shim fresh compile smoke。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
+当前主线不再重跑全量旧探针。pad family、B2 27 条和 B3 8 条已完成结构/NPU/性能或环境分流。下一步按 `p1_batch_design.md` 进入 B4 attention。完整 MLIR 与 T-023 环境支线只在匹配依赖/headers 的独立环境补测。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
 
 ```bash
 python /home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py \

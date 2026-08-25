@@ -72,7 +72,8 @@
 - mm_plus_mm/triton_experimental 的 same-K 代表网格 8/8 功能正确，6/8 p50 收益超过 10%，transposed/dynamic 为 neutral。
 - mm_plus_mm different-K 的 T-014 至 T-024 已覆盖三 dtype、真实 transposed stride、dynamic replay、backward、正式接入、集成 paired、memory root cause和 workspace 替代搜索。T-023 的 default-off candidate在 shape-A/unaligned p50 改善 15.29%/18.04%，但比 baseline多 270,336 B peak allocated；T-024 没找到同时守住显存和 task-duration gate的配置。正式 verdict 为 <code>conditional-supported-beneficial</code>，large/dynamic/empty/arbitrary-stride/same-K继续 fallback。这说明“算子可用”和“可以默认启用”是两个不同结论。
 - P1 B2 全部 27 条已完成 85/85 FX UT 和真实 NPU 正负/alias/dtype/overflow/broadcast/IEEE/vendor 例。T-043～T-046 最后关闭复合 pass：batch embedding 修复 step/dtype/storage 后 P50 +23.50%/+43.90%、tasks 9→3/13→3，但 peak/compile 增加；legacy→v3 attention 在 910B2 P50/P99 回退 4.85%/31.72%，最终非 A5 停用；fused matmul+relu 在 B2 不适用。
-- 当前矩阵总计 231 条 <code>not-run</code>、1 条 <code>not-applicable</code>、3 条 <code>unsupported</code>、7 条 <code>supported-beneficial</code>、1 条 <code>conditional-supported-beneficial</code>、4 条 <code>supported-neutral</code>、2 条 <code>supported-neutral-resource-beneficial</code>、2 条 <code>supported-pass-disabled-performance-rejected</code>。
+- B3 的 8 条 DVM/MLIR 记录已完成。P-012 修复 sum dtype 逃逸和 expand 的直接调用合同；NPU graph-fusion 15/15、DVM backend 32/32。aggregate DVM fusion 的 P50/P99 改善 24.20%/39.93%；K=1 helper 已被上游预分解，expand helper 在当前 partitioner 不可达；完整 MLIR 缺 `torch_mlir`。
+- 当前矩阵总计 223 条 <code>not-run</code>、2 条 <code>not-applicable</code>、4 条 <code>unsupported</code>、8 条 <code>supported-beneficial</code>、1 条 <code>conditional-supported-beneficial</code>、9 条 <code>supported-neutral</code>、2 条 <code>supported-neutral-resource-beneficial</code>、2 条 <code>supported-pass-disabled-performance-rejected</code>。
 
 ### 5. 从头阅读现有文档的路线
 
@@ -97,8 +98,9 @@
 17. [T-041 mask/hamming 性能报告](report/t041_mask_hamming_performance_20260825.md)：学习同一个 pass 的 direct/view 路径为什么可能一慢一快，以及为什么 device duration 不能代替端到端 gate。
 18. [T-042 bool view guard 报告](report/t042_bool_view_guard_integration_20260825.md)：学习如何用最小 capability guard 保留性能正域、停用负域并完成 wheel 闭环。
 19. [T-043～T-046 composite 报告](report/t043_t046_b2_composite_passes_20260825.md)：学习 schema/meta/alias 修复、性能与内存冲突，以及为何同一 vendor kernel 的接口替换应按芯片停用。
-20. [p1_batch_design.md](p1_batch_design.md)：进入下一批 DVM/MLIR 和 attention。
-21. [change_control.md](change_control.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
+20. [T-047/T-048 DVM/MLIR 报告](report/t047_t048_b3_dvm_mlir_20260826.md)：学习 aggregate 与 subpass 的调用关系、直接可用但产品不可达、上游预分解，以及可用性 pass 为什么没有安全性能 baseline。
+21. [p1_batch_design.md](p1_batch_design.md)：进入下一批 attention。
+22. [change_control.md](change_control.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
 
 根目录旧 <code>report/pass_inventory.md</code> 属于历史诊断；当前静态基线是 <code>report/pass_src_20260820/</code>，动态环境由 <code>/home/z50063656/Benchmark/env.sh</code> 启动 Conda <code>benchmark-py311</code>。T-022/T-023 还要求区分 runtime 已可用与 fresh Triton host launcher 编译合同是否完整。
 
@@ -250,8 +252,9 @@ torch_npu 将 <code>npu_backend</code> 注入 Inductor config，并按以下优�
 - <code>default</code>：当前 NPU Triton/ATen/CATLASS 等综合路径；
 - <code>triton_experimental</code>：物理隔离的 experimental Triton codegen 与 heuristics；
 - <code>ascendc</code>：AscendC 承接路径；
-- <code>mlir</code>：MLIR codegen；
-- <code>dvm</code>：DVM graph fusion 与 MLIR 承接。
+- <code>mlir</code>：要求 `torch_mlir` 的 MLIR codegen；
+- <code>dvm</code>：复用 MLIR scheduler 接口但使用 DVM codegen，不等于 opt-in 的
+  <code>DvmGraphFusionPatch</code>；后者是另一条 post-grad custom-op 图融合路径。
 
 backend 不是普通配置开关。loader 会注册 lowering、替换函数和 codegen，有全局状态，所以正式测试坚持一个 case/backend 一个 fresh process。
 
@@ -688,7 +691,7 @@ different-K 能匹配 post-grad pattern，但原 lowering 会安全退回两个 
 
 测试侧受控capability绕过没有修改产品源码：三family正例真实变换且正确，aligned负例不误触发；但三轮配对性能和显存均失败。因此P-002已关闭为`capability-available-performance-rejected`，保持gate且不手写Triton padding。
 
-#### 当前主线：执行 P1 的 66 条记录
+#### P1 B2/B3 已完成，当前进入 B4
 
 T-027 至 T-031 已把首批 7 个 B2 custom pass 推进到 33/33 个结构测试和真实 NPU
 正负例。这里最值得学习的不是“删掉了几个节点”，而是一次完整的结论纠偏：
@@ -771,6 +774,24 @@ FlashAttentionScore task，显存相同，v3 的 P50/P99 反而回退 4.85%/31.7
 schema、输出用户和 6-tuple fake meta guard，但必须在 A5 真机重新验证。详见
 [T-043～T-046 报告](report/t043_t046_b2_composite_passes_20260825.md)。
 
+T-047/T-048 展示了 backend pass 调研最容易混淆的四个层次：
+
+1. **直接函数可用**：`expand_to_reshape(gm)` 在 FakeTensor 图上能把 identity expand 改成
+   reshape；P-012 还补齐了返回和 recompile。
+2. **aggregate 可达**：`GraphFusionPartitioner` 的 capability 列表没有 expand/reshape/view，
+   所以真实 compile 中这个 helper 看不到目标节点。直接单测通过不等于产品 pass 生效。
+3. **上游已完成同一工作**：K=1 mm 的 direct FX rewrite 正确，但真实 post-grad subgraph 在进入
+   torch_npu helper 前已是 `cast→mul→cast`，因此该 helper 当前没有增量。
+4. **可用性先于性能**：DVM fp16 reduce 必须先变成 `cast(fp32)→sum→cast(fp16)`；人工删掉
+   这一步会生成 bare fp16 DVM sum 并 native crash。baseline 不可用时，只能记“该 pass 使路径
+   可用”，不能把 crash 当成无限慢来计算 speedup。
+
+aggregate DVM fusion 则有合法 default baseline：同一 add→mul→sum→add 图的 P50/P99 从
+0.279905/0.374470 ms 降到 0.212175/0.224960 ms，首次编译从 20.32 s 降到 2.81 s，显存不增。
+有趣的是 DVM 每步 3 个 task，default 只有 1 个 Triton task，但 DVM 总 device duration 更短；
+所以 kernel 数只是资源指标之一，最终仍看端到端 gate。完整源码、修复和证据见
+[T-047/T-048 报告](report/t047_t048_b3_dvm_mlir_20260826.md)。
+
 这里的背景知识是：逐元素相等只验证了“这批输入的值”。一个 PyTorch 算子的完整可观察
 合同还包括 dtype、shape、stride、storage alias、对象身份、梯度以及 NaN/Inf/overflow
 边界。另一方面，FX 节点数减少也不保证 kernel 数减少，因为 scheduler 可能早已把原链
@@ -778,9 +799,9 @@ schema、输出用户和 6-tuple fake meta guard，但必须在 A5 真机重新�
 
 按 [p1_batch_design.md](p1_batch_design.md) 顺序：
 
-1. DVM/MLIR 的 8 条记录先做结构层，再做后端层；
-2. attention 先跑 1、5、13、18、21、28、29 七个代表 family，再扩到 30 个；
-3. 只对这两批暴露出的真实 lowering/kernel 缺口提出替代。
+1. DVM/MLIR 的 8 条记录已完成结构层、后端层和可隔离 aggregate 性能；
+2. 下一步 attention 先跑 1、5、13、18、21、28、29 七个代表 family，再扩到 30 个；
+3. 只对暴露出的真实 lowering/kernel 缺口提出替代。
 
 #### 后续：只对真实缺口实施替代
 
@@ -846,4 +867,4 @@ torch.compile
 2. **gate 练习**：从 <code>pad_mm.py::check_device()</code> 向上追到 pattern 注册，向下追到 replacement，解释为什么 <code>force_shape_pad=True</code> 仍无效。
 3. **性能练习**：阅读 fold_cat 的六个 worker JSON，自己计算 p50/p99 三轮中位数、task 2→1 和约 2 MiB 中间张量消失的关系，并解释为什么 eager-vs-compiled 不能作为单 pass baseline。
 
-这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后按上面的阅读路线继续到 [T-043～T-046 composite 报告](report/t043_t046_b2_composite_passes_20260825.md)。当前 B2 27 条已闭环，下一步进入 B3 DVM/MLIR；T-023 只剩匹配环境的无 shim 复验，不要重新执行已闭环的 P0、pad 或 B2 case。
+这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后继续读 [T-043～T-046 composite 报告](report/t043_t046_b2_composite_passes_20260825.md) 和 [T-047/T-048 DVM/MLIR 报告](report/t047_t048_b3_dvm_mlir_20260826.md)。当前 B2 27 条与 B3 8 条已闭环，下一步进入 B4 attention；T-023 只剩匹配环境的无 shim 复验，不要重新执行已闭环的 P0、pad、B2 或 B3 case。

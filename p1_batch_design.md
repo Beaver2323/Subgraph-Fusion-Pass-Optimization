@@ -16,6 +16,10 @@ cat-slice-cat/pad-slice 完成单 pass paired 性能。源码里有测试
 仍不等于 NPU pass 可用；本批结果之所以能下结论，是因为图、数值、alias 和性能证据已
 按不同 pass 分层闭环。
 
+T-047/T-048 又完成 B3 全部 8 条记录的结构、真实 NPU 和可归因性能审计，并落地 P-012：
+限制 sum 的 fp32 pre/post cast 到 fp16/bf16 安全域，补齐 `expand_to_reshape` 的返回、lint 与
+recompile 合同。DVM 聚合图在当前 910B2 上形成 `supported-beneficial` 结论。
+
 ## B2：27 个 NPU custom pass
 
 注册入口位于 `torch_npu/_inductor/fx_passes/ascend_custom_passes/`。按语义拆成四组：
@@ -125,7 +129,7 @@ T-032/T-033 随后覆盖第二批 4 条，T-034/T-035 覆盖第三批 5 条，T-
 | `fusion_attention_v3_pass` | schema/users/meta 修复后 safe scope 正确；最终 B2 由 SoC gate 保持 legacy | B2 P50/P99 -4.85%/-31.72%；`supported-pass-disabled-performance-rejected` |
 
 B2 已完成，不再重复执行；完整末批证据见
-`report/t043_t046_b2_composite_passes_20260825.md`。当前继续 B3。
+`report/t043_t046_b2_composite_passes_20260825.md`。当前继续 B4。
 
 ## B3：8 个 DVM/MLIR 变换
 
@@ -140,7 +144,7 @@ B2 已完成，不再重复执行；完整末批证据见
 | `DvmMlirPostGradPass` | pass 聚合器 | 含上述可变换节点的图 | 无匹配图保持不变 |
 | `fold_sum_cast_to_dtype` | MLIR 规约 | sum 后 cast 合并到 dtype | cast 被多用户消费、dtype 不等价 |
 
-现有 `test/_inductor/test_dvm_graph_fusion.py` 已覆盖 DVM graph fusion 的静态/动态图、fp16/fp32/bf16 和一个 matmul 场景，但未逐项证明其余 7 个子变换。`test_dvm_mlir_fusion.py` 可作为端到端候选入口，仍需把每条矩阵记录关联到明确的触发断言。
+现有 `test/_inductor/test_dvm_graph_fusion.py` 已覆盖 DVM graph fusion 的静态/动态图、fp16/fp32/bf16 和一个 matmul 场景。T-047 又为 7 个子变换补齐逐项结构正负例，并为 P-012 新合同增加 6 个源码 UT；`test_dvm_mlir_fusion.py` 仍是完整 MLIR 环境下的端到端入口。
 
 B3 必须分两层判定：
 
@@ -148,6 +152,23 @@ B3 必须分两层判定：
 2. 后端层：DVM/MLIR 实际承接融合子图，生成代码不走意外 ATen/CPU fallback，数值和性能通过。
 
 只通过结构层时，矩阵最多记录 `trigger confirmed`，不能把 verdict 写成 `supported-beneficial`。
+
+T-047/T-048 最终结论：
+
+| pass | 可用性/到达性 | 性能/最终状态 |
+|---|---|---|
+| `dvm_graph_fusion` | installed wheel 下 15/15 图融合 UT、DVM backend 32/32 通过 | aggregate P50/P99 +24.20%/+39.93%，device time 205.46→109.02 us/10 steps；`supported-beneficial` |
+| `annotate_mm_transpose_flags` | mm/bmm/addmm 正负 guard 结构通过，随 DVM backend 端到端通过 | `supported-neutral`；属于 codegen metadata，不单独制造 kernel 收益 |
+| `decompose_k1_matmul_to_mul` | 直接 helper 正负例通过，但真实 compile 在该 pass 前已变成 cast→mul→cast | `not-applicable`；当前链路没有可归因增量 |
+| `insert_sum_fp32_prepost_cast_prims` | fp16/bf16 正例通过；P-012 修复 int64/float64 精度破坏 | `supported-neutral`；关闭它会让当前 DVM bare-fp16 sum 崩溃，属于可用性保护 |
+| `insert_promote_cast_by_pos_prims` | mixed/same dtype 正负例通过，随聚合图端到端验证 | `supported-neutral` |
+| `expand_to_reshape` | identity/broadcast 合同通过；P-012 修复返回和 recompile | 当前 DVM partition support set 不接纳 expand/view/reshape，`unsupported`（不可达） |
+| `DvmMlirPostGradPass` | wrapper chaining/uuid 合同通过，DVM 部分可用 | `supported-neutral`；完整 MLIR backend 因当前环境缺 `torch_mlir` 暂未闭环 |
+| `fold_sum_cast_to_dtype` | fold 正例和多用户/dtype 负例通过 | `supported-neutral`；完整 MLIR backend 同受 `torch_mlir` 环境限制 |
+
+详细证据和性能方法见 `report/t047_t048_b3_dvm_mlir_20260826.md`。本批没有手写 Triton：
+DVM 聚合已经显著提速；sum 是后端可用性的必要精度规约；K1 已被更早分解；expand 的问题是
+partition 可达性而非缺一个 elementwise kernel，现阶段强行补 Triton 都不能形成可信的单 pass 收益。
 
 ## B4：30 个 SDPA pattern + 1 个 NPU 包装入口
 
@@ -184,9 +205,9 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
 当前稳定环境下按以下顺序继续：
 
 1. 重新确认运行时源码 commit/导入路径与 `Pass/src` 一致。
-2. 对 B2/B3 先跑不依赖性能的结构正负例，确认 harness/observer 有效。
-3. default backend 跑 B2 NPU custom；DVM、MLIR 分别 fresh process 跑 B3。
-4. B4 先选 pattern 1、5、13、18、21、28、29 做七个代表 family smoke，再扩到全部 30。
+2. B2/B3 的结构、功能、installed wheel 和 paired performance 已闭环，不重复消耗设备时间。
+3. B4 先选 pattern 1、5、13、18、21、28、29 做七个代表 family smoke，再扩到全部 30。
+4. 第 31 条 NPU wrapper 先做 positional/keyword scale 数值对照，再判断是否需要源码修改。
 5. 只有功能、generated code 和 fallback 三项明确后，才做 pass-on/pass-off paired benchmark。
 6. 任一失败先分类为未触发、变换错误、lowering/codegen 缺口、精度、环境或性能，不直接跳到手写 Triton。
 
@@ -194,6 +215,9 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
 
 - P1 66 条已完成执行分组；T-027 至 T-046 完成 B2 全部 27 条的 85/85 FX UT、真实 NPU
   正负/alias/dtype/overflow/broadcast/IEEE/vendor 例与所需 paired performance。
+- T-047/T-048 完成 B3 全部 8 条；P-012 已进入新 wheel并通过 6/6 定向 UT、15/15 DVM
+  graph fusion UT 和 32/32 DVM backend UT。DVM aggregate 为 `supported-beneficial`，K1 为
+  `not-applicable`，expand 当前 partition 不可达，其余为精度、metadata 或 wrapper 中性结论。
 - `cat_to_view_pass` 已形成 resource-beneficial/latency-neutral 结论；`fold_reduce` 的
   正确但慢 clone 已否决并在最终 wheel 禁用折叠；`fold_cat` 已形成
   `supported-beneficial`；`fold_where` 为 `supported-neutral`。T-036 两条 layout pass 的
@@ -203,5 +227,5 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
   bool-cast 的 view-chain 关闭为 beneficial 并停用 direct 性能负域；另五条功能通过，多条
   前序消除/规范化 case 保持到达性或可归因性中性。
 - PRE attention 重复执行已修；剩余 attention 静态风险是 `npu_fa` scale positional/keyword 路径不一致，应在 B4 先做数值对照。
-- 当前下一步是 B3 的 8 条 DVM/MLIR；之后进入 B4。当前 T-046 已修改并重建
-  torch_npu wheel，PyTorch 与 Triton Ascend 产品源码未改。
+- 当前下一步是 B4 的 31 条 attention 记录。当前 P-012 已修改并重建 torch_npu wheel；
+  PyTorch 与 Triton Ascend 产品源码未改。

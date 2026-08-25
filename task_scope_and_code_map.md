@@ -168,6 +168,16 @@ meta guard，再因 B2 P99 回退 31.72% 增加非 A5 no-op gate。`fused_matmul
 910B2 正确不适用。源码修改仍集中在 torch_npu FX pass/runner 和结构测试，不涉及 PyTorch
 或 Triton 产品源码；详见 `report/t043_t046_b2_composite_passes_20260825.md`。
 
+T-047/T-048 关闭 B3 八条 DVM/MLIR 记录。源码阅读要区分两条路径：
+`DvmGraphFusionPatch -> GraphFusionPartitioner -> dvm::fused_graph_*`，以及
+`npu_backend=dvm/mlir -> DvmMlirPostGradPass -> scheduler/codegen`。P-012 只修改
+`torch_npu/_inductor/dvm/fx_pass.py`，限制 sum dtype 能力域并补齐 expand 的返回/recompile；
+新 wheel 通过 6/6 source/installed、15/15 graph-fusion、32/32 DVM backend。aggregate DVM
+相对 default 的 P50/P99 改善 24.20%/39.93%，显存不增。K=1 helper 被上游预分解，expand
+helper 被当前 capability list 排除，完整 MLIR 缺 `torch_mlir`；详见
+`report/t047_t048_b3_dvm_mlir_20260826.md`。这些缺口分别属于上游冗余、partition reachability
+和环境依赖，不应直接写 Triton。
+
 ## 测试和性能证据
 
 所有测试从 `/home/z50063656/tmp` 启动，不能在 torch_npu 源码目录中导入 torch。每个 backend 使用 fresh process，避免全局 patch 和 cache 串扰。
@@ -189,6 +199,6 @@ meta guard，再因 B2 P99 回退 31.72% 增加非 A5 no-op gate。`fused_matmul
 - `Pass/src` 与旧扫描同口径时为 189 条；少的 5 条全部来自当前未初始化的 torchair 子模块，不是主干 pass 回退。
 - 在同口径基础上补入 8 个 DVM/MLIR 图变换、53 个函数式/生成式 pattern 和 1 个 pad-mm 控制 gate，当前概念级清单为 251 条。
 - 当前矩阵中 direct case 164 条、observer 41 条、registry container 25 条、人工审查 21 条；生成变体不重复计数。
-- 环境已确认稳定并完成 P0、T-011 至 T-046；pad family和B2全部27条已完成结构/NPU/
-  性能分流。当前进入 B3 DVM/MLIR，随后进入 B4 attention；T-023只
-  保留匹配 headers 环境的无 shim复验。
+- 环境已确认稳定并完成 P0、T-011 至 T-048；pad family、B2 27 条和 B3 8 条已完成结构/
+  NPU/性能或环境分流。当前进入 B4 attention；完整 MLIR 和 T-023 无 shim 只在匹配依赖/
+  headers 的独立环境复验。
