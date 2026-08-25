@@ -1,10 +1,10 @@
 # Inductor Pass 在 NPU 上的替代与优化计划
 
-> 状态：使用共享 `Benchmark/env.sh`，尚未创建单独环境。T-011、T-023、T-029/T-031、T-036、T-038、T-040 与 T-042 已按 `change_control.md` 的先登记合同完成 torch_npu 修改、source-built wheel 和 NPU 验证；其他源码仍遵守“先登记、后实施”。
+> 状态：使用共享 `Benchmark/env.sh`，尚未创建单独环境。T-011、T-023、T-029/T-031、T-036、T-038、T-040、T-042、T-043 与 T-046 已按 `change_control.md` 的先登记合同完成 torch_npu 修改、source-built wheel 和 NPU 验证；其他源码仍遵守“先登记、后实施”。
 
 ## 当前结论
 
-当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。addmm、fold_cat、cat-slice-cat、pad-slice、safe dtype optimal、safe iota 与 bool-cast view-chain 为 `supported-beneficial`；different-K mm_plus_mm 为 `conditional-supported-beneficial`；pad 三个上游 shape-padding family 功能可承接但 p50 回退 65%–121%，replacement 已否决。P1 中，fold_reduce 的 alias-safe clone 又因 p99 回退 6.72% 被否决，最终保留原 sum；cat_to_view 的 alias-safe clone task 3→1、显存约减 4 MiB，延迟收益 2.29%，保留为 resource-beneficial/latency-neutral；fold_where、mask compression、masked-add 与 sign-Hamming 功能正确但端到端性能中性。T-040 至 T-042 已把两条 mask arithmetic pass 的浮点 IEEE 风险缩窄到 exact-zero 整数/布尔域，并进一步停用 p99 回退 19.02% 的 bool-cast direct rewrite，只保留 p50/p99 改善 36.30%/39.90% 的 view-chain。这里仍优先修正 FX pass 的语义与收益域，不用 Triton 掩盖语义错误或复制已有单 task。全量记录见 `report/pass_src_20260820/`。
+当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。P1 B2 的 27 条已全部关闭。新结果中，batch embedding 两个 safe cohort 的 P50 改善 23.50%/43.90%、tasks 9→3/13→3，但 allocated peak 和首次编译增加，只记 resource-beneficial；legacy→v3 attention 在 B2 P50/P99 回退 4.85%/31.72%，最终非 A5 停用；fused matmul+relu 在 B2 不适用。这里仍优先修正 FX pass 的语义与收益域，不用 Triton 掩盖语义错误、替代同一个 vendor kernel或复制已有单 task。全量记录见 `report/pass_src_20260820/`。
 
 源码证据表明，当前后端已经存在若干明确的 NPU 约束：
 
@@ -20,9 +20,12 @@
 | `broadcast_const_mask_compress` | equal-shape 删除 where/full，但 baseline 已融合为 1 task；p50 仅 +0.30%、显存不变 | 记 `supported-neutral`；替身 Triton不能把 1 task 再减少，不投入实现 |
 | `masked_add_compose_pass` / `bool_cast_mul_to_where_pass` | 浮点 signed-zero 与 `0*Inf/NaN` 反例已由整数/布尔 dtype guard 隔离；masked-add 单 task且中性；bool-cast view-chain p50/p99 +36.30%/+39.90%，direct p99 -19.02% | masked-add 保留为 neutral；bool-cast 只允许 non-empty view-chain，direct/float 保持原图；不重写重复 Triton |
 | `sign_diff_hamming_fuse_pass` | 特殊浮点、整数 keepdim 正例与 multi-user 负例 NPU 通过；paired p50/p99 仅改善 3.64%/5.49%，仍为单 task | 保留现有 FX pass并记 `supported-neutral`；没有多 task 或资源瓶颈，不实现专用 Triton |
+| `batch_embedding_fusion_pass` | step/dtype/alias 修复后两个 safe cohort P50 +23.50%/+43.90%、tasks 9→3/13→3，但 peak 分别 +1,831,936/+13,628,416 B，首次编译约翻倍 | 保留保守 pass并明确资源/编译 trade-off；已有 vendor+Inductor kernel，无证据支持另写 Triton |
+| `fusion_attention_v3_pass` | B2 旧/v3 都是 1 个同名 FlashAttentionScore task、显存相同，v3 P50/P99 -4.85%/-31.72% | 非 A5 保留 legacy；A5 待真机。当前不是 kernel 缺失，不写 Triton attention |
+| `fused_matmul_relu_pass` | 910B2 下由 `is_ascend950` gate 正确不注册 | `not-applicable`；只在 A5 环境验证现有 fused vendor op，不绕过芯片门禁 |
 | NPU custom FX pass | `ascend_custom_passes` 注册 27 个 pass，主要是 fold/view/cat/reduce/attention/embedding 等图重写 | 先做图正确性和 kernel 数量检查；这些 pass 通常不需要手写 Triton |
 | `inductor-npu-ext` | 通过 `pre_grad_custom_pass` / `post_grad_custom_pre_pass` 注册 legacy scatter、pad-slice、batch-embedding pass | 作为 AscendC 后端独立测量，不能与 Triton backend 的结果混用 |
-| attention | NPU 有 `fusion_attention_v3_pass` 和 `npu_fusion_attention_graph` | 优先复用 `npu_fusion_attention_v3` vendor op；手写 Triton 只作为缺失 shape/layout 的兜底 |
+| attention | NPU 有 `fusion_attention_v3_pass` 和 `npu_fusion_attention_graph`；legacy→v3 在 B2 已性能拒绝 | 非 A5 保留 legacy，A5 再验证 v3；手写 Triton 只用于被证明的 kernel 能力缺口 |
 
 ## Pass 分层与替代策略
 
@@ -61,7 +64,7 @@
 
 ## 下一步执行
 
-当前主线不再重跑全量旧探针。pad family和B2前24条已完成结构/NPU分流；fold_cat、layout、dtype、iota 与 bool-cast view-chain 已形成性能成功，fold_where、mask compression、masked-add 与 sign-Hamming 已形成性能中性结论。下一步按 `p1_batch_design.md` 覆盖 B2 最后3个复合 pass；之后进入B3 DVM/MLIR与B4 attention。T-023环境支线只在匹配headers的独立环境做无shim fresh compile smoke。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
+当前主线不再重跑全量旧探针。pad family和B2全部27条已完成结构/NPU/性能分流。下一步按 `p1_batch_design.md` 进入B3 DVM/MLIR，再进入B4 attention。T-023环境支线只在匹配headers的独立环境做无shim fresh compile smoke。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
 
 ```bash
 python /home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py \

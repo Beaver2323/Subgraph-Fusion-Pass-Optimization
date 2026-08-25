@@ -160,6 +160,14 @@ T-040 至 T-042 已关闭余下三条 dtype/mask/hamming pass。T-040 发现
 只有安全且有益的 view-chain 改写；新 wheel 再通过 76/76 源码/安装态测试和 3/3 NPU
 功能 worker。这里的正确优化仍是 FX 语义/收益域收缩，不需要用重复 Triton kernel 替代。
 
+T-043 至 T-046 关闭 B2 最后三个复合 pass。`batch_embedding_fusion_pass` 现在拒绝
+`step!=1` 和显式 reduce dtype，非 cat 输出用 contiguous clone 恢复独立 storage；两个
+safe cohort 虽有 23.50%/43.90% P50 与显著 task 收益，却增加 peak/compile，因此只记
+resource-beneficial。`fusion_attention_v3_pass` 先补 24→21 参数、7→6 返回、用户与 fake
+meta guard，再因 B2 P99 回退 31.72% 增加非 A5 no-op gate。`fused_matmul_relu_pass` 在当前
+910B2 正确不适用。源码修改仍集中在 torch_npu FX pass/runner 和结构测试，不涉及 PyTorch
+或 Triton 产品源码；详见 `report/t043_t046_b2_composite_passes_20260825.md`。
+
 ## 测试和性能证据
 
 所有测试从 `/home/z50063656/tmp` 启动，不能在 torch_npu 源码目录中导入 torch。每个 backend 使用 fresh process，避免全局 patch 和 cache 串扰。
@@ -181,8 +189,6 @@ T-040 至 T-042 已关闭余下三条 dtype/mask/hamming pass。T-040 发现
 - `Pass/src` 与旧扫描同口径时为 189 条；少的 5 条全部来自当前未初始化的 torchair 子模块，不是主干 pass 回退。
 - 在同口径基础上补入 8 个 DVM/MLIR 图变换、53 个函数式/生成式 pattern 和 1 个 pad-mm 控制 gate，当前概念级清单为 251 条。
 - 当前矩阵中 direct case 164 条、observer 41 条、registry container 25 条、人工审查 21 条；生成变体不重复计数。
-- 环境已确认稳定并完成 P0、T-011 至 T-042；pad family和B2前24条已完成结构/NPU
-  分流，fold_cat/layout/dtype/iota 已关闭有益性能，fold_where/mask compression 已关闭
-  中性性能结论；bool-cast view-chain 也已关闭为有益，masked-add/sign-Hamming 为中性。
-  当前进入 B2 最后3条复合 pass，随后进入 B3/B4；T-023只
+- 环境已确认稳定并完成 P0、T-011 至 T-046；pad family和B2全部27条已完成结构/NPU/
+  性能分流。当前进入 B3 DVM/MLIR，随后进入 B4 attention；T-023只
   保留匹配 headers 环境的无 shim复验。

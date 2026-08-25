@@ -1563,7 +1563,202 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
   `supported-beneficial`（exact-zero integer/bool + non-empty single-user view chain）；不需
   Triton replacement。详细报告为 `report/t042_bool_view_guard_integration_20260825.md`。
 
+### T-043：B2 最后三条复合 pass 的结构与语义审计登记
+
+- 目标只覆盖 `batch_embedding_fusion_pass`、`fused_matmul_relu_pass` 与
+  `fusion_attention_v3_pass`。先新增 audit-only CPU/FX 反例脚本与报告，不改产品源码、
+  不重建 wheel、不运行性能；若确认 blocker，再另立提案后才允许修改
+  `ascend_graph_pass.py` 和目标 FX 测试。
+- batch-embedding 正例使用同一权重、同一父 indices、两个完整等长连续 slice、默认
+  embedding 参数和同一种默认 reduce，要求 embedding/reduce 由 2→1 且 eager 前后值、
+  dtype、shape 一致；cat-collapse 另核对输出 stride/alias。负例至少覆盖 slice `step!=1`、
+  negative dim、gap/overlap、非默认 embedding 参数、reduce `dtype=`、multi-user 与不同权重。
+  特别检查 pass 是否忽略 slice step 或 reduce dtype；普通样本误差为 0 不能替代这些合同。
+- fused-matmul-relu 在当前 910B2 上受 `is_ascend950` 与 default-off 双门禁；本轮先证明 B2
+  不注册/不改图并静态核对 fp16/bf16、rank、bias、single-user、mutation guards。不得在 B2
+  monkeypatch A5 capability 后宣称设备可用或有性能；A5 真实功能/性能留作对应硬件验证。
+- fusion-attention-v3 先核对旧/新 schema、tuple 输出和 PRE runner 调用次数。正例仅在能
+  证明参数与被使用输出等价时允许 old→v3；负例覆盖旧 op 的第 4–6 个 scalar auxiliary
+  输出、`dropout_mask/seed/offset`、list 型 actual-seq 参数以及 inference runner 重复执行。
+  任何 schema/tuple 不等价都先判 correctness blocker，不能用只读取 output[0] 的模型掩盖。
+- 所有审计命令从 `/home/z50063656/tmp` 启动，使用 T-042 已安装 source wheel；脚本先
+  `py_compile`，结果保存到 `results/t043_b2_composite_static_20260825/`。结构层通过后再登记
+  fresh NPU positive/negative observer；只有功能闭环后才登记 pass-on/pass-off paired 性能。
+
+### E-136：T-043 只读源码风险定位（2026-08-25）
+
+- `batch_embedding_fusion_pass` 的 coverage 证明只读取 slice 的 start/end，当前没有校验第
+  5 个 `step`；`_reduce_call_args()` 只重建 input/dim，未转发 reduce 的 `dtype=`。这两处均
+  可能让图结构看似成功而改变取值或输出 dtype，必须由登记反例实证后再决定 guard/透传。
+- `fusion_attention_v3_pass` 当前把旧节点的全部 `args/kwargs` 原样送入 v3 并复制 meta，
+  但源码 schema 显示旧 op 返回 4 Tensor + 3 int，v3 返回 6 Tensor；旧 op 还多出
+  `dropout_mask/seed/offset`，actual-seq 参数类型也不同。当前不能把它视为无条件等价替换。
+- `run_register_pre_custom_passes()` 在 inference 下先运行全部 PRE pass，随后又按名字运行
+  `fusion_attention_v3_pass`；变换本身可能因第二次无旧节点而幂等，但 pass observer/编译
+  开销会执行两次。以上均为只读结论，尚未修改源码或矩阵 verdict。
+
+### E-137：T-043 CPU/FX 反例确认（2026-08-25）
+
+- audit-only 脚本 `t043_b2_composite_static.py` 已从 `/home/z50063656/tmp` 在 T-042 安装态
+  运行，结果为 `results/t043_b2_composite_static_20260825/result.json`。普通 embedding
+  正例确实把 embedding/sum 由 2/2→1/1、数值误差为 0，但两个原本不 alias 的 reduce 输出
+  变为同一 combined reduce 的 select，`_is_alias_of` 从 false→true；因此“误差为 0”仍不
+  足以证明功能正确。
+- slice `step=2` 反例同样被 2/2→1/1，两个输出最大绝对误差为 `9/129`；显式
+  `sum(dtype=float32)` 也被改写，输出 dtype 从 float32 变为 float16，虽然该特定可表示输入
+  的逐元素误差恰为 0。三项分别确认 value、dtype 与 storage-alias blocker。
+- attention schema 运行态确认旧/v3 为 `24→21` 参数、`7→6` 返回；当前 pass 会生成
+  `getitem(v3, 6)`，也会把旧 op 的 24 个位置参数原样送给只有 21 个参数的 v3，并复制旧
+  tuple meta。隔离 registry spy 又确认 inference runner 调用该 pass 2 次。
+- 当前 910B2 下 `is_ascend950=false`，`fused_matmul_relu_pass` 不在 POST registry，fused op
+  解析为 None，直接调用 pass 后 mm/relu 都保持 1→1；当前机器结论为 device-gated
+  not-applicable，不冒充 A5 功能/性能结果。
+
+### T-044：B2 composite 修复的 installed-wheel NPU 功能登记
+
+- 使用 P-010 构建并安装的 wheel；每个 profile 使用物理 NPU1 的独立 fresh process/cache、
+  default backend、`fullgraph=True`、静态 no-grad。运行前后检查设备空闲，目标 pass wrapper
+  必须恰好记录一次 before/after，不读取成功 case 的 `output_code.py`。
+- batch-embedding 运行 default tuple positive、cat-collapse positive、slice-step negative 与
+  reduce-dtype negative 四项。正例要求 embedding/sum 2/2→1/1；tuple positive 还要求两个
+  输出与 eager 一致且彼此不 alias，cat positive 不得插 clone；两个 negative 要求 2/2
+  保持。所有输出核对 shape/dtype/stride、input alias 与 output-output alias。
+- attention 先用 legacy 与 v3 eager 对照验证前四个 tensor 输出，再编译只消费 0–3 的 safe
+  profile，要求 old/v3 1/0→0/1、v3 fake meta 为 6-tuple、输出在 fp16 容差内且 NaN 分类
+  一致。旧 scalar aux/full legacy args 已由 84/84 FX 负例固定，本轮若设备算子接口不接受其
+  代表 shape，保留为结构证据，不用不相关运行失败否决 safe scope。
+- `fused_matmul_relu_pass` 在 910B2 不注册、不解析 fused op，维持 device-gated
+  not-applicable；不通过 monkeypatch 绕过 A5 gate。T-044 只关闭功能，batch/attention paired
+  性能必须在通过后另登记；任何图门禁、alias 或数值失败先回到 P-010，不写 Triton 替身。
+
+### E-138：T-043/T-044 wheel 与 NPU 功能关闭（2026-08-25）
+
+- P-010 修改后 source/installed 完整 FX 均为 84/84。T-042 wheel 已归档为
+  `artifacts/torch_npu_t042_before_t043_b2_composite_guard.whl`，SHA256
+  `ea801e791373b0bd3adf9d4bfb6253ace75afa800c71b0451c9b206e4664fe5a`；新 wheel SHA256
+  `44f2aad2465d59d6285fcd17739186a9560f90483dfa4e5de92948e848e461d8`，archive 1318 条、
+  两个修改模块与 source byte-equal、不含 TorchAir/Tensorpipe/legacy egg-info，已按
+  `--no-deps --force-reinstall` 安装。
+- installed CPU/FX 复验中，batch default 仍 2/2→1/1 且 output-output alias false→false，
+  step/dtype 两反例不再改写；attention safe output0 升级且生成 6-tuple meta，aux index6 和
+  24 legacy args 保留，inference runner 调用次数从 2 降为 1。
+- T-044 使用 NPU1；首个无 include-shim worker 复现已知 `ATen/ATen.h` 缺失并作为中性环境
+  失败保留，随后统一使用登记的 C++20/site-packages-header audit shim。5/5 fresh worker、
+  全部图门禁和输出合同通过、累计 mismatch 0：batch tuple/cat 正例 2/2→1/1，tuple 增加
+  2 clone并保持独立 storage；step/dtype 负例保持 2/2；attention old/v3 1/0→0/1，前四
+  tensor 输出 shape/dtype/stride/alias 与值完全一致。聚合证据为
+  `results/t044_b2_composite_compile_20260825/aggregate/aggregate.json`。
+
+### T-045：B2 batch-embedding 与 attention-v3 paired 性能登记
+
+- 不再修改产品源码。使用同一 T-043 wheel、NPU1、default backend与统一 audit launcher，
+  baseline wrapper 跳过单个目标 pass，candidate 执行当前 pass；每个 variant/round 均为独立
+  fresh process/cache。三轮顺序固定 B-C/C-B/B-C，warmup 10、runs 100、memory 3/10；
+  round1 两侧另做 warmup1/active10 profiler。
+- batch 分两个代表 scope：`batch_default_clone` 使用同一 `(8192,128)` fp16 weight、
+  `(1024,64)` int64 indices 的 4 个等长 slice+embedding+sum，四路结果最终相加为单 tensor
+  以兼容统一 memory sampler，要求 4/4→1/1 且 candidate 有 4 个 alias-safe clone；
+  `batch_cat_collapse` 在相同输入后把四个
+  reduce 沿末维 cat，要求 4/4→1/1、cat 1→1 且无 clone。两路都逐轮复核 output-output
+  alias、stride/dtype/shape与数值。
+- attention 使用 BSH `(4,256,1024)` fp16、16 heads，只消费 legacy/v3 的 output0；baseline
+  保留 legacy op，candidate 替换 v3。输出必须零 mismatch/NaN 分类一致，profile 记录 vendor
+  task 数与 duration；不得把首次编译时间计入 steady verdict。
+- 主 gate 沿用三轮 p50 中位数改善严格超过 10%，p99 不回退超过 5%；task/allocated peak
+  明确下降可单独形成 resource-beneficial。未过 gate的安全 scope记 neutral；明显回退则另立
+  guard 停用该 scope。vendor attention 优先保留 vendor op，不写 Triton；batch 已有设备
+  kernel缺口前不得用手写 Triton替代图语义修复。
+
+### E-139：T-045 三类 paired 性能结果（2026-08-25）
+
+- 三类共 18 个有效 fresh worker 全部通过图门禁与测量前后输出合同；另保留最初使用
+  `1e-3` 误判 fp16 sum/add rounding 的 `batch_default_clone/baseline_r1` 中性失败，重试改用
+  标准 fp16 `rtol=atol=1e-2`，但仍严格检查 dtype/shape/stride、NaN 分类、输入别名和图结构。
+- `batch_default_clone` 三轮中位数 P50 `0.528130→0.404005 ms`（改善 `23.50%`），P99
+  `0.634600→0.664170 ms`（回退 `4.66%`，在 5% 门限内），每步设备任务 `9→3`；但
+  additional allocated peak `17,041,920→18,873,856 B`（增加 `1,831,936 B`），首次编译
+  `20.98→45.41 s`。按预注册完整 gate 为 `supported-neutral-resource-beneficial`，表示稳态
+  延迟/任务数受益，但不能称为内存和编译均受益。
+- `batch_cat_collapse` P50 `0.757215→0.424760 ms`（改善 `43.90%`），P99
+  `0.915350→0.472880 ms`（改善 `48.34%`），每步任务 `13→3`；additional allocated peak
+  `5,245,440→18,873,856 B`（增加 `13,628,416 B`），首次编译 `20.92→46.54 s`。同样因
+  memory gate 未过记 `supported-neutral-resource-beneficial`，保留 pass 但明确其 trade-off。
+- `fusion_attention_v3` 的旧/v3 两侧均为每步 1 个
+  `aclnnFlashAttentionScore_FlashAttentionScore_FlashAttentionScore`，allocated peak 同为
+  `49,286,144 B`；P50 `0.333150→0.349320 ms`（回退 `4.85%`），P99
+  `0.416890→0.549120 ms`（回退 `31.72%`）。candidate P50 三轮均慢，P99 在 2/3 轮明显
+  更差，判 `supported-performance-regressed`。这不是缺 kernel，故不写 Triton attention；
+  进入 P-011，在非 A5（当前 910B2）禁用此接口替换，A5 保留待真机验证。
+
+### T-046：fusion-attention-v3 B2 性能拒绝落地与 wheel 验证
+
+- 按 P-011 仅增加非 A5 early-return 与对应 FX 测试；源码测试必须通过隔离引导同时证明
+  `ascend_graph_pass.py` 来自 source、`_C` 来自已安装扩展。任何 autoload/schema 启动失败
+  作为中性环境证据保留，不计入测试结果。
+- 归档 P-010 wheel 后增量构建；archive 检查条目唯一、产品模块与 source byte-equal、核心
+  动态库存在且不含 TorchAir/`libtensorpipe.so`/legacy egg-info。只允许
+  `pip --no-deps --force-reinstall`，installed 完整 FX 通过后才进入 NPU。
+- NPU1 fresh default/fullgraph worker 只验证当前 B2 门禁：legacy/v3 必须
+  `1/0→1/0`，输出 value/dtype/shape/stride/alias 合同通过。它不是新一轮性能测试；T-045
+  已给出关闭依据。完成后更新矩阵、报告、入门指南与公开文档仓库。
+
+### E-140：T-046 wheel、安装态与 B2 关闭态验证（2026-08-25）
+
+- P-010 wheel 已归档为 `artifacts/torch_npu_t043_before_t046_attention_b2_gate.whl`，SHA256
+  `44f2aad2465d59d6285fcd17739186a9560f90483dfa4e5de92948e848e461d8`。P-011 新 wheel
+  SHA256 为 `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`；archive 1318
+  条且唯一，产品 pass/runner 与 source byte-equal，包含 `_C`/`libtorch_npu.so`，不含
+  TorchAir、`libtensorpipe.so` 或 legacy egg-info，构建临时链接已清理。
+- 新 wheel 已按 `--no-deps --force-reinstall` 安装；source 隔离引导与 installed 完整 FX
+  均为 85/85。两次错误 source 启动分别因 backend autoload 抢先导入无 `_C` 源码包、以及
+  stub/native schema 重复注册中止，原始日志保留且未进入测试结果。
+- NPU1 fresh worker 使用 Ascend910B2/CANN 9.0.1/default/fullgraph/audit launcher，确认
+  legacy/v3 `1/0→1/0`；四个输出 value/dtype/shape/stride/input alias/output alias 全通过，
+  mismatch 合计 0，首次 compile+run `2774.42581 ms`。结束后 NPU1 无残留进程。
+- 矩阵更新为 231 `not-run`、1 `not-applicable`、3 `unsupported`、7
+  `supported-beneficial`、1 `conditional-supported-beneficial`、4 `supported-neutral`、2
+  `supported-neutral-resource-beneficial`、2 `supported-pass-disabled-performance-rejected`。
+  B2 27 条至此关闭；主线下一步是 B3 DVM/MLIR。
+
 ## 提案记录
+
+### P-011：fusion-attention-v3 非 A5 性能拒绝门禁
+
+- 状态：`verified-b2-disabled-a5-awaits-hardware`。只修改
+  `ascend_graph_pass.py` 与 `test/_inductor/test_dynamic_shape_fx_passes.py`；不改 schema、
+  lowering、C++/Triton kernel 或其他 pass。回滚边界为 P-010 wheel SHA256
+  `44f2aad2465d59d6285fcd17739186a9560f90483dfa4e5de92948e848e461d8`。
+- 在 `fusion_attention_v3_pass` 入口增加 `is_ascend950` capability gate：非 A5 直接保持 legacy
+  op；A5 仍执行 P-010 的参数、输出用户和 fresh-meta 安全检查。测试必须分别固定 B2 no-op、
+  强制 A5 safe-positive 仍升级、A5 aux/full-args negative 仍保持。
+- 修改后运行完整 source FX，重建并 `--no-deps` 安装 wheel，再跑完整 installed FX；随后在
+  NPU1 运行 B2 compile no-op，要求 old/v3 1/0→1/0、输出合同通过。最终 B2 verdict 记为
+  `supported-pass-disabled-performance-rejected`；A5 只能记 `not-run/device-gated`，不得从
+  910B2 推断 A5 性能。
+
+### P-010：batch-embedding 与 fusion-attention-v3 保守语义域修复
+
+- 状态：`verified-batch-resource-beneficial-attention-b2-superseded-by-p011`。只修改
+  `ascend_graph_pass.py`、`ascend_custom_passes/__init__.py` 与
+  `test/_inductor/test_dynamic_shape_fx_passes.py`；不改 PyTorch/Triton/C++/算子 schema，
+  不新增 kernel。修改前 wheel 回滚边界为当前 T-042 SHA256
+  `ea801e791373b0bd3adf9d4bfb6253ace75afa800c71b0451c9b206e4664fe5a`。
+- batch-embedding 仅接受静态非负 slice dim、`step==1` 和默认 reduce dtype/options；任何
+  无法证明项保持原图。cat-collapse 成功时沿用单 combined reduce；未 collapse 时每个
+  select 后插入 contiguous clone，恢复各 reduce 输出的独立 storage 与 contiguous layout。
+  结构测试要求 default positive 2/2→1/1 且数值/dtype/shape/alias 全同，step/dtype 反例保持
+  2/2，cat-collapse 仍命中。
+- attention 只在旧节点的参数可被 v3 schema 原样承接、actual-seq 为 None、未提供旧专属
+  `dropout_mask/seed/offset`，并且全部用户都是索引 0–3 的 getitem 时改写；直接 tuple、索引
+  4–6、超出 v3 的参数或未知 kwargs 一律保持旧 op。新节点必须用 fake op 重新生成 6-tuple
+  meta，不能复制旧 7-tuple meta；meta 生成失败则回滚新节点并保持旧图。
+- PRE runner 调整为 inference 时执行全体 PRE 一次、training 时只补执行 attention pass，
+  不再在 inference 重复。测试用 registry spy 固定 1 次调用，并覆盖安全 output0、aux index6
+  与 full legacy args 正负例。
+- 修改后先跑完整 source FX 文件；再从源码重建 wheel、归档 T-042 wheel并 `--no-deps`
+  安装，运行 installed FX。随后才登记 NPU：batch default/cat/step/dtype/alias，attention
+  legacy/v3 首四输出数值与负例保留，fused-matmul 仅验证 B2 gate。功能通过前不做性能，
+  batch non-collapse clone 若性能差可继续缩窄到 cat-collapse，不得删除 clone 换取收益。
 
 ### P-006：cat-slice-cat 与 pad-slice alias 可观察性保护
 

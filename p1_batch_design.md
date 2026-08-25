@@ -10,7 +10,7 @@
 | B3_DVM_MLIR | 8 | DVM/MLIR 图融合、规范化和精度变换 |
 | B4_ATTENTION | 31 | 上游 30 个 SDPA pattern family + 1 个 NPU graph attention 包装入口 |
 
-T-027 至 T-040 已为 B2 中 24 条记录补齐 76 个 device-independent 测试、真实 NPU
+T-027 至 T-046 已为 B2 全部 27 条记录补齐 85 个 device-independent 测试、真实 NPU
 正负/alias 例、storage alias/对象身份门禁，并对 fold_reduce/cat_to_view/fold_cat/fold_where/
 cat-slice-cat/pad-slice 完成单 pass paired 性能。源码里有测试
 仍不等于 NPU pass 可用；本批结果之所以能下结论，是因为图、数值、alias 和性能证据已
@@ -29,10 +29,10 @@ cat-slice-cat/pad-slice 完成单 pass paired 性能。源码里有测试
 
 ### 运行条件不能忽略
 
-- 多数 custom pass 以 inference 为主要路径。`run_register_pre_custom_passes()` 在 inference 时执行全部 PRE pass；训练时只额外允许 `fusion_attention_v3_pass`。
+- 多数 custom pass 以 inference 为主要路径。`run_register_pre_custom_passes()` 在 inference 时执行全部 PRE pass 一次；T-043 已消除 attention 的第二次重复扫描。训练时只允许 `fusion_attention_v3_pass`，且 T-046 后该替换只在 Ascend950 生效。
 - `fused_matmul_relu_pass` 默认不注册，只有 `TORCHINDUCTOR_ENABLE_FUSED_MATMUL_RELU=1` 时才有资格测试；不能把默认未执行记为“不支持”。
 - `SHUT_DOWN_FX_PASS_LIST` 可以关闭单个 pass 或全部 pass。动态报告必须记录这个环境变量，否则 observer 结果不可比较。
-- 静态源码显示：inference 路径先遍历全部 PRE pass，随后又按名称执行一次 `fusion_attention_v3_pass`。该 pass 本身是替换后即幂等，但存在重复扫描/编译开销嫌疑；应在动态 observer 中确认调用次数，再决定是否提出去重修改。
+- T-043 的 registry observer 已确认旧 inference runner 调用 `fusion_attention_v3_pass` 两次；P-010 修改后固定为一次。不要再把该项当作未验证风险。
 
 ### 已有测试证据与缺口
 
@@ -59,9 +59,8 @@ cat-slice-cat/pad-slice 完成单 pass paired 性能。源码里有测试
 
 前 7 条最初只证明 static/symbolic FX 变换边界；T-028 至 T-031 又补上真实 NPU 证据，
 T-032/T-033 随后覆盖第二批 4 条，T-034/T-035 覆盖第三批 5 条，T-036/T-037 覆盖第四批
-2 条，T-038/T-039 覆盖第五批 3 条，T-040 覆盖第六批 3 条。剩余 3 个复合 custom pass
-没有在原源码树中找到同名的
-直接 pass UT；即便存在模型级间接覆盖，也需要单独建立最小触发图。
+2 条，T-038/T-039 覆盖第五批 3 条，T-040～T-042 覆盖第六批 3 条，T-043～T-046
+覆盖最后 3 个复合 pass。当前 27 条均有结构、功能、到达性或明确 device gate 结论。
 
 首批 7 条当前结论：
 
@@ -117,12 +116,16 @@ T-032/T-033 随后覆盖第二批 4 条，T-034/T-035 覆盖第三批 5 条，T-
 | `bool_cast_mul_to_where_pass` | 仅 exact-zero 整数/布尔且非空单用户 view-chain 改写；direct/float 保持 | view p50/p99 +36.30%/+39.90%；`supported-beneficial`，direct 回退路径已停用 |
 | `sign_diff_hamming_fuse_pass` | 特殊浮点与整数 keepdim 把 sign/relu/sub/abs 换为 gt/ne；multi-user 保持 | p50/p99 +3.64%/+5.49%，task/显存不变；`supported-neutral` |
 
-B2 的建议执行顺序：
+第七批 3 条当前结论：
 
-1. 已完成的前 24 条不重复执行；T-041/T-042 已补齐第六批性能与最终 wheel。
-2. 最后为 `batch_embedding_fusion_pass`、`fused_matmul_relu_pass`、
-   `fusion_attention_v3_pass` 补结构与真实 NPU；性能 baseline 必须关闭单个 pass，而不是拿
-   eager 与整图 compile 比。
+| pass | 功能/到达性 | 性能/最终状态 |
+|---|---|---|
+| `batch_embedding_fusion_pass` | step/dtype 负例保持；default/cat 正例 4/4→1/1，clone 路径保持独立 storage | P50 +23.50%/+43.90%、tasks 9→3/13→3，但 peak/compile 增加；`supported-neutral-resource-beneficial` |
+| `fused_matmul_relu_pass` | 910B2 下不注册、fused op 不解析，mm/relu 保持 | `not-applicable`；A5 待对应硬件验证 |
+| `fusion_attention_v3_pass` | schema/users/meta 修复后 safe scope 正确；最终 B2 由 SoC gate 保持 legacy | B2 P50/P99 -4.85%/-31.72%；`supported-pass-disabled-performance-rejected` |
+
+B2 已完成，不再重复执行；完整末批证据见
+`report/t043_t046_b2_composite_passes_20260825.md`。当前继续 B3。
 
 ## B3：8 个 DVM/MLIR 变换
 
@@ -189,8 +192,8 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
 
 ## 当前静态结论
 
-- P1 66 条已完成执行分组；T-027 至 T-042 完成前 24 条的 76/76 FX UT、真实 NPU
-  正负/alias/dtype/overflow/broadcast/IEEE 例与第六批 24/24 paired performance。
+- P1 66 条已完成执行分组；T-027 至 T-046 完成 B2 全部 27 条的 85/85 FX UT、真实 NPU
+  正负/alias/dtype/overflow/broadcast/IEEE/vendor 例与所需 paired performance。
 - `cat_to_view_pass` 已形成 resource-beneficial/latency-neutral 结论；`fold_reduce` 的
   正确但慢 clone 已否决并在最终 wheel 禁用折叠；`fold_cat` 已形成
   `supported-beneficial`；`fold_where` 为 `supported-neutral`。T-036 两条 layout pass 的
@@ -199,6 +202,6 @@ PyTorch 的 `test/inductor/test_fused_attention.py` 已有大量上游 pattern �
   compression 关闭为 neutral。T-041/T-042 又把 masked-add/Hamming 关闭为 neutral，
   bool-cast 的 view-chain 关闭为 beneficial 并停用 direct 性能负域；另五条功能通过，多条
   前序消除/规范化 case 保持到达性或可归因性中性。
-- 两个值得优先验证的静态风险是 PRE attention pass 的重复执行，以及 `npu_fa` scale positional/keyword 路径不一致。
-- 当前下一步是 B2 最后 3 条复合 pass；之后进入 B3 和 B4。当前 T-042 已修改并重建
+- PRE attention 重复执行已修；剩余 attention 静态风险是 `npu_fa` scale positional/keyword 路径不一致，应在 B4 先做数值对照。
+- 当前下一步是 B3 的 8 条 DVM/MLIR；之后进入 B4。当前 T-046 已修改并重建
   torch_npu wheel，PyTorch 与 Triton Ascend 产品源码未改。

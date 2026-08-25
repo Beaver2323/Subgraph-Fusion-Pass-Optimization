@@ -18,6 +18,7 @@
 | dtype_optimal_pass | 仅比较闭包安全降宽；p50/p99 +52.06%/+50.48%，显存不增 | `supported-beneficial`（development/audit-shim） | `report/t038_dtype_index_mask_semantic_fix_20260825.md`、`report/t039_dtype_index_mask_performance_20260825.md` |
 | fold_iota_arithmetic_pass | 保留安全 iota 降宽并停用 Inf/overflow 不安全 cmp-sub；p50/p99 +55.78%/+54.51% | `supported-beneficial`（development/audit-shim） | `report/t038_dtype_index_mask_semantic_fix_20260825.md`、`report/t039_dtype_index_mask_performance_20260825.md` |
 | bool_cast_mul_to_where_pass | view-chain p50/p99 +36.30%/+39.90%；direct 性能负域已由 T-042 guard 停用 | `supported-beneficial`（exact-zero 整数/布尔 + 非空单用户 view chain） | `report/t041_mask_hamming_performance_20260825.md`、`report/t042_bool_view_guard_integration_20260825.md` |
+| batch_embedding_fusion_pass | 修复 step/dtype/alias；default/cat P50 +23.50%/+43.90%，tasks 9→3/13→3，但 peak/compile 增加 | `supported-neutral-resource-beneficial` | `report/t043_t046_b2_composite_passes_20260825.md` |
 
 ## 已否决或失败的尝试
 
@@ -37,6 +38,7 @@
 | masked add 浮点无 guard | 普通相等误差为 0，但 `-0 + +0` 与直接选择的 signbit 不同 | 仅 exact-zero 整数/布尔 dtype 改写；浮点保持原图 |
 | bool cast-mul 浮点无 guard | false 位置的 `0*Inf/NaN` 是 NaN，where false 分支却是常量零 | 仅 exact-zero 整数/布尔 dtype 改写；浮点保持原图 |
 | bool cast-mul direct rewrite | p50/p99 回退 0.69%/19.02%，active10 device duration 62.56→73.86 μs | T-042 要求非空 view chain；direct 保持原图 |
+| fusion_attention_v3_pass（910B2） | 与 legacy 同为单个 FlashAttentionScore task、显存相同，但 P50/P99 回退 4.85%/31.72% | T-046 在非 A5 停用升级并保持 legacy；不写重复 Triton attention |
 
 ## 中性、未归因与环境类尝试
 
@@ -51,6 +53,8 @@
 | broadcast_const_mask_compress 三轮 paired | p50 +0.30%、p99 +1.01%，task 1→1、显存不变 | `supported-neutral`；baseline 已融合为单 kernel，不写 Triton 替身 |
 | masked_add_compose_pass 三轮 paired | p50/p99 +3.71%/+9.84%，task 1→1、显存不变 | `supported-neutral`；未过 10% p50 gate，不写重复 Triton |
 | sign_diff_hamming_fuse_pass 三轮 paired | p50/p99 +3.64%/+5.49%，task 1→1、显存不变 | `supported-neutral`；device kernel 更快但端到端固定开销主导 |
+| fused_matmul_relu_pass（910B2） | `is_ascend950=false`，pass 不注册且 fused op 不解析 | `not-applicable`；A5 功能/性能仍待对应硬件验证 |
+| batch embedding 完整性能 gate | 两个 safe cohort 的 P50/task 均改善，但 allocated peak 分别增加 1,831,936/13,628,416 B，首次编译约翻倍 | 保留 safe pass 并明确 trade-off，不升级为全面 `supported-beneficial` |
 | T-039 初版 aggregate | 把一次 profiler device duration 略降误当 resource 改善 | 复核预登记后只接受 task/显存下降，最终 mask verdict 为 neutral；原始样本未重跑 |
 | T-034 首轮 view 门禁 | 编译前 view 已规范化为 reshape，且首个 sink 正例是恒等 view | 审计假设错误；v2 修正后全过，不计产品失败 |
 | 首次 grad-enabled B2 worker | inference-only POST driver 未调用目标 pass | 合法模式分流，不是产品失败 |
@@ -63,14 +67,14 @@
 ## 当前安装态
 
 - 最终 torch_npu wheel SHA256：
-  `ea801e791373b0bd3adf9d4bfb6253ace75afa800c71b0451c9b206e4664fe5a`。
-- 当前测试源码与安装态均为 76/76；T-042 的 direct/view/float 3 个 NPU worker 全部通过
-  图与完整 NaN/signbit/alias 语义门禁。T-040 旧 wheel 已保留为
-  `artifacts/torch_npu_t040_before_t042_bool_view_perf_guard.whl`。
+  `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`。
+- 当前测试源码与安装态均为 85/85；T-046 的 B2 attention 关闭态 worker 通过
+  legacy/v3 `1/0→1/0` 与四输出完整语义门禁。P-010 旧 wheel 已保留为
+  `artifacts/torch_npu_t043_before_t046_attention_b2_gate.whl`。
 - 性能失败的 T-029 clone candidate wheel 单独保留在
   `artifacts/torch_npu_t029_alias_safe_clone_candidate.whl`，不是当前安装态。
 
 ## 下一步
 
-为 B2 最后 3 个复合融合补结构/NPU 证据，随后执行 B3 DVM/MLIR 与 B4 attention。
-T-023 的无 shim 环境复验作为独立环境支线，不阻塞主线。
+B2 27 条已闭环。下一步执行 B3 的 8 条 DVM/MLIR 结构与后端分层验证，随后执行 B4
+attention family；T-023 的无 shim 环境复验作为独立环境支线，不阻塞主线。

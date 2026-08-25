@@ -2,7 +2,8 @@
 
 This directory is the audit, evidence, and report area for the local PyTorch
 and torch_npu source trees. The project working directory is
-`/home/z50063656/Pass`. T-011, T-023, T-029/T-031, T-036, T-038, T-040, and T-042 contain pre-registered torch_npu source
+`/home/z50063656/Pass`. T-011, T-023, T-029/T-031, T-036, T-038, T-040, T-042,
+T-043, and T-046 contain pre-registered torch_npu source
 changes; all other audit prototypes stay in this directory, and every product
 change is governed by `change_control.md`.
 
@@ -24,8 +25,8 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   test-only device-gate bypass but regress 65–121% at p50, so the gate remains.
   The next main batch is P1; the matching fresh-launcher environment remains an
   explicit T-023 follow-up rather than being hidden by the audit compiler shim.
-  P1 B2 has started: T-027 through T-042 now cover 76/76 FX tests and fresh NPU
-  positive/negative/alias/IEEE cases for twenty-four custom passes. Alias auditing rejected the
+  P1 B2 is now complete: T-027 through T-046 cover 85/85 FX tests and fresh NPU
+  positive/negative/alias/IEEE cases for all twenty-seven custom passes. Alias auditing rejected the
   original direct-input `fold_reduce`/`cat_to_view` rewrites. The final wheel
   disables the performance-regressed `fold_reduce` rewrite and keeps an
   alias-safe `cat_to_view` clone that reduces tasks 3→1 and allocated peak by
@@ -56,6 +57,13 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   T-042 adds a non-empty view-chain guard, rebuilds/installs the wheel, and
   passes 76/76 source/installed FX plus 3/3 NPU functional workers. The
   direct/float paths now stay unchanged and the view-chain scope is beneficial.
+  T-043 through T-046 then repair batch-embedding slice/dtype/storage semantics,
+  attention schema/meta handling, and duplicate PRE execution. Batch fusion improves
+  P50 by 23.50%/43.90% and reduces tasks 9→3/13→3, but increases allocated peak and
+  first compile, so it is resource-beneficial rather than globally beneficial.
+  Legacy→v3 attention on 910B2 regresses P50/P99 by 4.85%/31.72% with the same
+  single vendor kernel; the final wheel disables that replacement on non-A5 devices.
+  Fused matmul+relu remains A5-only and is correctly not applicable on the available 910B2.
 
 - Do not modify PyTorch, torch_npu, or Triton functional source before the
   exact proposal, rollback boundary, and verification plan are recorded in
@@ -73,10 +81,10 @@ The current dynamic runtime is Conda `benchmark-py311`, activated by
 Triton runtime 3.2.0, CANN 9.0.1, and 8 Ascend 910B2 devices. Runtime NPU tests
 pass, but T-022 found that a fresh Triton host launcher cannot be compiled by
 this exact mixed header contract without an audit-only shim; product validation
-must not rely on that shim. The installed T-042 source wheel SHA256 is
-`ea801e791373b0bd3adf9d4bfb6253ace75afa800c71b0451c9b206e4664fe5a`;
-the previous T-040 wheel remains preserved as
-`artifacts/torch_npu_t040_before_t042_bool_view_perf_guard.whl` for rollback.
+must not rely on that shim. The installed T-046 source wheel SHA256 is
+`beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`;
+the previous P-010 wheel remains preserved as
+`artifacts/torch_npu_t043_before_t046_attention_b2_gate.whl` for rollback.
 
 Read [current_status_and_background.md](current_status_and_background.md) before
 choosing a wheel or source build and before restarting any probe.
@@ -181,7 +189,10 @@ NPU functional closure are in the
 Their four-case paired performance is in the
 [T-041 report](report/t041_mask_hamming_performance_20260825.md), and the final
 bool view-chain capability/wheel closure is in the
-[T-042 report](report/t042_bool_view_guard_integration_20260825.md).
+[T-042 report](report/t042_bool_view_guard_integration_20260825.md). The final
+batch-embedding, fused-matmul-relu, and attention-v3 cohort—including the B2
+performance rejection gate—is in the
+[T-043–T-046 report](report/t043_t046_b2_composite_passes_20260825.md).
 
 ## 1. Generate the full source inventory
 
