@@ -83,6 +83,9 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   91.37%, and additional allocated peak falls 87.31%.
   T-052 traces 5/21/29 re-expansion to the vendor bool/None mask gate and
   confirms no-mask pattern 30 reaches one vendor attention task.
+  T-053/T-054 close pattern 5: the rewrite regresses P50 by 103.23% and expands
+  tasks 3→8; the P-013 exact NPU guard restores the original graph, improves
+  P50 by 50.28%, and returns tasks to 3. Pattern 1/13/21 regressions pass.
 
 - Do not modify PyTorch, torch_npu, or Triton functional source before the
   exact proposal, rollback boundary, and verification plan are recorded in
@@ -104,8 +107,9 @@ must not rely on that shim. The installed T-046 source wheel SHA256 is
 `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`;
 the previous P-010 wheel remains preserved as
 `artifacts/torch_npu_t043_before_t046_attention_b2_gate.whl` for rollback. The
-current P-012 wheel SHA256 is
-`61b0031cbb027548f60745dcf0a2484503a360347dec6bd3cc2f3f2bc823ebca`;
+current P-013 wheel SHA256 is
+`3909fd649d777b8dfd393342da0ff2b88c5cce2ef219f0d103d063af4c2d4989`;
+the P-012 rollback wheel is `artifacts/torch_npu_t053_before_p013.whl`;
 the P-011 rollback wheel is
 `artifacts/torch_npu_t046_before_t047_p012.whl`.
 
@@ -224,6 +228,9 @@ isolation attempts, and first attention paired result are in the
 [T-049/T-050 report](report/t049_t050_b4_attention_first_20260826.md).
 Pattern 13's paired latency/resource split is in the
 [T-051 report](report/t051_b4_attention_pattern13_performance_20260826.md).
+Pattern 5's math re-expansion regression and verified P-013 guard are in the
+[T-053 report](report/t053_b4_attention_pattern5_performance_20260826.md) and
+[T-054 report](report/t054_b4_attention_pattern5_guard_20260826.md).
 The float-mask dispatcher root cause and pattern-30 control are in the
 [T-052 report](report/t052_b4_attention_float_mask_dispatch_20260826.md).
 

@@ -22,6 +22,7 @@
 | dvm_graph_fusion | 15/15 NPU；default→DVM P50/P99 +24.20%/+39.93%，首次编译 20.32→2.81 s，allocated peak 相同 | `supported-beneficial` | `report/t047_t048_b3_dvm_mlir_20260826.md` |
 | `_sfdp_pattern_1` | fp16 静态 inference 精确命中 vendor attention；P50/P99 +46.70%/+44.26%，task 4→1，allocated peak -87.31% | `supported-beneficial` | `report/t049_t050_b4_attention_first_20260826.md` |
 | `_sfdp_pattern_13` | 三维 BMM inference 落到 vendor attention；P50 仅 +0.99%，但 task 3→1、首次编译 +91.37%、allocated peak -87.31% | `supported-neutral-resource-beneficial` | `report/t051_b4_attention_pattern13_performance_20260826.md` |
+| P-013 pattern 5 NPU guard | 旧 rewrite P50 回退 103.23%、task 3→8；guard 后 P50 +50.28%、task 8→3、peak -1,054,720 B | guard `supported-beneficial`；rewrite 已停用 | `report/t053_b4_attention_pattern5_performance_20260826.md`、`report/t054_b4_attention_pattern5_guard_20260826.md` |
 
 ## 已否决或失败的尝试
 
@@ -81,14 +82,14 @@
 ## 当前安装态
 
 - 最终 torch_npu wheel SHA256：
-  `61b0031cbb027548f60745dcf0a2484503a360347dec6bd3cc2f3f2bc823ebca`。
-- P-012 source/installed 目标测试均 6/6，DVM graph-fusion 15/15、DVM backend 32/32。
-  P-011 旧 wheel 已保留为 `artifacts/torch_npu_t046_before_t047_p012.whl`。
+  `3909fd649d777b8dfd393342da0ff2b88c5cce2ef219f0d103d063af4c2d4989`。
+- P-013 guard 单测 2/2、installed paired 和邻近 3 family 通过；P-012 旧 wheel 保留为
+  `artifacts/torch_npu_t053_before_p013.whl`。
 - 性能失败的 T-029 clone candidate wheel 单独保留在
   `artifacts/torch_npu_t029_alias_safe_clone_candidate.whl`，不是当前安装态。
 
 ## 下一步
 
-B2 27 条和 B3 8 条已闭环，B4 八个代表 family 功能、pattern 1/13 性能和 float-mask 根因已完成。
-下一步做 pattern 5 paired，再扩展剩余 attention family；完整 MLIR 与 T-023 无 shim 复验作为独立环境
+B2 27 条和 B3 8 条已闭环，B4 八个代表 family 功能、pattern 1/13/5 性能和 P-013 已完成。
+下一步做 pattern 21/29 paired，再扩展剩余 attention family；完整 MLIR 与 T-023 无 shim 复验作为独立环境
 支线，不阻塞主线。

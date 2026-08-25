@@ -2,7 +2,7 @@
 
 ## 1. 当前结论
 
-截至 2026-08-26，本任务已完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、P0 gate/功能/性能闭环、P1 B2 全部 27 个 custom pass、B3 全部 8 个 DVM/MLIR pass，并进入 B4 attention。当前 8 个代表 family 精确触发并数值通过；1/13/30 落到纯 vendor attention，18/28 为辅助 Triton + vendor，5/21/29 被 dispatcher 重新展开为 BMM + Triton。pattern 1 为 `supported-beneficial`，pattern 13 为 `supported-neutral-resource-beneficial`。T-052 已确认 5/21/29 的根因是 additive float mask 不满足 vendor bool/None gate，属于安全 math fallback。当前仍是 P-012 源码 wheel（`--no-deps`）；B4 没有产品源码修改。
+截至 2026-08-26，本任务已完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、P0 gate/功能/性能闭环、P1 B2 全部 27 个 custom pass、B3 全部 8 个 DVM/MLIR pass，并进入 B4 attention。当前 8 个代表 family 精确触发并数值通过；1/13/30 落到纯 vendor attention，18/28 为辅助 Triton + vendor，5/21/29 被 dispatcher 重新展开为 BMM + Triton。pattern 1 为 `supported-beneficial`，pattern 13 为 `supported-neutral-resource-beneficial`。T-053 证明 pattern 5 rewrite P50 回退 103.23%；P-013 已在 NPU 精确停用该 entry，T-054 验证 P50 改善 50.28%、task 8→3。当前安装 P-013 源码 wheel（`--no-deps`）。
 
 **用户已要求从暂停检查点继续。** 历史恢复基线为
 [PAUSED_CHECKPOINT_20260821.md](PAUSED_CHECKPOINT_20260821.md)，恢复后的 E-030 至
@@ -166,9 +166,16 @@ E-146 已完成。正式性能结论均来自运行前后空闲设备、fresh-pr
    vendor branch 只接受 bool/None。无 mask pattern 30 exact 命中单个 vendor attention。一般 float
    bias 不能无损转 bool，当前不扩大 gate。证据见 `report/t052_b4_attention_float_mask_dispatch_20260826.md`。
 
+   T-053/T-054 关闭 pattern 5 性能负域。旧 rewrite 将原图 `2 BMM + 1 Triton` 重展开为
+   `2 BMM + 6 Triton`，P50/P99 回退 103.23%/101.20%。P-013 只在 NPU default backend 精确
+   停用 half-inference entry；新 wheel 同机 paired P50/P99 改善 50.28%/24.26%、task 8→3、
+   allocated peak 减少 1,054,720 B，pattern 1/13/21 邻近回归通过。证据见
+   `report/t053_b4_attention_pattern5_performance_20260826.md` 与
+   `report/t054_b4_attention_pattern5_guard_20260826.md`。
+
 所有产品修改都已先在 `change_control.md` 登记。addmm、different-K、pad family、B2 27 条
 与 B3 8 条均已有成功、失败、中性、到达性或环境/device-gated 证据；当前主线继续 B4，下一步
-对 pattern 5 做 pass-on/off paired，并扩展剩余 family。T-023 只保留正式无 shim
+对 pattern 21/29 做 pass-on/off paired，并扩展剩余 family。T-023 只保留正式无 shim
 环境复验。
 
 ### 2.3 探针框架
@@ -199,7 +206,7 @@ P0 语义层先完成 6 个 inference case 和 3 个 forward/backward case。inf
 
 2026-08-21 T-023 结束复核时，PyTorch 产品源码未改；Triton Ascend 产品源码未改。torch_npu commit 未变，tracked diff 包含 T-011 `lowering.py` 和 T-023 的 `__init__.py`、`config.py`、`fx_passes/post_grad.py`、`kernel/__init__.py`，另有新 kernel 与目标 UT；既有未跟踪代码生成文件不纳入功能 diff。构建过程的临时 torchgen link/workspace均已清理，ACL 子模块恢复；详细记录见 `change_control.md:E-057` 至 `E-071`。
 
-该组合已从 `/home/z50063656/tmp` 完成 CPU/NPU eager 与 Inductor smoke、P0、T-011 至 T-052 审计。当前安装的是 P-012 源码 wheel，SHA256 为 `61b0031cbb027548f60745dcf0a2484503a360347dec6bd3cc2f3f2bc823ebca`；它包含此前 B2 guard，以及 DVM sum/expand 自包含合同修复。P-011 wheel 已保存在 `artifacts/torch_npu_t046_before_t047_p012.whl`，SHA256 为 `beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`；更早的审计 wheel 也仍保留。
+该组合已从 `/home/z50063656/tmp` 完成 CPU/NPU eager 与 Inductor smoke、P0、T-011 至 T-054 审计。当前安装的是 P-013 源码 wheel，SHA256 为 `3909fd649d777b8dfd393342da0ff2b88c5cce2ef219f0d103d063af4c2d4989`；它包含此前 B2/P-012 修复和 pattern 5 NPU exact guard。P-012 wheel 已保存在 `artifacts/torch_npu_t053_before_p013.whl`；更早的审计 wheel 也仍保留。
 
 T-022 进一步确认“已安装 runtime 可运行”不等于“fresh Triton host launcher 可编译”：editable PyTorch 指向的源码树当前缺少 `torch/include`；wheel headers 已要求 C++20，而 Triton Ascend 3.2.0 launcher 固定 `-std=c++17`；installed torch_npu headers 还引用 CANN 9.0.1 没有声明的两个 conditional graph 类型。审计专用 compiler shim 只用于隔离 profiler/benchmark，不能进入产品或最终环境结论。正式 integration 最终需要一套 headers/编译标准匹配的 wheel 或完整源码构建环境。
 
@@ -333,7 +340,7 @@ torch.compile(
 6. bf16/fp32、真实 transposed/non-contiguous、dynamic replay、backward、正式接入设计，以及 large profiler/tile/memory 分解均已完成；large 最终为 supported-neutral-hold，中小 static cohort 保留 beneficial gate。
 7. different-K default-off template、源码 wheel、首批功能/性能/memory和 workspace 替代搜索已完成；状态为 `conditional-supported-beneficial`。不再重复 T-014 至 T-024，环境支线只需在匹配 headers 的独立环境做无 shim fresh compile smoke。
 8. pad family、P1 B2 全部 27 条和 B3 DVM/MLIR 8 条已完成结构/NPU/性能或环境分流。
-   B4 八个代表 family 功能与 pattern 1/13 性能已完成；当前做 pattern 5 paired 并扩展剩余 family。
+   B4 八个代表 family 功能与 pattern 1/13/5 性能、P-013 guard 已完成；当前做 pattern 21/29 paired 并扩展剩余 family。
    完整 MLIR 只在补齐 `torch_mlir` 的独立环境复验。已闭环 case 不重跑，
    除非环境或源码基线改变。
 

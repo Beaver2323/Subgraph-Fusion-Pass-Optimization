@@ -75,6 +75,7 @@
 - B3 的 8 条 DVM/MLIR 记录已完成。P-012 修复 sum dtype 逃逸和 expand 的直接调用合同；NPU graph-fusion 15/15、DVM backend 32/32。aggregate DVM fusion 的 P50/P99 改善 24.20%/39.93%；K=1 helper 已被上游预分解，expand helper 在当前 partitioner 不可达；完整 MLIR 缺 `torch_mlir`。
 - B4 已完成 8 个代表 attention family 的精确 matcher、数值和 codegen smoke。pattern 1 的 fp16 静态 inference P50/P99 改善 46.70%/44.26%，task 4→1、allocated peak 减少 87.31%，成为首条 B4 `supported-beneficial`。T-052 还确认 5/21/29 是 additive float-mask 安全 math fallback，无 mask pattern 30 直接走 vendor attention。
 - pattern 13 同样落到 vendor attention，但 P50 只改善 0.99%；task 3→1、首次编译改善 91.37%、allocated peak 减少 87.31%，所以是 `supported-neutral-resource-beneficial`。
+- pattern 5 展示另一类结论：matcher 后因 float mask 重展开，P50 反而回退 103.23%、task 3→8。P-013 不写完整 attention，而是在 NPU 精确关闭该 entry；新 wheel P50 改善 50.28%、task 恢复 8→3。
 - 当前矩阵总计 221 条 <code>not-run</code>、2 条 <code>not-applicable</code>、4 条 <code>unsupported</code>、9 条 <code>supported-beneficial</code>、1 条 <code>conditional-supported-beneficial</code>、9 条 <code>supported-neutral</code>、3 条 <code>supported-neutral-resource-beneficial</code>、2 条 <code>supported-pass-disabled-performance-rejected</code>。
 
 ### 5. 从头阅读现有文档的路线
@@ -104,7 +105,8 @@
 21. [T-049/T-050 attention 首轮报告](report/t049_t050_b4_attention_first_20260826.md)：学习 matcher 命中与 vendor kernel 落地的区别、等价 pattern 接管、scale divisor 合同和 paired isolate。
 22. [T-051 pattern 13 性能报告](report/t051_b4_attention_pattern13_performance_20260826.md)：学习同一 vendor kernel 为何在不同 family 可能只有资源收益、没有稳态时延收益。
 23. [T-052 float-mask 分流报告](report/t052_b4_attention_float_mask_dispatch_20260826.md)：学习 matcher 命中后的设备 capability 分支，以及为何一般 additive mask 不能直接转 bool。
-24. [p1_batch_design.md](p1_batch_design.md)：查看 attention 全批设计和剩余覆盖。
+24. [T-053/T-054 pattern 5 报告](report/t054_b4_attention_pattern5_guard_20260826.md)：学习如何把性能负 rewrite 缩窄为 NPU exact guard，并用同 wheel 恢复旧 generator 做 paired。
+25. [p1_batch_design.md](p1_batch_design.md)：查看 attention 全批设计和剩余覆盖。
 25. [change_control.md](change_control.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
 
 根目录旧 <code>report/pass_inventory.md</code> 属于历史诊断；当前静态基线是 <code>report/pass_src_20260820/</code>，动态环境由 <code>/home/z50063656/Benchmark/env.sh</code> 启动 Conda <code>benchmark-py311</code>。T-022/T-023 还要求区分 runtime 已可用与 fresh Triton host launcher 编译合同是否完整。
@@ -826,7 +828,7 @@ bool，因为加性偏置与屏蔽语义不同；详见
 按 [p1_batch_design.md](p1_batch_design.md) 顺序：
 
 1. DVM/MLIR 的 8 条记录已完成结构层、后端层和可隔离 aggregate 性能；
-2. attention 八个代表 family 已完成，pattern 1/13 已完成性能，float-mask 根因已定位；下一步做 pattern 5 paired，再扩到 30 个；
+2. attention 八个代表 family 已完成，pattern 1/13/5 性能与 pattern 5 guard 已闭环；下一步做 21/29 paired，再扩到 30 个；
 3. 只对暴露出的真实 lowering/kernel 缺口提出替代。
 
 #### 后续：只对真实缺口实施替代
@@ -893,4 +895,4 @@ torch.compile
 2. **gate 练习**：从 <code>pad_mm.py::check_device()</code> 向上追到 pattern 注册，向下追到 replacement，解释为什么 <code>force_shape_pad=True</code> 仍无效。
 3. **性能练习**：阅读 fold_cat 的六个 worker JSON，自己计算 p50/p99 三轮中位数、task 2→1 和约 2 MiB 中间张量消失的关系，并解释为什么 eager-vs-compiled 不能作为单 pass baseline。
 
-这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后继续读 [T-049/T-050 attention 报告](report/t049_t050_b4_attention_first_20260826.md)、[T-051 pattern 13 报告](report/t051_b4_attention_pattern13_performance_20260826.md) 和 [T-052 float-mask 报告](report/t052_b4_attention_float_mask_dispatch_20260826.md)。当前 B2/B3 已闭环，B4 两条性能和 dispatcher 根因已关闭；下一步做 pattern 5 paired 与剩余 family，不要重跑已闭环 case。
+这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后继续读 [T-049/T-050 attention 报告](report/t049_t050_b4_attention_first_20260826.md)、[T-051 pattern 13 报告](report/t051_b4_attention_pattern13_performance_20260826.md)、[T-052 float-mask 报告](report/t052_b4_attention_float_mask_dispatch_20260826.md) 和 [T-054 pattern 5 guard 报告](report/t054_b4_attention_pattern5_guard_20260826.md)。当前 B2/B3 已闭环，B4 三条性能与首个负域 guard 已关闭；下一步做 21/29 paired 与剩余 family，不要重跑已闭环 case。

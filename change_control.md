@@ -1953,7 +1953,100 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
   第三次独立 Inductor/Triton cache 才纳入结论。前两次作为中性审计方法记录保留。详细报告见
   `report/t052_b4_attention_float_mask_dispatch_20260826.md`。
 
+### T-053：B4 pattern 5 float-mask math fallback 配对性能登记
+
+- 只新增 audit-only worker、aggregate、结果与文档，不修改 PyTorch、torch_npu、Triton 或
+  op-plugin 产品源码。目标是比较原始 pattern 5 子图与“matcher 命中、SDPA replacement 随后因
+  additive float mask 被 dispatcher 安全分解为 math”的最终执行成本；本任务不尝试把一般
+  float mask 转 bool，也不手写完整 attention。
+- cohort 固定为 `(4,8,128,64)` fp16 Q/K/V 与 `(1,1,128,128)` fp16 additive mask，静态
+  inference。baseline 仅把 `_sfdp_pattern_5_half_inference` entry 的 `extra_check` 临时置
+  false，candidate 保持产品默认。先各跑一个 fresh-cache smoke，要求 baseline exact/总 fusion
+  counter 为 0、candidate exact/总 counter 为 1；若其他 attention pattern 接管，必须先修订
+  等价 isolate 范围，不能把未隔离数据纳入性能。
+- 两侧都预期最终为 BMM + Triton math，而不是 vendor FlashAttention。worker 必须记录 generated
+  code、10-step profiler task、首次 compile+run、P50/P99/mean/stdev、allocated/reserved peak，
+  并先通过 value/dtype/shape/finite 与 fp16 `atol=rtol=0.02`。两侧统一使用 T-022 audit-only
+  C++20/CANN header wrapper和 installed PyTorch headers，结论限于 development/audit-shim 合同。
+- 隔离 smoke 通过后按 `B1,C1,C2,B2,B3,C3` 跑各 3 个 fresh worker，warmup 10、runs 100。
+  beneficial gate 沿用 P50 改善 >10%、P99 回退不超过 5%、additional allocated peak 不增加；
+  若 candidate 回退超过 5%，记 `supported-performance-regressed`，并把该 family 标为优先优化
+  候选，但不得仅凭性能回退扩大不安全的 vendor mask gate。
+
+### E-148：T-053 pattern 5 性能回退闭环（2026-08-26）
+
+- 短 smoke 与正式六轮都确认 baseline 只关闭一个 pattern 5 half-inference entry，exact/总
+  fusion counter 为 0；candidate exact/总 counter 为 1。两侧数值、shape、dtype、finite
+  合同通过，最大绝对误差均为 `0.0029296875`，最终都没有 vendor attention。
+- baseline 生成 `2 BMM + 1 Triton`，candidate 经 SDPA math re-expansion 生成
+  `2 BMM + 6 Triton`。三轮中位 P50 `0.381385→0.775105 ms`（回退 103.23%），P99
+  `0.409750→0.824400 ms`（回退 101.20%），首次 compile+run 回退 140.82%，task/step
+  `3→8`，additional allocated peak 增加 `1,054,720 B`。三个预登记门槛全部失败。
+- 最终记 `supported-performance-regressed`。优先方向是避免在 NPU float-mask capability 外做
+  无收益 rewrite，或未来为严格可证明子域接 vendor；不把任意 float bias 转 bool，也不手写
+  完整 attention 复制已经更快的原图 math 路径。
+- 第一次 smoke 因审计脚本 final mkdir 与 debug 目录先创建冲突而未写 result；candidate 未启动。
+  失败目录保留，修正只影响 audit 落盘，retry 与正式结果有效。详细证据见
+  `report/t053_b4_attention_pattern5_performance_20260826.md`。
+
+### T-054：P-013 installed wheel 功能与配对性能验收登记
+
+- P-013 源码只按已登记范围增加 NPU exact-entry guard、loader 调用和独立无设备测试；2/2
+  测试已通过。旧 P-012 wheel 已保存为
+  `artifacts/torch_npu_t053_before_p013.whl`，SHA256 与登记值一致。第一次 build 命令因在
+  source `env.sh` 前设置 `set -e` 而退出，未执行构建/覆盖 wheel；有效 retry 后的新 wheel
+  SHA256 为 `3909fd649d777b8dfd393342da0ff2b88c5cce2ef219f0d103d063af4c2d4989`，已
+  `--no-deps --force-reinstall` 安装。
+- 新增 audit-only installed worker/aggregate。C 侧使用新 wheel 默认 guard；B 侧在 fresh process
+  中只为 exact entry 恢复 guard 保存的原 `extra_check`，重建旧 rewrite。两侧同一新 wheel、同一
+  `(4,8,128,64)` fp16 Q/K/V 与 `(1,1,128,128)` fp16 additive mask、相同 wrapper/header。
+- 先各做 fresh smoke：C 必须 exact/总 counter 0、`2 BMM + 1 Triton`；B 必须 counter 1、
+  `2 BMM + 6 Triton`；两侧均不得出现 vendor attention，数值/dtype/shape/finite 先通过。若
+  wrapper 原 check 不可恢复或其他 pattern 接管，立即停止正式性能并回滚 P-013。
+- 隔离通过后顺序 `B1,C1,C2,B2,B3,C3`，各 3 个 fresh worker、warmup 10/runs 100；记录首次
+  compile、P50/P99/mean/stdev、allocated/reserved peak 和 10-step task。C 相对 B 必须 P50
+  改善 >10%、P99 不回退超过 5%、allocated peak 不增加且 task 8→3，才能把 P-013 标成
+  verified。测试后还需回归 pattern 1 vendor-beneficial、pattern 13 vendor-resource-beneficial
+  和 pattern 21 仍可触发，证明 exact scope 没有旁路其他 family。
+
+### E-149：P-013 pattern 5 NPU 性能门禁验证完成（2026-08-26）
+
+- 新 wheel installed smoke 中，默认 guard exact/总 counter 为 0、生成 `2 BMM + 1 Triton`；
+  测试侧恢复 wrapper 保存的原 pattern generator 后 counter 为 1、恢复 `2 BMM + 6 Triton`。
+  六个正式 worker 的 shape/dtype/finite/容差全部通过，最大误差 `0.0029296875`。
+- 旧 rewrite→默认 guard 的三轮中位 P50 `0.745200→0.370545 ms`（改善 50.28%），P99
+  `0.767770→0.581510 ms`（改善 24.26%），mean 改善 48.79%，首次 compile+run 改善
+  57.81%；task `8→3`，additional allocated peak 减少 `1,054,720 B`，reserved 不变。
+  P-013 四项验收门槛全部通过。
+- pattern 1/13/21 邻近 fresh regression 的 exact/总 counter 均为 1，数值通过；1/13 保持
+  vendor FlashAttention，21 保持原 math fallback。最初邻近命令误把 case 1 传给不含该 choice
+  的代表脚本，在 argparse 阶段退出、未编译；随后用独立 pattern 1 脚本有效通过。
+- P-013 状态升级为 `verified-pass-disabled-performance-rejected`：guard 本身为
+  `supported-beneficial` 修复，但被守护的 pattern 5 rewrite 仍是性能负优化，矩阵按最终产品
+  行为记 `supported-pass-disabled-performance-rejected`。详细证据见
+  `report/t054_b4_attention_pattern5_guard_20260826.md`。
+
 ## 提案记录
+
+### P-013：pattern 5 NPU half-inference 性能负域门禁
+
+- 状态：`verified-pass-disabled-performance-rejected`。目标只覆盖 T-053 已验证的
+  `_sfdp_pattern_5_half_inference` + NPU default Triton backend；CPU/CUDA/XPU、fp32、training、
+  pattern 6/21/29 与其他 attention family 全部保持。修改前回滚边界为当前 P-012 wheel
+  SHA256 `61b0031cbb027548f60745dcf0a2484503a360347dec6bd3cc2f3f2bc823ebca`。
+- 候选修改仅限 `torch_npu/_inductor/fx_passes/joint_graph.py`、backend loader 的注册调用和一个
+  独立目标测试文件：在 PyTorch attention lazy pattern 生成前，为上述唯一 entry 包装 NPU-only
+  `extra_check=False`，使它保持原图。包装必须幂等并保存原 check 供测试/回滚；不得修改 PyTorch
+  通用源码、op-plugin SDPA dispatcher、算子 schema、C++ 或 Triton kernel。
+- 先做 device-independent 单元测试：NPU + exact key 被关闭，非 NPU 和其他 key 保持原 check，
+  重复 patch 不叠加。再重建 torch_npu wheel、`--no-deps` 安装，运行 pattern 5 fresh NPU
+  integration，要求默认 exact/总 counter 变为 0、generated code 恢复 `2 BMM + 1 Triton`、
+  数值合同通过；测试侧临时恢复保存的原 check 应再次得到 counter 1 与 `2 BMM + 6 Triton`。
+- 新 wheel 下仍按 `B1,C1,C2,B2,B3,C3` 做三轮 paired；这里 B 表示恢复旧 rewrite，C 表示新
+  guard。接受门槛为 guard 相对旧 rewrite 的 P50 改善 >10%、P99 不回退超过 5%、allocated
+  peak 不增加，同时 task 恢复 8→3。任一调用顺序、cache 或其他 family 被改变则回滚。
+- 该 guard 是性能域收缩，不把 pattern 标成“不可用”。只有 21/29 各自完成 paired 并证明同类
+  回退后，才可另行登记扩大 family 范围；禁止从 pattern 5 直接外推。
 
 ### P-012：DVM sum/expand 子 pass 自包含能力门禁
 

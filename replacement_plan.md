@@ -28,7 +28,7 @@
 | DVM/MLIR wrapper | DVM backend 无 `torch_mlir` 仍 32/32；完整 MLIR loader 被依赖阻塞 | DVM 结论保留；MLIR 在独立匹配环境补测，不能用 Triton 替代缺失 Python/MLIR 依赖 |
 | NPU custom FX pass | `ascend_custom_passes` 注册 27 个 pass，主要是 fold/view/cat/reduce/attention/embedding 等图重写 | 先做图正确性和 kernel 数量检查；这些 pass 通常不需要手写 Triton |
 | `inductor-npu-ext` | 通过 `pre_grad_custom_pass` / `post_grad_custom_pre_pass` 注册 legacy scatter、pad-slice、batch-embedding pass | 作为 AscendC 后端独立测量，不能与 Triton backend 的结果混用 |
-| attention | B2 legacy→v3 在 910B2 已性能拒绝；B4 pattern 1 latency-beneficial、pattern 13 resource-beneficial；5/21/29 matcher 后又展开为数学路径 | 非 A5 保留 legacy；1/13 继续 vendor；先定位 5/21/29 的 dispatcher capability，再判断扩大 vendor gate或优化辅助 kernel，当前不手写完整 attention |
+| attention | B2 legacy→v3 在 910B2 已性能拒绝；B4 pattern 1 latency-beneficial、pattern 13 resource-beneficial；pattern 5 rewrite P50 回退 103.23% | 非 A5 保留 legacy；1/13 继续 vendor；P-013 精确停用 pattern 5 后 P50 +50.28%、task 8→3；继续测 21/29，当前不手写完整 attention |
 
 ## Pass 分层与替代策略
 
@@ -67,7 +67,7 @@
 
 ## 下一步执行
 
-当前主线不再重跑全量旧探针。pad family、B2/B3 已完成，B4 八个代表 family 功能、pattern 1/13 性能与 float-mask 根因已关闭。下一步按 `p1_batch_design.md` 做 pattern 5 paired，再扩到剩余 attention。完整 MLIR 与 T-023 环境支线只在匹配依赖/headers 的独立环境补测。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
+当前主线不再重跑全量旧探针。pad family、B2/B3 已完成，B4 八个代表 family 功能、pattern 1/13/5 性能与 P-013 已关闭。下一步按 `p1_batch_design.md` 做 pattern 21/29 paired，再扩到剩余 attention。完整 MLIR 与 T-023 环境支线只在匹配依赖/headers 的独立环境补测。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
 
 ```bash
 python /home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py \

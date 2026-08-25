@@ -28,6 +28,8 @@ inference paired P50/P99 改善 46.70%/44.26%，关闭为 `supported-beneficial`
 `supported-neutral-resource-beneficial`；下一步转向 5/21/29 dispatcher re-expansion。
 T-052 又补齐无 mask pattern 30，使代表 family 增至 8 个；源码确认 5/21/29 的 additive float
 mask 被 vendor bool/None gate拒绝后安全走 math，而 pattern 30 exact 命中 vendor attention。
+T-053/T-054 又关闭 pattern 5：旧 rewrite P50 回退 103.23%、task 3→8；P-013 exact NPU guard
+恢复原图后 P50 改善 50.28%、task 8→3，并完成 pattern 1/13/21 邻近回归。
 
 ## B2：27 个 NPU custom pass
 
@@ -215,7 +217,7 @@ T-049/T-052 代表 smoke 已覆盖 1、5、13、18、21、28、29、30，八个 
 
 1. 重新确认运行时源码 commit/导入路径与 `Pass/src` 一致。
 2. B2/B3 的结构、功能、installed wheel 和 paired performance 已闭环，不重复消耗设备时间。
-3. B4 八个代表 family smoke、pattern 1/13 paired 和 float-mask 根因已完成；下一步做 pattern 5 paired，再扩到全部 30。
+3. B4 八个代表 family smoke、pattern 1/13/5 paired 和 P-013 已完成；下一步做 21/29 paired，再扩到全部 30。
 4. 第 31 条 NPU wrapper 的 forward scale 合同已明确，下一步补 backward/dynamic；当前不修改源码。
 5. 只有功能、generated code 和 fallback 三项明确后，才做 pass-on/pass-off paired benchmark。
 6. 任一失败先分类为未触发、变换错误、lowering/codegen 缺口、精度、环境或性能，不直接跳到手写 Triton。
@@ -236,5 +238,5 @@ T-049/T-052 代表 smoke 已覆盖 1、5、13、18、21、28、29、30，八个 
   bool-cast 的 view-chain 关闭为 beneficial 并停用 direct 性能负域；另五条功能通过，多条
   前序消除/规范化 case 保持到达性或可归因性中性。
 - PRE attention 重复执行已修；`npu_fa` positional/keyword 已由动态证据确认等价，scale 名称实际是 legacy divisor 合同。
-- 当前下一步是 pattern 5 paired 与 B4 剩余 attention 覆盖。当前 P-012 已修改并重建 torch_npu wheel；
+- 当前下一步是 pattern 21/29 paired 与 B4 剩余 attention 覆盖。当前 P-013 已修改并重建 torch_npu wheel；
   PyTorch 与 Triton Ascend 产品源码未改。
