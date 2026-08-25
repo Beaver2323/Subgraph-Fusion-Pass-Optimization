@@ -2,7 +2,7 @@
 
 This directory is the audit, evidence, and report area for the local PyTorch
 and torch_npu source trees. The project working directory is
-`/home/z50063656/Pass`. T-011, T-023, T-029/T-031, T-036, and T-038 contain pre-registered torch_npu source
+`/home/z50063656/Pass`. T-011, T-023, T-029/T-031, T-036, T-038, T-040, and T-042 contain pre-registered torch_npu source
 changes; all other audit prototypes stay in this directory, and every product
 change is governed by `change_control.md`.
 
@@ -24,8 +24,8 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   test-only device-gate bypass but regress 65–121% at p50, so the gate remains.
   The next main batch is P1; the matching fresh-launcher environment remains an
   explicit T-023 follow-up rather than being hidden by the audit compiler shim.
-  P1 B2 has started: T-027 through T-036 now cover 60/60 FX tests and fresh NPU
-  positive/negative/alias cases for eighteen custom passes. Alias auditing rejected the
+  P1 B2 has started: T-027 through T-042 now cover 76/76 FX tests and fresh NPU
+  positive/negative/alias/IEEE cases for twenty-four custom passes. Alias auditing rejected the
   original direct-input `fold_reduce`/`cat_to_view` rewrites. The final wheel
   disables the performance-regressed `fold_reduce` rewrite and keeps an
   alias-safe `cat_to_view` clone that reduces tasks 3→1 and allocated peak by
@@ -47,7 +47,15 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   installed FX tests plus 9/9 NPU functional workers. T-039 closes their paired
   performance: safe `dtype_optimal_pass` and iota downcast improve p50 by
   52.06%/55.78%; equal-shape mask compression improves only 0.30% and remains
-  `supported-neutral`.
+  `supported-neutral`. T-040 then found float signed-zero and `0*Inf/NaN`
+  counterexamples in two remaining mask arithmetic passes, restricted both to
+  exact-zero integer/bool dtypes, rebuilt the source wheel, and closed 76/76 FX
+  plus 9/9 NPU functional workers. T-041 then closes 24/24 paired workers:
+  masked-add and sign-Hamming are neutral, bool-cast view-chain improves
+  p50/p99 by 36.30%/39.90%, while its direct rewrite regresses p99 by 19.02%.
+  T-042 adds a non-empty view-chain guard, rebuilds/installs the wheel, and
+  passes 76/76 source/installed FX plus 3/3 NPU functional workers. The
+  direct/float paths now stay unchanged and the view-chain scope is beneficial.
 
 - Do not modify PyTorch, torch_npu, or Triton functional source before the
   exact proposal, rollback boundary, and verification plan are recorded in
@@ -65,10 +73,10 @@ The current dynamic runtime is Conda `benchmark-py311`, activated by
 Triton runtime 3.2.0, CANN 9.0.1, and 8 Ascend 910B2 devices. Runtime NPU tests
 pass, but T-022 found that a fresh Triton host launcher cannot be compiled by
 this exact mixed header contract without an audit-only shim; product validation
-must not rely on that shim. The installed T-038 source wheel SHA256 is
-`dffad49056538fc4250b444b2c40a619db3b0897b00f8906f53757a857b167d8`;
-the previous T-036 wheel remains preserved as
-`artifacts/torch_npu_t036_before_t038_dtype_mask_fix.whl` for rollback.
+must not rely on that shim. The installed T-042 source wheel SHA256 is
+`ea801e791373b0bd3adf9d4bfb6253ace75afa800c71b0451c9b206e4664fe5a`;
+the previous T-040 wheel remains preserved as
+`artifacts/torch_npu_t040_before_t042_bool_view_perf_guard.whl` for rollback.
 
 Read [current_status_and_background.md](current_status_and_background.md) before
 choosing a wheel or source build and before restarting any probe.
@@ -167,6 +175,13 @@ are in the
 its three-round paired performance and two-beneficial/one-neutral decision are
 in the
 [T-039 performance report](report/t039_dtype_index_mask_performance_20260825.md).
+The remaining mask arithmetic IEEE fix, rebuilt-wheel verification, and 9/9
+NPU functional closure are in the
+[T-040 report](report/t040_mask_hamming_semantic_fix_20260825.md).
+Their four-case paired performance is in the
+[T-041 report](report/t041_mask_hamming_performance_20260825.md), and the final
+bool view-chain capability/wheel closure is in the
+[T-042 report](report/t042_bool_view_guard_integration_20260825.md).
 
 ## 1. Generate the full source inventory
 

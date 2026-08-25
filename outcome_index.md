@@ -17,6 +17,7 @@
 | cat_slice_cat/pad_slice | 修复 alias/stride 后，p50 +24.00%/+31.35%，task 2→1/3→1，pad peak -10,485,248 B | 均为 `supported-beneficial` | `report/t036_b2_layout_alias_fix_20260825.md`、`report/t037_layout_pass_performance_20260825.md` |
 | dtype_optimal_pass | 仅比较闭包安全降宽；p50/p99 +52.06%/+50.48%，显存不增 | `supported-beneficial`（development/audit-shim） | `report/t038_dtype_index_mask_semantic_fix_20260825.md`、`report/t039_dtype_index_mask_performance_20260825.md` |
 | fold_iota_arithmetic_pass | 保留安全 iota 降宽并停用 Inf/overflow 不安全 cmp-sub；p50/p99 +55.78%/+54.51% | `supported-beneficial`（development/audit-shim） | `report/t038_dtype_index_mask_semantic_fix_20260825.md`、`report/t039_dtype_index_mask_performance_20260825.md` |
+| bool_cast_mul_to_where_pass | view-chain p50/p99 +36.30%/+39.90%；direct 性能负域已由 T-042 guard 停用 | `supported-beneficial`（exact-zero 整数/布尔 + 非空单用户 view chain） | `report/t041_mask_hamming_performance_20260825.md`、`report/t042_bool_view_guard_integration_20260825.md` |
 
 ## 已否决或失败的尝试
 
@@ -33,6 +34,9 @@
 | dtype int64 无条件降宽 | arange 直出改变可观察 dtype；float32→int64 可能截断大值 | 缩窄为静态安全值域且仅布尔比较闭包 |
 | cmp(a-b,0)→cmp(a,b) | 普通数值样本相等，但 Inf/NaN 与定宽整数溢出存在反例 | 停用该子改写，保留安全 iota 优化 |
 | broadcast mask 无 shape guard | 小 mask 经 where 广播后的大输出会被错误改回小 shape | 仅静态证明 mask/output shape 完全相等时压缩 |
+| masked add 浮点无 guard | 普通相等误差为 0，但 `-0 + +0` 与直接选择的 signbit 不同 | 仅 exact-zero 整数/布尔 dtype 改写；浮点保持原图 |
+| bool cast-mul 浮点无 guard | false 位置的 `0*Inf/NaN` 是 NaN，where false 分支却是常量零 | 仅 exact-zero 整数/布尔 dtype 改写；浮点保持原图 |
+| bool cast-mul direct rewrite | p50/p99 回退 0.69%/19.02%，active10 device duration 62.56→73.86 μs | T-042 要求非空 view chain；direct 保持原图 |
 
 ## 中性、未归因与环境类尝试
 
@@ -45,26 +49,28 @@
 | fold_to_copy 正/负例 | same-dtype copy 前序消除，dtype conversion 前序规范化为 prims cast | 完整语义通过，但 custom pass 当前可达性中性 |
 | fold_where 三轮 paired | p50 +1.16%、p99 +3.12%，task 1→1、显存不变 | `supported-neutral`；kernel 更快但端到端未过 10% 门槛 |
 | broadcast_const_mask_compress 三轮 paired | p50 +0.30%、p99 +1.01%，task 1→1、显存不变 | `supported-neutral`；baseline 已融合为单 kernel，不写 Triton 替身 |
+| masked_add_compose_pass 三轮 paired | p50/p99 +3.71%/+9.84%，task 1→1、显存不变 | `supported-neutral`；未过 10% p50 gate，不写重复 Triton |
+| sign_diff_hamming_fuse_pass 三轮 paired | p50/p99 +3.64%/+5.49%，task 1→1、显存不变 | `supported-neutral`；device kernel 更快但端到端固定开销主导 |
 | T-039 初版 aggregate | 把一次 profiler device duration 略降误当 resource 改善 | 复核预登记后只接受 task/显存下降，最终 mask verdict 为 neutral；原始样本未重跑 |
 | T-034 首轮 view 门禁 | 编译前 view 已规范化为 reshape，且首个 sink 正例是恒等 view | 审计假设错误；v2 修正后全过，不计产品失败 |
 | 首次 grad-enabled B2 worker | inference-only POST driver 未调用目标 pass | 合法模式分流，不是产品失败 |
 | 受限执行层 NPU case | `aclInit 507008`，驱动可见层同命令通过 | sandbox/设备可见性环境阻塞 |
 | fresh Triton launcher 无 shim | PyTorch C++20、Triton C++17、torch_npu/CANN headers 不匹配 | 环境合同未闭环；审计 shim 不能冒充产品环境成功 |
 | T-036 首个修复后 cat alias worker | `CPATH` 误指 editable 源码，缺少 `ATen/ATen.h` | 环境命令错误；改用 wheel headers 后全过，不计产品失败 |
+| T-040 首个 NPU worker | 同样误用了 editable PyTorch include view，缺少 `ATen/ATen.h` | 失败原样保留；改用 site-packages wheel headers 后 9/9 通过 |
+| T-040 installed 测试的 autoload-off 启动 | test stub 后再次加载 native torch_npu，`_npu_dtype_cast` schema 重复注册 | 启动方式错误；正常 autoload 下 installed 76/76 |
 
 ## 当前安装态
 
 - 最终 torch_npu wheel SHA256：
-  `dffad49056538fc4250b444b2c40a619db3b0897b00f8906f53757a857b167d8`。
-- 当前测试源码与安装态均为 67/67；T-038 的 9 个 NPU 功能 worker 和 T-039 的 18 个 paired
-  worker 全部通过图与完整语义门禁。T-036 旧 wheel 已保留为
-  `artifacts/torch_npu_t036_before_t038_dtype_mask_fix.whl`。
+  `ea801e791373b0bd3adf9d4bfb6253ace75afa800c71b0451c9b206e4664fe5a`。
+- 当前测试源码与安装态均为 76/76；T-042 的 direct/view/float 3 个 NPU worker 全部通过
+  图与完整 NaN/signbit/alias 语义门禁。T-040 旧 wheel 已保留为
+  `artifacts/torch_npu_t040_before_t042_bool_view_perf_guard.whl`。
 - 性能失败的 T-029 clone candidate wheel 单独保留在
   `artifacts/torch_npu_t029_alias_safe_clone_candidate.whl`，不是当前安装态。
 
 ## 下一步
 
-为 B2 其余 6 个 custom pass 建立最小结构正负例，优先覆盖 alias、dtype、dynamic shape
-和默认开关；结构层通过后再逐项
-进入 fresh NPU compile。随后执行 B3 DVM/MLIR 与 B4
-attention。T-023 的无 shim 环境复验作为独立环境支线，不阻塞主线。
+为 B2 最后 3 个复合融合补结构/NPU 证据，随后执行 B3 DVM/MLIR 与 B4 attention。
+T-023 的无 shim 环境复验作为独立环境支线，不阻塞主线。

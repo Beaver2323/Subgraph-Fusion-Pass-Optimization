@@ -1413,6 +1413,156 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
   `results/t039_dtype_index_mask_performance_20260825/*_aggregate_final/aggregate.json`，报告为
   `report/t039_dtype_index_mask_performance_20260825.md`。
 
+### T-040：剩余 dtype/mask/hamming 三 pass 语义与结构登记
+
+- 状态：`planned-static-and-fx-first`。目标为 `masked_add_compose_pass`、
+  `bool_cast_mul_to_where_pass`、`sign_diff_hamming_fuse_pass`；先不修改产品源码、不构建
+  wheel、不运行性能。只新增/扩展目标 FX 测试与 audit-only 观察脚本；若发现反例，必须在
+  本节补登记 capability 修复、回滚边界与验证计划后才能改 pass。
+- `masked_add_compose_pass`：正例要求两个 where 的 mask 是同一 bool 源的一正一反、两
+  where 只有 add 一个用户、alpha=1；验证 where `2→1`、add `1→0`。负例覆盖非互补 mask、
+  multi-user 与 alpha≠1。额外检查浮点 signed zero：原式选中值仍会与另一支的 `+0` 相加，
+  新式直接选择值，逐元素普通相等可能看不出 `signbit` 差异。
+- `bool_cast_mul_to_where_pass`：正例覆盖 direct cast 与单用户 view/expand chain；负例覆盖
+  dtype 不一致与 cast multi-user。必须先检查 `false * Inf/NaN` 和浮点 signed zero：乘法
+  的 IEEE 结果不一定等于 where false 分支的常量 `+0`，若形成反例，浮点路径不能按普通
+  有限随机样本放行。
+- `sign_diff_hamming_fuse_pass`：正例覆盖有限实数、dim 与 keepdim；负例覆盖链条 multi-user
+  或非目标拓扑。必须检查 NaN：原 `sign→relu→sub→abs→sum` 会传播 NaN，而
+  `gt(NaN,0)` 为 false，可能把 NaN 静默变成有限计数；同时检查输入 dtype 与输出 dtype。
+- 结构测试从 `/home/z50063656/tmp` 启动，记录变换前后目标节点计数和严格值、dtype、shape、
+  stride、alias、`signbit`/NaN 合同。只有源码态与安装态目标测试通过，才登记 fresh NPU
+  compile；只有 NPU 功能与 generated code 通过，才为 safe positive 预登记单 pass paired
+  性能。手写 Triton不能修复 IEEE/shape/alias 语义，不在本阶段使用。
+
+### E-132：T-040 CPU eager 与当前 installed-pass 边界反例（2026-08-25）
+
+- 从 `/home/z50063656/tmp` 使用当前 installed wheel 构造真实 aten FX 图。
+  `masked_add_compose_pass` 确实执行 where `2→1`、add `1→0`；输入两支选中值为 `-0.0`
+  时，原式输出 signbit 为 false（`-0 + +0 = +0`），重写输出 signbit 为 true。普通数值比较
+  仍会把二者视为相等，因此这是新的“数值误差 0 但语义失败”。
+- `bool_cast_mul_to_where_pass` 确实执行 cast `1→0`、mul `1→0`、where `0→1`；mask=false
+  对应 `Inf/NaN` 时原乘法输出 NaN，重写却输出 `0.0`。这不是 NPU 精度容差，而是 IEEE
+  分类改变；signed zero 也存在相同风险。
+- `sign_diff_hamming_fuse_pass` 在包含 NaN、±Inf、±0 的 float32 样本上执行 sign `2→0`、
+  gt `0→2`、ne `0→1`，原/新输出均为 float32 标量 4。当前 PyTorch `sign(NaN)` 与
+  `gt(NaN,0)` 对此模式一致，所以该样本没有形成反例；仍需 integer、keepdim、multi-user
+  与真实 NPU 关闭。
+
+### P-008：mask arithmetic IEEE capability 缩窄
+
+- 状态：`verified-functional-performance-pending-development-audit-shim`。只修改 `ascend_graph_pass.py` 与
+  `test_dynamic_shape_fx_passes.py`，不修改 PyTorch/Triton/C++、不新增 kernel。回滚边界是
+  一个整数/布尔 exact-zero dtype allowlist、前两条 pass 的两个 guard 和对应新增测试。
+- `masked_add_compose_pass` 只有两支 value dtype 都属于 bool/uint8/int8/int16/int32/int64
+  时才折叠；浮点与复数保持两 where 加 add，因为直接选择不能保持加正零后的 signbit/NaN
+  完整语义。`bool_cast_mul_to_where_pass` 同样只允许上述 exact-zero dtype；浮点与复数保持
+  cast×x，因为 `0×Inf/NaN` 不能替换为常量零。
+- `sign_diff_hamming_fuse_pass` 本轮不增加 dtype guard；先用特殊浮点、整数、keepdim 和
+  multi-user 测试验证其现有等价域。若 NPU 或扩展用例出现反例，再单独登记，不与前两个
+  已证实问题捆绑推断。
+- 目标测试至少新增：masked integer positive、非互补 negative、float signed-zero
+  negative；bool-cast integer direct/view positive、float Inf/NaN/signed-zero negative；
+  hamming special-float positive、integer keepdim positive、multi-user negative。测试必须检查
+  节点计数和严格 dtype/shape/value，浮点边界另查 `isnan`/`signbit`。完成源码态与安装态
+  全文件、source wheel `--no-deps` 安装和 fresh NPU 正/负例后，才进入性能候选选择。
+
+### E-133：T-040 exact-zero guard、wheel 与 9/9 NPU 功能关闭（2026-08-25）
+
+- P-008 已按登记范围实施：`ascend_graph_pass.py` 新增 bool/uint8/int8/int16/int32/int64
+  exact-zero allowlist，`masked_add_compose_pass` 检查两支 value dtype，
+  `bool_cast_mul_to_where_pass` 检查乘法另一输入 dtype；没有修改 PyTorch、Triton、C++ 或
+  vendor kernel。目标测试文件新增 9 项，完整源码态与安装态均为 76/76。
+- 旧 T-038 wheel 已归档为
+  `artifacts/torch_npu_t038_before_t040_mask_ieee_fix.whl`，SHA256
+  `dffad49056538fc4250b444b2c40a619db3b0897b00f8906f53757a857b167d8`。新 source-built
+  wheel SHA256 为 `b273aeedcb9d1367de65328bea78a448ff1eb81fa4a85dca3f910e556c7b2460`，已用
+  `--no-deps --force-reinstall` 安装；wheel 内检查确认 allowlist 与两处 guard 存在。
+- 物理 NPU1 在运行前后均无其他进程。default backend、fullgraph、inference、fresh cache
+  的 9/9 audit-shim worker 全部为 `npu-compile-complete`，所有图门禁与完整输出合同通过，
+  累计 mismatch 0：masked 整数 where/add `2/1→1/0`，非互补与浮点边界保持；bool 整数
+  direct/view 的 cast/mul `1/1→0/0` 并新增 where，浮点非有限路径保持；hamming 特殊浮点与
+  整数 keepdim 的 sign/relu/sub/abs 被 gt/ne 替换，multi-user 保持原链。
+- 第一次 NPU worker 的 `CPATH` 误指 editable PyTorch 源码 include view，launcher 因
+  `ATen/ATen.h` 缺失失败；改为 site-packages wheel headers 后在新目录通过。第一次
+  installed 测试同时关闭 autoload 并在 stub 后显式加载 native torch_npu，导致
+  `_npu_dtype_cast` schema 重复注册；正常 autoload 下 76/76。两者均保留为环境/启动方式
+  中性证据，不计 pass 失败。
+- 聚合结果为
+  `results/t040_mask_hamming_compile_20260825/aggregate/aggregate.json`，详细报告为
+  `report/t040_mask_hamming_semantic_fix_20260825.md`。三条矩阵记录已更新到功能通过、性能
+  `not-run`；下一步必须另登记 T-041 单 pass paired 性能，优先 sign-Hamming，再测 masked
+  add 与 bool-cast direct/view。功能通过不能提前写成 beneficial。
+
+### T-041：mask/hamming safe-positive 单 pass paired 性能登记
+
+- 状态：`approved-audit-only-performance`。不修改产品源码、wheel、PyTorch 或 Triton；只
+  新增 T-041 worker/聚合器与报告。所有 baseline/candidate 都加载同一 T-040 wheel，baseline
+  只让目标 registry pass 返回而不执行，candidate 执行原 pass；其余 backend、输入和编译
+  配置相同。由于 fresh launcher 仍需 T-022 垫片，证据范围统一为
+  `development-audit-shim`。
+- 四个 representative case：masked-add 为 1,048,576 元素 int32；bool-cast direct 为
+  1,048,576 元素 int32；bool-cast view-chain 为 `(262144,)` mask 经 unsqueeze 乘
+  `(262144,4)` int32；sign-Hamming 为 `(1024,1024)` float32 沿 dim1 reduce。只测 T-040
+  已验证的 safe positive，不用危险浮点 mask 路径做性能候选。
+- 每 case 三轮、每轮两个 fresh process/cache，顺序固定 `B-C / C-B / B-C`；warmup 10、
+  runs 100、逐次同步。每 case 第一轮两侧另做 warmup1/active10 NPU profiler；每个 worker
+  做 memory warmup3/runs10。运行前后都要确认物理 NPU1 无外部进程。
+- worker 必须在测量前后通过完整 tensor contract；图门禁分别证明 baseline 不改写、candidate
+  按预期改写。报告 mean±stdev、p50/p99、首次 compile+run、task 数、device duration 与
+  allocated/reserved peak。首次编译不计 steady verdict。
+- 主性能 gate 为三轮 p50 中位数改善严格超过 10%，且 p99 不得回退超过 5%；resource
+  beneficial 只接受 task 数或峰值显存明确下降，不能把一次 profiler duration 略降单独算作
+  resource 收益。未过 gate 而功能正确记 `supported-neutral`，不手写与已有单 kernel 重复的
+  Triton；若多 task/profile 显示明确 launch/中间访存瓶颈，再单独登记 replacement。
+
+### E-134：T-041 四 case、24/24 worker 性能分流（2026-08-25）
+
+- 物理 NPU1 运行前后均无其他进程；四 case 的三轮 baseline/candidate worker 全部完成，
+  图门禁与测量前后完整语义均通过。结果位于
+  `results/t041_mask_hamming_performance_20260825/`，报告为
+  `report/t041_mask_hamming_performance_20260825.md`。
+- masked-add p50/p99 `0.260785/0.295460→0.251115/0.266380 ms`，改善
+  `3.71%/9.84%`；task 1→1、allocated peak不变，为 `supported-neutral`。
+- sign-Hamming p50/p99 `0.266480/0.290000→0.256770/0.274090 ms`，改善
+  `3.64%/5.49%`；task 1→1、allocated peak不变，为 `supported-neutral`。两条 active10
+  device duration 虽分别从 81.10→64.18 μs、126.46→86.10 μs，但不能单独升级 verdict。
+- bool-cast direct p50 回退 `0.69%`、p99 回退 `19.02%`，task/显存无收益；active10
+  duration 又从 62.56 增至 73.86 μs，为 `supported-performance-regressed`。view-chain
+  p50/p99 改善 `36.30%/39.90%`，active10 duration 2377.58→96.28 μs，task/显存不变，
+  为 `supported-beneficial`。同一 pass 的 capability 必须据此继续缩窄，不能整体标一个
+  不带条件的成功。
+
+### P-009：bool-cast-mul 只保留 view-chain 性能正域
+
+- 状态：`verified-supported-beneficial-view-chain-development-audit-shim`。只修改 `ascend_graph_pass.py` 与
+  `test_dynamic_shape_fx_passes.py`；不修改 PyTorch/Triton/C++、不新增 kernel。回滚边界是
+  一个 `chain` 非空 guard 和 direct 结构断言。
+- `_walk_back_view_chain_to_cast` 对 direct cast 返回空 list，对 unsqueeze/squeeze/view/
+  reshape/expand 等路径返回非空 chain。`bool_cast_mul_to_where_pass` 只有 chain 非空时才
+  rewrite；direct cast×x 保持原图，避免 T-041 已证实的 p99/device 回退；view-chain 的
+  dtype、single-user 与 fake-meta guard 全部保持不变。
+- direct integer 测试改为 cast/mul `1/1→1/1`、where `0→0`；view-chain 正例继续要求
+  cast/mul `1/1→0/0`、where `0→1`、unsqueeze `1→1`；浮点边界保持。修改后运行源码态与
+  安装态 76/76，重建 source wheel 并 `--no-deps` 安装，再跑 direct/view/float NPU
+  observer。view 路径代码未变，T-041 的 view paired 数据可沿用；若功能图门禁改变则重测。
+
+### E-135：T-042 view-chain guard、wheel 与安装态关闭（2026-08-25）
+
+- 已加入 `if not chain: continue`，direct integer 测试改为保持 cast/mul，view-chain 与
+  float 测试不变；源码态和安装态全文件均为 76/76。T-040 wheel 已归档，SHA256
+  `b273aeedcb9d1367de65328bea78a448ff1eb81fa4a85dca3f910e556c7b2460`；T-042 新 wheel
+  SHA256 `ea801e791373b0bd3adf9d4bfb6253ace75afa800c71b0451c9b206e4664fe5a`，已
+  `--no-deps --force-reinstall` 安装。
+- 物理 NPU1 前后空闲，direct int32、view-chain int32、float Inf/NaN 三 worker 为 3/3
+  `npu-compile-complete`，图门禁与完整输出合同通过、累计 mismatch 0。direct/float 保持，
+  view cast/mul→where 继续触发。聚合结果位于
+  `results/t042_bool_view_guard_compile_20260825/aggregate/aggregate.json`。
+- view candidate 代码未变，沿用 T-041 的 p50/p99 +36.30%/+39.90%；direct 现在等于同轮
+  baseline，不再执行已证实回退的 where rewrite。因此 pass 最终 scope 为
+  `supported-beneficial`（exact-zero integer/bool + non-empty single-user view chain）；不需
+  Triton replacement。详细报告为 `report/t042_bool_view_guard_integration_20260825.md`。
+
 ## 提案记录
 
 ### P-006：cat-slice-cat 与 pad-slice alias 可观察性保护
