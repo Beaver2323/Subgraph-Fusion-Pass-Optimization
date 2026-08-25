@@ -144,6 +144,13 @@ T-037 已关闭上述性能：cat-slice-cat 三轮中位 p50/p99 改善 24.00%/2
 2→1；pad-slice 改善 31.35%/30.34%、task 3→1、allocated peak 减少 10,485,248 B。
 两条均为 `supported-beneficial`，现有 FX pass 已是正确优化位置，无需 Triton 替身。
 
+T-038/T-039 随后关闭三条 dtype/index/mask pass。`dtype_optimal_pass` 只允许静态安全
+来源且全部直接用户为布尔比较时降宽；`fold_iota_arithmetic_pass` 停用对 Inf/NaN 和定宽
+整数溢出不安全的 cmp-sub 子改写；`broadcast_const_mask_compress` 增加 mask/output 静态
+同 shape 证明。源码/安装态 67/67、NPU 功能 9/9 和 paired 性能 18/18 通过完整语义。
+safe dtype/iota p50 改善 52.06%/55.78%，为 beneficial；mask 只改善 0.30%，为 neutral。
+前两项的收益来自生成代码降宽，第三项 baseline 已融合成单 kernel；三项都无需另写 Triton。
+
 ## 测试和性能证据
 
 所有测试从 `/home/z50063656/tmp` 启动，不能在 torch_npu 源码目录中导入 torch。每个 backend 使用 fresh process，避免全局 patch 和 cache 串扰。
@@ -165,7 +172,7 @@ T-037 已关闭上述性能：cat-slice-cat 三轮中位 p50/p99 改善 24.00%/2
 - `Pass/src` 与旧扫描同口径时为 189 条；少的 5 条全部来自当前未初始化的 torchair 子模块，不是主干 pass 回退。
 - 在同口径基础上补入 8 个 DVM/MLIR 图变换、53 个函数式/生成式 pattern 和 1 个 pad-mm 控制 gate，当前概念级清单为 251 条。
 - 当前矩阵中 direct case 164 条、observer 41 条、registry container 25 条、人工审查 21 条；生成变体不重复计数。
-- 环境已确认稳定并完成 P0、T-011 至 T-036；pad family和B2前18条已完成结构/NPU
-  分流，fold_cat 已关闭有益性能、fold_where 已关闭中性性能结论，T-036 两条 layout pass
-  已修复 alias 并在 T-037 关闭 beneficial 性能。当前进入 B2 其余9条，随后进入B3/B4；T-023只
+- 环境已确认稳定并完成 P0、T-011 至 T-039；pad family和B2前21条已完成结构/NPU
+  分流，fold_cat/layout/dtype/iota 已关闭有益性能，fold_where/mask 已关闭中性性能结论。
+  当前进入 B2 其余6条，随后进入B3/B4；T-023只
   保留匹配 headers 环境的无 shim复验。

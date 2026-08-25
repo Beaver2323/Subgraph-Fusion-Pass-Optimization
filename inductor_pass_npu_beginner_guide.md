@@ -71,8 +71,8 @@
 - addmm fusion/default 已覆盖三 dtype、代表 shape、真实转置、dynamic、bias guard 和 backward；8/8 配置的 p50 收益超过 10%。T-011 修复 `strict_sum` reduction 接口后，最终 verdict 为 <code>supported-beneficial</code>。
 - mm_plus_mm/triton_experimental 的 same-K 代表网格 8/8 功能正确，6/8 p50 收益超过 10%，transposed/dynamic 为 neutral。
 - mm_plus_mm different-K 的 T-014 至 T-024 已覆盖三 dtype、真实 transposed stride、dynamic replay、backward、正式接入、集成 paired、memory root cause和 workspace 替代搜索。T-023 的 default-off candidate在 shape-A/unaligned p50 改善 15.29%/18.04%，但比 baseline多 270,336 B peak allocated；T-024 没找到同时守住显存和 task-duration gate的配置。正式 verdict 为 <code>conditional-supported-beneficial</code>，large/dynamic/empty/arbitrary-stride/same-K继续 fallback。这说明“算子可用”和“可以默认启用”是两个不同结论。
-- P1 B2 前 18 条已完成 60/60 FX UT 和真实 NPU 正负/alias 例。fold_reduce 的 clone 修复因性能回退被否决，最终保留 sum；cat_to_view 的 alias-safe clone 为延迟中性、task/显存有益；fold_cat 为 <code>supported-beneficial</code>；fold_where 功能通过但性能中性；cat-slice-cat 与 pad-slice 暴露的“数值误差为 0、alias/stride 仍错误”缺陷已由保守 guard 修复，三轮 paired p50 又分别改善 24.00%/31.35%，均形成 <code>supported-beneficial</code>。
-- 当前矩阵总计 240 条 <code>not-run</code>、3 条 <code>unsupported</code>、4 条 <code>supported-beneficial</code>、1 条 <code>conditional-supported-beneficial</code>、1 条 <code>supported-neutral</code>、1 条 <code>supported-neutral-resource-beneficial</code>、1 条 <code>supported-pass-disabled-performance-rejected</code>。
+- P1 B2 前 21 条已完成 67/67 FX UT 和真实 NPU 正负/alias/dtype/overflow/broadcast 例。前 18 条中，fold_reduce 的 clone 修复因性能回退被否决，最终保留 sum；cat_to_view 的 alias-safe clone 为延迟中性、task/显存有益；fold_cat、cat-slice-cat、pad-slice 为 <code>supported-beneficial</code>，fold_where 性能中性。T-038/T-039 又把 dtype/index/mask 的错误边界缩窄：safe dtype/iota p50 改善 52.06%/55.78%，mask compression 只改善 0.30% 而保持 neutral。
+- 当前矩阵总计 237 条 <code>not-run</code>、3 条 <code>unsupported</code>、6 条 <code>supported-beneficial</code>、1 条 <code>conditional-supported-beneficial</code>、2 条 <code>supported-neutral</code>、1 条 <code>supported-neutral-resource-beneficial</code>、1 条 <code>supported-pass-disabled-performance-rejected</code>。
 
 ### 5. 从头阅读现有文档的路线
 
@@ -91,8 +91,10 @@
 11. [T-034 结构/NPU 报告](report/t034_b2_view_copy_compile_20260824.md) 与 [T-035 fold_where 性能报告](report/t035_fold_where_performance_20260824.md)：学习对象身份检查、审计门禁纠错，以及 kernel 变快但端到端仍中性的情况。
 12. [T-036 layout alias 修复报告](report/t036_b2_layout_alias_fix_20260825.md)：学习为什么逐元素误差为 0 仍可能是错误 pass，以及如何用保守 capability gate 修复 storage/stride 语义。
 13. [T-037 layout 性能报告](report/t037_layout_pass_performance_20260825.md)：学习如何用单 pass 开/关、三轮中位、task profile 和显存分解证明修复后的安全路径确实有益。
-14. [p1_batch_design.md](p1_batch_design.md)：进入下一批 NPU custom、DVM/MLIR 和 attention。
-15. [change_control.md](change_control.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
+14. [T-038 dtype/index/mask 语义报告](report/t038_dtype_index_mask_semantic_fix_20260825.md)：学习 dtype、shape、Inf 与整数溢出为什么必须作为正确性合同，而不只是比较普通随机数值。
+15. [T-039 dtype/index/mask 性能报告](report/t039_dtype_index_mask_performance_20260825.md)：学习同为“删节点/降宽”，为什么两个 pass 能获得 50% 以上收益，而 mask pass 仍应判 neutral。
+16. [p1_batch_design.md](p1_batch_design.md)：进入下一批 NPU custom、DVM/MLIR 和 attention。
+17. [change_control.md](change_control.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
 
 根目录旧 <code>report/pass_inventory.md</code> 属于历史诊断；当前静态基线是 <code>report/pass_src_20260820/</code>，动态环境由 <code>/home/z50063656/Benchmark/env.sh</code> 启动 Conda <code>benchmark-py311</code>。T-022/T-023 还要求区分 runtime 已可用与 fresh Triton host launcher 编译合同是否完整。
 
@@ -727,11 +729,27 @@ task 2→1；pad-slice p50/p99 改善 31.35%/30.34%、task 3→1、allocated pea
 [T-036 报告](report/t036_b2_layout_alias_fix_20260825.md)和
 [T-037 报告](report/t037_layout_pass_performance_20260825.md)。
 
+T-038/T-039 覆盖 `dtype_optimal_pass`、`fold_iota_arithmetic_pass` 与
+`broadcast_const_mask_compress`。这批展示了另一类“数值误差为 0”的陷阱：int64 arange
+直出被降成 int32 会改变 dtype；float32 大值转 int64 再被降宽会截断；
+`cmp(a-b,0)→cmp(a,b)` 对普通有限值成立，却会被 Inf/NaN 和定宽整数溢出打破；小 mask
+经 where 广播后的大输出也不能直接替换回小 mask。T-038 用比较闭包、来源 dtype、静态
+shape 与删除危险子改写修复这些边界，67/67 FX 和 9/9 NPU 功能通过。T-039 再证明 safe
+dtype/iota 降宽的 p50 改善 52.06%/55.78%，而 mask baseline 已融合为单 kernel，p50 只有
+0.30%，因此为 neutral。详见 [T-038 报告](report/t038_dtype_index_mask_semantic_fix_20260825.md)
+和 [T-039 报告](report/t039_dtype_index_mask_performance_20260825.md)。
+
+这里的背景知识是：逐元素相等只验证了“这批输入的值”。一个 PyTorch 算子的完整可观察
+合同还包括 dtype、shape、stride、storage alias、对象身份、梯度以及 NaN/Inf/overflow
+边界。另一方面，FX 节点数减少也不保证 kernel 数减少，因为 scheduler 可能早已把原链
+融合。因此正确性要看完整合同，性能要看 pass-on/pass-off 的端到端与 profiler 两层证据。
+
 按 [p1_batch_design.md](p1_batch_design.md) 顺序：
 
-1. B2 其余 9 个 pass 的最小结构正负例与 NPU generated code/alias；
+1. B2 其余 6 个 pass 的最小结构正负例与 NPU generated code/alias；
 2. 对其中真实触发且有优化价值的 pass 做单 pass paired 性能；
-3. dtype/index/mask 的极值和 dynamic shape；
+3. 剩余 `masked_add_compose_pass`、`bool_cast_mul_to_where_pass`、
+   `sign_diff_hamming_fuse_pass` 补极值、广播和 dynamic shape；
 4. 三个复合融合的 vendor op 与单 pass 性能；
 5. DVM/MLIR 的结构层和后端层；
 6. attention 先跑 1、5、13、18、21、28、29 七个代表 family，再扩到 30 个。
@@ -800,4 +818,4 @@ torch.compile
 2. **gate 练习**：从 <code>pad_mm.py::check_device()</code> 向上追到 pattern 注册，向下追到 replacement，解释为什么 <code>force_shape_pad=True</code> 仍无效。
 3. **性能练习**：阅读 fold_cat 的六个 worker JSON，自己计算 p50/p99 三轮中位数、task 2→1 和约 2 MiB 中间张量消失的关系，并解释为什么 eager-vs-compiled 不能作为单 pass baseline。
 
-这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后阅读 [暂停检查点](PAUSED_CHECKPOINT_20260821.md)、T-012/T-013、[T-014–T-016 报告](report/t014_t016_mmplus_different_k_candidate_20260821.md)、[T-017–T-019 覆盖报告](report/t017_t019_mmplus_different_k_coverage_20260821.md)、[T-020 扩展性能报告](report/t020_mmplus_different_k_extended_benchmark_20260821.md)、[T-021 正式接入设计](report/t021_mmplus_different_k_integration_design_20260821.md)、[T-022 large 分解报告](report/t022_mmplus_different_k_large_profile_20260821.md)、[T-023 集成报告](report/t023_mmplus_different_k_integration_20260821.md)、[T-024 workspace 审计](report/t024_mmplus_different_k_workspace_20260821.md)、[pad 报告](report/t025_t026_pad_family_20260821.md)、[B2 alias/性能报告](report/t029_t030_b2_alias_fix_performance_20260824.md)、[T-032 报告](report/t032_b2_redundancy_compile_20260824.md)、[T-033 报告](report/t033_fold_cat_performance_20260824.md)、[T-034 报告](report/t034_b2_view_copy_compile_20260824.md)、[T-035 报告](report/t035_fold_where_performance_20260824.md)、[T-036 报告](report/t036_b2_layout_alias_fix_20260825.md)和[T-037 报告](report/t037_layout_pass_performance_20260825.md)。当前进入 B2 其余 9 个 custom pass；T-023 只剩匹配环境的无 shim 复验，不要重新执行已闭环的 P0、pad 或前 18 个 B2 case。
+这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后阅读 [暂停检查点](PAUSED_CHECKPOINT_20260821.md)、T-012/T-013、[T-014–T-016 报告](report/t014_t016_mmplus_different_k_candidate_20260821.md)、[T-017–T-019 覆盖报告](report/t017_t019_mmplus_different_k_coverage_20260821.md)、[T-020 扩展性能报告](report/t020_mmplus_different_k_extended_benchmark_20260821.md)、[T-021 正式接入设计](report/t021_mmplus_different_k_integration_design_20260821.md)、[T-022 large 分解报告](report/t022_mmplus_different_k_large_profile_20260821.md)、[T-023 集成报告](report/t023_mmplus_different_k_integration_20260821.md)、[T-024 workspace 审计](report/t024_mmplus_different_k_workspace_20260821.md)、[pad 报告](report/t025_t026_pad_family_20260821.md)、[B2 alias/性能报告](report/t029_t030_b2_alias_fix_performance_20260824.md)、[T-032 报告](report/t032_b2_redundancy_compile_20260824.md)、[T-033 报告](report/t033_fold_cat_performance_20260824.md)、[T-034 报告](report/t034_b2_view_copy_compile_20260824.md)、[T-035 报告](report/t035_fold_where_performance_20260824.md)、[T-036 报告](report/t036_b2_layout_alias_fix_20260825.md)、[T-037 报告](report/t037_layout_pass_performance_20260825.md)、[T-038 报告](report/t038_dtype_index_mask_semantic_fix_20260825.md)和[T-039 报告](report/t039_dtype_index_mask_performance_20260825.md)。当前进入 B2 其余 6 个 custom pass；T-023 只剩匹配环境的无 shim 复验，不要重新执行已闭环的 P0、pad 或前 21 个 B2 case。

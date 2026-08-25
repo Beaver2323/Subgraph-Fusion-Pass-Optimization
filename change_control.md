@@ -1209,6 +1209,210 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
   第二次 cat 或 pad/MemSet/storage；保留 T-036 alias guard 和既有 pass，不手写 Triton
   替身。原始证据与聚合位于 `results/t037_layout_pass_performance_20260825/`。
 
+### T-038：B2 dtype/index/mask 首批静态与结构语义审计
+
+- 状态：`static-risk-review-started`。优先覆盖 `dtype_optimal_pass`、
+  `fold_iota_arithmetic_pass` 与 `broadcast_const_mask_compress`；先从
+  `/home/z50063656/tmp` 做 device-independent FX/eager 最小正负例，不修改产品源码、不重建
+  wheel。只有结构 blocker 被可重复确认后，才登记独立修复提案。
+- `dtype_optimal_pass` 静态风险：PRE 实现会把 int64 arange 在端点可表示时直接改成 int32，
+  也会把 float32/int32/bool/int16/int8 的 `.to(int64)` 直接改为 `.to(int32)`；当前没有检查
+  结果是否作为图输出、下游是否要求 int64，或 float 值是否超出 int32。最小反例必须同时
+  检查值与输出 dtype，不能把数值相等视为语义通过。
+- `fold_iota_arithmetic_pass` 静态风险：iota downcast 已有 transparent/closing closure，
+  但 `cmp(sub(a,b),0)→cmp(a,b)` 没有 dtype/range gate。float 的 `inf-inf` 产生 NaN，而
+  `inf>=inf` 为真；定宽整数 subtraction 还可能溢出。必须加入有限浮点、Inf/NaN 与整数极值
+  边界，区分数学恒等式和实际 dtype 语义。
+- `broadcast_const_mask_compress` 静态风险：它把
+  `cast(where(mask, full(shape,c1), full(shape,c2)))` 改为 cast(mask) 或
+  logical_not(mask)，并明确删除显式 broadcast；当前没有证明 mask shape 等于 where 输出
+  shape，也没有证明较小结果会在所有下游重新广播。最小反例使用小 mask 与大 full shape
+  直接输出，检查 shape/stride/value。
+- 若 CPU FX 已确认上述 blocker，下一步先补结构测试和 default-backend NPU observer；修复
+  候选优先缩窄 capability gate（输出/未知 consumer 保持原图），不得用 Triton 掩盖 dtype、
+  overflow 或 shape 语义问题。
+- NPU observer 在 wheel 安装态从 `/home/z50063656/tmp`、物理 NPU 1 上运行，每个 profile
+  使用独立 debug/cache/output 目录并要求目标 pass 恰好被调用一次。`dtype_optimal_pass`
+  覆盖 int64 arange 直出保持、arange→bool comparison 降级、float32→int64 直出保持与
+  int32→int64→comparison 降级；`fold_iota_arithmetic_pass` 覆盖 safe iota comparison 的
+  int64→int32 和 `sub→ge(0)` 的 Inf/int32-overflow 保持；
+  `broadcast_const_mask_compress` 覆盖 equal-shape 压缩及 `(1,N)→(B,N)` broadcast 保持。
+- 图门禁同时记录目标节点 before/after 和相关 dtype；输出合同检查嵌套结构、shape、dtype、
+  stride 与数值，整数/bool 要求严格相等。目标图在 pass 前已被其他阶段消除时单列
+  `target-not-reached`，不得算 pass 通过。执行前 `npu-smi info` 显示物理 NPU 1 无外部进程；
+  本环节只做功能与 reachability，不采性能、不据单次首次编译时间判优。
+
+### E-124：T-038 CPU FX blocker 确认（2026-08-25）
+
+- 从 `/home/z50063656/tmp` 对安装态 pass 做手工 FX+ShapeProp 前后执行。int64
+  `arange(4)` 的值仍为 `[0,1,2,3]`，但输出 dtype 从 int64 变成 int32，证明零数值误差
+  不能覆盖 dtype 合同；float32 `[1.9,3_000_000_000]→int64` 被改为 int32 后，第二个值从
+  `3,000,000,000` 变成 `2,147,483,647`，同时 dtype 错误。
+- bool mask `(1,3)` 与两个 full `(2,3)` 构成 where 再 cast 时，原输出 shape 为 `(2,3)`；
+  `broadcast_const_mask_compress` 删除显式广播后输出变为 `(1,3)`。值前缀相同不能弥补
+  shape/stride 语义错误。
+- `fold_iota_arithmetic_pass` 的 cmp-sub 初次 ShapeProp 反例未触发，因为手工图只有
+  `tensor_meta` 而真实 POST 判断读取 `meta['val']`；补齐该 metadata 后目标确实从
+  `aten.ge.Scalar(sub(a,b),0)` 改为 `aten.ge.Tensor(a,b)`。float32 `inf/inf` 结果
+  `False→True`；int32 `INT_MIN-1` 溢出例结果 `True→False`。这不是 observer 假阴性，而是
+  无 dtype/range gate 的实际语义 blocker。
+- 当前三条 pass 均不得直接记 NPU 可用或进入性能；先按 P-007 增加保守 guard 与结构回归，
+  再重建 wheel 做 NPU 正负例。原反例是 device-independent 证据，不冒充 NPU 编译结果。
+
+### E-125：T-038 源码态加载中性尝试（2026-08-25）
+
+- P-007 的最小 guard 与 7 个结构/语义回归已写入登记的两个源文件，`py_compile` 与
+  lintrunner 均通过。首次从 `/home/z50063656/tmp` 直接把 torch_npu 源码根加入
+  `PYTHONPATH` 运行测试时，在 PyTorch backend entry-point 自动加载阶段因源码树没有已编译
+  的 `torch_npu._C` 而退出；尚未进入任何 pass 测试，因此这条记录是环境/加载方式失败，
+  不是功能失败，也不得计入通过率。
+- 下一次只改变加载隔离方式：设置 `TORCH_DEVICE_BACKEND_AUTOLOAD=0`，让测试文件已有的
+  namespace fallback 从源码路径加载纯 Python pass；若 67 项结构测试通过，再保留当前
+  T-036 wheel、重建 source wheel 并按用户指定方式 `--no-deps` 安装，最终以安装态和 NPU
+  fresh worker 为准。不得把 namespace fallback 的结果冒充正式 wheel 验证。
+
+### E-126：T-038 namespace config stub 补齐（2026-08-25）
+
+- 设置 `TORCH_DEVICE_BACKEND_AUTOLOAD=0` 后已越过 `_C` 自动加载，但测试文件的轻量
+  `torch_npu._inductor.config` stub 只提供 `log`；当前 `ascend_graph_pass.py` 同时导入
+  `is_ascend950`，因此仍在 unittest 收集前以 `ImportError` 退出，没有执行任何 pass case。
+- 允许的最小测试基础设施修改是在已有 config stub 上增加 `is_ascend950=False`。该值只服务
+  CPU/device-independent FX 测试，不修改产品 config 或 NPU capability；正式结论仍要求
+  source wheel 安装态测试。若补齐后仍有加载依赖，继续按“收集前环境失败”单独记录，不能
+  删除正负例来换取通过。
+- 首次补齐后，导入继续到 `register_custom_pass.py`，确认同一 config stub 还缺
+  `enable_fused_matmul_relu`；这同样发生在收集前。该模块只用它决定默认关闭测试无关的
+  matmul+relu pass，因此把 stub 设为 `False`，与产品默认关闭策略一致，并再次运行完整集合。
+- 补齐两个 stub 后，同一源码态命令完成 67/67：既有 60 项与 P-007 新增 7 项全部通过，
+  日志为 `results/t038_source_fx_tests_20260825.log`。这证明纯 Python 图改写的结构合同通过，
+  但仍只作为重建 wheel 前的快速门禁。
+- 重建前将当前 T-036 安装来源 wheel（SHA256
+  `d745cf3afd6a2859a68d6c31dd02a46498264e82dedff34d726c2be2609c6b9d`）保留为
+  `artifacts/torch_npu_t036_before_t038_dtype_mask_fix.whl`，然后才清空 `dist` 产出 T-038
+  wheel。这样失败时能精确恢复，不覆盖更早 T-031 基线。
+- 源码 wheel 构建完成，退出码 0；新 wheel SHA256 为
+  `dffad49056538fc4250b444b2c40a619db3b0897b00f8906f53757a857b167d8`。构建日志中的
+  Kineto、setuptools/AOTI snapshot 与 C++ reorder 均为 warning，未导致编译失败；wheel
+  内文件检查确认包含三处 P-007 guard。下一步只用 `pip install --no-deps --force-reinstall`
+  安装这一 wheel，然后从 `/home/z50063656/tmp` 校验 import 来源、源码标记与 67 项测试。
+
+### E-127：T-038 首批 NPU worker 头文件环境失败（2026-08-25）
+
+- 新 wheel 已按 `pip install --no-deps --force-reinstall` 成功安装；运行时 torch_npu 来自
+  Conda site-packages，三处 guard 均存在，安装态 FX 测试 67/67 通过。
+- 未设置额外 include path 的首批 NPU batch 中，前 4 个 dtype worker 均已真实调用目标
+  pass 一次，observer 的图门禁分别显示危险直出保持 int64、安全 comparison 闭包改为
+  int32；但随后每个 worker 都在 Triton launcher GCH 编译时从 editable PyTorch 的空
+  `torch/include` 查找 `ATen/ATen.h` 并失败，未执行生成 kernel。第五个 worker在确认重复
+  根因后主动中断，其余未启动；这些结果不能计入 NPU 功能通过或失败。
+- 原始失败保留在 `results/t038_dtype_index_mask_compile_20260825/`。复测沿用 T-036 已验证
+  的环境修正：只对 fresh worker 的 `CPATH` 前置 Conda site-packages 下 PyTorch wheel
+  headers，并使用新结果根 `results/t038_dtype_index_mask_compile_header_20260825/`；不建
+  软链、不修改共享安装或产品源码。若暴露新的产品/版本合同，必须重新分类而不能继续堆
+  环境 workaround。
+
+### E-128：T-038 fresh-cache 与强制禁用缓存冲突（2026-08-25）
+
+- 补齐 wheel headers 后，首个 arange worker 已不再报缺头文件；但审计脚本同时设置
+  `TORCHINDUCTOR_FORCE_DISABLE_CACHES=1`，Ascend Triton 为同一个 hash 的多个 launcher
+  candidate 反复串行生成约 179 MiB 的 `precompiled.h.gch`，4 分钟后仍未进入设备执行。
+  `ps` 显示 cc1plus 持续占用 CPU，属于重复预编译而非 hang 或 pass 错误；为避免污染后续
+  8 项，该 batch 已主动中断，且没有写成完成 result。
+- 每个 worker 本来就使用全新的独立 Inductor/Triton cache 目录，足以避免旧产物污染。
+  因此审计脚本把 `TORCHINDUCTOR_FORCE_DISABLE_CACHES` 改为 `0`，只允许同一 fresh worker
+  内复用它刚生成的 GCH/launcher，不跨 profile 共用 cache。复测另用
+  `results/t038_dtype_index_mask_compile_cached_header_20260825/`，不得把缩短编译时间解释为
+  pass 性能收益。
+
+### E-129：T-038 fresh launcher C++ 标准合同确认（2026-08-25）
+
+- 将 force-disable 改为 0 后首个 arange worker 仍对同一 GCH 反复启动编译器。进一步读取
+  driver 与进程状态确认：cache 目录确实固定，但每次 GCH 编译都使用 Triton Ascend 写死的
+  `-std=c++17`，不满足当前 PyTorch 2.14 headers 的 C++20 合同；heuristic 捕获该 config
+  失败后继续尝试下一个 config，导致未等到汇总 stderr。该轮在约 4 分钟后中断，E-128
+  关于“仅由 force-disable 导致”的假设被证伪并保留，不覆盖为成功经验。
+- 继续功能审计复用已在 T-022 登记的两个 audit-only 文件：以环境变量 `CC` 指向
+  `t022_launcher_cc_wrapper.sh`，它只把 launcher 参数 `-std=c++17` 改为 C++20，并前置
+  `t022_cann_header_compat.h` 中两个当前 CANN 缺失、且 launcher 不调用的 conditional graph
+  类型；同时设置 `TRITON_DISABLE_PRECOMPILE=1` 跳过 GCH。新证据根为
+  `results/t038_dtype_index_mask_compile_audit_shim_20260825/`。
+- 该垫片不改 device Triton kernel、torch_npu wheel 或产品源码，适合判断 pass reachability、
+  图门禁与设备数值；但任何通过只能记为 `development/audit-shim` capability，正式 fresh
+  launcher 环境缺口仍存在。若 wrapper 下出现新错误，停止扩展 workaround 并按实际根因
+  分类。
+
+### E-130：T-038 修复后 NPU 功能关闭（2026-08-25）
+
+- 在 CANN 9.0.1、Ascend910B2、物理 NPU 1 上，9 个 fresh process/cache worker 均以
+  `development/audit-shim` 方式完成 NPU 编译执行，结果全部为 `npu-compile-complete`；批次
+  前后 NPU 1 均无外部进程。所有输出都严格逐元素相等，mismatch count 为 0，shape、dtype、
+  stride、`requires_grad` 与相对输入 alias 合同全部一致。
+- `dtype_optimal_pass` 四项图门禁全部通过：int64 arange 直出保持 int64；arange→comparison
+  为 int64→int32；float32→int64 直出保持 int64，并正确保留 `±3,000,000,000`；
+  int32→int64→comparison 为 int64→int32。两个 comparison 输出均保持 bool。
+- `fold_iota_arithmetic_pass` 的 safe iota comparison 为 int64→int32；Inf/Inf 与
+  `INT_MIN-1` 两个反例都保持 `aten.sub.Tensor 1→1`、`aten.ge.Scalar 1→1`，输出严格匹配，
+  证明停用不安全子改写后 NPU 边界恢复。
+- `broadcast_const_mask_compress` 的 `(32,4096)` equal-shape 正例把 where `1→0`、full
+  `2→0`；`(1,4096)` mask 广播到 `(32,4096)` 的反例保持 where `1→1`、full `2→2`。
+  两者输出都是 float32 contiguous `(32,4096)`、stride `(4096,1)` 且不 alias 输入。
+- 原始结果位于 `results/t038_dtype_index_mask_compile_audit_shim_20260825/`。首次 compile+run
+  约 17.19–30.42 秒，只反映 fresh compile 与 launcher 开销，不用于性能 verdict。正式环境
+  仍有 E-129 的 C++17/C++20/CANN header 缺口，因此当前关闭的是 pass 功能修复和开发态
+  device capability，不宣称无 shim fresh launcher 已通过。
+
+### T-039：dtype/index/mask safe-positive 单 pass paired 性能登记
+
+- 状态：`completed-development-audit-shim`。未再修改产品 pass；仅新增 audit-only
+  worker/aggregate。三条
+  candidate 均使用 T-038 已通过完整语义的 safe positive，baseline 在目标 pass 的 registry
+  wrapper 中跳过且仍调用其余所有 pass，candidate 正常执行目标 pass。两侧都使用 T-022
+  audit-only C++20/CANN launcher 垫片，性能 verdict 必须标注 `development/audit-shim`。
+- `dtype_optimal_pass`：int32 input `(1,048,576)`；构造 int64 arange 与 input `.to(int64)` 后
+  比较。baseline 两节点保持 int64，candidate 两节点改 int32，输出 bool；意图测量 index
+  算术/访存降宽，不把输出 dtype 改变纳入收益。
+- `fold_iota_arithmetic_pass`：int32 input `(1,048,576)`；直接构造 prims iota int64 并与
+  `.to(int64)` input 比较。baseline iota 保持 int64，candidate iota 改 int32；PRE dtype pass
+  在两侧相同运行，隔离 POST iota rewrite。
+- `broadcast_const_mask_compress`：bool mask `(1024,1024)`，两个同 shape fp16 full(1/0)、
+  where 后 convert 到 fp32。baseline 保持 where `1`/full `2`，candidate 删除为 `0/0`；输出
+  shape/dtype/stride 与 alias 必须一致。即使 task 数相同，也要检查 device duration 与稳态
+  host latency，不能仅凭删节点宣称获益。
+- 每条 pass 独立执行 `B1,C1,C2,B2,B3,C3` 六个 fresh worker；warmup 10、runs 100，memory
+  warmup 3、runs 10。B1/C1 另做 profiler warmup 1、active 10。每次测量前后重新检查严格值、
+  shape/dtype/stride/alias 合同与图门禁；物理 NPU 1 运行，批次前后检查外部进程。
+- 记录 PyTorch/torch_npu、CANN 9.0.1、Ascend910B2、mean±stdev、p50/p99、首次
+  compile+run、allocated/reserved peak、task/active-step 和 device duration。三轮中位 p50
+  改善严格超过 10%、p99 不回退超过 5%、additional allocated peak 不增加才记
+  `supported-beneficial-development-shim`；延迟未过门槛但 task/显存明确改善且 p99 合格时
+  可记 `supported-neutral-resource-beneficial-development-shim`；其余按 neutral/regressed
+  记录。首次编译与单轮结果不参与放行。
+
+### E-131：T-039 三条 safe-positive paired 性能关闭（2026-08-25）
+
+- 物理 NPU 1 上按 `B1,C1,C2,B2,B3,C3` 完成 18/18 fresh worker；批次前后 NPU 1 均无
+  外部进程。每个 worker 的图门禁、测量前后完整输出合同均通过，严格逐元素 mismatch
+  count 都为 0。环境为 PyTorch `2.14.0a0+git8e86e0a`、torch_npu
+  `2.14.0a0+git83cc452`、Triton 3.2.0、CANN 9.0.1、Ascend910B2，证据范围为
+  `development/audit-shim`。
+- `dtype_optimal_pass` 三轮中位 p50 `0.550140→0.263725 ms`，改善 `52.06%`；p99
+  `0.571360→0.282910 ms`，改善 `50.48%`。profiler active 10 总 device duration
+  `3591.94→67.78 µs`，每步 task `1→1`，additional allocated peak
+  `1,049,088→1,049,088 B`。判定 `supported-beneficial-development-audit-shim`。
+- `fold_iota_arithmetic_pass` 三轮中位 p50 `0.557745→0.246625 ms`，改善 `55.78%`；
+  p99 `0.577820→0.262860 ms`，改善 `54.51%`。profiler active 10 总 device duration
+  `3584.54→54.88 µs`，每步 task `1→1`，additional allocated peak
+  `1,049,088→1,049,088 B`。判定 `supported-beneficial-development-audit-shim`。
+- `broadcast_const_mask_compress` 三轮中位 p50 `0.244325→0.243580 ms`，只改善
+  `0.30%`；p99 改善 `1.01%`，task `1→1`，additional allocated peak
+  `4,194,816→4,194,816 B`。baseline 已将 full/where/convert 融为单 task，删 FX 节点没有
+  形成端到端收益，判定 `supported-neutral-development-audit-shim`，不做 Triton 替身。
+- 初版 aggregate 曾把单次 profiler device duration 略降视为 resource 改善；复核 T-039
+  预登记后收紧为只接受 task 或显存明确下降，mask verdict 从中间态 resource-beneficial
+  修正为 neutral。原始 18 个 worker 未重跑、未挑选。最终结果在
+  `results/t039_dtype_index_mask_performance_20260825/*_aggregate_final/aggregate.json`，报告为
+  `report/t039_dtype_index_mask_performance_20260825.md`。
+
 ## 提案记录
 
 ### P-006：cat-slice-cat 与 pad-slice alias 可观察性保护
@@ -1218,19 +1422,31 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
   Triton；60/60 FX 测试、6/6 NPU 功能 worker 与 12/12 paired 性能 worker 通过。两条
   pass 在各自登记 safe cohort 均为 `supported-beneficial`。回滚边界是本提案新增的两个
   保守 guard。
-- `cat_slice_cat_fold_pass`：仅当 cat1 的全部 users 恰好是本次将删除的 slice 节点时允许
-  fold；cat1 还有 output/view/其他消费者时保持原图，避免把两个可观察新 storage 合并。
-- `pad_slice_fold`：增加 alias-to-output 逃逸检查。slice 直接输出、经常见
-  view/reshape/squeeze/unsqueeze/flatten/transpose/permute/detach/getitem 链输出，或进入原地
-  mutation 时保持 pad；只有 slice 进入明确产生新结果的计算路径时才允许删除 pad。该 guard
-  先按常见 alias op 保守实现，未知方法默认不作为可证明安全路径扩大。
-- 测试：结构 positive/gap/touch-padding继续通过；新增 cat1 同时输出必须 cat `2→2`、pad
-  direct/view output 必须 pad `1→1`；eager alias 边界固定。随后重建 source wheel 并
-  `--no-deps` 安装，重跑 57+ 新增测试和 T-036 六 worker，要求两个 alias case 从 semantic
-  failed 变为图保持且完整合同通过，安全 positive 仍触发。
-- 性能：本修复只缩窄不安全触发范围，不声称收益。功能关闭后，另登记 safe internal
-  positive 的 pass-on/pass-off 三轮 paired；若安全 cohort 无收益，优先禁用而不是用 clone
-  或 Triton 补偿。
+
+### P-007：dtype/index/mask 可观察语义保护
+
+- 状态：`verified-two-beneficial-one-neutral-development-audit-shim`。只修改
+  `ascend_graph_pass.py` 与 `test_dynamic_shape_fx_passes.py`；不修改 PyTorch/Triton/C++，
+  不新增设备 kernel。回滚边界是三处 capability 缩窄和对应测试。
+- `dtype_optimal_pass`：arange int64 降级除了端点可表示，还要求所有直接用户均为明确返回
+  bool 的比较；output、view、算术和未知 user 保持 int64。`.to(int64)` 不再接受 float32
+  来源，只允许本来值域保证落在 int32 的 int32/bool/int16/int8，并同样要求所有直接用户
+  为比较闭包。这样优化中间比较输入而不改变可观察 dtype，也不截断大 float。
+- `broadcast_const_mask_compress`：只有 cond shape 与 where 输出 shape 可静态证明完全相同
+  时才删除 where/full；存在广播、symbolic 无法证明或直接较小 mask 时保持原图。先不实现
+  多层“删除后由下游重新广播”的激进证明。
+- `fold_iota_arithmetic_pass`：保留已有常量 CSE 与带 transparent/closing closure 的 iota
+  downcast；停用无范围证明的 `cmp(sub(a,b),0)→cmp(a,b)` 子改写。当前不能仅按普通有限
+  样本放行，因为 IEEE Inf/NaN 与定宽整数溢出均已形成反例。
+- 测试至少覆盖：arange 直出保持 int64、safe arange→comparison 仍降级；large float
+  `.to(int64)` 保持；int32→int64→comparison 可降级；broadcast shape mismatch 保持、
+  equal-shape 0/1 正例仍压缩；finite 普通、Inf 与 int32 overflow 的 cmp-sub 全部保持原图并
+  执行等价。完成 60+ 新增 FX 全量、lintrunner、source wheel `--no-deps` 安装和 fresh NPU
+  observer 后，才决定每条性能候选。
+- 功能关闭结果为源码/安装态 67/67 与 9/9 audit-shim NPU worker；T-039 又完成 18/18
+  paired worker。safe `dtype_optimal_pass` 与 iota downcast 的 p50 分别改善 52.06%/55.78%，
+  均为 beneficial；equal-shape mask 化简只改善 0.30%，为 neutral。三者都不需要手写
+  Triton 替身，且不能用这些 safe-positive 收益恢复 T-038 已证伪的不安全改写。
 
 ### P-001：`mm_plus_mm` NPU 支持
 
