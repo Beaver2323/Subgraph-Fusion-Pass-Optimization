@@ -133,6 +133,17 @@ where→clone 虽让 device kernel 时间下降约 26.46%，但端到端 p50/p99
 task和显存不变，最终为 `supported-neutral`。这类纯图规约继续修改 FX pass 即可，不应为了
 单独复制写一条新的 Triton kernel。
 
+T-036 再验证 PRE layout pass `cat_slice_cat_fold_pass` 与 `pad_slice_fold`。修复前两条
+alias case 的所有逐元素误差都是 0，但前者把两个独立 cat 输出合并成同一 storage/对象，
+后者让 pad-slice 结果 alias 原输入且改变 stride。源码现以 cat1 完整用户集合和 pad-slice
+消费者物化 allowlist 缩窄 rewrite；图输出、view、未知和原地路径保持原图。T-036 wheel 下
+60/60 FX 测试与 6/6 NPU worker 通过。这里不应手写 Triton：问题在图变换的 alias 合同，
+不是设备缺少 kernel；T-036 功能关闭时把 paired 性能留给下一任务。
+
+T-037 已关闭上述性能：cat-slice-cat 三轮中位 p50/p99 改善 24.00%/22.87%、task
+2→1；pad-slice 改善 31.35%/30.34%、task 3→1、allocated peak 减少 10,485,248 B。
+两条均为 `supported-beneficial`，现有 FX pass 已是正确优化位置，无需 Triton 替身。
+
 ## 测试和性能证据
 
 所有测试从 `/home/z50063656/tmp` 启动，不能在 torch_npu 源码目录中导入 torch。每个 backend 使用 fresh process，避免全局 patch 和 cache 串扰。
@@ -154,6 +165,7 @@ task和显存不变，最终为 `supported-neutral`。这类纯图规约继续�
 - `Pass/src` 与旧扫描同口径时为 189 条；少的 5 条全部来自当前未初始化的 torchair 子模块，不是主干 pass 回退。
 - 在同口径基础上补入 8 个 DVM/MLIR 图变换、53 个函数式/生成式 pattern 和 1 个 pad-mm 控制 gate，当前概念级清单为 251 条。
 - 当前矩阵中 direct case 164 条、observer 41 条、registry container 25 条、人工审查 21 条；生成变体不重复计数。
-- 环境已确认稳定并完成 P0、T-011 至 T-035；pad family和B2前16条已完成结构/NPU
-  分流，fold_cat 已关闭有益性能、fold_where 已关闭中性性能结论。当前主线是 B2 其余11条，随后进入B3/B4；T-023只
+- 环境已确认稳定并完成 P0、T-011 至 T-036；pad family和B2前18条已完成结构/NPU
+  分流，fold_cat 已关闭有益性能、fold_where 已关闭中性性能结论，T-036 两条 layout pass
+  已修复 alias 并在 T-037 关闭 beneficial 性能。当前进入 B2 其余9条，随后进入B3/B4；T-023只
   保留匹配 headers 环境的无 shim复验。

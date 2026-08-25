@@ -1096,7 +1096,141 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
   pass，不为此场景手写 Triton；baseline 的 `tl.where` int8 condition 弃用 warning 另作
   lowering 兼容性事项。证据位于 `results/t035_fold_where_performance_20260824/`。
 
+### T-036：B2 layout/搬运第三批结构与 alias 审计
+
+- 状态：`blockers-confirmed-repair-registered`。覆盖 PRE pass
+  `cat_slice_cat_fold_pass` 与 `pad_slice_fold`；先用精确的 FX built-in target 构造正负例，
+  再做 default-backend NPU 可达性与跨输出/storage alias 合同。初始阶段不修改产品实现、
+  不重建或重装 wheel。
+- 源码风险 1：`cat_slice_cat_fold_pass` 把第二个 cat 及其 slices 直接替换为第一个 cat；直接
+  单输出时两者都不 alias 原输入，但若第一个 cat 同时可观察，eager 的两个 cat 输出 storage
+  独立，改写后两个返回值会指向同一 storage。当前实现没有检查 cat1 的外部 users，T-036
+  必须增加“输出之间的 pairwise alias/对象身份”，不能只检查相对输入的 alias。
+- 源码风险 2：`pad_slice_fold` 把 pad storage 上的 slice 改为原输入上的 slice。eager slice
+  alias pad 的新 storage、并不 alias 输入；改写后会直接 alias 输入，因此即使数值为 0 误差
+  也可能违反语义。positive 必须以直接 slice 输出暴露该边界，negative 使用切片触及 padding
+  区域并要求保留 pad。
+- 拟新增结构测试：cat 完整连续覆盖/存在 gap，以及 cat1 同时输出的 alias 负例；pad slice
+  完全位于原数据区/触及 padding 区域，以及 eager alias 边界。若动态实测确认 blocker，先
+  登记独立修复提案和性能基线，再决定“限制改写”或“clone 保语义”，不得直接手写 Triton。
+- NPU 方法沿用 T-034：fresh process/cache、`torch.no_grad()`、dynamic compile、default
+  backend、从 `/home/z50063656/tmp` 启动；PRE registry wrapper 只执行 1 次。完整输出合同
+  增加所有 tensor 输出之间的 storage alias 与 Python identity 矩阵。
+
+### E-120：T-036 NPU alias blocker 确认（2026-08-25）
+
+- 新增 6 个结构/边界测试后完整 FX 文件为 57/57；随后在物理 NPU 1 执行 6 个 fresh
+  worker。cat 直接单输出 positive 真实完成 cat `2→1`、getitem `2→0`并通过；gap negative
+  保持 `2→2/2→2`。pad→slice→relu positive 真实完成 pad `1→0`并通过；触及 padding 的
+  negative 保持 pad `1→1`。
+- cat1 同时作为第二个返回值时，目标 pass 仍把 cat `2→1`，两个输出各自相对输入的数值、
+  dtype、stride、alias均看似正确且 max error 为 0；新增 cross-output 合同却发现 eager
+  `output[0]/output[1]` storage 和对象均独立，compiled 两者 storage alias 且为同一对象，
+  状态为 `npu-compile-semantic-failed`。
+- pad slice 直接输出时，目标 pass 仍把 pad `1→0`；max error 为 0，但 eager 输出 stride
+  `(6,1)` 且不 alias 输入，compiled stride `(4,1)` 且 alias 输入，状态同样为
+  `npu-compile-semantic-failed`。这两个结果证明问题是可观察 alias/layout 语义，不是数值精度。
+- 证据位于 `results/t036_b2_layout_alias_compile_20260825/`；修复前不得把两条 pass 记为
+  NPU 可用或进入性能结论。
+
+### E-121：P-006 最小源码实施与 wheel 安装（2026-08-25）
+
+- 按 P-006 修改 `ascend_graph_pass.py`：cat 仅在 cat1 users 恰好等于待删除 slice 集合时
+  fold；pad 仅在 slice 的每个直接 user 都可被显式证明物化新 storage 时 fold。允许集合只
+  含已知非原地 elementwise/activation/matmul 方法或函数；output、view、未知和原地 user
+  一律保持原图。没有增加 clone、Triton 或 C++ 修改。
+- 新增 cat 可观察中间结果、pad direct output、pad view output 三个修复测试；连同本批初始
+  6 个测试，完整 FX 文件由 51 条扩为 60 条。从 `/home/z50063656/tmp` 运行结果 60/60；
+  两个修改文件的 `lintrunner` 为 `ok No lint issues.`。
+- 保留 T-031 wheel 至
+  `artifacts/torch_npu_t031_before_t036_layout_alias_fix.whl`，SHA256 为
+  `29c3c105453a36d8f2eb648eeb0a2d35cfd0cb871c34697c6aaf17fb1a96a6f5`。随后从源码
+  构建 T-036 wheel，SHA256 为
+  `d745cf3afd6a2859a68d6c31dd02a46498264e82dedff34d726c2be2609c6b9d`，以
+  `pip install --no-deps --force-reinstall` 安装。运行时导入指向 site-packages，且安装文件
+  包含三个新增 guard。
+
+### E-122：T-036 修复后 NPU 功能关闭（2026-08-25）
+
+- 在 CANN 9.0.1、Ascend910B2、物理 NPU 1 上以 fresh process/cache 重跑 6 个 worker，
+  最终全部为 `npu-compile-complete`，图门禁、shape/dtype/stride、相对输入 alias、对象身份、
+  跨输出 alias 和 `requires_grad` 全部通过，所有 max/mean absolute error 为 0。
+- cat safe positive 仍为 cat `2→1`、getitem `2→0`；gap negative 保持 `2→2/2→2`；
+  observable cat1 场景修复后也保持 `2→2/2→2`，两输出 storage/对象继续独立。pad 的
+  relu positive 仍为 pad `1→0`；触及 padding 与 direct-output 场景都保持 pad/getitem
+  `1→1/1→1`，direct 输出 stride 保持 `(6,1)` 且不 alias 输入。
+- 修复后首次批处理因 shell `set -e` 与 `env.sh` 探测命令组合而在 worker 前退出；不属于
+  产品测试。首个 cat-alias 复测还曾把 `CPATH` 错指到 editable 源码的 `torch/include`，
+  launcher 因 `ATen/ATen.h` 缺失失败；observer 已显示 pass 保持图，但未执行设备，故没有
+  计为通过。改用 site-packages wheel headers 和全新目录后 6/6 关闭。失败证据保留在
+  `results/t036_b2_layout_alias_fix_20260825/`，最终证据位于
+  `results/t036_b2_layout_alias_fix_header_20260825/`。
+- 两条 pass 当前只关闭功能可用度；性能尚未 paired 测量，矩阵 verdict 保持 `not-run`。
+  下一步必须另登记 safe positive 的 pass-off/pass-on 三轮性能，不能用首次 compile/run
+  或“误差为 0”宣称性能收益。
+
+### T-037：cat-slice-cat / pad-slice 单 pass paired 性能登记
+
+- 状态：`complete`。不修改产品源码；新增 audit-only worker/aggregate，并只测 T-036
+  已通过完整语义的 safe positive。baseline 在 PRE registry wrapper 中仅跳过目标 pass，
+  candidate 执行安装 wheel 的原 pass；其他 pass、default backend、dynamic/fullgraph 和输入
+  完全相同。
+- `cat_slice_cat_fold_pass` 使用 fp16 contiguous `a,b=(2048,512)`，构造第一个 cat 后按
+  `[0:512]`、`[512:1024]` 完整切回并执行第二个 cat。图门禁要求 baseline cat/getitem
+  `2→2/2→2`，candidate `2→1/2→0`；完整语义要求输出 shape/dtype/stride、不 alias 两个输入。
+- `pad_slice_fold` 使用 fp16 contiguous `x=(2048,2048)`，末维右 pad 256、只切回原数据区，
+  slice 后接 `relu` 物化新 storage。图门禁要求 baseline pad/getitem `1→1/1→1`，candidate
+  `1→0/1→1`；完整语义要求输出不 alias 输入且 stride 保持。
+- 每条 pass 独立执行 `B1,C1,C2,B2,B3,C3` 六个 fresh worker；warmup 10、runs 100，
+  memory warmup 3、runs 10。B1/C1 另做 profiler warmup 1、active 10，记录 task/step、
+  device duration 与 kernel 名。每轮测量前后均重新验证 T-036 完整数值/alias 合同。
+- 结论必须记录 PyTorch/torch_npu、CANN 9.0.1、Ascend910B2、mean±stdev、p50/p99、
+  allocated/reserved peak 和首次 compile+run。p50 改善严格超过 10%、p99 不回退超过 5%、
+  allocated peak 不增加才记 `supported-beneficial`；延迟未过门槛但 task/显存明确改善且 p99
+  合格时记 `supported-neutral-resource-beneficial`；p50 或 p99 回退超过 5% 记性能回退。
+  首次 compile+run、单轮或 profiler kernel duration 均不能单独决定 verdict。
+
+### E-123：T-037 两条 layout pass 性能关闭（2026-08-25）
+
+- 每条 pass 的六个 fresh worker 均按 `B1,C1,C2,B2,B3,C3` 完成；warmup 10、runs 100，
+  B1/C1 另采 warmup 1、active 10 profiler。12 个 worker 的 pass-on/off 图门禁和测量前后
+  完整数值/alias合同全部通过，max/mean absolute error 均为 0；NPU 1 批次前后无外部进程。
+- `cat_slice_cat_fold_pass` 三轮中位 baseline/candidate mean 为
+  `0.318666±0.006658/0.241956±0.004486 ms`，p50 `0.317155/0.241035 ms`
+  （+24.00%），p99 `0.333430/0.257190 ms`（+22.87%）；task 2→1，10 active steps
+  device duration `107.80→56.04 μs`，additional allocated peak 两侧均 `4,194,816 B`。
+  B3 baseline 有明显长尾，但每轮 p50 改善均超过 10%，前两轮也分别为 15.94%/18.60%。
+- `pad_slice_fold` 三轮中位 baseline/candidate mean 为
+  `0.365093±0.006282/0.250833±0.004924 ms`，p50 `0.363850/0.249770 ms`
+  （+31.35%），p99 `0.383640/0.267240 ms`（+30.34%）；task 3→1，10 active steps
+  device duration `487.86→105.30 μs`，additional allocated peak
+  `18,874,368→8,389,120 B`（-10,485,248 B）。三轮 p50/p99 均一致改善。
+- 两条均通过预登记 p50、p99 与内存 gate，关闭为 `supported-beneficial`。收益来自删除
+  第二次 cat 或 pad/MemSet/storage；保留 T-036 alias guard 和既有 pass，不手写 Triton
+  替身。原始证据与聚合位于 `results/t037_layout_pass_performance_20260825/`。
+
 ## 提案记录
+
+### P-006：cat-slice-cat 与 pad-slice alias 可观察性保护
+
+- 状态：`verified-supported-beneficial`。已只修改
+  `ascend_graph_pass.py` 和目标 FX 测试，不改 PyTorch/Triton/C++，不加入 clone 或手写
+  Triton；60/60 FX 测试、6/6 NPU 功能 worker 与 12/12 paired 性能 worker 通过。两条
+  pass 在各自登记 safe cohort 均为 `supported-beneficial`。回滚边界是本提案新增的两个
+  保守 guard。
+- `cat_slice_cat_fold_pass`：仅当 cat1 的全部 users 恰好是本次将删除的 slice 节点时允许
+  fold；cat1 还有 output/view/其他消费者时保持原图，避免把两个可观察新 storage 合并。
+- `pad_slice_fold`：增加 alias-to-output 逃逸检查。slice 直接输出、经常见
+  view/reshape/squeeze/unsqueeze/flatten/transpose/permute/detach/getitem 链输出，或进入原地
+  mutation 时保持 pad；只有 slice 进入明确产生新结果的计算路径时才允许删除 pad。该 guard
+  先按常见 alias op 保守实现，未知方法默认不作为可证明安全路径扩大。
+- 测试：结构 positive/gap/touch-padding继续通过；新增 cat1 同时输出必须 cat `2→2`、pad
+  direct/view output 必须 pad `1→1`；eager alias 边界固定。随后重建 source wheel 并
+  `--no-deps` 安装，重跑 57+ 新增测试和 T-036 六 worker，要求两个 alias case 从 semantic
+  failed 变为图保持且完整合同通过，安全 positive 仍触发。
+- 性能：本修复只缩窄不安全触发范围，不声称收益。功能关闭后，另登记 safe internal
+  positive 的 pass-on/pass-off 三轮 paired；若安全 cohort 无收益，优先禁用而不是用 clone
+  或 Triton 补偿。
 
 ### P-001：`mm_plus_mm` NPU 支持
 

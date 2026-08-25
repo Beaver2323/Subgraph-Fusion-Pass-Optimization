@@ -2,7 +2,7 @@
 
 This directory is the audit, evidence, and report area for the local PyTorch
 and torch_npu source trees. The project working directory is
-`/home/z50063656/Pass`. T-011, T-023, and T-029/T-031 contain pre-registered torch_npu source
+`/home/z50063656/Pass`. T-011, T-023, T-029/T-031, and T-036 contain pre-registered torch_npu source
 changes; all other audit prototypes stay in this directory, and every product
 change is governed by `change_control.md`.
 
@@ -24,8 +24,8 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   test-only device-gate bypass but regress 65–121% at p50, so the gate remains.
   The next main batch is P1; the matching fresh-launcher environment remains an
   explicit T-023 follow-up rather than being hidden by the audit compiler shim.
-  P1 B2 has started: T-027 through T-035 now cover 51/51 FX tests and fresh NPU
-  positive/negative cases for sixteen custom passes. Alias auditing rejected the
+  P1 B2 has started: T-027 through T-036 now cover 60/60 FX tests and fresh NPU
+  positive/negative/alias cases for eighteen custom passes. Alias auditing rejected the
   original direct-input `fold_reduce`/`cat_to_view` rewrites. The final wheel
   disables the performance-regressed `fold_reduce` rewrite and keeps an
   alias-safe `cat_to_view` clone that reduces tasks 3→1 and allocated peak by
@@ -35,7 +35,13 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
   drop 2→1, and allocated peak falls by 2,097,664 B. The third cohort verifies
   four more reached transforms and classifies `fold_to_copy` as
   reachability-neutral; `fold_where` is functionally sound but performance
-  neutral (p50/p99 +1.16%/+3.12%, tasks and peak memory unchanged).
+  neutral (p50/p99 +1.16%/+3.12%, tasks and peak memory unchanged). The fourth
+  cohort found zero-numeric-error alias defects in `cat_slice_cat_fold_pass` and
+  `pad_slice_fold`; conservative source guards now preserve observable storage/
+  stride semantics while retaining safe positive rewrites. The rebuilt wheel,
+  60/60 FX tests, and 6/6 NPU variants pass. T-037 then closes both as
+  `supported-beneficial`: p50 improves 24.00%/31.35%, tasks fall 2→1/3→1,
+  and pad-slice allocated peak falls by 10,485,248 B.
 
 - Do not modify PyTorch, torch_npu, or Triton functional source before the
   exact proposal, rollback boundary, and verification plan are recorded in
@@ -53,8 +59,9 @@ The current dynamic runtime is Conda `benchmark-py311`, activated by
 Triton runtime 3.2.0, CANN 9.0.1, and 8 Ascend 910B2 devices. Runtime NPU tests
 pass, but T-022 found that a fresh Triton host launcher cannot be compiled by
 this exact mixed header contract without an audit-only shim; product validation
-must not rely on that shim. The installed T-031 final wheel SHA256 is
-`29c3c105453a36d8f2eb648eeb0a2d35cfd0cb871c34697c6aaf17fb1a96a6f5`.
+must not rely on that shim. The installed T-036 source wheel SHA256 is
+`d745cf3afd6a2859a68d6c31dd02a46498264e82dedff34d726c2be2609c6b9d`;
+the previous T-031 wheel remains preserved for rollback.
 
 Read [current_status_and_background.md](current_status_and_background.md) before
 choosing a wheel or source build and before restarting any probe.
@@ -142,6 +149,11 @@ The second cohort is in the
 The third cohort is in the
 [T-034 compile report](report/t034_b2_view_copy_compile_20260824.md) and
 [T-035 fold_where performance report](report/t035_fold_where_performance_20260824.md).
+The fourth cohort's alias defects, conservative source fix, rebuilt wheel, and
+functional closure are in the
+[T-036 layout alias report](report/t036_b2_layout_alias_fix_20260825.md); its
+three-round paired performance is in the
+[T-037 layout performance report](report/t037_layout_pass_performance_20260825.md).
 
 ## 1. Generate the full source inventory
 

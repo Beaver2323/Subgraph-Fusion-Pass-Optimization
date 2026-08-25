@@ -4,7 +4,7 @@
 
 ## 当前结论
 
-当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。addmm 与 fold_cat 为 `supported-beneficial`；different-K mm_plus_mm 为 `conditional-supported-beneficial`；pad 三个 family 功能可承接但 p50 回退 65%–121%，replacement 已否决。P1 中，fold_reduce 的 alias-safe clone 又因 p99 回退 6.72% 被否决，最终保留原 sum；cat_to_view 的 alias-safe clone task 3→1、显存约减 4 MiB，延迟收益 2.29%，保留为 resource-beneficial/latency-neutral；fold_cat 直接复用现有 pass，p50/p99 改善 10.14%/10.32%、task 2→1、显存约减 2 MiB，不需要替身；fold_where 功能正确但端到端 p50/p99 仅改善 1.16%/3.12%、task和显存不变，为 `supported-neutral`，同样不应手写 Triton。全量记录见 `report/pass_src_20260820/`。
+当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。addmm、fold_cat、cat-slice-cat 与 pad-slice 为 `supported-beneficial`；different-K mm_plus_mm 为 `conditional-supported-beneficial`；pad 三个上游 shape-padding family 功能可承接但 p50 回退 65%–121%，replacement 已否决。P1 中，fold_reduce 的 alias-safe clone 又因 p99 回退 6.72% 被否决，最终保留原 sum；cat_to_view 的 alias-safe clone task 3→1、显存约减 4 MiB，延迟收益 2.29%，保留为 resource-beneficial/latency-neutral；fold_where 功能正确但端到端性能中性。T-036 的 cat-slice-cat/pad-slice alias/stride 缺陷已由保守 guard 修复，T-037 三轮 paired p50 分别改善 24.00%/31.35%，现有 FX pass 即为最终方案，不手写 Triton。全量记录见 `report/pass_src_20260820/`。
 
 源码证据表明，当前后端已经存在若干明确的 NPU 约束：
 
@@ -57,7 +57,7 @@
 
 ## 下一步执行
 
-当前主线不再重跑全量旧探针。pad family和B2前16条已完成结构/NPU分流，fold_cat 已形成性能成功、fold_where 已形成性能中性结论；下一步按`p1_batch_design.md`为B2其余11个custom pass补最小结构正负例，再做真实NPU compile；之后进入B3 DVM/MLIR与B4 attention。T-023环境支线只在匹配headers的独立环境做无shim fresh compile smoke。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
+当前主线不再重跑全量旧探针。pad family和B2前18条已完成结构/NPU分流，fold_cat、cat-slice-cat、pad-slice 已形成性能成功，fold_where 已形成性能中性结论；下一步按`p1_batch_design.md`为B2其余9个custom pass补最小结构正负例和真实NPU compile；之后进入B3 DVM/MLIR与B4 attention。T-023环境支线只在匹配headers的独立环境做无shim fresh compile smoke。以下命令仅作为重新生成静态清单/广域探针的参考，必须从`/home/z50063656/tmp`运行并改用当前`Pass/src`路径：
 
 ```bash
 python /home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py \

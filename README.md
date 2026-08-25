@@ -23,7 +23,7 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
   `conditional-supported-beneficial`。
 - `pad_mm/pad_bmm/pad_addmm`：测试侧绕过 device gate 后功能正确，但 p50 分别回退
   72.65%/65.31%/120.63%，因此保持产品 gate，不实现独立 Triton padding 替身。
-- P1 B2 前三批：FX 测试 51/51 通过。`fold_reduce` 的直返输入存在 alias 错误，clone
+- P1 B2 前四批：FX 测试 60/60 通过。`fold_reduce` 的直返输入存在 alias 错误，clone
   虽修复正确性但 p50/p99 回退 3.06%/6.72%，最终 wheel 保留原 sum并禁用折叠。
   `cat_to_view_pass` 使用 alias-safe clone 后 p50 +2.29%、task 3→1、额外 allocated
   peak 减少 4,195,840 B，当前为 `supported-neutral-resource-beneficial`。
@@ -31,8 +31,11 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
   allocated peak 减少 2,097,664 B，当前为 `supported-beneficial`。
   第三批另验证 5 条 view/copy/where pass；`fold_where` 功能正确但 p50/p99 仅改善
   1.16%/3.12%、task 和显存不变，当前为 `supported-neutral`。
-- 矩阵当前为 242 条 `not-run`，另有 9 条最终、条件性或中性 verdict；下一步是 B2
-  其余 11 个 custom pass，再进入 DVM/MLIR 和 attention。
+  第四批发现 `cat_slice_cat_fold_pass` 与 `pad_slice_fold` 在数值误差为 0 时仍破坏
+  alias/stride，现已用保守 guard 修复；三轮 paired p50 分别改善 24.00%/31.35%，
+  task 2→1/3→1，两条均为 `supported-beneficial`。
+- 矩阵当前为 240 条 `not-run`，另有 11 条最终、条件性或中性 verdict；下一步是 B2
+  其余 9 个 custom pass，再进入 DVM/MLIR 和 attention。
 
 机器可读矩阵位于
 [pass_evaluation_matrix.csv](report/pass_src_20260820/pass_evaluation_matrix.csv)，填写规则和
@@ -51,6 +54,8 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
 - [fold_cat 单 pass NPU 性能](report/t033_fold_cat_performance_20260824.md)
 - [B2 第三批结构与 NPU 编译](report/t034_b2_view_copy_compile_20260824.md)
 - [fold_where 单 pass NPU 性能](report/t035_fold_where_performance_20260824.md)
+- [B2 第四批 alias 修复与源码 wheel](report/t036_b2_layout_alias_fix_20260825.md)
+- [cat-slice-cat / pad-slice 单 pass NPU 性能](report/t037_layout_pass_performance_20260825.md)
 
 ## 当前验证环境
 
@@ -61,8 +66,9 @@ Inductor pass 在 NPU 上是否真实触发、能否正确 lowering/codegen、�
 - CANN 9.0.1
 - 8 × Ascend910B2
 
-当前安装的最终 torch_npu wheel SHA256 为
-`29c3c105453a36d8f2eb648eeb0a2d35cfd0cb871c34697c6aaf17fb1a96a6f5`。
+当前安装的 T-036 torch_npu wheel SHA256 为
+`d745cf3afd6a2859a68d6c31dd02a46498264e82dedff34d726c2be2609c6b9d`；
+T-031 旧 wheel 已在本地审计目录保留用于回滚，不上传仓库。
 
 仓库当前保存文档、报告和小型机器可读清单；不包含 wheel、编译缓存、profiler 原始数据、
 设备运行缓存或任何访问凭据。实验命令应从 `/home/z50063656/tmp` 启动，避免在
