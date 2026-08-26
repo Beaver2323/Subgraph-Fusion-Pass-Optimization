@@ -2,6 +2,8 @@
 
 > 更新到 2026-08-26。这里汇总已执行的动态工作，不代表 251 条 pass 全部完成；逐条状态
 > 仍以 `report/pass_src_20260820/pass_evaluation_matrix.csv` 为准。
+> 当前已按用户要求暂停；恢复入口为
+> `PAUSED_CHECKPOINT_20260826_P013.md`。
 
 ## 已形成正向成果
 
@@ -83,6 +85,8 @@
 
 - 最终 torch_npu wheel SHA256：
   `3909fd649d777b8dfd393342da0ff2b88c5cce2ef219f0d103d063af4c2d4989`。
+- 当前 wheel 已归档为 `artifacts/torch_npu_t054_p013_verified.whl`；P-013 三文件
+  snapshot 与文件级哈希位于 `artifacts/p013_source_snapshot/`。
 - P-013 guard 单测 2/2、installed paired 和邻近 3 family 通过；P-012 旧 wheel 保留为
   `artifacts/torch_npu_t053_before_p013.whl`。
 - 性能失败的 T-029 clone candidate wheel 单独保留在
@@ -91,5 +95,5 @@
 ## 下一步
 
 B2 27 条和 B3 8 条已闭环，B4 八个代表 family 功能、pattern 1/13/5 性能和 P-013 已完成。
-下一步做 pattern 21/29 paired，再扩展剩余 attention family；完整 MLIR 与 T-023 无 shim 复验作为独立环境
-支线，不阻塞主线。
+当前暂停。恢复后的 T-055 先做 pattern 21 paired，再独立评估 pattern 29 并扩展剩余 attention
+family；完整 MLIR 与 T-023 无 shim 复验作为独立环境支线，不阻塞主线。

@@ -3,11 +3,16 @@
 This directory is the audit, evidence, and report area for the local PyTorch
 and torch_npu source trees. The project working directory is
 `/home/z50063656/Pass`. T-011, T-023, T-029/T-031, T-036, T-038, T-040, T-042,
-T-043, T-046, and T-047/P-012 contain pre-registered torch_npu source
+T-043, T-046, T-047/P-012, and T-054/P-013 contain pre-registered torch_npu source
 changes; all other audit prototypes stay in this directory, and every product
 change is governed by `change_control.md`.
 
 ## Project state
+
+The audit is paused at the user-requested P-013/T-054 archive point. Read
+[PAUSED_CHECKPOINT_20260826_P013.md](PAUSED_CHECKPOINT_20260826_P013.md) before
+running another test, rebuilding a wheel, or selecting an NPU. The verified
+P-013 wheel and its P-012 rollback wheel are both preserved under `artifacts/`.
 
 This task currently uses the user-specified shared Benchmark runtime; it does
 not yet have a separate environment. Source commits, wheel identity, device

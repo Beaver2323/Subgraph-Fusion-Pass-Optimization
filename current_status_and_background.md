@@ -4,11 +4,12 @@
 
 截至 2026-08-26，本任务已完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、P0 gate/功能/性能闭环、P1 B2 全部 27 个 custom pass、B3 全部 8 个 DVM/MLIR pass，并进入 B4 attention。当前 8 个代表 family 精确触发并数值通过；1/13/30 落到纯 vendor attention，18/28 为辅助 Triton + vendor，5/21/29 被 dispatcher 重新展开为 BMM + Triton。pattern 1 为 `supported-beneficial`，pattern 13 为 `supported-neutral-resource-beneficial`。T-053 证明 pattern 5 rewrite P50 回退 103.23%；P-013 已在 NPU 精确停用该 entry，T-054 验证 P50 改善 50.28%、task 8→3。当前安装 P-013 源码 wheel（`--no-deps`）。
 
-**用户已要求从暂停检查点继续。** 历史恢复基线为
-[PAUSED_CHECKPOINT_20260821.md](PAUSED_CHECKPOINT_20260821.md)，恢复后的 E-030 至
-E-146 已完成。正式性能结论均来自运行前后空闲设备、fresh-process paired 采样；隔离失效、审计门禁错误或环境失败的原始结果保留但不进入 verdict。B2 27 条和 B3 8 条已闭环，B4 已关闭两条性能记录。当前 editable PyTorch / Triton launcher / torch_npu-CANN header 组合仍不能无垫片 fresh compile host launcher，所以带 Triton fresh launcher 的结论继续明确标注 development/audit-shim。
+**用户已要求先归档并暂停。** 当前恢复入口为
+[PAUSED_CHECKPOINT_20260826_P013.md](PAUSED_CHECKPOINT_20260826_P013.md)；
+[PAUSED_CHECKPOINT_20260821.md](PAUSED_CHECKPOINT_20260821.md) 只保留为历史基线。
+正式性能结论均来自运行前后空闲设备、fresh-process paired 采样；隔离失效、审计门禁错误或环境失败的原始结果保留但不进入 verdict。B2 27 条和 B3 8 条已闭环，B4 已关闭 pattern 1、13、5 三条性能记录。当前 editable PyTorch / Triton launcher / torch_npu-CANN header 组合仍不能无垫片 fresh compile host launcher，所以带 Triton fresh launcher 的结论继续明确标注 development/audit-shim。
 
-当前 251 条矩阵 verdict 为 221 条 `not-run`、2 条 `not-applicable`、4 条 `unsupported`、9 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、9 条 `supported-neutral`、3 条 `supported-neutral-resource-beneficial`、2 条 `supported-pass-disabled-performance-rejected`。pattern 1 是新增的第九个直接 beneficial 项；pattern 13 是新增的第三个 resource-beneficial 项。旧 `/Dynamo` 194 条清单只保留作历史对照。
+当前 251 条矩阵 verdict 为 220 条 `not-run`、2 条 `not-applicable`、4 条 `unsupported`、9 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、9 条 `supported-neutral`、3 条 `supported-neutral-resource-beneficial`、3 条 `supported-pass-disabled-performance-rejected`。pattern 1 是第九个直接 beneficial 项；pattern 13 是第三个 resource-beneficial 项；pattern 5 rewrite 是第三个被性能证据停用的 pass。旧 `/Dynamo` 194 条清单只保留作历史对照。
 
 此前因其他进程修改共享环境而冻结动态测试；用户确认环境稳定后已恢复。当前动态测试按用户指定固定从 `/home/z50063656/Benchmark/env.sh` 启动 Conda `benchmark-py311`，测试进程仍从 `/home/z50063656/tmp` 发起。T-022/T-023 区分了“runtime 与已缓存 kernel 可用”和“fresh host launcher 编译合同完整”两个层次：新 launcher仍需匹配 PyTorch C++20、Triton Ascend、torch_npu 与 CANN headers，不能用审计垫片冒充正式环境已修复。
 
@@ -82,7 +83,7 @@ E-146 已完成。正式性能结论均来自运行前后空闲设备、fresh-pr
 
 - `report/pass_src_20260820/pass_inventory.json`：机器可读清单。
 - `report/pass_src_20260820/pass_inventory.md`：人工审阅索引。
-- `report/pass_src_20260820/pass_evaluation_matrix.csv`：251 条逐项验收合同；当前 221 条 `not-run`，另有 30 条已形成 verdict；B2/B3 已闭环，B4 已形成 1 条 beneficial 和 1 条 resource-beneficial。
+- `report/pass_src_20260820/pass_evaluation_matrix.csv`：251 条逐项验收合同；当前 220 条 `not-run`，另有 31 条已形成 verdict；B2/B3 已闭环，B4 已关闭 pattern 1、13、5 三条性能记录。
 - `audit_passes.py`：不导入 torch 的静态清单生成器。
 
 当前源码基线为 PyTorch `release/2.14@8e86e0a`、torch_npu `master@83cc452`、Triton Ascend `release/3.2.2@8bd9f38`。torch_npu 的 torchair/inductor-npu-ext 子模块未初始化，因此旧清单中的 5 条 npu-ext 记录没有冒充为当前源码可用项。
@@ -340,13 +341,14 @@ torch.compile(
 6. bf16/fp32、真实 transposed/non-contiguous、dynamic replay、backward、正式接入设计，以及 large profiler/tile/memory 分解均已完成；large 最终为 supported-neutral-hold，中小 static cohort 保留 beneficial gate。
 7. different-K default-off template、源码 wheel、首批功能/性能/memory和 workspace 替代搜索已完成；状态为 `conditional-supported-beneficial`。不再重复 T-014 至 T-024，环境支线只需在匹配 headers 的独立环境做无 shim fresh compile smoke。
 8. pad family、P1 B2 全部 27 条和 B3 DVM/MLIR 8 条已完成结构/NPU/性能或环境分流。
-   B4 八个代表 family 功能与 pattern 1/13/5 性能、P-013 guard 已完成；当前做 pattern 21/29 paired 并扩展剩余 family。
+   B4 八个代表 family 功能与 pattern 1/13/5 性能、P-013 guard 已完成；当前已暂停，恢复后的 T-055 先做 pattern 21 paired，再独立评估 pattern 29 并扩展剩余 family。
    完整 MLIR 只在补齐 `torch_mlir` 的独立环境复验。已闭环 case 不重跑，
    除非环境或源码基线改变。
 
 ## 10. 当前文件导航
 
-- `PAUSED_CHECKPOINT_20260821.md`：本次暂停的环境、工作树、设备状态和精确恢复点；恢复工作时首先阅读。
+- `PAUSED_CHECKPOINT_20260826_P013.md`：当前暂停的环境、wheel/source 归档、工作树和精确恢复点；恢复工作时首先阅读。
+- `PAUSED_CHECKPOINT_20260821.md`：历史暂停基线。
 - `README.md`：入口与运行约束。
 - `outcome_index.md`：已执行工作的成功、失败、中性、未归因和环境类索引。
 - `change_control.md`：环境、提案和源码修改冻结记录。
