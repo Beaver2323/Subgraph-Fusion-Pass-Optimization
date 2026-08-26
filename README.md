@@ -3,16 +3,55 @@
 This directory is the audit, evidence, and report area for the local PyTorch
 and torch_npu source trees. The project working directory is
 `/home/z50063656/Pass`. T-011, T-023, T-029/T-031, T-036, T-038, T-040, T-042,
-T-043, T-046, T-047/P-012, and T-054/P-013 contain pre-registered torch_npu source
-changes; all other audit prototypes stay in this directory, and every product
+T-043, T-046, T-047/P-012, T-054/P-013, and the current-source-only
+P-014/P-016/P-017/P-018 contain pre-registered torch_npu source changes; all other
+audit prototypes stay in this directory, and every product
 change is governed by `change_control.md`.
 
 ## Project state
 
-The audit is paused at the user-requested P-013/T-054 archive point. Read
-[PAUSED_CHECKPOINT_20260826_P013.md](PAUSED_CHECKPOINT_20260826_P013.md) before
-running another test, rebuilding a wheel, or selecting an NPU. The verified
-P-013 wheel and its P-012 rollback wheel are both preserved under `artifacts/`.
+The P-013/T-054 default-backend work remains archived in
+[PAUSED_CHECKPOINT_20260826_P013.md](PAUSED_CHECKPOINT_20260826_P013.md). The
+user has resumed the task with `triton_experimental` as the target backend while
+keeping the existing Benchmark runtime unchanged. Read
+[triton_experimental_migration_20260826.md](triton_experimental_migration_20260826.md)
+before running another test or proposing a source change. The verified P-013
+wheel and its P-012 rollback wheel remain preserved under `artifacts/`.
+
+T-055 now records 12/12 successful experimental entry cases and one real
+experimental-to-default decomposition reload failure. P-014's one-entry erfc
+cleanup passes source re-entry and bidirectional backend-switch validation, but
+the installed wheel is intentionally unchanged while an unrelated, uninstalled
+shared `triton.py` diff is present. See
+[report/t055_triton_experimental_enable_20260826.md](report/t055_triton_experimental_enable_20260826.md).
+T-056's independent routing/config/feature inventory is now available at
+[report/t056_triton_experimental_inventory_20260826.md](report/t056_triton_experimental_inventory_20260826.md);
+its CSV artifacts live under `report/triton_experimental_20260826/`. T-057 then
+proved backend state leakage and an unsafe default int-float-int elision. The
+Float32 ON/OFF pair isolates a one-integer numerical error, and all three tested
+float dtypes expose output alias changes. P-016 now disables that pass by default
+in source while preserving explicit opt-in; source gating passes, but the installed
+wheel remains unchanged because the shared tree contains unrelated uninstalled
+changes. See
+[report/t057_backend_state_isolation_20260826.md](report/t057_backend_state_isolation_20260826.md)
+and
+[report/t057_int_float_int_boundary_20260826.md](report/t057_int_float_int_boundary_20260826.md).
+T-057 also found that the installed experimental GELU override ignores
+`approximate="none"`; P-017 restores the upstream erf/CDF/PDF contract in current
+source. Its source contract probe and six FP32/FP16/BF16 NPU source-overlay cases
+pass, with `none` generating `libdevice.erf` and `tanh` retaining `tl.sigmoid`.
+The installed wheel remains P-013 while unrelated shared-tree changes are present.
+See
+[report/t057_gelu_approximate_20260826.md](report/t057_gelu_approximate_20260826.md).
+T-058 has now completed the first experimental addmm gate cohort. Restoring the
+two pristine upstream checks in a fresh audit worker changes `mm + Triton add`
+into one extern addmm; three interleaved rounds improve median p50 by 22.17% and
+p99 by 14.05% with unchanged allocated peak. Eleven follow-up capability cases
+and a second unaligned performance cohort also pass. P-018 now enables fusion in
+current source with a reversible explicit opt-out; its source gate passes, while
+the installed wheel and host-tail retest remain pending.
+See
+[report/t058_experimental_addmm_gate_20260826.md](report/t058_experimental_addmm_gate_20260826.md).
 
 This task currently uses the user-specified shared Benchmark runtime; it does
 not yet have a separate environment. Source commits, wheel identity, device

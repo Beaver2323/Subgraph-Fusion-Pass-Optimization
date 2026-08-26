@@ -6,8 +6,18 @@
 >
 > 当前源码基线：PyTorch <code>release/2.14@8e86e0a</code>、torch_npu <code>master@83cc452</code>、Triton Ascend <code>release/3.2.2@8bd9f38</code>。当前运行基线、wheel 哈希和设备信息以 [current_status_and_background.md](current_status_and_background.md) 为准。
 >
-> 项目于 2026-08-21 按用户要求暂停。新接手或恢复工作时先阅读
-> [暂停检查点](PAUSED_CHECKPOINT_20260821.md)，不要直接启动性能测试。
+> 2026-08-26 需求更新：当前负责后端改为 `triton_experimental`，但仍使用现有
+> `/home/z50063656/Benchmark/env.sh` 环境，不安装 meta worktree 的 2.13 环境。先阅读
+> [triton_experimental 迁移基线](triton_experimental_migration_20260826.md)；本文中已经完成的
+> default-backend 数据继续作为机制学习和迁移对照，不能直接当作 experimental verdict。
+>
+> experimental 新读者接着阅读 [T-055 入口/隔离报告](report/t055_triton_experimental_enable_20260826.md)
+> 和 [T-056 静态 inventory](report/t056_triton_experimental_inventory_20260826.md)。前者解释
+> “backend 能选中”为什么仍不等于“backend 可安全往返”，后者把 251 条上游/历史 pass、69 个
+> config 和 35 个可验收 feature family 分开，避免把开关数量误当 pass 数量。
+> 然后阅读 [T-057 backend 状态报告](report/t057_backend_state_isolation_20260826.md) 和
+> [T-057 int→float→int 报告](report/t057_int_float_int_boundary_20260826.md)：前者说明为什么 A/B
+> 必须 fresh process，后者用 generated code 展示“删掉 kernel”如何同时造成数值和 alias 错误。
 
 ## 模块设计目标与背景
 
@@ -64,6 +74,18 @@
 
 当前事实以 [当前状态文档](current_status_and_background.md) 和两份 P0 报告为准：
 
+- experimental T-055 三种入口 12/12 编译、数值和 wrapper marker 通过；同进程回切 default
+  暴露 erfc decomposition 重入失败。P-014 单行 cleanup 已通过 source registrar 和
+  experimental→default→experimental overlay 验证，installed wheel 仍待隔离构建。
+- T-056 已把旧 251 行矩阵路由到 experimental：203 条继承上游待验证、32 条其他 torch_npu
+  loader 未调用、8 条其他 backend、4 条上游行为显式关闭、4 条 experimental 自有记录；同时
+  建立 69 项 config 与 35 个 feature family。最先要学会识别的是“import-time 快照”和
+  “不可逆 monkeypatch”，它们要求 A/B 使用 fresh process。
+- T-057 已证明同进程 backend 回切会泄漏 addmm checks、config、decomposition 和 matmul fold，
+  所以后续 default/experimental 对照不能复用 Python 进程。它还用 Float32 ON/OFF 单点锁定
+  int→float→int elision 的边界数值错误，并确认 pass ON 会把 eager 新 tensor 改为 input alias。
+  P-016 已把 source 默认改为 False；installed wheel 尚未重建，所以后续 worker 还要显式关闭。
+
 - 已静态整理 251 条概念级记录；它们不是 251 个都能独立运行的函数。
 - 记录中有 164 个 direct case、41 个 observer stage、25 个 registry container 和 21 个 manual review。
 - P0 的 10 个正负用例分别在 default 和 triton_experimental backend 运行，20/20 编译与 eager 对齐。
@@ -82,6 +104,9 @@
 
 按下面顺序阅读，不要先从 CSV 或 debug 目录开始：
 
+如果当前只负责 experimental，在第 1 项后先读迁移基线、T-055、T-056 和两份 T-057 报告，再回到 default
+报告学习通用方法；default 性能数字只能作为候选优先级。
+
 1. [task_scope_and_code_map.md](task_scope_and_code_map.md)：先理解目标、编译链和源码分工。
 2. [current_status_and_background.md](current_status_and_background.md)：掌握当前环境、已有结论和性能方法。
 3. [outcome_index.md](outcome_index.md)：先区分成功、失败、中性、未归因与环境阻塞。
@@ -95,6 +120,9 @@
 11. [T-034 结构/NPU 报告](report/t034_b2_view_copy_compile_20260824.md) 与 [T-035 fold_where 性能报告](report/t035_fold_where_performance_20260824.md)：学习对象身份检查、审计门禁纠错，以及 kernel 变快但端到端仍中性的情况。
 12. [T-036 layout alias 修复报告](report/t036_b2_layout_alias_fix_20260825.md)：学习为什么逐元素误差为 0 仍可能是错误 pass，以及如何用保守 capability gate 修复 storage/stride 语义。
 13. [T-037 layout 性能报告](report/t037_layout_pass_performance_20260825.md)：学习如何用单 pass 开/关、三轮中位、task profile 和显存分解证明修复后的安全路径确实有益。
+14. [T-057 int→float→int 报告](report/t057_int_float_int_boundary_20260826.md)：学习如何把
+    pass 数值错误、输出 alias 错误和下游低精度 codegen 现象分层归因，以及为什么错误结果不做
+    性能测试。
 14. [T-038 dtype/index/mask 语义报告](report/t038_dtype_index_mask_semantic_fix_20260825.md)：学习 dtype、shape、Inf 与整数溢出为什么必须作为正确性合同，而不只是比较普通随机数值。
 15. [T-039 dtype/index/mask 性能报告](report/t039_dtype_index_mask_performance_20260825.md)：学习同为“删节点/降宽”，为什么两个 pass 能获得 50% 以上收益，而 mask pass 仍应判 neutral。
 16. [T-040 mask/hamming 语义报告](report/t040_mask_hamming_semantic_fix_20260825.md)：学习 signed zero、NaN 分类和 dtype capability guard，以及“功能通过、性能待测”的边界。
@@ -681,6 +709,23 @@ lowering 需要说明：
 12. **清理未知工作树修改**：当前 Triton 有既有兼容修改，torch_npu 有构建生成物；不得擅自回退。
 
 ### 本任务下一步的实际执行计划
+
+#### 当前第一步：完成 experimental correctness 闸门
+
+T-055/T-056 与 T-057 的 backend-state、int-float-int、GELU approximate 已完成。P-014 修复
+default registrar 重入；P-016 把不安全 elision 改为 source 默认关闭；P-017 让 GELU `none`
+使用 erf/CDF/PDF 并保留 tanh 路径。三者都因共享未安装 diff 暂不构建 wheel。P-017 的教学重点是：
+当前 eager NPU 也会忽略 approximate，所以不能只用同设备 eager 当 oracle；CPU/upstream API
+合同与 `output_code.py` 才揭示 installed graph 把 none 错折成 sigmoid，而 source 修复后生成
+`libdevice.erf`。T-058 又展示了“配置开关不一定可逆”：torch_npu 激活后再把
+`disable_addmm_fusion=False` 已经太晚，因为 entry 的 check 已被永久换掉；fresh audit worker 必须
+在 autoload 前保存原 check。有效 enabled 图把 `mm+Triton add` 变为单 extern addmm，首个 cohort
+p50/p99 中位数改善 22.17%/14.05%，但 FP16 舍入差也从 0 增到 0.0625。随后 11/11 的
+dtype/bias/layout/dynamic/backward/negative capability 和 unaligned 第二性能 cohort 均完成；NPU
+Event 还证明单 addmm 的 device p50/p99 都更快。P-018 current source 因此默认启用 fusion，同时把
+显式 opt-out 做成保存/恢复原 check 的幂等 wrapper；source probe 通过，installed wheel 仍 pending。
+后续 worker 继续显式 `elide_int_float_int=False`，下一步做 permute-gather、outer rsplit。不要先写
+Triton，也不要把 default 历史收益直接迁移为 experimental 结论。
 
 #### 已完成：P0 addmm 覆盖与通用 blocker
 

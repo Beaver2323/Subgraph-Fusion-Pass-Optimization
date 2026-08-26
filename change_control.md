@@ -2,22 +2,22 @@
 
 ## 当前冻结状态
 
-- 阶段：用户于 2026-08-21 明确要求继续，暂停已解除；当前恢复 T-014 的
-  unaligned/128³ standalone Triton 正确性闸门，尚未进入 profile 或性能验证。
-- 单独环境：使用 Conda `Pass`（`/home/z50063656/envs/Pass`）。
-- NPU 运行环境：用户已确认稳定；每轮只选择采样前空闲的物理卡，最近 T-011 至
-  T-014 使用 NPU 6，不固定占用某张卡，也不终止其他任务。
-- 环境稳定性：E-002 冻结已解除；E-003 的 CPU/NPU eager 与 Inductor smoke 全部通过。
-- PyTorch/Triton 功能源码修改：仍禁止，除非提案另行批准。torch_npu 仅保留 T-011
-  已批准并验证的 `torch_npu/_inductor/lowering.py` tracked diff。
+- 阶段：P-013/T-054 default-backend 工作已归档；用户已恢复任务并将负责后端切换为
+  `triton_experimental`。新的 T-055 先做安装态入口与隔离基线，不修改源码。
+- 环境：继续使用 `/home/z50063656/Benchmark/env.sh` 激活的 Conda `benchmark-py311`；不安装
+  meta worktree 的 2.13 环境，不改变 PyTorch/torch_npu/Triton/CANN 版本。
+- NPU 运行环境：每轮只选择采样前空闲的物理卡，不固定卡号，不终止或迁移其他任务。
+- 环境稳定性：用户已确认保持当前环境；torch_npu 继续使用当前源码构建 wheel，以
+  `--force-reinstall --no-deps` 安装。
+- PyTorch/Triton/torch_npu 功能源码修改：仍禁止，除非新提案先登记。现有累积修改、P-013
+  wheel、P-012 rollback 和 source snapshot 原样保留。
 - 当前允许修改：本审计目录的脚本、矩阵、结果和说明文档；任何修改必须先记录在本文档。
-- 已完成构建：torch_npu 当前 commit 的 wheel 已从源码构建并以 `--no-deps` 安装；不得让后续 pip 操作替换 PyTorch/Triton 依赖。
-- 恢复约束：按 `PAUSED_CHECKPOINT_20260821.md` 的 correctness → profiler → paired
-  benchmark 顺序推进；功能源码接入和环境安装仍禁止，恢复记录见 E-030。
+- 已完成构建：torch_npu 当前 commit 的 P-013 wheel 已从源码构建并以 `--no-deps` 安装；不得让后续 pip 操作替换 PyTorch/Triton 依赖。
+- 恢复约束：先读 `triton_experimental_migration_20260826.md`，按 backend 入口/隔离 → inventory
+  → correctness/codegen → paired performance 推进；default 历史 verdict 不自动迁移。
 
-PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-011；Triton Ascend
-仍只有三处进入本任务前已存在的兼容修改。torch_npu 源码树中的 wheel/codegen 构建生成物
-继续原样保留，不执行破坏性清理。
+三个产品工作树均保留当前共享/累积状态，不执行清理或回退。P-013 没有修改 PyTorch 或
+Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续原样保留。
 
 ## 修改前置流程
 
@@ -2029,7 +2029,309 @@ PyTorch 工作树保持干净；torch_npu 的唯一 tracked 功能 diff 是 T-01
   行为记 `supported-pass-disabled-performance-rejected`。详细证据见
   `report/t054_b4_attention_pattern5_guard_20260826.md`。
 
+### E-150：需求切换到 triton_experimental，环境保持不变（2026-08-26）
+
+- 用户指定负责后端为 `torch_npu/_inductor/triton_experimental`，要求保存并尽量迁移此前成果；
+  随后进一步明确只复用 `inductor-meta-worktree` 的工作流程，现有 Benchmark 环境保持原样。
+- 只读核对 meta workflow HEAD `6d3bd619f910cf00380e4cd1d90b9d63a68de488` 和旧外挂后端
+  HEAD `0661e649a9a8673ca438181cb978a1b978b222df`。临时 clone 位于 `/tmp`，未初始化其环境、
+  子模块或 wheel，不参与运行时。
+- 保留 `/home/z50063656/Benchmark/env.sh`、PyTorch 2.14、torch_npu 2.14、CANN 9.0.1、
+  当前 source-built wheel 和 `--no-deps` 安装方式；测试仍从 `/home/z50063656/tmp` 发起。
+- 源码确认 experimental loader 不调用 default loader 的 P-013、different-K pattern 和 27 个
+  custom pass；它拥有独立 codegen/heuristics/FX passes，并默认关闭 pad-mm 与 addmm fusion。
+  因此旧 251 行矩阵保留为 default 历史基线，不能直接统计为 experimental 结论。
+- T-055 重新定义为 installed experimental 三入口、default 隔离、wrapper marker 与 pointwise
+  correctness 冒烟；通过前不修改产品源码、不做 pass 性能。详细迁移边界见
+  `triton_experimental_migration_20260826.md`。
+
+### E-151：T-055 三入口通过、同进程回切 default 阻断（2026-08-26）
+
+- 状态：`entry-supported-isolation-blocked`。原始 no-shim 运行先暴露 config key 惰性注入和
+  fresh launcher header 合同；审计 runner 调用一次 `get_config_copy()`，并使用已登记的 T-022
+  launcher wrapper。runner 路径错误与受限沙箱 `aclInit 507008` 两轮中性失败均原样保留。
+- 有效运行从 `/home/z50063656/tmp` 在空闲物理 NPU 1 发起，测试 snapshot SHA256 为
+  `6ec36655...b583f`，只运行原 T-055 两个类，排除共享工作区后来加入且未安装的 provenance
+  用例。三种 experimental 入口 12/12 正确且 wrapper marker 命中；隔离用例在回切 default
+  时因 `aten.erfc.default` decomposition 重复注册失败，总计 12/13、251.311 秒。
+- DEBUG run 只有 12 个成功编译目录和 12 份 `output_code.py`，失败图没有 `model__12`：异常
+  发生在 `_load_triton_backend()` 的 registrar，早于 lowering/fallback/codegen。erfc 虽在
+  fallback list 中，但该列表未参与失败，不能归类为算子未入图或 Triton kernel 缺失。
+- 根因是 `restore_inductor_baseline()` 不恢复 decomposition 表，而 default registrar 不可重入。
+  不能把整个 registrar 标为 run-once，因为 experimental 的 gelu/dropout 等 override 后，default
+  回切仍须重新应用自身状态。P-014 只允许把 erfc 纳入 registrar 既有 overload cleanup，再注册；
+  详细证据、失败目录与验收合同见 `report/t055_triton_experimental_enable_20260826.md`。
+
+### E-152：T-056 experimental 独立静态 inventory（2026-08-26）
+
+- 新增不导入 torch 的 `t056_build_experimental_inventory.py`。保留原 251 行 default 历史矩阵，
+  另生成 experimental route overlay：203 条继承上游待动态验证、32 条 torch_npu 其他 loader
+  未调用、8 条 DVM/MLIR、4 条上游行为被 experimental 明确关闭、4 条 experimental 自有
+  pass/installer/gate 记录；全部 dynamic status 重置为 `not-run`。
+- 当前 `config.py` 有 69 个配置项，但不等于 69 个 pass：55 个 live-read、12 个 import-time
+  snapshot、1 个 mixed、1 个 `reassociate_sum_of_add` declared-unused。import-time snapshot 和
+  不可逆 monkeypatch 要求 pass-on/off 使用独立 fresh process，不能依赖同进程 config.patch。
+- 结合当前 15 文件源码，把耦合 config/lowering/codegen 行为整理为 35 个 feature family。
+  静态 P0 风险包括：int→float→int 默认 pass 没有实现注释所需的 `|value|<2**24` 证明、GELU
+  override 忽略 `approximate`、addmm/config/decomposition 可能跨 backend 泄漏、int64 boundary
+  降为 int32；高收益候选是 addmm gate、permute-gather 与 outer rsplit。
+- 产物位于 `report/triton_experimental_20260826/`，说明见
+  `report/t056_triton_experimental_inventory_20260826.md`。这些是静态路由和测试优先级，不是
+  availability/performance verdict；T-057 先做状态快照与 correctness 边界，再做 paired 性能。
+
+### E-153：T-057 backend 全局状态快照计划（2026-08-26）
+
+- 目标：在任何新产品修改和 pass 性能前，验证 default→experimental→default→experimental
+  是否恢复 pattern、custom-pass、config 和 decomposition 状态。使用 P-014 当前 source
+  registrar 的进程内单函数 overlay，只为越过已知 erfc 重入崩溃；不编辑 site-packages。
+- 每阶段记录 `_InductorNpuRegistry._loaded_backend`、addmm pattern `extra_check` 描述、
+  `post_grad_custom_post_pass`、layout/coordinate/split/padding config、Dynamo recursive-tag guard，
+  以及 erfc/GELU/softmax/RMSNorm/dropout decomposition identity 和 matmul `should_fold` identity。
+- 在 experimental 前为四项 Inductor config 与可用的 Dynamo guard 设置进程内 True sentinel；
+  default 回切若未恢复，不得用“default 默认本来也可能为 False”掩盖泄漏。输出写独立 JSON，
+  测试从 `/home/z50063656/tmp`、空闲 NPU 发起，不编译模型、不使用 launcher shim。
+- 这一步只判 backend 状态隔离；若确认多项泄漏，先登记新的最小恢复设计，P-014 仍保持 erfc
+  单点修复边界，不把大范围 registry snapshot 偷塞进同一提案。
+
+### E-154：T-057 backend 状态快照结果（2026-08-26）
+
+- 状态：`backend-selection-functional-state-isolation-failed`。P-014 source registrar overlay 下
+  完整执行 default→experimental→default→experimental；原始 JSON SHA256
+  `07d070f6...2cdc`，未编译模型、未使用 launcher shim。
+- experimental 后 34 个 addmm entry 全部从 upstream check 变为 False lambda，回切 default
+  不恢复；四个 Inductor True sentinel 与 Dynamo guard 均变 False且不恢复；matmul should_fold
+  也保留 experimental wrapper。`post_grad_custom_post_pass` 是本轮唯一确认按 backend 恢复的
+  pass config。
+- decomposition 回切 default 后，erfc由P-014安全重注册、GELU forward被清除，但 softmax
+  backward、GELU backward、RMSNorm、native dropout forward/backward 仍为 experimental
+  实现。pointwise marker 通过不能覆盖这些串态。
+- 详细报告：`report/t057_backend_state_isolation_20260826.md`。P-015 关闭前所有跨 backend
+  对照必须独立 fresh process；P-014 保持单点崩溃修复，不扩张为完整 registry 恢复。
+
+### E-155：T-057 int→float→int 值域验证计划（2026-08-26）
+
+- 目标 pass 是 experimental 默认开启的 `_elide_int_float_int_roundtrip_pass`。源码只验证源/目标
+  整数 dtype相同和 value-provenance，不验证浮点中间 dtype 的精确整数范围；注释只提 f32
+  `2**24`，实现还允许 fp16/bf16/fp64。
+- 新 worker 每个进程只加载 experimental，一个 mode/float dtype，输入限制在 int32 值域内以
+  排除 int64 boundary downcast。pass-on 与 `elide_int_float_int=False` pass-off 分别使用 fresh
+  cache/process；覆盖 fp16 的 2048、bf16 的 256、fp32 的 `2**24` 正负邻域。
+- 每个 worker 比较 eager NPU 的真实 int→float→int 与 compiled 输出，记录 exact mismatch、
+  experimental wrapper marker 和生成代码。先跑 fp32 on/off；反例成立后仍补 fp16/bf16，确定
+  问题不是单一 mantissa 边界。使用既有 audit launcher shim，只判 Python pass 归因，不关闭
+  正式 fresh launcher 环境缺口。
+- 如果 pass-on 返回原 int、pass-off 匹配 eager，则 verdict 为 correctness failure。下一步先
+  登记 capability 修复（按中间 dtype 的精确可表示范围或可证明值域），不得先做性能或用宽松
+  tolerance 接受整数不等。
+
+### E-156：T-057 int→float→int 正确性结果（2026-08-26）
+
+- 六个 fresh-process NPU worker 已完成。Float32 ON 在 `±(2**24+1)` 与 eager 相差 1 且
+  alias 输入；OFF 数值完全一致且不 alias，故目标 pass 单点正确性失败已经成立。
+- Float16/BFloat16 ON 同样删除整图、返回输入，并在各自精确整数边界外相差 1；OFF 不 alias，
+  但 generated Triton code 把目标低精度 cast 生成成 Float32 compute type，仍不复现 eager
+  舍入。这是独立的低精度 convert 融合/codegen 现象，不归入目标 pass 的单点修复。
+- 按图模式规范检查了失败 run 的 `output_code.py`、transformed FX 和 pre-fusion IR，并对照
+  NPU lowering/fallback：ON 在 lowering 前被 pass 消除；OFF 的 convert 进入 NPU override
+  lowering，不是 ACLNN/CPU fallback。
+- verdict：`correctness-failed-default-on`。错误结果不进入性能测试，也不写重复 Triton；详细
+  报告为 `report/t057_int_float_int_boundary_20260826.md`，下一步按 P-016 先默认关闭。
+
+### E-157：P-016 source gate 实施与验证（2026-08-26）
+
+- 产品源码只改 experimental `config.py` 默认 True→False，并修正 `fx_passes.py` 的默认值/
+  workload 值域注释；没有改 tracer、lowering、codegen、C++ 或 Triton kernel。修改后 SHA256
+  分别为 `f33deebb...4c73`、`bf4f2b89...7ec2`，语法与 diff whitespace 检查通过。
+- `t057_p016_source_gate_probe.py` 从 `/home/z50063656/tmp`、autoload-off CPU 进程加载两个
+  source 模块：默认 installer no-op、显式 True 可注册、退出后 post-pass identity 恢复，全部
+  通过。第一次未关闭 autoload 的受限层启动被中断，不计功能结果。
+- T-056 generator 已登记 TE-FX-001 动态结论并重新生成 251/69/35 三张表；config inventory
+  的默认值现为 False。installed P-013 wheel 未变，不把共享树中其他人的改动带入构建。
+
+### E-158：T-057 GELU `approximate` 正确性计划（2026-08-26）
+
+- 源码 `_override_gelu_decomp()` 的 forward/backward 都接受 `approximate`，但当前实现不分支，
+  始终计算 sigmoid 等价的 tanh 近似；上游/eager 合同要求 `none` 使用 erf exact、`tanh` 使用
+  tanh approximation，并对非法字符串报错。
+- 首轮用 FP32 dense `[-6, 6]` 输入和非恒定 grad，在两个 fresh experimental-only 进程分别
+  编译 `none`/`tanh`，每个图同时返回 forward 与显式 `aten.gelu_backward`。与 eager NPU 的
+  requested mode 比较，并额外与另一个 eager mode 比较，防止只看到误差却不能证明模式串线。
+- 每个 installed worker 显式设 `elide_int_float_int=False`，独立 cache、开启
+  `TORCH_COMPILE_DEBUG=1`，保存 `output_code.py`/transformed FX/IR 和 generated code；检查目标是
+  sigmoid/tanh/erf 实际 codegen，不以 `torch.compile` 成功代替语义通过。
+- 如果 `none` 失败且更接近 eager tanh、`tanh` 通过，则登记最小 decomposition 分支修复；先
+  source 单测/overlay NPU，shared diff 可隔离后再构建 wheel。错误模式不进入性能测试，也不
+  用手写 Triton GELU 复制已有 pointwise 能力。
+
+### E-159：T-057 GELU `approximate` 动态结果（2026-08-26）
+
+- 两个 FP32 fresh process 都生成同一个 `tl.sigmoid` fused kernel，none/tanh transformed FX
+  完全同构，无 erf/tanh call。相对当前 eager NPU，forward/backward 严格 allclose 均通过，
+  且 eager NPU 两模式逐位相同。
+- CPU/upstream 参考明确区分两模式，forward/backward 最大差 `4.7339685e-4/7.3504448e-4`；
+  compiled none 相对 CPU none 的最大差 `4.7349930e-4/7.3510408e-4` 并严格失败，compiled
+  tanh 只差 `4.768e-7/3.457e-6`。结论为 current-eager-compatible 但 upstream-contract-failed。
+- op-plugin 新 V2 路径携带 approximate，但兼容路径可调用无该参数的旧 ACLNN GELU，与本轮
+  eager 结果一致。eager/CANN 问题另行路由；Inductor 侧仍登记 P-017 修复自身显式忽参。
+- 详细报告：`report/t057_gelu_approximate_20260826.md`。按图模式规范已检查两份
+  `output_code.py`/transformed FX；目标是 decomposition 后入 Triton kernel，不是 fallback。
+
+### E-160：P-017 source 实施与六组 NPU 验证（2026-08-26）
+
+- `_override_gelu_decomp()` 已按 P-017 只增加 approximate 分支：`none` forward 为 erf exact，
+  backward 为 CDF/PDF exact；`tanh` 保持现有 sigmoid 公式；非法值显式 RuntimeError。修改后
+  decomposition.py SHA256 `059ec0db...02d7d5b`，P-014 erfc cleanup 未删除。
+- current-source AST 契约探针通过：FP64 none/tanh forward/backward 对 PyTorch reference 均在
+  `1e-12` 容差内，两个非法参数入口均按预期报错，替换后恢复 decomposition table。
+- NPU source-overlay 的 FP32/FP16/BF16 × none/tanh 共 6 个 fresh process 全部编译执行；none
+  generated code 均出现 `libdevice.erf`，tanh 均保持 `tl.sigmoid`。none 对 CPU reference 分别按
+  FP32 `1e-5/1e-6`、FP16 `2e-3/2e-3`、BF16 `2e-2/2e-2` 通过。
+- FP32 tanh 首轮环境尝试在输入搬运前遇到设备子进程启动超时 `507033/E39007`，无 result.json；
+  NPU1 健康空闲后 retry1 成功，因此只记中性环境失败，不记功能失败。
+- installed wheel 仍为 P-013；shared source 另有他人未安装 diff，本轮不构建/安装。P-017 升级为
+  `source-verified-wheel-pending-shared-diff`，错误 installed-none 与正确性修复均暂不做性能计时。
+
+### E-161：T-058 experimental addmm gate 代表 cohort 计划（2026-08-26）
+
+- 目标是回答 experimental 默认 `disable_addmm_fusion=True` 是否仍有必要。首批只测
+  FP16/static/contiguous/vector-bias 的 `a @ b + bias`，shape 为 `M=192,K=256,N=320`；这是 default
+  历史已证明有收益且 experimental 旧 smoke 已证明默认保持 mm+pointwise 的代表 cohort。
+- 对照使用两个 fresh experimental-only 进程：disabled 保持 installed 默认；enabled 仅在 backend
+  激活前把 installed `triton_experimental.config.disable_addmm_fusion=False`。两侧都显式设置
+  `elide_int_float_int=False`，不修改产品源码、不恢复同进程已被覆盖的 pattern entry。
+- 功能闸门要求共同输入的 NPU eager/CPU reference 正确；disabled generated code 为一个
+  `extern_kernels.mm` 加一个 experimental Triton add，enabled 必须真实出现单个
+  `torch.ops.aten.addmm.default` 且不再生成 add kernel。保存 TORCH_COMPILE_DEBUG 的 transformed
+  FX/IR/output_code，不能只看总 pattern counter。
+- 功能通过后执行三轮交错 `D1,E1,E2,D2,D3,E3`，每个 fresh process warmup 10/runs 100，记录
+  p50/p99、首次编译、allocated peak 和代码 task 结构。只有 enabled p50 改善超过 10%、p99 不回退
+  超过 5%、内存不增加，才提出缩窄 gate；否则保持默认关闭。首批失败先分析 lowering/性能，
+  不手写 Triton addmm，因为现有 NPU `aten.addmm` lowering 已可承接。
+
+### E-162：T-058 addmm 代表 cohort 功能与性能结果（2026-08-26）
+
+- 默认 disabled 生成 `1×extern_kernels.mm + 1×experimental Triton add`；audit-only enabled 在
+  torch_npu autoload 前保存并在 backend 激活后恢复两个唯一上游 addmm check，pattern delta 为
+  1/2 nodes，生成单 `extern_kernels.addmm`。两侧对 CPU/NPU eager 均通过 FP16 容差。
+- enabled 相对 NPU eager/CPU 的最大绝对差都是 `0.0625`，disabled 分别为 `0/0.03125`；融合
+  引入可接受但非零的 FP16 舍入差，扩展覆盖必须继续跟踪。
+- 三轮 D/E p50 改善 `21.09%/24.00%/19.89%`，中位数 `22.17%`；p99 改善
+  `20.66%/4.80%/18.84%`，中位数 `14.05%`。两侧 max allocated 均 `510,976 B`；首次编译+运行
+  中位数 `19,628.63→925.31 ms`，因为 enabled 不再编译独立 Triton add。
+- 初版 runner 的二维误差索引错误和“激活后才改 config”的无效 enabled 均原样保留为中性尝试，
+  不纳入性能数据。详细报告为 `report/t058_experimental_addmm_gate_20260826.md`。
+- 当前 verdict 为 `representative-supported-beneficial-gate-shrink-coverage-pending`；登记 P-018，
+  尚不改产品源码。下一步补 dtype/bias/layout/dynamic/backward 与合法负例。
+
+### E-163：T-058 addmm capability 扩展与 unaligned 性能（2026-08-26）
+
+- 11/11 fresh enabled coverage 通过：FP16 row/full bias、BF16/FP32 vector、FP16 unaligned、真实
+  transposed、dynamic replay、vector/full-bias backward 均单 addmm；scalar 与 mixed-dtype 两个
+  negative 均保持 mm+add。training 三个输入梯度最大差均为 0。
+- 数值差异完整保留：BF16 vector max vs eager 为 `0.5`（3% 容差通过）；FP32 为
+  `1.335144e-5`；FP16 vector/row 的融合舍入差最高 `0.0625`。不能用“功能通过”替代精度记录。
+- unaligned 三轮 p50/p99 中位数改善 `17.49%/36.18%`，max allocated 两侧同为 `506,368 B`；
+  E1 单轮 host p99 出现 `3.377 ms` 长尾。D4/E4 NPU Event 的 device p50/p99 改善
+  `19.38%/19.51%`，但同轮 host p99 回退 `9.39%`，所以最终 installed 仍需 host-tail 监控。
+- P-018 升级为 `documented-ready-for-minimal-source-change`。修改前回滚边界：experimental
+  config.py SHA256 `f33deebb...d974113`，fx_passes.py SHA256 `bf4f2b89...17ec2`。先实施 default
+  False + reversible opt-out wrapper 和 source gate probe，不构建共享 dirty tree wheel。
+
+### E-164：P-018 source gate 实施与验证（2026-08-26）
+
+- 仅修改 experimental config.py 与 fx_passes.py：`disable_addmm_fusion` 默认 True→False；显式
+  disable 使用携带 `_torch_npu_original_extra_check` 的 wrapper，按 entry identity 去重，重复
+  disable 不叠加；随后以 False 调用恢复 original。未改 PyTorch pattern、lowering、C++/Triton。
+- 修改后 config.py SHA256 `1e9e62ec...c06b33`，fx_passes.py SHA256
+  `e5bc23d4...ec95e`；py_compile、git diff --check 通过。
+- `t058_p018_source_gate_probe.py` SHA256 `ae0bcbf6...5d7bf`，从 current source AST 提取实际函数，
+  对两个唯一上游 addmm entry 验证 default no-op、显式 disable、重复幂等、False 恢复和重复恢复，
+  全部为 true；结束后恢复进程原 registry。
+- P-018 状态升级为 `source-verified-wheel-pending-host-tail-monitor`。installed P-013 仍默认关闭；
+  shared tree 其他未安装 diff 可隔离前不构建/安装，最终 wheel 需重跑 11 项覆盖、两性能 cohort、
+  显式 opt-out 和 host p99。
+
 ## 提案记录
+
+### P-018：experimental addmm fusion capability gate
+
+- 状态：`source-verified-wheel-pending-host-tail-monitor`。目标不是删除 opt-out，而是把
+  `disable_addmm_fusion` source 默认改为 False，让原上游 validity check 继续控制 dtype/shape/
+  bias；显式 True 路径保留为可恢复门禁。
+- 首批 FP16/static/contiguous/vector-bias 证据满足 p50/p99/内存门槛，且现有 extern addmm lowering
+  已正确承接。候选无需手写 Triton kernel，也不得修改 PyTorch 通用 post_grad pattern。
+- 上述 11 项覆盖和 unaligned 第二性能 cohort 已完成。设计必须保存 original extra_check、幂等；
+  `disable=True` 包装为 False，重复调用不叠加，随后 `disable=False` 调用恢复 original，并补
+  device-independent source probe。P-015 仍负责完整 backend loader 回切，不在 P-018 扩大修改。
+- 已按上述边界只修改 experimental config.py 与 fx_passes.py；source gate 通过。未改 PyTorch
+  通用 pattern、lowering、C++、Triton kernel 或其他 gate。当前仍为 wheel-pending，installed
+  P-013 和 P-014/P-016/P-017 边界不变；unaligned 的单轮 host 长尾必须在 installed 复验中保留。
+
+### P-017：experimental GELU approximate 参数合同修复
+
+- 状态：`source-verified-wheel-pending-shared-diff`。回滚边界为当前 P-014 后
+  `torch_npu/_inductor/decomposition.py` SHA256 `bd6ac8ac...7ac373`；不得删除 P-014 erfc cleanup。
+- 只在 `_override_gelu_decomp()` 按 `approximate` 分支：tanh 保持现有 sigmoid 公式；none 同步
+  PyTorch erf forward 和 CDF/PDF backward；非法值报错。不改 eager/op-plugin、通用 lowering、
+  fallback、C++、Triton 或其他 experimental decomposition。
+- 实施后文件 SHA256 `059ec0db...02d7d5b`。AST source contract、非法参数和 NPU
+  FP32/FP16/BF16 × none/tanh 共 6 组均已完成；none 生成 `libdevice.erf` 并对 CPU reference
+  通过，tanh 保持 sigmoid 且对当前 eager NPU 回归。详细证据见 E-160 与 T-057 报告。
+- 当前 shared tree 有其他未安装 diff，source 通过后状态只能到 wheel-pending；不得为 P-017
+  直接打包。eager NPU 两模式相同是独立 op-plugin/CANN 兼容问题，不在本提案内顺带修改。
+
+### P-016：experimental int→float→int 默认安全门禁
+
+- 状态：`source-verified-wheel-pending-shared-diff`。第一阶段只把
+  `triton_experimental/config.py:elide_int_float_int` 默认值从 True 改为 False，并修正文档注释；
+  不改通用 lowering/codegen、其他 pass、C++、Triton kernel 或 backend 状态恢复。
+- 依据：Float32 fresh ON/OFF 已单点证明数值差 1；三个 dtype 的 ON 都把 eager 新 tensor 改成
+  input alias。FP16/BF16 OFF 的 compute-type 上浮另立问题，不能用本 pass 掩盖。
+- source 验证：语法/格式、默认 config 值、未显式 opt-in 时 installer 不注册；显式 True 时既有
+  pass 仍可注册，保证这是 default safety gate 而不是删除实现。
+- installed 验证：共享源码中有其他人的未安装 tracked diff，当前不得直接构建污染 wheel；待
+  隔离快照或共享 diff 收敛后，从相同 source 构建并 `--no-deps --force-reinstall`，在 fresh
+  experimental 进程验证默认 OFF 与显式 ON 边界。
+- 第二阶段只有在 tracer 记录真实 float dtype、具备完整 dtype/range capability、graph-output
+  alias 保护及边界测试后，才允许讨论重新默认开启和 DIFM paired 性能。Int64 无 runtime 值域
+  证明时不得放行；错误结果更快不计性能收益。
+- 实施结果：上述两个 source 文件和 gate probe 均通过；T-056 inventory 已同步。当前 source
+  默认安全，但 installed wheel 仍保持 P-013，因此运行 installed experimental 时必须继续在
+  worker 中显式设 `elide_int_float_int=False`，直到隔离构建完成。
+
+### P-015：default / triton_experimental 全局状态隔离
+
+- 状态：`draft-diagnosed-do-not-implement`。目标是 loader 级 capture/restore pattern check、
+  backend config/guard、decomposition exact keys、matmul should_fold 与 custom-pass identity；不得
+  在测试脚本中永久 monkeypatch 来冒充产品修复。
+- 修改边界尚未定稿。优先设计统一 baseline snapshot 和 per-backend apply，而不是在 addmm、
+  GELU、dropout 等函数旁各加零散反向 patch。必须区分上游 baseline、torch_npu default、
+  experimental 和用户临时 config，避免恢复动作覆盖用户 options。
+- 验证门槛：两轮 default→experimental→default→experimental 状态逐项等于各 backend 首次
+  snapshot；随后 addmm、GELU exact/tanh、dropout、RMSNorm、3D×2D matmul 实际编译/数值/
+  generated code 回归。当前共享 tree 有未安装的其他 `triton.py` diff，方案冻结前禁止实现或
+  构建 wheel。
+
+### P-014：default / triton_experimental decomposition 重入修复
+
+- 状态：`source-verified-wheel-pending-shared-diff`。目标仅为同进程 backend 回切时
+  `_register_triton_decompositions()` 的 `aten.erfc.default` duplicate registration；不改变
+  experimental pass、算子语义、fallback 列表、lowering 或 device kernel。
+- 修改前 `torch_npu/_inductor/decomposition.py` 源码/安装态 SHA256 都为
+  `3fd37092abdbf006253dc8124e26aa66fd990a2bf20c3209a0efab61d7d9af98`，且该文件无 tracked
+  diff；当前 P-013 wheel SHA256 `3909fd...c2d4989` 是安装回滚边界。
+- 受控修改：只把 `aten.erfc` 加入 `_register_triton_decompositions()` 已有的
+  `DECOMPOSITION_OVERLOAD_OP` cleanup 集合，使重复进入 default 时先删除旧 overload entry，
+  再注册当前 erfc decomposition。不得用 `@run_once` 跳过 default 状态重建。
+- 验证：registrar 连续调用重入；default→experimental 和
+  experimental→default→experimental marker/数值隔离；原 13 项 13/13；最终从同一源码构建
+  wheel、`--no-deps --force-reinstall` 后复验。共享测试/provenance 修改不得被本任务覆盖；
+  audit shim 不关闭正式无 shim launcher 缺口。
+- 实施结果：只新增 `aten.erfc` cleanup entry；修改后 SHA256 `bd6ac8ac...7ac373`，语法/空白
+  检查通过。source registrar 连续两次调用通过；只 overlay 该 registrar 后，预加载
+  experimental 的现有 isolation test 1/1 通过，完整覆盖 experimental→default→experimental。
+  当前安装 wheel 未变。由于共享树中另有未安装且非本轮产生的 experimental `triton.py`
+  tracked diff，直接构建会扩大安装范围；在隔离构建快照或该修改完成前保持 wheel pending。
 
 ### P-013：pattern 5 NPU half-inference 性能负域门禁
 

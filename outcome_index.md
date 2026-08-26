@@ -2,8 +2,9 @@
 
 > 更新到 2026-08-26。这里汇总已执行的动态工作，不代表 251 条 pass 全部完成；逐条状态
 > 仍以 `report/pass_src_20260820/pass_evaluation_matrix.csv` 为准。
-> 当前已按用户要求暂停；恢复入口为
-> `PAUSED_CHECKPOINT_20260826_P013.md`。
+> P-013/default 工作已归档；用户随后恢复任务并将目标切换到
+> `triton_experimental`，环境保持不变。迁移入口为
+> `triton_experimental_migration_20260826.md`。
 
 ## 已形成正向成果
 
@@ -25,6 +26,8 @@
 | `_sfdp_pattern_1` | fp16 静态 inference 精确命中 vendor attention；P50/P99 +46.70%/+44.26%，task 4→1，allocated peak -87.31% | `supported-beneficial` | `report/t049_t050_b4_attention_first_20260826.md` |
 | `_sfdp_pattern_13` | 三维 BMM inference 落到 vendor attention；P50 仅 +0.99%，但 task 3→1、首次编译 +91.37%、allocated peak -87.31% | `supported-neutral-resource-beneficial` | `report/t051_b4_attention_pattern13_performance_20260826.md` |
 | P-013 pattern 5 NPU guard | 旧 rewrite P50 回退 103.23%、task 3→8；guard 后 P50 +50.28%、task 8→3、peak -1,054,720 B | guard `supported-beneficial`；rewrite 已停用 | `report/t053_b4_attention_pattern5_performance_20260826.md`、`report/t054_b4_attention_pattern5_guard_20260826.md` |
+| P-014 backend decomposition 重入 | 三种 experimental 入口 12/12；erfc cleanup 后 source registrar 重入与 experimental→default→experimental 1/1 通过 | `source-verified-wheel-pending-shared-diff` | `report/t055_triton_experimental_enable_20260826.md` |
+| P-016 int→float→int 默认安全门禁 | Float32 ON/OFF 单点证明边界数值差 1；三 dtype ON 均破坏输出 alias；source 默认已改为 opt-in | `source-verified-wheel-pending-shared-diff` | `report/t057_int_float_int_boundary_20260826.md` |
 
 ## 已否决或失败的尝试
 
@@ -48,6 +51,10 @@
 | DVM sum pass-off 冒烟 | 人工跳过 fp32 pre/post-cast 后生成 bare fp16 DVM sum，首次 native 执行 segfault | 只作为“sum pass 对可用性必需”的证据；不可计算 paired speedup |
 | expand_to_reshape aggregate | direct helper 已修复，但 capability 列表排除 expand/reshape/view，组合图都留在 custom op 外 | 当前 verdict `unsupported`；先评估 partition capability，不写 Triton |
 | attention 初版只关闭 pattern 1 | 等价 `_sfdp_pattern_3_half_inference` 接管同一图，baseline 实际仍融合 | 该 smoke 性能数字作废；正式 baseline 同时关闭 1/3 |
+| T-055 installed backend 隔离 | experimental 回切 default 时重复注册 `aten.erfc.default`，失败早于 lowering/codegen | P-014 已修 source；当前 installed wheel 仍待复验 |
+| T-057 backend 状态隔离 | 回切 default 后 addmm check、五项 config/guard、matmul fold 与五个 decomposition 残留 experimental 状态 | `state-isolation-failed`；P-015 设计中，跨 backend 强制 fresh process |
+| experimental int→float→int elision | Float32 pass ON 在 `±(2**24+1)` 差 1、OFF 精确；FP16/BF16 ON 也删图；三者 ON 均 alias 输入 | P-016 已 source 默认关闭；错误结果不测性能、不写 Triton |
+| FP16/BF16 convert pass-OFF | FX/IR 保留 lowp cast，但 generated Triton 用 `tl.float32` compute type，未复现 eager lowp 舍入 | 独立 lowering/codegen 数值策略现象；不混入 P-016 最小修复 |
 
 ## 中性、未归因与环境类尝试
 
@@ -94,6 +101,13 @@
 
 ## 下一步
 
-B2 27 条和 B3 8 条已闭环，B4 八个代表 family 功能、pattern 1/13/5 性能和 P-013 已完成。
-当前暂停。恢复后的 T-055 先做 pattern 21 paired，再独立评估 pattern 29 并扩展剩余 attention
-family；完整 MLIR 与 T-023 无 shim 复验作为独立环境支线，不阻塞主线。
+B2 27 条、B3 8 条、B4 八个代表 family 功能以及 pattern 1/13/5 性能和 P-013 均作为
+default-backend 历史闭环保存。T-055/T-056 已完成；T-057 已关闭 backend 状态、
+int-float-int 和 GELU approximate 三项。P-017 证明 installed P-013 的 none 合同失败，并在
+current source 通过 FP32/FP16/BF16 六组 NPU source-overlay、非法参数和生成代码验证恢复合同。
+P-014/P-016/P-017/P-018 均完成 source 验证但 wheel 因共享未安装 diff 暂缓。T-058 addmm 首个
+shape-A cohort p50/p99 中位数改善 22.17%/14.05%，后续 11/11 capability 与 unaligned 第二性能
+cohort 通过；P-018 current source 已默认启用 fusion 并提供可恢复 opt-out，状态为
+`source-verified-wheel-pending-host-tail-monitor`。下一步继续显式隔离 installed P-013 的
+`elide_int_float_int`，进入 permute-gather、outer rsplit。旧 default 结论只作为迁移优先级，不直接计入
+experimental 成功率。

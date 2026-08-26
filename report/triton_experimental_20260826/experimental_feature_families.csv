@@ -1,0 +1,36 @@
+feature_id,name,layer,default_or_gate,source_anchor,priority,primary_risk_or_goal,availability_status,performance_status,verdict
+TE-INFRA-001,backend selection and reload isolation,loader,npu_backend,torch_npu/_inductor/__init__.py:_load_backend,P0,availability/state isolation,entry-supported-state-isolation-failed,not-run,backend-switch-isolation-failed
+TE-FX-001,int-float-int roundtrip elision,post-grad FX,elide_int_float_int=False (opt-in),fx_passes.py:25,P0,large integer value-domain correctness and output alias,explicit-opt-in-runs-source-default-disabled,not-run-correctness-failed,correctness-failed-source-default-disabled-wheel-pending
+TE-FX-002,"Max(1,size) loop-merge fold",symbolic loop pass,fold_max1_in_loop_merge=True,fx_passes.py:396,P1,dynamic/empty shape and codegen performance,not-run,not-run,not-run
+TE-GATE-001,pad mm/bmm/addmm disable,upstream pass gate,disable_pad_mm=True,overrides.py:74,P2,disabled sentinel; default history already regressed,not-run,not-run,not-run
+TE-GATE-002,add+mm to addmm disable,upstream pattern gate,disable_addmm_fusion=False (explicit True opts out),fx_passes.py:534,P0,P-018 source enables fusion by default; installed wheel pending,source-gate-verified-eleven-of-eleven-wheel-pending,two-cohort-p50-beneficial-host-tail-monitor,source-verified-beneficial-wheel-pending-host-tail-monitor
+TE-GUARD-001,recursive dict tag guard disable,Dynamo guard policy,disable_recursive_dict_tag_guards=True,overrides.py:63,P1,training stability and guard overhead,not-run,not-run,not-run
+TE-DEC-001,3D-by-2D matmul fold,decomposition override,always active,decomposition.py:307,P1,layout correctness and bmm-to-mm speedup,not-run,not-run,not-run
+TE-DEC-002,softmax backward no-FMA,decomposition override,always active,decomposition.py:342,P1,backward precision and codegen,not-run,not-run,not-run
+TE-DEC-003,GELU forward/backward override,decomposition override,always active,decomposition.py:368,P0,P-017 source restores approximate contract; installed wheel pending,source-verified-fp16-bf16-fp32-wheel-pending,not-run-correctness-fix,upstream-contract-restored-source-wheel-pending
+TE-DEC-004,RMSNorm forward/backward override,decomposition override,always active,decomposition.py:398,P1,rank/dtype/backward reduction semantics,not-run,not-run,not-run
+TE-DEC-005,native dropout forward/backward override,decomposition override,always active,decomposition.py:428,P1,"packed mask, p edge cases, training",not-run,not-run,not-run
+TE-LOW-001,generate-list fallback policy,lowering registry,always active,lowering.py:51,P0,unsupported op fallback and graph coverage,not-run,not-run,not-run
+TE-LOW-002,A5 CANN embedding/index-select,lowering+codegen,cann_index_select=True and A5,lowering.py:195,P2,not applicable on available 910B2,not-run,not-run,not-run
+TE-LOW-003,strided slice input realization,lowering transform,realize_strided_slice_input=True,lowering.py:233,P1,copy cost versus gather speedup,not-run,not-run,not-run
+TE-LOW-004,tail broadcast expand realization,lowering transform,realize_tail_bcast=True;tail_bcast_min_vec=8,lowering.py:338,P1,copy/alias and small-vector performance,not-run,not-run,not-run
+TE-LOW-005,permute-gather realization,lowering transform,realize_permute_gather=True,lowering.py:400,P0,claimed 110x path; copy/alias/layout guards,not-run,not-run,not-run
+TE-LOW-006,index_put dtype/fallback path,lowering transform,always active,lowering.py:314,P1,"dtype cast, accumulate, mutation semantics",not-run,not-run,not-run
+TE-IR-001,safe symbolic stride ordering,IR monkeypatch,always active,ir.py:21,P1,symbolic divisibility and negative-power guards,not-run,not-run,not-run
+TE-CG-001,outer reduction r-split,codegen transform,rsplit_outer=True,codegen/triton.py:4718,P0,"two-kernel correctness, workspace, provenance, speed",not-run,not-run,not-run
+TE-CG-002,int1 cast rewrite,codegen transform,rewrite_int1_cast_as_ne=True,codegen/triton.py:910,P1,packed-i1 OOB avoidance and bool semantics,not-run,not-run,not-run
+TE-CG-003,extract-slice load/store,codegen transform,select_extract_slice=True;select_extract_slice_strided=True,codegen/triton.py:1791,P1,stride-k gather/store correctness and bandwidth,not-run,not-run,not-run
+TE-CG-004,div/mod and dual-view index folds,codegen transform family,fold_fused_mod;fold_dualview_rnode;fold_dual_decomp;fold_flat_rnode;fold_transposed_xnode;expand_divmod,codegen/triton.py:2138,P1,index equivalence across dynamic/unaligned shapes,not-run,not-run,not-run
+TE-CG-005,range-tree split/collapse/scalar odometer,codegen transform family,split_strided_pointwise;split_root_modulo;split_reduction_modulo;collapse_xtree;scalar_odometer_axes;scalar_odo_in_reduction,codegen/triton.py:2669,P0,wide correctness surface and compile/perf impact,not-run,not-run,not-run
+TE-CG-006,fusion limits and permuted-store guard,scheduler policy,no_fuse_permuted_store=True;max_fused_reads=24,codegen/triton.py:4887,P1,"kernel size, task count, compile time",not-run,not-run,not-run
+TE-CG-007,reduction tiling and guard elision,codegen transform family,rtree_real_block=True;rtree_real_block_autotune=True;elide_reduction_where=True;flatten_small_outer_rnodes=False,codegen/triton.py:6284,P0,"reduction accuracy, padding lanes, OOB",not-run,not-run,not-run
+TE-CG-008,header tiling and odometer,header codegen family,reduce_xblock_by_input_stride;unify_block;pad_min_block_to_8;odometer_opt;tile_align=8,codegen/npu_header.py:253,P1,"UB use, dynamic tiling, steady performance",not-run,not-run,not-run
+TE-CG-009,group/all-block dispatch,launch/codegen policy,group_dispatch=True;all_blocks_parallel=True,npu_triton_heuristics.py:1390,P0,"grid coverage, >65535 blocks, tail work",not-run,not-run,not-run
+TE-CG-010,int64 boundary downcast and dedup,launcher/codegen policy,int64_boundary_cast=True;dedup_downcast=True,npu_triton_heuristics.py:1415,P0,out-of-int32-range correctness and mutation,not-run,not-run,not-run
+TE-CG-011,zero-dim CPU scalar bridge,scheduler monkeypatch,always active,codegen/triton.py:7080,P1,CPU scalar/NPU pointer correctness,not-run,not-run,not-run
+TE-CG-012,FP16/BF16 codegen upcast,codegen subconfig,npu_triton.codegen_upcast_to_fp32=True,codegen/triton.py:970,P1,precision/performance,not-run,not-run,not-run
+TE-AUTO-001,pointwise/reduction autotune search,autotune policy,autotune_enhance=True;autotune_fallback=False;pointwise_tile_max=65536,npu_triton_heuristics.py:1821,P0,"candidate validity, compile cost, chosen tile speed",not-run,not-run,not-run
+TE-AUTO-002,MSPTI/event benchmark,autotune runtime,enable_mspti=True;autotune_mspti=True,npu_triton_heuristics.py:83,P1,device-time fidelity and fallback,not-run,not-run,not-run
+TE-WRAP-001,NPU wrapper allocation and rsplit workspace,wrapper codegen,always active,codegen/wrapper.py:32,P0,"allocation semantics, memory planning, imports",not-run,not-run,not-run
+TE-COMP-001,VF fusion compile options,compiler metadata,enable_vf_fusion=False,npu_triton_heuristics.py:981,P2,opt-in compiler feature,not-run,not-run,not-run
+TE-DEAD-001,sum-of-add reassociation declaration,declared config only,reassociate_sum_of_add=True,config.py,P2,declared but has zero source references,not-run,not-run,not-run

@@ -4,10 +4,33 @@
 
 截至 2026-08-26，本任务已完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、P0 gate/功能/性能闭环、P1 B2 全部 27 个 custom pass、B3 全部 8 个 DVM/MLIR pass，并进入 B4 attention。当前 8 个代表 family 精确触发并数值通过；1/13/30 落到纯 vendor attention，18/28 为辅助 Triton + vendor，5/21/29 被 dispatcher 重新展开为 BMM + Triton。pattern 1 为 `supported-beneficial`，pattern 13 为 `supported-neutral-resource-beneficial`。T-053 证明 pattern 5 rewrite P50 回退 103.23%；P-013 已在 NPU 精确停用该 entry，T-054 验证 P50 改善 50.28%、task 8→3。当前安装 P-013 源码 wheel（`--no-deps`）。
 
-**用户已要求先归档并暂停。** 当前恢复入口为
-[PAUSED_CHECKPOINT_20260826_P013.md](PAUSED_CHECKPOINT_20260826_P013.md)；
-[PAUSED_CHECKPOINT_20260821.md](PAUSED_CHECKPOINT_20260821.md) 只保留为历史基线。
-正式性能结论均来自运行前后空闲设备、fresh-process paired 采样；隔离失效、审计门禁错误或环境失败的原始结果保留但不进入 verdict。B2 27 条和 B3 8 条已闭环，B4 已关闭 pattern 1、13、5 三条性能记录。当前 editable PyTorch / Triton launcher / torch_npu-CANN header 组合仍不能无垫片 fresh compile host launcher，所以带 Triton fresh launcher 的结论继续明确标注 development/audit-shim。
+P-013/T-054 default-backend 工作已归档；用户随后恢复任务并明确把负责后端改为
+`torch_npu/_inductor/triton_experimental`，但要求现有 Benchmark 环境、版本和 wheel 构建方式
+全部保持原样，只复用 meta worktree 的变更控制、构建分流、缓存隔离和验证流程。新的恢复入口为
+[triton_experimental_migration_20260826.md](triton_experimental_migration_20260826.md)；
+[PAUSED_CHECKPOINT_20260826_P013.md](PAUSED_CHECKPOINT_20260826_P013.md) 保留为 default 历史闭环。
+此前正式性能结论不能自动升级为 experimental verdict。T-055 已证明三种 experimental 入口
+12/12 可编译、数值正确并命中独立 wrapper；同进程回切 default 暴露 erfc decomposition 重复
+注册。P-014 的单行 cleanup 已完成 source registrar 与双向切换验证，当前安装 wheel尚未改变，
+因为共享树另有未安装的 `triton.py` 修改不能被本轮无条件带入。T-056 已生成 251 行
+experimental route overlay、69 项 config 引用表和 35 个 feature family，并开始回填动态结果。
+T-057 已关闭前两类 P0 correctness：backend 回切存在全局状态串态；int-float-int 默认 pass 在
+Float32 精确边界外数值差 1，且三个 float dtype 都把新输出变成输入 alias。P-016 已把 source
+默认值改为 False，并通过默认 no-op/显式 opt-in source gate probe；installed wheel 因共享 diff
+仍保持 P-013，后续 worker 必须显式关闭该 pass。GELU `approximate` 随后确认 installed P-013
+把 `none` 错误折叠成 tanh approximation；P-017 已在 current source 恢复 erf/CDF/PDF 合同，
+FP32/FP16/BF16 六组 NPU source-overlay 和非法参数探针通过，但 wheel 同样因共享 diff pending。
+T-058 首个 addmm FP16 vector-bias cohort 已从 `mm+Triton add` 融合为单 extern addmm，三轮 p50
+中位数改善 22.17%、p99 改善 14.05%，内存峰值不变；后续 11/11 capability、unaligned 第二性能
+cohort 和 NPU Event 分解通过。P-018 已把 current source 默认改为启用，并保留幂等可恢复的显式
+opt-out；source gate 通过，wheel/host-tail pending。下一步转入 permute-gather 和 outer rsplit。
+
+T-057 第一项状态快照已完成并确认串态：34 个 addmm check、五项 config/guard、matmul
+`should_fold` 与五个 decomposition 在回切 default 后没有完整恢复。当前只能把
+`triton_experimental` 作为 fresh-process 单 backend 使用；P-015 已登记为设计阻断，尚未实施。
+int-float-int 的详细边界和生成图分析见
+`report/t057_int_float_int_boundary_20260826.md`；FP16/BF16 pass-OFF 还暴露独立的
+compute-type 上浮现象，已与 P-016 最小修复分开记录。
 
 当前 251 条矩阵 verdict 为 220 条 `not-run`、2 条 `not-applicable`、4 条 `unsupported`、9 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、9 条 `supported-neutral`、3 条 `supported-neutral-resource-beneficial`、3 条 `supported-pass-disabled-performance-rejected`。pattern 1 是第九个直接 beneficial 项；pattern 13 是第三个 resource-beneficial 项；pattern 5 rewrite 是第三个被性能证据停用的 pass。旧 `/Dynamo` 194 条清单只保留作历史对照。
 
@@ -340,13 +363,21 @@ torch.compile(
 5. different-K fallback profile、standalone 两 shape 正确性、单 task profiler 和三轮 paired benchmark 已完成；fp16/contiguous/static p50 改善 15.60%/17.12%，但 additional peak 多约 1.38 MiB。
 6. bf16/fp32、真实 transposed/non-contiguous、dynamic replay、backward、正式接入设计，以及 large profiler/tile/memory 分解均已完成；large 最终为 supported-neutral-hold，中小 static cohort 保留 beneficial gate。
 7. different-K default-off template、源码 wheel、首批功能/性能/memory和 workspace 替代搜索已完成；状态为 `conditional-supported-beneficial`。不再重复 T-014 至 T-024，环境支线只需在匹配 headers 的独立环境做无 shim fresh compile smoke。
-8. pad family、P1 B2 全部 27 条和 B3 DVM/MLIR 8 条已完成结构/NPU/性能或环境分流。
-   B4 八个代表 family 功能与 pattern 1/13/5 性能、P-013 guard 已完成；当前已暂停，恢复后的 T-055 先做 pattern 21 paired，再独立评估 pattern 29 并扩展剩余 family。
+8. pad family、P1 B2 全部 27 条和 B3 DVM/MLIR 8 条已完成 default-backend 结构/NPU/性能或环境分流。
+   B4 八个代表 family 功能与 pattern 1/13/5 性能、P-013 guard 已完成；这些结果保留为历史基线。
+9. 需求已切换到 `triton_experimental`，环境不变。T-055 三入口/P-014、T-056 inventory、
+   T-057 状态串态、int-float-int/P-016 和 GELU/P-017 source gate 已完成。T-058 addmm 首个
+   representative cohort 有益，11/11 capability 和第二性能 cohort 已完成，P-018 source gate
+   通过但 wheel/host-tail pending；
+   P-014/P-016/P-017/P-018 wheel 必须等共享 diff 可隔离后再构建安装。随后迁移 permute-gather、
+   outer rsplit 等高价值候选。原 default pattern-21 paired
+   不再直接启动。
    完整 MLIR 只在补齐 `torch_mlir` 的独立环境复验。已闭环 case 不重跑，
    除非环境或源码基线改变。
 
 ## 10. 当前文件导航
 
+- `triton_experimental_migration_20260826.md`：当前需求、环境不变边界、工作流复用方式、既有成果迁移分类与下一步；恢复工作时首先阅读。
 - `PAUSED_CHECKPOINT_20260826_P013.md`：当前暂停的环境、wheel/source 归档、工作树和精确恢复点；恢复工作时首先阅读。
 - `PAUSED_CHECKPOINT_20260821.md`：历史暂停基线。
 - `README.md`：入口与运行约束。

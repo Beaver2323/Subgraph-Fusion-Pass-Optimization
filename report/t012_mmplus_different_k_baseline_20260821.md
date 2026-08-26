@@ -54,8 +54,8 @@ shape-A current 第 2 轮出现 p50 `0.511125 ms`、p99 `1.682840 ms` 的明显�
 
 ## 证据
 
-- 本地功能哨兵：`results/t012_mmplus_different_k_sentinel_20260821/`（运行产物不纳入本仓库）
-- 本地性能原始 JSON：`results/t012_mmplus_different_k_paired_20260821/p0_gate_probe.json`（不纳入本仓库）
+- 功能哨兵：[`results/t012_mmplus_different_k_sentinel_20260821`](../results/t012_mmplus_different_k_sentinel_20260821/)
+- 性能原始 JSON：[`p0_gate_probe.json`](../results/t012_mmplus_different_k_paired_20260821/p0_gate_probe.json)
 - 变更与测试合同：[`change_control.md`](../change_control.md)
 - 前置语义证据：[`p0_semantic_matrix_20260821.md`](p0_semantic_matrix_20260821.md)
 - 后续 kernel profile：[`t013_mmplus_different_k_profile_20260821.md`](t013_mmplus_different_k_profile_20260821.md)
