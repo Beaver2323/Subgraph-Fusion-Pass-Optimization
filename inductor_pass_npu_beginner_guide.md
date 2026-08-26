@@ -724,8 +724,25 @@ p50/p99 中位数改善 22.17%/14.05%，但 FP16 舍入差也从 0 增到 0.0625
 dtype/bias/layout/dynamic/backward/negative capability 和 unaligned 第二性能 cohort 均完成；NPU
 Event 还证明单 addmm 的 device p50/p99 都更快。P-018 current source 因此默认启用 fusion，同时把
 显式 opt-out 做成保存/恢复原 check 的幂等 wrapper；source probe 通过，installed wheel 仍 pending。
-后续 worker 继续显式 `elide_int_float_int=False`，下一步做 permute-gather、outer rsplit。不要先写
-Triton，也不要把 default 历史收益直接迁移为 experimental 结论。
+后续 worker 继续显式 `elide_int_float_int=False`。T-059 已用生成代码证明 permute-gather 把
+`12*r` bias gather 改为 contiguous copy + stride-1 consumer；代表 device P50/P99 改善
+8.14%/8.99%，6/6 dtype/dynamic/guard 覆盖通过，但保留 host-tail 和额外 1.56 MB peak。
+T-060 接着给出了一个典型的“开关为 True 不等于 pass 生效”案例：generic Inductor 先给 reduction
+一个 `ReductionHint`，experimental rsplit gate 只接受 `INNER/OUTER`。scalar sum 原生得到
+INNER 并成功拆成 partial+combine；RMSNorm dweight/outer 图却得到 DEFAULT，所以仍是单 kernel。
+只在审计 worker 强制 OUTER 后，既有实现已证明正确；真实 P-019 source-overlay 的代表 device
+P50/P99 中位改善 29.93%/29.94%。这说明应修 hint→gate 接口，而不是重写 Triton；P-019 只在
+rsplit 局部接受 DEFAULT，保留全部结构/阈值 gate；P-019 checkpoint 的 target UT 5/5 覆盖
+DEFAULT 正例和小 r、非 sum、超宽 x、OUTER_TINY、fused-output、nested-reduction 负例，source-overlay
+static/dynamic/阈值负例也通过，等待 wheel。不要把 audit monkeypatch 或 source-overlay 当 installed
+产品结果，也不要把 default 历史收益直接迁移为 experimental 结论。
+
+T-061 又展示了为什么整数优化必须测值域而不只测“误差为 0”。int64 tensor 在 launcher 边界被
+临时降为 int32，小值 `x+1` 和 in-place 可以 exact；但 `INT32_MIN/MAX` 邻域做 `x*2` 时
+4096/4096 全部发生 `±2^32` 环绕。审计 worker 改走 ATen fallback 后 exact，说明正确替代是
+dtype-aware fallback，不是手写设备本身不支持的 Triton int64。memo UT 同时证明未修改输入可复用，
+正常 mutation 会失效，当前整套 target suite 为 6/6；详见
+[T-061 报告](report/t061_experimental_int64_boundary_20260827.md)。
 
 #### 已完成：P0 addmm 覆盖与通用 blocker
 

@@ -109,5 +109,15 @@ P-014/P-016/P-017/P-018 均完成 source 验证但 wheel 因共享未安装 diff
 shape-A cohort p50/p99 中位数改善 22.17%/14.05%，后续 11/11 capability 与 unaligned 第二性能
 cohort 通过；P-018 current source 已默认启用 fusion 并提供可恢复 opt-out，状态为
 `source-verified-wheel-pending-host-tail-monitor`。下一步继续显式隔离 installed P-013 的
-`elide_int_float_int`，进入 permute-gather、outer rsplit。旧 default 结论只作为迁移优先级，不直接计入
+`elide_int_float_int`。T-059 permute-gather 已完成：代表 device P50/P99 改善 8.14%/8.99%，
+coverage 6/6；保留 host-tail、+1,560,576 B peak 与 audit-only launcher 边界。T-060 outer
+rsplit 已定位为“scalar 原生可用、目标 OUTER 被 DEFAULT hint 阻断”；无需重写 Triton 即可得到
+2 kernels。P-019 真实 source-overlay 三轮 device P50/P99 中位改善 29.93%/29.94%，但增加
+393,728 B peak 和约 85.6% 首编。P-019 只在 rsplit gate 接受 DEFAULT；目标 UT 5/5 已覆盖
+DEFAULT 正例和小 r、非 sum、超宽 x、OUTER_TINY、fused-output、nested-reduction 负例，
+source-overlay static/dynamic 和 r<2048 negative 通过，当前为 source-verified/wheel-pending。
+T-061 int64 boundary downcast/dedup 已确认小值/in-place exact，但 `x*2` 四类边界
+4096/4096 mismatch、差值 `±2^32`；audit-only ATen mul fallback 4096/4096 exact，memo/current target
+suite 6/6。P-020 为 dtype-aware fallback 设计 pending，未改产品源码。旧 default 结论只作为迁移
+优先级，不直接计入
 experimental 成功率。

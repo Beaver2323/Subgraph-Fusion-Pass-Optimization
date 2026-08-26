@@ -144,7 +144,10 @@ T-057 三项 correctness 已完成，后续按以下顺序执行：
 2. 已完成：int-float-int compiled 边界，P-016 source 默认关闭、wheel pending；
 3. 已完成：GELU exact/tanh forward/backward，P-017 source 验证、wheel pending；
 4. 已完成：addmm 11/11 扩展、两性能 cohort 与 P-018 source gate；wheel/host-tail pending；
-5. 当前：permute-gather 与 outer rsplit 各选一个源码注释对应场景做功能和 paired 性能。
+5. 已完成：permute-gather 与 outer rsplit 的代表功能、guard 和 paired 性能；T-059 不需源码修改，
+   P-019 已完成 source gate、5/5 target UT 与 source-overlay 验证，wheel pending；
+6. 当前：T-061 已证明 int32 范围内/in-place exact，但超界 `x*2` 4096/4096 wrap；audit-only
+   ATen mul fallback exact，P-020 dtype-aware fallback 设计 pending。功能矩阵闭环前不测性能。
 
 P-014/P-016/P-017/P-018 installed wheel 仍待共享 diff 可隔离后构建；在此之前后续 installed worker 必须
 显式 `elide_int_float_int=False`，并标明 installed/current-source-overlay 边界。不得把

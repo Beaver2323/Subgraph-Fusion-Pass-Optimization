@@ -99,7 +99,15 @@ Inductor pass、experimental 自有 FX pass、codegen/loop rewrite 与显式关�
    vector-bias cohort 已证明单 extern addmm 相对 mm+Triton add 的 p50/p99 中位数改善
    22.17%/14.05%，峰值内存相同；后续 11/11 capability 与 unaligned 第二性能 cohort 通过，
    P-018 current source 已默认启用并保留可恢复 opt-out，source gate 通过、wheel/host-tail pending。
-   下一步做 permute-gather、outer rsplit；pad-mm 只保留 disabled sentinel。
+   T-059 permute-gather 随后完成代表三轮、BF16/FP32/dynamic 和三类 guard，device P50/P99
+   改善 8.14%/8.99%，保持默认 ON；host-tail、额外 1.56 MB peak 和无 shim 环境复验继续监控。
+   T-060 outer rsplit 又确认 scalar sum 原生命中，而目标 RMS/outer 图被 DEFAULT hint gate 拒绝；
+   P-019 已局部接受 DEFAULT，既有 2-kernel 实现正确，真实 source-overlay 代表 device P50/P99
+   中位改善 29.93%/29.94%；目标 UT 5/5 已补小 r、非 sum、超宽 x、OUTER_TINY、fused-output、
+   nested-reduction guard，static/dynamic 与阈值 device negative 通过，wheel pending；
+   pad-mm 只保留 disabled sentinel。T-061 已确认 int64 boundary downcast 的小值/in-place exact，
+   但越界 `x*2` 4096/4096 wrap；audit-only ATen fallback exact，P-020 dtype-aware fallback 设计
+   pending，性能后置。
 4. 只有出现明确的不可用、错误 codegen 或性能回退，才登记 P-014 及后续产品修改；修改优先
    落在 `triton_experimental/`，不得把 default loader 的 patch 直接复制过去。
 5. 任何性能结论继续执行同机、空闲卡、fresh-process paired，并保留原图 fallback。
@@ -107,6 +115,7 @@ Inductor pass、experimental 自有 FX pass、codegen/loop rewrite 与显式关�
 ## 6. 当前停止边界
 
 迁移初始化本身没有安装环境或删除此前 P-013 工作。后续 P-014/P-016/P-017/P-018 已按
-document-first 流程形成四个最小 source 修改并通过 source 验证，但没有构建或安装 wheel；当前 installed
+document-first 流程形成四个最小 source 修改并通过 source 验证，但没有构建或安装 wheel；P-019
+也已完成最小 source gate 与 source-overlay 验证，尚未构建/安装。当前 installed
 P-013 wheel、P-012 回滚 wheel 和源码快照继续由 `PAUSED_CHECKPOINT_20260826_P013.md` 管理。
-共享 tree 其他未安装 diff 可隔离前，禁止把它们随 P-014/P-016/P-017/P-018 一并打包。
+共享 tree 其他未安装 diff 可隔离前，禁止把它们随 P-014/P-016/P-017/P-018/P-019 一并打包。

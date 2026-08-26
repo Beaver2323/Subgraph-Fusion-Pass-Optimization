@@ -2251,7 +2251,215 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   shared tree 其他未安装 diff 可隔离前不构建/安装，最终 wheel 需重跑 11 项覆盖、两性能 cohort、
   显式 opt-out 和 host p99。
 
+### E-165：T-059 experimental permute-gather 首轮计划（2026-08-26）
+
+- 状态：`in-progress-document-first`。目标为 installed wheel 中默认开启的
+  `realize_permute_gather`；只做 fresh-process ON/OFF 审计，不修改/构建/安装共享源码。
+- 环境未设置 `TORCHINDUCTOR_NPU_BACKEND`，未显式选择仍是 default；runner 必须通过每次
+  `torch.compile(..., options={"npu_backend": "triton_experimental"})` 选择目标后端，并以
+  `_InductorNpuRegistry._loaded_backend` 和 generated code 验真。
+- 首轮正例采用 T5 同构 embedding→`permute(2,0,1)`→add→key-reduction，FP16 static 先做
+  correctness/codegen，再按 ON/OFF 交错执行三轮 warmup 10/runs 100，记录 host 与 NPU event、
+  首编、峰值内存。详细合同见 `report/t059_experimental_permute_gather_20260826.md`。
+
+### E-166：T-059 smoke 通过与代表 shape 精度合同修订（2026-08-27）
+
+- sandbox 首轮因设备不可见止于 `aclInit`；真实 NPU 首轮又复现 editable PyTorch include view 缺
+  `ATen/ATen.h`。失败均保留；随后只在 fresh worker 内复用已登记 T-022 audit-only launcher
+  垫片，不能计正式无垫片环境通过。
+- FP16 `B=1,H=12,S=64` smoke OFF/ON 正确性和 backend 验真通过；generated code 从
+  `1 kernel + key轴12*r gather` 变为 `permute-copy + stride-1 reduction` 两 kernel，目标真实触发。
+- `B=2,H=12,S=256` OFF1/ON1 在相同 seed 上都以同一 max index 得到 max diff `0.0625`，共同
+  超过 smoke 的 `atol=0.01`；两轮 timing不进入正式聚合。runner 修订前预登记：增加 mean/error
+  count/reference scale/output hash，代表 reduction 使用 `rtol=0.01,atol=0.1`，并要求 ON/OFF
+  deterministic output hash 相同；之后从新目录重跑三轮。
+
+### E-167：T-059 representative exact-hash 不满足，先做逐元素诊断（2026-08-27）
+
+- 修订后 OFF1/ON1 对 CPU/NPU eager 均以 `rtol=0.01,atol=0.1`、0 个失败元素通过，max diff
+  同为 `0.0625`，但 compiled output SHA256 不同，E-166 的 exact-hash 强合同未满足。
+- ON1/OFF1 device P50 初值为 `0.41669/0.45537 ms`，峰值 allocated 为
+  `6,844,416/5,283,840 B`；当前只作失败合同下的诊断，不进入三轮聚合。
+- runner 只新增保存小型 compiled output 的证据能力；用两个 fresh worker 逐元素比较 ON/OFF，
+  记录 max/mean/different count 和位置。未完成该诊断前不继续性能轮次，不修改产品源码或 gate。
+
+### E-168：T-059 ON/OFF 逐元素诊断关闭，恢复性能轮次（2026-08-27）
+
+- fresh pair 输出共 6144 元素，6142 exact equal；其余 diff 为 `0.000244140625` 和
+  `0.001953125` 各 1 个，max/mean `0.001953125/3.57628e-7`，最大差为该值域 FP16 1 ULP。
+- ON/OFF 相对 CPU/NPU eager 的 max diff 都是 `0.0625`，ON 未扩大共同 reduction 误差上界；
+  exact hash 被判为过严。补充合同改为 pair 最大 1 ULP 且 ON 不越过已登记 eager 容差。
+- `perf2` round1 与 pair diagnostic 的 compiled hash 分别一致，未挑选/修改输入，可以恢复为
+  正式第 1 轮；继续交错执行 round2/3，并保留 ON 额外 kernel 和峰值内存成本。
+
+### E-169：T-059 三轮代表性能完成（2026-08-27）
+
+- FP16 `B=2,H=12,S=256` 三轮均正确并重复命中 OFF 1 kernel、ON 2 kernels；device P50
+  三轮改善 `8.49%/8.44%/7.00%`，中位 device P50/P99 改善 `8.14%/8.99%`。
+- host P50/P99 中位改善 `6.59%/7.49%`，但 ON2 出现 `0.70855/5.00725 ms` 长尾；device
+  同轮 P50 正常，不能删除该 host-tail，也不能据中位数直接宣布默认 ON 全面安全。
+- ON peak allocated 从 `5,283,840` 增至 `6,844,416 B`（+`1,560,576 B`），首次编译+运行
+  中位约 `22.13→41.74 s`；额外 kernel/内存/首编是换取 stride-1 consumer 的明确成本。
+- 当前 verdict 仅为目标代表 shape `supported-beneficial`，整体为
+  `host-tail-memory-coverage-pending`；下一步扩展 dtype/dynamic 和三类 guard negative，不改源码。
+
+### E-170：T-059 capability/guard 覆盖计划（2026-08-27）
+
+- 新增独立 coverage runner，仅固定 `realize_permute_gather=True`，每项 per-compile 显式选择
+  experimental；不修改/重建/安装源码。
+- BF16/FP32 static 与 FP16 dynamic `S=64→72` positive 必须正确且为 2 kernels；InputBuffer、
+  stride-1 inner、singleton inner 三个 negative 必须正确且保持 1 kernel。任何 guard 不满足都先
+  归档并评估缩 gate，不能用代表性能覆盖。
+
+### E-171：T-059 coverage 6/6 与归档（2026-08-27）
+
+- BF16/FP32 static、FP16 dynamic `S=64→72` 三个 positive 均正确且命中 2 kernels；BF16
+  max/mean diff `0.25/0.01618` 原样记录，FP32 对 NPU eager diff 为 0，dynamic 两 shape通过。
+- InputBuffer、stride-1 inner、singleton inner 三个 negative 均正确且保持 1 kernel，现有 guard
+  未对这三类边界增加 copy。coverage runner SHA256 `eeb5cca7...ce7fd32`。
+- T-059 归档为 `supported-beneficial-host-tail-memory-environment-monitor`：不改源码、不写 Triton
+  替身；保留 host-tail、+`1,560,576 B` peak、额外首编与 audit-only launcher shim 边界。主线
+  转入 `rsplit_outer`。
+
+### E-172：T-060 `rsplit_outer` 首轮计划（2026-08-27）
+
+- 对 installed experimental 默认 ON codegen 做 fresh OFF/ON；config 必须在 codegen.triton 首次
+  导入前设置，避免模块级 `npu_rsplit_outer` 快照导致无效 A/B。
+- 首轮使用 `rows=4096, groups=16, inner=128` 的 RMSNorm dweight 同构 sum，dynamic replay
+  4097；OFF 预期 1 kernel/无 workspace，ON 预期 partial+combine 2 kernels/rsplit workspace。
+- 先 correctness/backend/generated code，后 paired performance；再补 r<2048、宽输出和非 sum/
+  welford negative。不修改源码，详细合同见 `report/t060_experimental_rsplit_outer_20260827.md`。
+
+### E-173：T-060 原生可达性与 hint 阻断（2026-08-27）
+
+- 初始 RMSNorm dweight dynamic `4096→4097`、outer sum static/dynamic、inner sum x=16/256 的
+  ON 均正确但保持 1 kernel；配置值为 True、codegen 在配置后首次导入、loaded backend 为
+  experimental，排除了开关无效和 backend 串线。
+- gate trace 证明 `Reduction.num_splits()` 返回 `ReductionHint.DEFAULT, 1`，reduction node 与
+  feature hint 也是 DEFAULT；`_npu_rsplit_outer_applicable()` 只接受 INNER/OUTER，因此这些非标量
+  目标图在 hint gate 被拒绝。失败尝试均保留，属于 pass 未命中，不是数值或设备失败。
+- 静态 `[4096].sum()` 原生得到 INNER，成功生成 partial+combine 两 kernel；对 NPU eager/CPU
+  最大误差 `7.6294e-06/1.3351e-05`。因此当前 wheel 结论是 scalar 可用、目标 OUTER 不可达，
+  不能把 pass 简化为“全不可用”或“默认 ON 已生效”。
+
+### E-174：T-060 audit-only DEFAULT→OUTER 候选验证（2026-08-27）
+
+- runner 新增只在 fresh worker 内生效的 `--force-hint outer`：仅用于验证现有 rsplit codegen，
+  不修改产品源码/installed wheel，也不能作为交付实现。候选修复禁止全局修改所有 reduction hint。
+- outer sum x=16 和 RMSNorm dweight x=2048 均生成 2 kernels，marker 包含
+  `rsplit_nsplit/rsplit_id/ws_ptr`；910B2 实际使用 48 个线程单元，RMS workspace 为 98,304 个
+  FP32 元素。两 case 对 NPU eager/CPU 均通过，RMS 最大误差不超过 `6.1035e-05`。
+- 结论：既有 Triton partial+combine 本体可承接目标图，缺口位于 hint→gate 接口；不应手写重复
+  Triton kernel。正式修复前必须为 DEFAULT 恢复定义可证明的方向/结构 gate。
+
+### E-175：T-060 三轮候选性能与阶段归档（2026-08-27）
+
+- FP32 RMSNorm dweight `r=4096,x=2048` 三轮 fresh paired 完成，顺序
+  `OFF1/ON1/ON2/OFF2/OFF3/ON3`，每轮 warmup 10/runs 100。ON 是 audit-only OUTER hint overlay，
+  不是 current wheel 原生状态。
+- device P50 改善 `30.55%/32.39%/29.50%`，P99 改善
+  `31.66%/34.21%/29.21%`，中位 `30.55%/31.66%`；host P50/P99 中位改善
+  `26.53%/27.80%`。第一轮 OFF host P99 `2.61278 ms` 长尾保留，不用于夸大收益。
+- max allocated `134,788,608→135,182,336 B`（+`393,728 B`）；强制禁缓存首编+首跑中位
+  `23.31→43.83 s`。三轮正确性、backend 和 1→2 kernel 结构重复通过。
+- T-060 阶段状态为 `native-scalar-supported-outer-hint-blocked-audit-overlay-beneficial`。登记
+  P-019 文档先行提案；下一步是 dynamic/dtype/threshold/非 sum/welford/多输出 guard，不修改共享
+  source，不构建 wheel。
+
+### E-176：P-019 source 最小实施与验证（2026-08-27）
+
+- 先用 audit-only `--allow-default-gate` 证明只放行 applicability gate、保持 codegen hint 为
+  DEFAULT 也能让 RMS static/dynamic 和 inner x=16 正确生成 2 kernels；因此不需要全局强制 OUTER。
+- 目标 `triton_experimental/codegen/triton.py` 检查时为 clean。P-019 只把 applicability 的允许
+  hint 从 INNER/OUTER 扩为 INNER/OUTER/DEFAULT，并更新同处 docstring 与固定 40 核的过时注释；
+  其余 sum/welford、唯一 output、x/r 阈值和 partial/combine 代码不变。新增 UT 同时验证 DEFAULT
+  positive，以及 r=1024、非 sum、超宽 x、OUTER_TINY negative；原 fused-output/nested-reduction
+  负例继续通过。源码/测试 SHA256 为 `9faa1655...0d3a5`/`76450d98...a58ed`。
+- 从 `/home/z50063656/tmp` 做 source-overlay：目标 UT 5/5；RMS static、dynamic 4096→4097 都
+  无 audit hint 参数地命中 2 kernels并正确；r=1024 device negative 正确且保持 1 kernel。
+- 修改前等价 gate overlay 已覆盖 FP16/BF16 positive 和 r<x、amax、variance/multi-reduction
+  negative：前三 dtype positive 均为 2 kernels，四类 negative 保持 1 kernel。BF16/FP16 最大误差
+  1.0/0.125 原样保留在各自预登记容差内。
+- `py_compile` 与 `git diff --check` 通过；Benchmark 环境没有 lintrunner，命令返回 127，属于工具
+  缺失而不是 lint failure。未构建/安装 wheel，不把共享树其他 diff 带入环境。
+
+### E-177：P-019 真实 source-overlay 三轮性能（2026-08-27）
+
+- 复核生成代码发现，E-175 的强制 OUTER overlay 同时把 partial decorator 从 DEFAULT 改为 OUTER；
+  它可能影响 autotune，故 `30.55%/31.66%` 不能直接当 P-019 source 收益，只保留候选上限。
+- 用 current-source overlay、无 `--force-hint/--allow-default-gate` 重跑三轮 ON，并与同 shape 三轮
+  OFF 配对。device P50 改善 `29.93%/28.34%/30.69%`，P99 改善
+  `29.94%/28.06%/31.99%`，中位 `29.93%/29.94%`；三轮同向。
+- host P50/P99 中位改善 `26.09%/25.36%`；OFF1 的 2.61278 ms host P99 继续原样保留。source ON
+  max allocated 仍为 `135,182,336 B`，相对 OFF +`393,728 B`；首编+首跑中位
+  `23.31→43.26 s`（约 +85.6%）。
+- 三轮 source path、backend、2-kernel marker、FP32 正确性重复通过。P-019 正式性能 verdict 更新为
+  `source-verified-beneficial-wheel-pending-environment-monitor`。
+
+### E-178：T-061 int64 boundary downcast/dedup 首轮计划（2026-08-27）
+
+- 状态：`in-progress-document-first`。目标为 TE-CG-010；先测 installed experimental 的 ABI
+  可用性、int32 值域内 exact correctness、INT32_MIN/MAX 越界、in-place 写回和 memo 失效，功能
+  闭环前不进入性能、不修改产品源码。
+- 静态链路确认 codegen 无条件把 `*i64` signature 改为 `*i32` 并登记 `downcast_args`，launcher
+  创建 i32 temporary 后按 input/output/in-out 路径处理；`dedup_downcast` 被真实读取。
+- 配置异常先登记：`int64_boundary_cast` 只在模块导入时复制为
+  `npu_int64_boundary_cast`，当前文件没有第二处读取，wrapper 安装仍无条件。因此不能把该配置
+  当作有效 OFF 对照；动态探针必须记录真实 generated metadata，不能只读配置值。
+- 所有测试继续从 `/home/z50063656/tmp` 启动、per-compile 显式选择 `triton_experimental`、固定
+  NPU 1，并保留 audit-only launcher shim 边界。完整合同见
+  `report/t061_experimental_int64_boundary_20260827.md`。
+
+### E-179：T-061 原生值域失败、fallback 方向与 memo UT（2026-08-27）
+
+- installed experimental 的 int32 范围内 `x+1` 与 in-place `add_(1)` 均 4096/4096 exact；后者
+  返回值/输入写回和 alias 合同也通过。generated code 均真实包含 `downcast_args` 和
+  `*i64→*i32`，各 1 个 Triton kernel。
+- 首版越界 `x+1` 为 2048/4096 mismatch、差值 `-2^32`；负边界有模运算碰巧相等，保留该漏检后
+  改用 `x*2`，四类 INT32 边界输入 4096/4096 全部 mismatch，差值 `±2^32`。TE-CG-010 更新为
+  `correctness-failed-p020-dtype-fallback-design-pending`，不进入性能聚合。
+- audit-only 从 `GENERATE_LIST` 移除 `aten.mul` 后，同图变为 0 Triton kernel 的 ATen fallback，
+  4096/4096 exact；首次编译+运行单轮 `18.53→2.78 s`，只作方向证据，不作稳态性能 verdict。
+- target source suite 新增 memo UT：未修改输入复用、正常 mutation 失效、不同 tensor 隔离、weakref
+  清理均通过；current suite 6/6。测试文件 current SHA256 `bde5da4a...657f7`，runner SHA256
+  `1e9ea799...f113a`。
+
+### E-180：P-020 int64 数据计算 dtype-aware fallback 前置设计（2026-08-27）
+
+- 状态：`audit-fallback-proven-design-pending`。候选方案是在 experimental lowering 层只对 int64
+  数据计算走 ATen fallback；不能永久移除整个 add/mul 等算子包，否则会让 FP16/BF16/FP32 一并
+  失去 Triton，也不能写 AI Vector Core 不支持的 Triton int64 替身。
+- 实施前门禁：覆盖 add/sub/mul/比较/reduction，区分 int64 数据 tensor 与 embedding/gather 等
+  index tensor；验证 in-place/alias、dynamic 和训练；随后才做 paired steady 性能。当前不修改产品
+  source，不构建/安装 wheel。
+
 ## 提案记录
+
+### P-020：experimental int64 数据计算 dtype-aware fallback
+
+- 状态：`audit-fallback-proven-design-pending`；正式 diff 尚未登记/实施。
+- blocker：原生 boundary downcast 在超 int32 值域或中间结果溢出时静默 wrap，复核 4096/4096
+  mismatch；`int64_boundary_cast` 配置当前不控制 wrapper。
+- replacement：优先复用 ATen/CANN fallback；audit-only mul fallback 已 exact。手写 Triton int64
+  因设备 compute type 不支持而拒绝。
+- 下一步：先完成算子/索引角色矩阵和 source-overlay route prototype，再决定最小产品修改。
+
+### P-019：experimental rsplit DEFAULT hint 恢复门禁
+
+- 状态：`source-verified-wheel-pending-environment-monitor`。目标是在 `triton_experimental` rsplit 局部，为可证明是目标
+  OUTER/INNER 访问模式但 generic Inductor 标成 DEFAULT 的 reduction 恢复方向，不全局修改
+  PyTorch `Reduction.num_splits()` 或 `SIMDKernelFeatures.get_reduction_hint()`。
+- 已有证据：current wheel scalar INNER 原生命中；RMS/outer/非标量 inner 被 DEFAULT gate 拒绝；
+  audit-only OUTER overlay 后既有 2-kernel codegen 正确，代表 device P50/P99 中位改善
+  `30.55%/31.66%`；真实 P-019 source-overlay 三轮中位改善为 `29.93%/29.94%`。因此不新增
+  Triton kernel。
+- 实现边界：已只在 `_npu_rsplit_outer_applicable()` 的允许 hint 中加入 DEFAULT，复用现有单 sum、
+  非 welford、唯一 output、x/r threshold 与 homogeneous epilogue gate；没有全局修改 hint，也没有
+  修改 kernel/codegen。目标 UT 5/5 已覆盖 DEFAULT 正例、小 r、非 sum、超宽 x、OUTER_TINY、
+  fused-output 和 nested-reduction；source-overlay static/dynamic 与 r<2048 已通过。
+- 剩余门禁：共享 diff 可隔离后构建 wheel，统一重跑
+  FP16/BF16/FP32、dynamic、r<2048、r<x、非 sum/welford 和三轮 paired。正式无 shim 环境仍单独
+  pending，当前不得把 source-overlay 写成 installed 成功。
 
 ### P-018：experimental addmm fusion capability gate
 

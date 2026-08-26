@@ -52,6 +52,33 @@ current source with a reversible explicit opt-out; its source gate passes, while
 the installed wheel and host-tail retest remain pending.
 See
 [report/t058_experimental_addmm_gate_20260826.md](report/t058_experimental_addmm_gate_20260826.md).
+T-059 has completed the installed experimental permute-gather audit. The T5-like
+representative shape improves median device p50/p99 by 8.14%/8.99%, and six
+BF16/FP32/dynamic/guard cases pass. The tradeoff is one extra copy kernel,
+1,560,576 B more peak allocation, higher forced-fresh compile time, and one
+5.00725 ms host p99 outlier. The default remains enabled with host-tail, memory,
+and clean-launcher monitoring; no source or handwritten Triton change was needed.
+See
+[report/t059_experimental_permute_gather_20260826.md](report/t059_experimental_permute_gather_20260826.md).
+T-060 has now isolated `rsplit_outer` reachability. Native scalar sum reaches
+the existing two-kernel path, while representative RMSNorm dweight and outer
+reductions receive `ReductionHint.DEFAULT` and are rejected by the
+INNER/OUTER-only gate. After document-first validation, P-019 now locally
+accepts DEFAULT in the existing gate. The existing partial+combine codegen is
+correct and the real source overlay improves median device p50/p99 by
+29.93%/29.94% across three rounds, at a 393,728 B peak-allocation and
+forced-fresh compile-time cost. The current target suite is 6/6: P-019 covers
+the DEFAULT positive plus small-r, non-sum, wide-x, OUTER_TINY, fused-output,
+and nested guards, while T-061 adds downcast-memo invalidation; source-overlay
+static/dynamic and small-r device checks also pass. The wheel remains
+unbuilt/uninstalled, and no handwritten Triton replacement is needed. See
+[report/t060_experimental_rsplit_outer_20260827.md](report/t060_experimental_rsplit_outer_20260827.md).
+T-061 then found a correctness boundary in int64 lowering: in-range pointwise
+and in-place cases are exact, but a four-value boundary cohort fails 4096/4096
+with ±2^32 wraparound. An audit-only ATen mul fallback restores exact results;
+P-020 now tracks a dtype-aware fallback design, and a handwritten Triton int64
+replacement is rejected because the target vector compute path lacks int64.
+See [report/t061_experimental_int64_boundary_20260827.md](report/t061_experimental_int64_boundary_20260827.md).
 
 This task currently uses the user-specified shared Benchmark runtime; it does
 not yet have a separate environment. Source commits, wheel identity, device

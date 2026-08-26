@@ -2,7 +2,7 @@
 
 ## 1. 当前结论
 
-截至 2026-08-26，本任务已完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、P0 gate/功能/性能闭环、P1 B2 全部 27 个 custom pass、B3 全部 8 个 DVM/MLIR pass，并进入 B4 attention。当前 8 个代表 family 精确触发并数值通过；1/13/30 落到纯 vendor attention，18/28 为辅助 Triton + vendor，5/21/29 被 dispatcher 重新展开为 BMM + Triton。pattern 1 为 `supported-beneficial`，pattern 13 为 `supported-neutral-resource-beneficial`。T-053 证明 pattern 5 rewrite P50 回退 103.23%；P-013 已在 NPU 精确停用该 entry，T-054 验证 P50 改善 50.28%、task 8→3。当前安装 P-013 源码 wheel（`--no-deps`）。
+截至 2026-08-27，本任务已完成基于 `Pass/src` 的 251 条概念级静态清单、逐项评估矩阵、P0 gate/功能/性能闭环、P1 B2 全部 27 个 custom pass、B3 全部 8 个 DVM/MLIR pass，并进入 B4 attention。当前 8 个代表 family 精确触发并数值通过；1/13/30 落到纯 vendor attention，18/28 为辅助 Triton + vendor，5/21/29 被 dispatcher 重新展开为 BMM + Triton。pattern 1 为 `supported-beneficial`，pattern 13 为 `supported-neutral-resource-beneficial`。T-053 证明 pattern 5 rewrite P50 回退 103.23%；P-013 已在 NPU 精确停用该 entry，T-054 验证 P50 改善 50.28%、task 8→3。当前安装 P-013 源码 wheel（`--no-deps`）。
 
 P-013/T-054 default-backend 工作已归档；用户随后恢复任务并明确把负责后端改为
 `torch_npu/_inductor/triton_experimental`，但要求现有 Benchmark 环境、版本和 wheel 构建方式
@@ -23,7 +23,23 @@ FP32/FP16/BF16 六组 NPU source-overlay 和非法参数探针通过，但 wheel
 T-058 首个 addmm FP16 vector-bias cohort 已从 `mm+Triton add` 融合为单 extern addmm，三轮 p50
 中位数改善 22.17%、p99 改善 14.05%，内存峰值不变；后续 11/11 capability、unaligned 第二性能
 cohort 和 NPU Event 分解通过。P-018 已把 current source 默认改为启用，并保留幂等可恢复的显式
-opt-out；source gate 通过，wheel/host-tail pending。下一步转入 permute-gather 和 outer rsplit。
+opt-out；source gate 通过，wheel/host-tail pending。该阶段随后转入 permute-gather 和 outer rsplit。
+T-059 随后完成 experimental `realize_permute_gather`：T5 同构代表 shape 的 device P50/P99
+改善 `8.14%/8.99%`，BF16/FP32/dynamic 与三类 guard 共 6/6 通过；代价是额外一个 copy
+kernel、peak allocated +`1,560,576 B`、首编增加，且一轮 host P99 为 `5.00725 ms`。它归档为
+`supported-beneficial-host-tail-memory-environment-monitor`，不修改源码。T-060 随后确认
+`rsplit_outer` 原生只在 scalar sum 命中；RMSNorm dweight/普通 outer reduction 被
+`ReductionHint.DEFAULT` gate 拦截。audit-only OUTER hint overlay 后既有 partial+combine 正确，
+P-019 真实 source-overlay 三轮代表 device P50/P99 中位改善 `29.93%/29.94%`，代价是
++`393,728 B` peak 和首编约 `23.31→43.26 s`。P-019 已按 document-first 只在 rsplit gate
+接受 DEFAULT；目标 UT 5/5、
+source-overlay static/dynamic 和 r<2048 negative 通过，状态为
+`source-verified-wheel-pending-environment-monitor`，未构建/安装 wheel。
+当前主线进入 T-061 `int64_boundary_cast/dedup_downcast`。静态确认 boundary wrapper 会把 int64
+tensor 临时降为 int32，但不修复数值溢出，而且 `int64_boundary_cast` 配置变量当前没有被 wrapper
+读取。动态结果为：小值和 in-place exact；`x*2` 四类边界 4096/4096 mismatch、差值 `±2^32`；
+audit-only `aten.mul` fallback 4096/4096 exact。memo source UT 与 current target suite 6/6 通过。
+P-020 进入 dtype-aware fallback 设计，尚未修改产品源码。
 
 T-057 第一项状态快照已完成并确认串态：34 个 addmm check、五项 config/guard、matmul
 `should_fold` 与五个 decomposition 在回切 default 后没有完整恢复。当前只能把
@@ -369,8 +385,11 @@ torch.compile(
    T-057 状态串态、int-float-int/P-016 和 GELU/P-017 source gate 已完成。T-058 addmm 首个
    representative cohort 有益，11/11 capability 和第二性能 cohort 已完成，P-018 source gate
    通过但 wheel/host-tail pending；
-   P-014/P-016/P-017/P-018 wheel 必须等共享 diff 可隔离后再构建安装。随后迁移 permute-gather、
-   outer rsplit 等高价值候选。原 default pattern-21 paired
+   P-014/P-016/P-017/P-018 wheel 必须等共享 diff 可隔离后再构建安装。T-059 permute-gather 已完成
+   代表性能、dtype/dynamic 和 guard 覆盖，保持默认 ON 并监控 host-tail/内存。T-060 outer
+   rsplit 已完成原生可达性、hint 根因和 audit-overlay 三轮性能：scalar 原生可用，目标 OUTER
+   被 DEFAULT hint 阻断；P-019 最小 source gate、5/5 target UT 与初步 guard/dynamic 已通过，
+   等待可隔离 wheel 窗口。原 default pattern-21 paired
    不再直接启动。
    完整 MLIR 只在补齐 `torch_mlir` 的独立环境复验。已闭环 case 不重跑，
    除非环境或源码基线改变。
