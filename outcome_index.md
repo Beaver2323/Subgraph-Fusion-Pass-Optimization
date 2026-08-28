@@ -1,10 +1,16 @@
 # 成果、失败与中性尝试索引
 
-> 更新到 2026-08-26。这里汇总已执行的动态工作，不代表 251 条 pass 全部完成；逐条状态
+> 更新到 2026-08-29。这里汇总已执行的动态工作，不代表 251 条 pass 全部完成；逐条状态
 > 仍以 `report/pass_src_20260820/pass_evaluation_matrix.csv` 为准。
 > P-013/default 工作已归档；用户随后恢复任务并将目标切换到
-> `triton_experimental`，环境保持不变。迁移入口为
-> `triton_experimental_migration_20260826.md`。
+> `triton_experimental`。2026-08-29 起新测试的唯一主环境是 Conda `Pass`，所有测试从
+> `/home/z50063656/tmp` 发起；旧 Benchmark/独立 venv 结果保留真实环境标签。
+
+## 社区原生 pass 静态索引主线
+
+| 对象 | 结果 | 当前边界 | 入口 |
+|---|---|---|---|
+| T-074 上游测例去重索引 | 203 条主候选 + 4 条显式关闭控制项，聚合为 188 个单元；首批 5 个已人工回填 | 158 个 eligible 仅为 provisional，非冻结分母；无当前 Pass 动态 verdict | `report/t074_upstream_pass_test_index_20260829.md` |
 
 ## 已形成正向成果
 
@@ -26,8 +32,17 @@
 | `_sfdp_pattern_1` | fp16 静态 inference 精确命中 vendor attention；P50/P99 +46.70%/+44.26%，task 4→1，allocated peak -87.31% | `supported-beneficial` | `report/t049_t050_b4_attention_first_20260826.md` |
 | `_sfdp_pattern_13` | 三维 BMM inference 落到 vendor attention；P50 仅 +0.99%，但 task 3→1、首次编译 +91.37%、allocated peak -87.31% | `supported-neutral-resource-beneficial` | `report/t051_b4_attention_pattern13_performance_20260826.md` |
 | P-013 pattern 5 NPU guard | 旧 rewrite P50 回退 103.23%、task 3→8；guard 后 P50 +50.28%、task 8→3、peak -1,054,720 B | guard `supported-beneficial`；rewrite 已停用 | `report/t053_b4_attention_pattern5_performance_20260826.md`、`report/t054_b4_attention_pattern5_guard_20260826.md` |
-| P-014 backend decomposition 重入 | 三种 experimental 入口 12/12；erfc cleanup 后 source registrar 重入与 experimental→default→experimental 1/1 通过 | `source-verified-wheel-pending-shared-diff` | `report/t055_triton_experimental_enable_20260826.md` |
-| P-016 int→float→int 默认安全门禁 | Float32 ON/OFF 单点证明边界数值差 1；三 dtype ON 均破坏输出 alias；source 默认已改为 opt-in | `source-verified-wheel-pending-shared-diff` | `report/t057_int_float_int_boundary_20260826.md` |
+| P-014 backend decomposition 重入 | 历史入口 12/12、切换 0/1；隔离 wheel 后 installed registrar 重入、原 T-055 13/13 与 default erfc 近邻回归通过 | `verified-installed-wheel` | `report/t055_triton_experimental_enable_20260826.md`、`issues/P014_backend_decomposition_reentry/修复验证报告.md` |
+| P-016 int→float→int 默认安全门禁 | Float32 ON/OFF 单点证明边界数值差 1；三 dtype ON 均破坏输出 alias；独立 wheel 默认关闭精确且不 alias，late opt-in 可达 | `verified-installed-wheel` | `report/t057_int_float_int_boundary_20260826.md`、`issues/P016_int_float_int_gate/修复验证报告.md` |
+| P-017 GELU approximate 合同 | installed P-013 把 none 固定成 tanh；独立 wheel 6/6 dtype/mode、非法参数 2/2、P-014 近邻 1/1 | `verified-installed-wheel` | `report/t057_gelu_approximate_20260826.md`、`issues/P017_gelu_approximate/修复验证报告.md` |
+| P-018 experimental addmm live gate | 独立 wheel 的 default/late-opt-out/restore、11/11 capability 通过；shape-A/unaligned host p50 +17.10%/+13.52%，Event device p50/p99 +19.87%/+19.10%，内存不增 | `verified-installed-wheel-beneficial-host-tail-monitor` | `report/t058_experimental_addmm_gate_20260826.md`、`issues/P018_addmm_gate/修复验证报告.md` |
+| T-059 experimental permute-gather | 安装态 6/6；代表 device p50/p99 +8.14%/+8.99%，但多 1 copy、peak +1,560,576 B 且有 host tail | `supported-beneficial-host-tail-memory-environment-monitor`，无源码修改 | `report/t059_experimental_permute_gather_20260826.md` |
+| P-019 experimental outer r-split | 独立 wheel target UT 5/5、NPU 9/9；三轮 device p50/p99 +32.67%/+28.58%，host p50 +26.20%，peak +393,728 B | `installed-wheel-verified-beneficial-device-host-p99-tail-monitor` | `report/t060_experimental_rsplit_outer_20260827.md`、`issues/P019_rsplit_default_gate/修复验证报告.md` |
+| P-020 experimental int64 dtype route | 原边界 4096/4096 mismatch；独立 wheel target UT 6/6、NPU 8/8 exact，FP32/embedding 控制组保持 | `installed-wheel-verified-correctness-restored-performance-characterized` | `report/t061_experimental_int64_boundary_20260827.md`、`issues/P020_experimental_int64_data_fallback/修复验证报告.md` |
+| T-062 experimental generate-list fallback | registry/keep 合同和功能 12/12；现有 fallback 正确，mixed audit-generate device p50/p99 +33.53%/+28.15% | `fallback-policy-verified-global-expansion-rejected`，无源码修改 | `report/t062_experimental_generate_list_20260828.md` |
+| T-063 experimental range-tree | 六项 AST/合成契约、NPU 14/14 配置和 18/18 对照通过；strided/root device p50 -2.14%/+0.08%，peak 不变 | `range-tree-contract-verified-defaults-retained-device-p99-host-tail-monitor`，无源码修改 | `report/t063_range_tree_20260828.md` |
+| T-065 experimental header tiling | 五项开关 10/10 正确性；input-stride device p50/p99 +27.81%/+24.23%，odometer +3.44%/+5.57%，align-8 中性 | `verified-active-defaults-retained-two-configs-ineffective-cleanup`，无源码修改 | `report/t065_header_tiling_20260828.md` |
+| T-071 recursive dict tag guard | 当前上游默认 False；两组 64-block NPU 训练 20/20 精确，三轮 CPU guard 关闭态 P50 开销中位 36.57% | `verified-upstream-default-false-safety-override-retained`，无源码修改 | `report/t071_recursive_guard_20260828.md` |
 
 ## 已否决或失败的尝试
 
@@ -51,10 +66,12 @@
 | DVM sum pass-off 冒烟 | 人工跳过 fp32 pre/post-cast 后生成 bare fp16 DVM sum，首次 native 执行 segfault | 只作为“sum pass 对可用性必需”的证据；不可计算 paired speedup |
 | expand_to_reshape aggregate | direct helper 已修复，但 capability 列表排除 expand/reshape/view，组合图都留在 custom op 外 | 当前 verdict `unsupported`；先评估 partition capability，不写 Triton |
 | attention 初版只关闭 pattern 1 | 等价 `_sfdp_pattern_3_half_inference` 接管同一图，baseline 实际仍融合 | 该 smoke 性能数字作废；正式 baseline 同时关闭 1/3 |
-| T-055 installed backend 隔离 | experimental 回切 default 时重复注册 `aten.erfc.default`，失败早于 lowering/codegen | P-014 已修 source；当前 installed wheel 仍待复验 |
+| T-055 installed backend 隔离（历史失败） | experimental 回切 default 时重复注册 `aten.erfc.default`，失败早于 lowering/codegen | P-014 隔离 wheel 已使原 13 项 13/13；P-015 的更广泛状态串态仍开放 |
 | T-057 backend 状态隔离 | 回切 default 后 addmm check、五项 config/guard、matmul fold 与五个 decomposition 残留 experimental 状态 | `state-isolation-failed`；P-015 设计中，跨 backend 强制 fresh process |
 | experimental int→float→int elision | Float32 pass ON 在 `±(2**24+1)` 差 1、OFF 精确；FP16/BF16 ON 也删图；三者 ON 均 alias 输入 | P-016 已 source 默认关闭；错误结果不测性能、不写 Triton |
 | FP16/BF16 convert pass-OFF | FX/IR 保留 lowp cast，但 generated Triton 用 `tl.float32` compute type，未复现 eager lowp 舍入 | 独立 lowering/codegen 数值策略现象；不混入 P-016 最小修复 |
+| T-064 zero-X R-tree promotion | scalar total reduction 没有自由 x 轴，却进入 real-block promotion 并引用未定义 `xmask` | P-021 增加 kept-axis guard；安装态 UT 6/6、NPU zero/kept-x 回归通过 |
+| T-064 flattened R-tree | composite reduction 错用 inner-node bound，并错误移除 modulo 分解，最大误差达 `2270.4275` | P-022 保存 composite bound/flatten 状态并保留坐标分解；安装态 UT 7/7、NPU 6/6 |
 
 ## 中性、未归因与环境类尝试
 
@@ -76,6 +93,10 @@
 | 首次 grad-enabled B2 worker | inference-only POST driver 未调用目标 pass | 合法模式分流，不是产品失败 |
 | 受限执行层 NPU case | `aclInit 507008`，驱动可见层同命令通过 | sandbox/设备可见性环境阻塞 |
 | fresh Triton launcher 无 shim | PyTorch C++20、Triton C++17、torch_npu/CANN headers 不匹配 | 环境合同未闭环；审计 shim 不能冒充产品环境成功 |
+| P-019 首轮 installed matrix 启动 | 环境变量提前激活 experimental backend，codegen 在 config A/B 前已加载 | 结构/数值通过但生命周期断言拒绝；保留原结果，改用 per-compile backend 后 9/9 |
+| T-062 全局加入 `ceil` generate allowlist | standalone Event p50 中位回退 7.39%，peak +525,312 B，首编+首跑 +575.40% | 不扩大 allowlist；mixed 收益只登记上下文感知融合机会 |
+| T-064 `flatten_small_outer_rnodes=True` | 正确性修复后 device P50/P99 中位仍回退 `147.96%/141.33%` | 保留 P-022 防止 opt-in 静默错算，但默认继续关闭 |
+| T-065 `unify_block`/`pad_min_block_to_8` on/off | 当前 greedy allocator 下生成的 header trace 完全相同 | 配置当前无效；只登记清理，不恢复旧 inner-loop 路径 |
 | T-036 首个修复后 cat alias worker | `CPATH` 误指 editable 源码，缺少 `ATen/ATen.h` | 环境命令错误；改用 wheel headers 后全过，不计产品失败 |
 | T-040 首个 NPU worker | 同样误用了 editable PyTorch include view，缺少 `ATen/ATen.h` | 失败原样保留；改用 site-packages wheel headers 后 9/9 通过 |
 | T-040 installed 测试的 autoload-off 启动 | test stub 后再次加载 native torch_npu，`_npu_dtype_cast` schema 重复注册 | 启动方式错误；正常 autoload 下 installed 76/76 |
@@ -105,19 +126,43 @@ B2 27 条、B3 8 条、B4 八个代表 family 功能以及 pattern 1/13/5 性能
 default-backend 历史闭环保存。T-055/T-056 已完成；T-057 已关闭 backend 状态、
 int-float-int 和 GELU approximate 三项。P-017 证明 installed P-013 的 none 合同失败，并在
 current source 通过 FP32/FP16/BF16 六组 NPU source-overlay、非法参数和生成代码验证恢复合同。
-P-014/P-016/P-017/P-018 均完成 source 验证但 wheel 因共享未安装 diff 暂缓。T-058 addmm 首个
-shape-A cohort p50/p99 中位数改善 22.17%/14.05%，后续 11/11 capability 与 unaligned 第二性能
-cohort 通过；P-018 current source 已默认启用 fusion 并提供可恢复 opt-out，状态为
-`source-verified-wheel-pending-host-tail-monitor`。下一步继续显式隔离 installed P-013 的
-`elide_int_float_int`。T-059 permute-gather 已完成：代表 device P50/P99 改善 8.14%/8.99%，
-coverage 6/6；保留 host-tail、+1,560,576 B peak 与 audit-only launcher 边界。T-060 outer
-rsplit 已定位为“scalar 原生可用、目标 OUTER 被 DEFAULT hint 阻断”；无需重写 Triton 即可得到
-2 kernels。P-019 真实 source-overlay 三轮 device P50/P99 中位改善 29.93%/29.94%，但增加
-393,728 B peak 和约 85.6% 首编。P-019 只在 rsplit gate 接受 DEFAULT；目标 UT 5/5 已覆盖
-DEFAULT 正例和小 r、非 sum、超宽 x、OUTER_TINY、fused-output、nested-reduction 负例，
-source-overlay static/dynamic 和 r<2048 negative 通过，当前为 source-verified/wheel-pending。
-T-061 int64 boundary downcast/dedup 已确认小值/in-place exact，但 `x*2` 四类边界
-4096/4096 mismatch、差值 `±2^32`；audit-only ATen mul fallback 4096/4096 exact，memo/current target
-suite 6/6。P-020 为 dtype-aware fallback 设计 pending，未改产品源码。旧 default 结论只作为迁移
-优先级，不直接计入
-experimental 成功率。
+P-014 已通过隔离 worktree/wheel 完成安装态 13/13；P-016 已完成默认 OFF 与 late opt-in，
+P-017 已完成六组 GELU/非法参数/P-014 近邻的独立 wheel 验证。P-018 已完成独立 worktree/wheel、
+match-time live opt-out、11/11 capability 和两组 installed paired 性能闭环。T-059 无源码变更
+归档；P-019 已完成 outer rsplit 独立 wheel、5/5 UT、9/9 安装态矩阵和三轮 paired；P-020 已完成
+int64 dtype-aware fallback 独立 wheel、6/6 UT、8/8 安装态矩阵和正确基线性能。P-018/P-019 的
+host tail 与正式 no-shim launcher 继续监控。T-062 已验证 generate-list fallback 策略和 12/12
+功能矩阵；全局 `ceil` generate 因 standalone 回退否决，mixed 融合收益另行保留。T-063 已关闭
+六项 range-tree 门控，保留默认值并监控 device p99/host tail。T-064 已以 P-021/P-022 关闭
+zero-X promotion 与 flattened R-tree 错算；18/18 NPU 正确性通过，flatten 因性能回退保持
+默认关闭。T-065 又完成五项 header-codegen 开关的 10/10 正确性和三个有效开关的 18/18
+paired 性能，默认策略保持，两项无效配置只登记清理。T-066 已关闭 group/all-block dispatch：
+6/6 Inductor 正确性与 65535/65536 边界通过，48-core group P50/P99 改善
+`3.15%/3.55%`；P-023 安装态完成双门控修复、target UT 3/3、近邻 2/2 和 dynamic smoke。
+T-067/TE-AUTO-001 也已关闭：公式路径三轮 paired 在 pointwise 上减少 `23.18%` 首编、
+`100%` autotune benchmark、`92.42%` peak 和 `7.76%` device P50；reduction 的首编/调优
+分别改善 `6.43%/27.25%` 且选中 tile 不变。P-024 修复 `autotune_enhance` 导入快照，安装态
+L0 53/53 与 NPU 开/关两态通过。T-068/TE-WRAP-001 随后关闭：NPU fast allocation 相对
+dispatcher 的 P50 改善 `55.73%` 并保留；P-025 以局部 WorkspaceArg 尾行过滤后委托上游
+planner，基线 2 FAIL→候选 2 PASS、allocation UT 11/11、真实 pointwise/rsplit workspace、
+静态 18/18 和聚合 17/17 均通过。`torch.cond` 缺口位于 wrapper 前 control-flow lowering，
+单独跟踪。T-069/TE-AUTO-002 随后完成 29/29 静态、3/3 合成和 10/10 真实 NPU worker；
+MSPTI 相对 Event 的 autotune benchmark wall 改善 `86.84%`、peak 少 `255,984,640 B`，
+同图 Event P50 为 MSPTI 的 `4.89x`。自动加载、显式预加载和运行态失败回退均通过，默认
+MSPTI 与 Event fallback 保留。T-070/TE-FX-002 又完成 22/22 静态、34/34 合成和 10 个
+真实 NPU worker：动态卷积 pointwise `3→1` 轴，空输出正确，关闭态隔离图暴露预期 rank
+mismatch；三轮 paired 性能中性且峰值相同，默认 fold 保留。
+T-071 又完成 12/12 静态、6/6 合成、两组 NPU worker 20/20 精确比较和六组 CPU worker；
+当前上游默认 recursive=False，NPU 默认 gate 为幂等安全覆盖，关闭递归 fast path 的 CPU P50
+开销 paired 中位为 `36.57%`。安全策略保留。T-072 随后完成 18/18 静态、11/11 合成、
+P-026 合同 7/7、产品 UT 4/4、22 个接受功能 worker、28 个性能 worker 和 4 个 clean-wheel
+NPU smoke。原 override 的 inner-transpose/expand/reverse P50 中位回退
+`19.80%/23.93%/49.08%`；P-026 只保留 seq-first stride 合同，三类回退布局恢复上游生成代码。
+seq-first 三轮 P50 中位改善 `5.53%`、peak 下降 `83.09%`，作为 resource-beneficial 路径保留。
+按当时 feature-family 顺序下一项为 T-073/TE-DEC-002；该项现已降为次级支线。
+旧 default 结论只作为迁移优先级，不直接计入 experimental 成功率。
+
+2026-08-29 主线校准：T-073 降为次级支线，当前已进入 T-074 的“社区原生
+pass/pattern -> 社区测例 -> NPU 去重验收单元”映射。第一版静态索引已生成，
+下一步是人工复核 `no-test-found`/indirect 项并冻结分母，再对首批社区用例做
+Pass 主环境 NPU `triton_experimental` 最小迁移。

@@ -3,87 +3,217 @@
 This directory is the audit, evidence, and report area for the local PyTorch
 and torch_npu source trees. The project working directory is
 `/home/z50063656/Pass`. T-011, T-023, T-029/T-031, T-036, T-038, T-040, T-042,
-T-043, T-046, T-047/P-012, T-054/P-013, and the current-source-only
-P-014/P-016/P-017/P-018 contain pre-registered torch_npu source changes; all other
+T-043, T-046, T-047/P-012, T-054/P-013, and the isolated-wheel
+P-014/P-016/P-017/P-018/P-019/P-020/P-021/P-022 contain pre-registered torch_npu source changes; all other
 audit prototypes stay in this directory, and every product
 change is governed by `change_control.md`.
 
 ## Project state
 
 The P-013/T-054 default-backend work remains archived in
-[PAUSED_CHECKPOINT_20260826_P013.md](PAUSED_CHECKPOINT_20260826_P013.md). The
-user has resumed the task with `triton_experimental` as the target backend while
-keeping the existing Benchmark runtime unchanged. Read
-[triton_experimental_migration_20260826.md](triton_experimental_migration_20260826.md)
-before running another test or proposing a source change. The verified P-013
-wheel and its P-012 rollback wheel remain preserved under `artifacts/`.
+[PAUSED_CHECKPOINT_20260826_P013.md](PAUSED_CHECKPOINT_20260826_P013.md).
+The 2026-08-29 requirement makes PyTorch community-native Inductor
+pass/pattern coverage on NPU `triton_experimental` the main line. New tests use
+the Conda `Pass` environment through `/home/z50063656/Pass/activate_pass.sh`
+and must start from `/home/z50063656/tmp`; old Benchmark/isolated-venv results
+keep their historical labels. Read [../需求变更.md](../需求变更.md) and
+[HANDOFF_20260828_PASS_ENV.md](HANDOFF_20260828_PASS_ENV.md) before continuing.
+Do not reinstall the same-named `dist` wheel until its identity conflict is
+registered and resolved. The verified P-013 wheel and its P-012 rollback wheel
+remain preserved under `artifacts/`.
 
-T-055 now records 12/12 successful experimental entry cases and one real
-experimental-to-default decomposition reload failure. P-014's one-entry erfc
-cleanup passes source re-entry and bidirectional backend-switch validation, but
-the installed wheel is intentionally unchanged while an unrelated, uninstalled
-shared `triton.py` diff is present. See
+T-055 preserves the historical 12/12 successful experimental entry cases and
+the experimental-to-default decomposition reload failure. P-014's one-entry erfc
+cleanup was isolated in a detached worktree, built as a dedicated wheel, and
+verified in an independent venv: registrar re-entry, the original 13/13 suite,
+and the default erfc neighbor all pass. The shared Benchmark installation and
+unrelated source diffs remain unchanged. See
 [report/t055_triton_experimental_enable_20260826.md](report/t055_triton_experimental_enable_20260826.md).
 T-056's independent routing/config/feature inventory is now available at
 [report/t056_triton_experimental_inventory_20260826.md](report/t056_triton_experimental_inventory_20260826.md);
-its CSV artifacts live under `report/triton_experimental_20260826/`. T-057 then
+its CSV artifacts live under `report/triton_experimental_20260826/`. T-074 now
+maps all 203 inherited-upstream candidates plus the four explicitly-disabled
+upstream controls to community tests and 188 provisional deduplicated
+acceptance units. Only the first five units are manually audited; 158 eligible
+units remain provisional and are not a frozen completion denominator. See
+[report/t074_upstream_pass_test_index_20260829.md](report/t074_upstream_pass_test_index_20260829.md).
+T-057 then
 proved backend state leakage and an unsafe default int-float-int elision. The
 Float32 ON/OFF pair isolates a one-integer numerical error, and all three tested
 float dtypes expose output alias changes. P-016 now disables that pass by default
-in source while preserving explicit opt-in; source gating passes, but the installed
-wheel remains unchanged because the shared tree contains unrelated uninstalled
-changes. See
+while preserving late explicit opt-in. A detached worktree produced a dedicated
+wheel whose default path is exact and non-aliasing; the import-then-enable path
+still reaches the old experimental rewrite. The shared Benchmark installation
+remains unchanged. See
 [report/t057_backend_state_isolation_20260826.md](report/t057_backend_state_isolation_20260826.md)
 and
 [report/t057_int_float_int_boundary_20260826.md](report/t057_int_float_int_boundary_20260826.md).
+The P-016 handoff is at
+[issues/P016_int_float_int_gate/修复验证报告.md](issues/P016_int_float_int_gate/修复验证报告.md).
 T-057 also found that the installed experimental GELU override ignores
 `approximate="none"`; P-017 restores the upstream erf/CDF/PDF contract in current
-source. Its source contract probe and six FP32/FP16/BF16 NPU source-overlay cases
-pass, with `none` generating `libdevice.erf` and `tanh` retaining `tl.sigmoid`.
-The installed wheel remains P-013 while unrelated shared-tree changes are present.
+source. A dedicated wheel now passes the source contract, six FP32/FP16/BF16 NPU
+installed cases, invalid-mode compile checks, and the stacked P-014 neighbor;
+`none` generates `libdevice.erf` while `tanh` retains `tl.sigmoid`. The shared
+Benchmark installation remains P-013.
 See
-[report/t057_gelu_approximate_20260826.md](report/t057_gelu_approximate_20260826.md).
+[report/t057_gelu_approximate_20260826.md](report/t057_gelu_approximate_20260826.md)
+and
+[issues/P017_gelu_approximate/修复验证报告.md](issues/P017_gelu_approximate/修复验证报告.md).
 T-058 has now completed the first experimental addmm gate cohort. Restoring the
 two pristine upstream checks in a fresh audit worker changes `mm + Triton add`
 into one extern addmm; three interleaved rounds improve median p50 by 22.17% and
 p99 by 14.05% with unchanged allocated peak. Eleven follow-up capability cases
 and a second unaligned performance cohort also pass. P-018 now enables fusion in
-current source with a reversible explicit opt-out; its source gate passes, while
-the installed wheel and host-tail retest remain pending.
+current source with a live explicit opt-out. Its dedicated installed wheel passes the
+default/late-opt-out/restore lifecycle and 11/11 capability matrix. Installed paired
+tests improve shape-A/unaligned host p50 by 17.10%/13.52%, and unaligned Event device
+p50/p99 by 19.87%/19.10%, with no memory increase. Host synchronization tail remains a
+monitoring item; P-018 is closed as
+`verified-installed-wheel-beneficial-host-tail-monitor`.
 See
-[report/t058_experimental_addmm_gate_20260826.md](report/t058_experimental_addmm_gate_20260826.md).
-T-059 has completed the installed experimental permute-gather audit. The T5-like
-representative shape improves median device p50/p99 by 8.14%/8.99%, and six
-BF16/FP32/dynamic/guard cases pass. The tradeoff is one extra copy kernel,
-1,560,576 B more peak allocation, higher forced-fresh compile time, and one
-5.00725 ms host p99 outlier. The default remains enabled with host-tail, memory,
-and clean-launcher monitoring; no source or handwritten Triton change was needed.
-See
-[report/t059_experimental_permute_gather_20260826.md](report/t059_experimental_permute_gather_20260826.md).
-T-060 has now isolated `rsplit_outer` reachability. Native scalar sum reaches
-the existing two-kernel path, while representative RMSNorm dweight and outer
-reductions receive `ReductionHint.DEFAULT` and are rejected by the
-INNER/OUTER-only gate. After document-first validation, P-019 now locally
-accepts DEFAULT in the existing gate. The existing partial+combine codegen is
-correct and the real source overlay improves median device p50/p99 by
-29.93%/29.94% across three rounds, at a 393,728 B peak-allocation and
-forced-fresh compile-time cost. The current target suite is 6/6: P-019 covers
-the DEFAULT positive plus small-r, non-sum, wide-x, OUTER_TINY, fused-output,
-and nested guards, while T-061 adds downcast-memo invalidation; source-overlay
-static/dynamic and small-r device checks also pass. The wheel remains
-unbuilt/uninstalled, and no handwritten Triton replacement is needed. See
-[report/t060_experimental_rsplit_outer_20260827.md](report/t060_experimental_rsplit_outer_20260827.md).
-T-061 then found a correctness boundary in int64 lowering: in-range pointwise
-and in-place cases are exact, but a four-value boundary cohort fails 4096/4096
-with ±2^32 wraparound. An audit-only ATen mul fallback restores exact results;
-P-020 now tracks a dtype-aware fallback design, and a handwritten Triton int64
-replacement is rejected because the target vector compute path lacks int64.
-See [report/t061_experimental_int64_boundary_20260827.md](report/t061_experimental_int64_boundary_20260827.md).
+[report/t058_experimental_addmm_gate_20260826.md](report/t058_experimental_addmm_gate_20260826.md)
+and
+[issues/P018_addmm_gate/修复验证报告.md](issues/P018_addmm_gate/修复验证报告.md).
+T-059 completed the installed experimental permute-gather audit without a source change:
+the representative T5-like shape improves device p50/p99 by 8.14%/8.99%, with 6/6
+dtype/dynamic/guard coverage. One extra copy kernel, +1,560,576 B peak, compile cost,
+and a host-p99 outlier remain monitored.
 
-This task currently uses the user-specified shared Benchmark runtime; it does
-not yet have a separate environment. Source commits, wheel identity, device
-isolation, and the audit-only launcher workaround are recorded explicitly.
-Static inventory and the first P0 dynamic/function/performance checkpoint are complete:
+T-060/P-019 has now closed the DEFAULT-hint outer r-split gap. A dedicated wheel and
+independent venv pass target UT 5/5 and installed NPU coverage 9/9; static/dynamic
+FP32 and FP16/BF16 positives produce the expected two kernels, while four guard
+negatives and opt-out retain one. Three installed rounds improve median device
+p50/p99 by 32.67%/28.58% and host p50 by 26.20%, at +393,728 B peak and +96.48%
+forced-fresh compile cost. One host-p99 tail is retained, so the status is
+`installed-wheel-verified-beneficial-device-host-p99-tail-monitor`. See
+[issues/P019_rsplit_default_gate/修复验证报告.md](issues/P019_rsplit_default_gate/修复验证报告.md).
+
+T-061/P-020 has also closed the int64 data-compute correctness blocker. Its isolated
+wheel routes explicit int64 compute/copy overloads to the same NPU ATen operation,
+while FP32 and embedding-index controls retain their original routes. Installed
+target UT 6/6 and NPU matrix 8/8 pass; three correct-baseline rounds characterize
+the expected fallback cost with unchanged peak. The status is
+`installed-wheel-verified-correctness-restored-performance-characterized`. See
+[issues/P020_experimental_int64_data_fallback/修复验证报告.md](issues/P020_experimental_int64_data_fallback/修复验证报告.md).
+
+T-062 has closed TE-LOW-001 without a source change. Registry/keep-list contracts and
+the installed fallback/audit-generate matrix pass 12/12. A global `ceil` generate
+expansion is rejected: standalone Event p50 regresses by a median 7.39%, peak grows
+by 525,312 B, and first compile grows from 2.716 s to 18.341 s. The same generate
+route is beneficial only inside `sin→ceil→cos`, where fusion improves device p50/p99
+by 33.53%/28.15% and reduces peak by 787,968 B. The verdict is
+`fallback-policy-verified-global-expansion-rejected`. See
+[report/t062_experimental_generate_list_20260828.md](report/t062_experimental_generate_list_20260828.md).
+
+T-063 has closed TE-CG-005 without a source change. Six default gates pass exact
+AST/synthetic contracts; installed NPU coverage passes 14/14 configurations and
+18/18 eager comparisons, and the paired performance matrix passes 12/12 workers.
+The two real transform hits retain equal peak memory; steady device p50 is -2.14%
+for strided and +0.08% for root modulo, while device p99 and host tails remain
+monitored. The verdict is
+`range-tree-contract-verified-defaults-retained-device-p99-host-tail-monitor`.
+See [report/t063_range_tree_20260828.md](report/t063_range_tree_20260828.md).
+
+T-064 has closed TE-CG-007 with two isolated fixes. P-021 guards
+`rtree_real_block` promotion when no free X axis survives; P-022 fixes the
+flattened R-tree composite loop bound and preserves modulo/floor-div indexing.
+Installed target UTs pass 6/6 and 7/7, and the selected NPU matrix passes 18/18.
+Flattening remains default-off because three paired runs regress device p50 by
+147.96%; `rtree_real_block` remains enabled with the guard. The verdict is
+`verified-with-p021-p022-keep-flatten-disabled`. See
+[report/t064_reduction_tiling_20260828.md](report/t064_reduction_tiling_20260828.md).
+
+T-065 has closed TE-CG-008 without a source change. Five header-codegen controls
+pass the selected 10/10 NPU on/off matrix; the three active gates pass 18/18
+paired samples. Input-stride ordering improves device p50/p99 by 27.81%/24.23%,
+odometer improves them by 3.44%/5.57%, and align-8 is neutral within about 2%.
+`unify_block` and `pad_min_block_to_8` are ineffective under the current greedy
+allocator and are tracked as configuration cleanup, without restoring the unsafe
+legacy inner-loop path. The verdict is
+`verified-active-defaults-retained-two-configs-ineffective-cleanup`. See
+[report/t065_header_tiling_20260828.md](report/t065_header_tiling_20260828.md).
+
+T-066 has closed TE-CG-009 with one isolated local fix. The group-dispatch
+config is dead but non-A5 group codegen is active and retained; corrected
+48-core samples improve device p50/p99 by 3.15%/3.55%. P-023 aligns
+auto-blockify candidate generation with Triton's independent environment gate,
+removing ignored 2/4/8 candidates when the gate is off while preserving them
+when it is on. The built wheel passes target UT 3/3, neighbor UT 2/2, installed
+candidate contracts, dynamic NPU smoke, and lint. The verdict is
+`verified-group-retained-dead-config-recorded-p023-local-fix`. See
+[report/t066_group_dispatch_20260828.md](report/t066_group_dispatch_20260828.md).
+
+T-067 has closed TE-AUTO-001 with one isolated local fix. Formula-driven
+autotune remains the default: across three paired runs it cuts pointwise
+compile/first-run by 23.18%, autotune benchmarking by 100%, peak allocation by
+92.42%, and device p50 by 7.76%; reduction compile/benchmark improve by
+6.43%/27.25% with the same selected tile. P-024 removes the import-time
+`autotune_enhance` snapshot so documented live `config.patch()` semantics work
+for pointwise, reduction, and persistent reduction. The installed wheel passes
+L0 53/53, fresh-process NPU enabled/disabled checks, and lint. The verdict is
+`verified-default-formula-retained-p024-live-gate-fix`. See
+[report/t067_autotune_20260828.md](report/t067_autotune_20260828.md).
+
+T-068 has closed TE-WRAP-001 with one isolated local fix. The NPU direct
+allocator remains: three fresh-process rounds put median allocation p50 at
+3.167990 us versus 7.156705 us through the dispatcher, a 55.73% improvement.
+P-025 removes the stale copied memory planner, filters only trailing
+WorkspaceArg-like lines, and delegates the remaining work upstream. The full
+wheel passes the baseline 2-fail/candidate 2-pass contract, allocation UT 11/11,
+installed pointwise and real two-kernel rsplit workspace execution, static 18/18,
+aggregate 17/17, and lint. The verdict is
+`verified-fast-allocation-retained-p025-upstream-planner-delegation`. The
+adjacent `torch.cond` failure occurs in control-flow lowering before wrapper
+codegen. See [report/t068_wrapper_20260828.md](report/t068_wrapper_20260828.md).
+
+T-069 has closed TE-AUTO-002 without a product-source change. Installed
+automatic MSPTI loading and startup-time preload both collect exactly 175/175
+Triton records and choose the same tile; an injected record failure safely
+falls back to seven Event candidate benches. Across three interleaved rounds,
+MSPTI cuts autotune benchmark wall by 86.84% and peak allocation by 92.42%
+(255,984,640 B) versus Event. The same final graph measures 30.40 us by MSPTI
+but 148.07 us by grouped Event, so device-time conclusions use MSPTI while
+Event remains the warning-backed fallback. The verdict is
+`verified-mspti-device-time-preferred-event-fallback-retained`. See
+[report/t069_mspti_event_20260828.md](report/t069_mspti_event_20260828.md).
+T-070 has now closed TE-FX-002 without a product-source change. The installed
+loop fold changes real dynamic-convolution pointwise codegen from three x axes
+to one, preserves positive and `[2,8,0,0]` empty outputs, and prevents the
+rank-mismatch compile failure reproduced with the gate off. Three same-device
+paired rounds are steady-state neutral (device P50 -0.06%, P99 +0.75%) with
+identical peak memory. The verdict is
+`verified-required-default-retained-no-product-change`. See
+[report/t070_fold_max1_20260828.md](report/t070_fold_max1_20260828.md).
+
+T-071 has closed TE-GUARD-001 without a product-source change. Upstream PyTorch
+2.14 already defaults recursive dict tag guards to false, so the default NPU
+gate is an idempotent safety override unless a user explicitly enables the
+upstream fast path before activation. Two 64-block NPU training workers pass
+20/20 exact output/gradient comparisons and attribute-triggered recompilation;
+three CPU guard rounds show that disabling the recursive fast path costs 36.57%
+at paired-median P50. The verdict is
+`verified-upstream-default-false-safety-override-retained`. See
+[report/t071_recursive_guard_20260828.md](report/t071_recursive_guard_20260828.md).
+T-072 has now closed TE-DEC-001 with P-026. The original rank-sorted override
+kept seq-first matmul but regressed inner-transpose, expand, and reverse 2D-by-3D
+by 19.80%, 23.93%, and 49.08% at median device P50. P-026 retains only the exact
+seq-first stride contract and delegates the regressed layouts upstream. The
+clean wheel passes four final NPU workers; seq-first keeps 5.53% median P50 and
+83.09% peak-memory improvements. The verdict is
+`verified-p026-seq-first-fold-retained-broad-scope-regressions-removed`. See
+[report/t072_matmul_fold_20260828.md](report/t072_matmul_fold_20260828.md).
+The historical sequence next entered T-073/TE-DEC-002 with 17 experimental
+families remaining (13 P1, 4 P2), but the 2026-08-29 requirement moved T-073 to
+a secondary branch. T-074 community-native pass/test mapping is now the main
+line, and no local pass branch is submitted or pushed yet.
+
+The current main runtime is the Conda `Pass` environment. Benchmark and
+isolated-venv outputs remain historical evidence; they do not become current
+Pass verdicts without scoped revalidation. Source commits, wheel identity,
+device isolation, and the audit-only launcher workaround are recorded
+explicitly. Static inventory and the first P0 dynamic/function/performance
+checkpoint are complete:
 
 - Work resumed from the user-requested 2026-08-21 checkpoint. The preserved
   baseline is [PAUSED_CHECKPOINT_20260821.md](PAUSED_CHECKPOINT_20260821.md),
@@ -166,23 +296,19 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
 - Launch every test from `/home/z50063656/tmp`; never import torch while the
   current directory is inside a torch_npu source tree.
 
-The current dynamic runtime is Conda `benchmark-py311`, activated by
-`/home/z50063656/Benchmark/env.sh`: Python 3.11.15, PyTorch
+The current dynamic runtime is Conda `Pass`, activated by
+`/home/z50063656/Pass/activate_pass.sh`: Python 3.11.15, PyTorch
 `2.14.0a0+git8e86e0a` as an editable source install from
-`/home/z50063656/Benchmark/pytorch-upstream`, source-built torch_npu
-`2.14.0a0+git83cc452` installed from the local `dist` wheel with `--no-deps`,
-Triton runtime 3.2.0, CANN 9.0.1, and 8 Ascend 910B2 devices. Runtime NPU tests
-pass, but T-022 found that a fresh Triton host launcher cannot be compiled by
-this exact mixed header contract without an audit-only shim; product validation
-must not rely on that shim. The installed T-046 source wheel SHA256 is
-`beee993d4c803ed72d26284dcdc06eac97cedaf450a54398ec11285d2711d54b`;
-the previous P-010 wheel remains preserved as
-`artifacts/torch_npu_t043_before_t046_attention_b2_gate.whl` for rollback. The
-current P-013 wheel SHA256 is
+`/home/z50063656/Pass/src/pytorch`, torch_npu `2.14.0a0+git83cc452`, Triton
+runtime 3.2.0, CANN 9.0.1, and 8 Ascend 910B2 devices. New tests must start from
+`/home/z50063656/tmp`. The installed torch_npu direct-url hash is
+`263ffec23ae37c651f3d57199c0cfa8b14f398ea603f8e1434ea14b237792704`, while
+the same-named wheel currently in `Pass/src/torch_npu/dist` hashes to
 `3909fd649d777b8dfd393342da0ff2b88c5cce2ef219f0d103d063af4c2d4989`;
-the P-012 rollback wheel is `artifacts/torch_npu_t053_before_p013.whl`;
-the P-011 rollback wheel is
-`artifacts/torch_npu_t046_before_t047_p012.whl`.
+do not reinstall it before recording the intended baseline. Benchmark and
+candidate-venv results through T-073 remain historical evidence and require
+scoped Pass revalidation before delivery. See
+[HANDOFF_20260828_PASS_ENV.md](HANDOFF_20260828_PASS_ENV.md).
 
 Read [current_status_and_background.md](current_status_and_background.md) before
 choosing a wheel or source build and before restarting any probe.

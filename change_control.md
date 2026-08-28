@@ -2,17 +2,24 @@
 
 ## 当前冻结状态
 
+- 2026-08-28 环境口径修正：当前主工作环境为
+  `/home/z50063656/Pass/activate_pass.sh` 激活的 Conda `Pass`，不再把
+  `/home/z50063656/Benchmark/env.sh` 作为新测试入口。所有旧 Benchmark/独立 venv 结果保留
+  原环境标签，待 Pass 复核后再决定是否迁移 verdict。
+
 - 阶段：P-013/T-054 default-backend 工作已归档；用户已恢复任务并将负责后端切换为
   `triton_experimental`。新的 T-055 先做安装态入口与隔离基线，不修改源码。
-- 环境：继续使用 `/home/z50063656/Benchmark/env.sh` 激活的 Conda `benchmark-py311`；不安装
-  meta worktree 的 2.13 环境，不改变 PyTorch/torch_npu/Triton/CANN 版本。
+- 环境：使用 `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`；不安装 meta
+  worktree 的 2.13 环境，不改变 PyTorch/torch_npu/Triton/CANN 版本。
 - NPU 运行环境：每轮只选择采样前空闲的物理卡，不固定卡号，不终止或迁移其他任务。
 - 环境稳定性：用户已确认保持当前环境；torch_npu 继续使用当前源码构建 wheel，以
   `--force-reinstall --no-deps` 安装。
 - PyTorch/Triton/torch_npu 功能源码修改：仍禁止，除非新提案先登记。现有累积修改、P-013
   wheel、P-012 rollback 和 source snapshot 原样保留。
 - 当前允许修改：本审计目录的脚本、矩阵、结果和说明文档；任何修改必须先记录在本文档。
-- 已完成构建：torch_npu 当前 commit 的 P-013 wheel 已从源码构建并以 `--no-deps` 安装；不得让后续 pip 操作替换 PyTorch/Triton 依赖。
+- 安装冻结：Pass 环境 installed wheel 的记录哈希为 `263ffec2...2792704`，当前 dist 同名文件
+  已变为 `3909fd64...c2d4989`。二者不一致；未新增变更记录前不得重装，也不得让 pip 替换
+  PyTorch/Triton 依赖。
 - 恢复约束：先读 `triton_experimental_migration_20260826.md`，按 backend 入口/隔离 → inventory
   → correctness/codegen → paired performance 推进；default 历史 verdict 不自动迁移。
 
@@ -36,18 +43,18 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 
 | 项目 | 计划值 | 状态 |
 |---|---|---|
-| 环境路径/名称 | `/home/z50063656/envs/benchmark-py311` (`benchmark-py311`)，由 `/home/z50063656/Benchmark/env.sh` 激活 | verified |
+| 环境路径/名称 | `/home/z50063656/envs/Pass` (`Pass`)，由 `/home/z50063656/Pass/activate_pass.sh` 激活 | verified-20260828 |
 | Python | 3.11.15 | verified |
-| PyTorch commit/wheel | `release/2.14@8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`；editable Python source 为 `/home/z50063656/Benchmark/pytorch-upstream`，native 库/headers来自环境 site-packages | verified |
-| torch_npu commit/wheel | `master@83cc452480c3546fd5cccf853bfe3a360ce9dbfc`；T-023 修复版 `dist/torch_npu-2.14.0a0+git83cc452-cp311-cp311-linux_aarch64.whl`，SHA256 `d0ee10794f8cb63d528c86f27294a2a52a4b8b5f484eb6be53323d22b2157718`，`--no-deps` 安装 | verified |
-| Triton Ascend commit/wheel | runtime module `3.2.0`；任务 source 参考 `release/3.2.2@8bd9f380d2786002b84b5248f00838c26f900515`；fresh launcher需审计 shim 的合同已单列 | verified-with-launcher-caveat |
+| PyTorch commit/wheel | `release/2.14@8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`；editable Python source 为 `/home/z50063656/Pass/src/pytorch`，native 库/headers 来自 Pass site-packages | verified-20260828 |
+| torch_npu commit/wheel | `master@83cc452480c3546fd5cccf853bfe3a360ce9dbfc`；installed 记录 SHA256 `263ffec23ae37c651f3d57199c0cfa8b14f398ea603f8e1434ea14b237792704`；当前 dist 同名 wheel 为 `3909fd649d777b8dfd393342da0ff2b88c5cce2ef219f0d103d063af4c2d4989`，禁止未登记重装 | verified-mismatch-frozen |
+| Triton Ascend commit/wheel | runtime module `3.2.0`；metadata `triton 3.5.0`、`triton_ascend 3.2.2`；任务 source 为 `release/3.2.2@8bd9f380d2786002b84b5248f00838c26f900515` | verified-with-metadata-caveat |
 | CANN | `/usr/local/Ascend/cann9.0.1/cann-9.0.1`，9.0.1 | verified |
 | NPU SoC | 8 x `Ascend910B2`，设备 0-7，Health OK | verified |
 | 测试服务器/容器 | 当前机器，未进入额外容器；所有测试从 `/home/z50063656/tmp` 启动 | verified |
 
 ## 环境核验记录
 
-### E-001：核验 Benchmark 候选运行环境
+### E-001：核验 Benchmark 候选运行环境（历史记录，已被 E-197 的当前入口取代）
 
 - 状态：`verified-candidate`，尚未作为性能基线。
 - 启动脚本：`/home/z50063656/Benchmark/env.sh`。
@@ -2250,38 +2257,63 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - P-018 状态升级为 `source-verified-wheel-pending-host-tail-monitor`。installed P-013 仍默认关闭；
   shared tree 其他未安装 diff 可隔离前不构建/安装，最终 wheel 需重跑 11 项覆盖、两性能 cohort、
   显式 opt-out 和 host p99。
+- 以上为当日 source-only 历史边界；首版恢复式 wrapper 的 late opt-out 生命周期缺口和最终
+  installed wheel 结论已由 E-167 覆盖，旧哈希/探针结果仍保留作演进证据。
 
-### E-165：T-059 experimental permute-gather 首轮计划（2026-08-26）
+### E-165：P-016 独立 wheel 与 late opt-in 收口（2026-08-27）
 
-- 状态：`in-progress-document-first`。目标为 installed wheel 中默认开启的
-  `realize_permute_gather`；只做 fresh-process ON/OFF 审计，不修改/构建/安装共享源码。
-- 环境未设置 `TORCHINDUCTOR_NPU_BACKEND`，未显式选择仍是 default；runner 必须通过每次
-  `torch.compile(..., options={"npu_backend": "triton_experimental"})` 选择目标后端，并以
-  `_InductorNpuRegistry._loaded_backend` 和 generated code 验真。
-- 首轮正例采用 T5 同构 embedding→`permute(2,0,1)`→add→key-reduction，FP16 static 先做
-  correctness/codegen，再按 ON/OFF 交错执行三轮 warmup 10/runs 100，记录 host 与 NPU event、
-  首编、峰值内存。详细合同见 `report/t059_experimental_permute_gather_20260826.md`。
+- 从基线 `83cc452480c3546fd5cccf853bfe3a360ce9dbfc` 创建 detached worktree，只带 P-016 两个
+  产品文件。首版 wheel 默认关闭路径正确，但导入后显式 True 未激活 rewrite；根因是 backend
+  导入时 installer 在默认 False 上提前返回，正常调用方取得 config 时注册窗口已经错过。
+- 最终改为 backend 激活时始终、幂等安装 wrapper，pass body 在 graph rewrite 时动态读取 flag。
+  source gate 的默认注册/no-op、重复幂等、late opt-in 与原 post-pass 恢复全部通过。
+- 最终 wheel SHA256 为 `b48961a...8f33a`；source/wheel/installed 的 config.py SHA256 均为
+  `f33deebb...4c73`，fx_passes.py 均为 `02699940...7ed0`。完整构建和独立 venv 安装通过。
+- 910B2 默认路径与 eager 精确一致、无 alias；导入后显式 ON 路径真实复现 `[0,8]` mismatch
+  与 input alias，证明 opt-in 可达。原 rewrite 仍为 correctness-failed，不做性能测试。
+- 第一次缺失 DVM submodule 的构建和 sandbox `aclInit 507008` 仅为准备/权限尝试；首版 ON
+  失败是产品时序缺口，已保存旧 wheel 与日志。P-016 升级为 `verified-installed-wheel`，共享
+  Benchmark 安装态不变，仍不提交、不推送。
 
-### E-166：T-059 smoke 通过与代表 shape 精度合同修订（2026-08-27）
+### E-166：P-017 独立 wheel 与安装态合同收口（2026-08-27）
 
-- sandbox 首轮因设备不可见止于 `aclInit`；真实 NPU 首轮又复现 editable PyTorch include view 缺
-  `ATen/ATen.h`。失败均保留；随后只在 fresh worker 内复用已登记 T-022 audit-only launcher
-  垫片，不能计正式无垫片环境通过。
-- FP16 `B=1,H=12,S=64` smoke OFF/ON 正确性和 backend 验真通过；generated code 从
-  `1 kernel + key轴12*r gather` 变为 `permute-copy + stride-1 reduction` 两 kernel，目标真实触发。
-- `B=2,H=12,S=256` OFF1/ON1 在相同 seed 上都以同一 max index 得到 max diff `0.0625`，共同
-  超过 smoke 的 `atol=0.01`；两轮 timing不进入正式聚合。runner 修订前预登记：增加 mean/error
-  count/reference scale/output hash，代表 reduction 使用 `rtol=0.01,atol=0.1`，并要求 ON/OFF
-  deterministic output hash 相同；之后从新目录重跑三轮。
+- P-017 detached worktree 保留 P-014 erfc cleanup 1 行，并叠加 GELU approximate 修复 15 行；
+  source contract 的 none/tanh forward/backward 与非法参数全部通过。相对基线 tracked diff 为
+  `decomposition.py` 16 行新增。
+- 完整 wheel SHA256 `5b928d5a...c27b13`；source/wheel/installed 文件 SHA256 均为
+  `059ec0db...27d5b`。构建、独立 venv 安装、py_compile 和 diff check 通过。
+- 910B2 上无 source overlay 的 FP32/FP16/BF16 × none/tanh 6/6；none 生成 erf，tanh 保持
+  sigmoid。非法字符串真实 compile forward/backward 2/2 报预期错误；P-014 backend 往返近邻
+  1/1（42.894 秒）。
+- 两次直接读取导入后全局 decomposition 表的探针不代表 compile scope，形成测试设计假阴性；
+  已改为真实 compile 验证。非法用例在 codegen 前失败，无 `output_code.py`，结构化 trace 已保留。
+- P-017 升级为 `verified-installed-wheel`。不对错误的旧 none 做性能测试；共享 Benchmark 安装态
+  不变，仍不提交、不推送。
 
-### E-167：T-059 representative exact-hash 不满足，先做逐元素诊断（2026-08-27）
+### E-167：P-018 live addmm gate 与独立 wheel 收口（2026-08-27）
 
-- 修订后 OFF1/ON1 对 CPU/NPU eager 均以 `rtol=0.01,atol=0.1`、0 个失败元素通过，max diff
-  同为 `0.0625`，但 compiled output SHA256 不同，E-166 的 exact-hash 强合同未满足。
-- ON1/OFF1 device P50 初值为 `0.41669/0.45537 ms`，峰值 allocated 为
-  `6,844,416/5,283,840 B`；当前只作失败合同下的诊断，不进入三轮聚合。
-- runner 只新增保存小型 compiled output 的证据能力；用两个 fresh worker 逐元素比较 ON/OFF，
-  记录 max/mean/different count 和位置。未完成该诊断前不继续性能轮次，不修改产品源码或 gate。
+- 首版 P-018 source gate 在默认 False 时未安装 wrapper；backend 激活只发生在 import 期间，
+  因此调用方导入后设置 `disable_addmm_fusion=True` 无法 opt out。修复前 lifecycle probe 的
+  default wrapper/late opt-out 均为 false，`passed=false`，日志原样保留。
+- 最终 `_disable_addmm_fusion_pass()` 始终、幂等安装两个 addmm entry wrapper，并在 pattern match
+  时读取 live config。两个 wrapper 都保存 original sentinel；default False、late opt-out True、
+  late restore False 和重复 installer 全部通过。未改 PyTorch pattern、addmm lowering、C++/Triton。
+- P-018 相对 P-016 前置增量为 config 5+/4-、fx_passes 33+/13-。最终 config.py/fx_passes.py
+  SHA256 为 `1e9e62ec...c06b33`、`b3c150b4...a0d5b`；source/wheel/installed 三态一致。
+- 专属 wheel SHA256 为 `cd301382...3f3452`；完整构建、独立 venv 安装、py_compile、diff check
+  通过。wheel 同时包含同文件 P-016 前置，不包含 P-017 decomposition；共享 Benchmark 不变。
+- 安装态正常用户顺序 default/late-opt-out/restore 生成结构依次为 addmm、mm+Triton add、addmm，
+  数值均通过。11/11 capability 全过：9 个 dtype/bias/layout/dynamic/training 正例融合，2 个
+  scalar/mixed-dtype 负例保持不融合。最终 direct live-gate 复跑的 11 项均为
+  `respect_installed_gate=true`、恢复 original 数 0、两个 wrapper/sentinel 完整；早先手动恢复
+  original 的结果只保留为 capability 对照。
+- installed 三轮 paired：shape-A host p50/p99 改善 `17.10%/1.20%`；unaligned host p50 改善
+  `13.52%`、host p99 回退 `15.28%`。unaligned Event device p50/p99 改善
+  `19.87%/19.10%`；两 cohort allocated/steady 内存不增。Event host 同步长尾原样保留监控。
+- sandbox `aclInit 507008`、缺 ATen header、C++20/C++17 和 CANN conditional header 失败均保留为
+  环境尝试。最终使用 T-022 audit-only shim，不声明 no-shim 环境闭环。
+- P-018 升级为 `verified-installed-wheel-beneficial-host-tail-monitor`。默认启用保留，host-tail
+  进入后续回归看板；当前仍不提交、不推送。
 
 ### E-168：T-059 ON/OFF 逐元素诊断关闭，恢复性能轮次（2026-08-27）
 
@@ -2433,20 +2465,248 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   index tensor；验证 in-place/alias、dynamic 和训练；随后才做 paired steady 性能。当前不修改产品
   source，不构建/安装 wheel。
 
+### E-181：P-020 dtype-aware lowering route prototype 计划（2026-08-27）
+
+- 不修改产品 lowering；只在 fresh audit worker 的 experimental activation 中包装目标 overload：
+  IR tensor input 是 int64 时调用同 overload ATen fallback，其他 dtype 调原 lowering。
+- 正例矩阵为 int64 add/sub/mul/gt/sum；控制组为 FP32 mul 和 embedding int64 index。每项必须核对
+  loaded backend、generated Triton/fallback 结构以及 eager/CPU exact correctness。
+- 先保存 native 失败，再跑 route；首批 7 项通过后再扩 in-place/copy、dynamic 和 overload，当前
+  不构建 wheel、不手写 Triton int64。合同追加在 T-061 报告。
+
+### E-182：P-020 route prototype 通过与 source 实施门禁（2026-08-27）
+
+- native blocker 已按 op 保存：add/sub/gt 各 `2048/4096` mismatch，mul `4096/4096`，sum
+  `1/1`，copy 与 in-place add 各 `2048/4096`；全部确认 loaded backend 为
+  `triton_experimental`，并有真实 i64→i32/downcast Triton 结构。
+- audit dtype route 后，add/sub/mul、gt Scalar/Tensor、sum default/dim、copy、in-place add 均对
+  NPU eager/CPU exact；in-place 的返回值、输入写回和 alias 同时通过，dynamic `4096→4098`
+  同一 compiled function replay exact。
+- FP32 mul 仍走 original lowering（1 Triton、0 ATen fallback）；910B2 的 embedding int64 index
+  native 与 route 都保持同一个 ATen embedding fallback，generated code SHA256 均为
+  `217991d4...0c3ed`，route trace 为空。该设备不是 A5，不能把 embedding 控制组写死成 Triton。
+- source 允许实施的最小范围：只在 experimental fallback 注册完成后，包装 add/sub/mul 的
+  Tensor/Scalar、比较 Tensor/Scalar、sum default/dim 以及 copy/copy_ 常用 overload；发现任一 IR
+  tensor input 为 int64 才走同 overload ATen fallback，其他 dtype 保持原 lowering。wrapper 必须
+  幂等，embedding/gather 等 index op 不列入目标集合。先补 source UT 和 source-overlay NPU 矩阵，
+  当前仍不构建/安装 wheel，也不进入性能聚合。
+
+### E-183：P-020 source 实施、NPU 回归与性能归档（2026-08-27）
+
+- 已在 experimental lowering 局部增加 int64 dtype route：显式覆盖 add/sub/mul、六类比较、sum
+  default/dim 与 copy/copy_ 常用 overload；任一 IR tensor input 为 int64 时调用同 overload ATen
+  fallback，其他 dtype 仍调用原 lowering。注册幂等，未修改全局 Inductor lowering、embedding/
+  gather index 路径或 Triton int64 ABI。
+- source-overlay UT 8/8；NPU 上 int64 mul/gt/sum/copy/in-place add、dynamic add
+  `4096→4098` 全部对 eager/CPU exact。FP32 mul 仍为 1 Triton、0 fallback；embedding 控制组
+  generated code SHA256 仍为 `217991d4...0c3ed`。
+- 正确 eager ATen 与正确 source-overlay fallback 在 Ascend910B2、物理 NPU 1 上做三轮 fresh
+  paired：`numel=1048576`、warmup 10/runs 100。三轮指标中位数中，host mean/P50/P99 为
+  `0.2961/0.2859/0.3505 ms → 0.4157/0.4049/0.4825 ms`，NPU Event 为
+  `0.1940/0.1927/0.2161 ms → 0.3150/0.3134/0.3345 ms`；绝对增加约 `0.12 ms`，稳态峰值
+  增量两侧同为 `8389120 B`。原生 Triton 结果错误，未作为性能基线。
+- source 三轮均生成 1 个 ATen mul fallback、0 Triton、0 downcast，generated code SHA256 固定为
+  `8ed16917...54f0`；首次 compile+run 中位 `2862.79 ms`，只与 eager 首调 `117.53 ms` 分列，
+  不作同类编译开销比值。
+- source-overlay UT、`py_compile`、目标 diff whitespace、P-020 新增行 Flake8/空白/版权检查通过；
+  整文件仍有本提案之前的历史 lint 提示，未扩大修改范围。lowering/test/性能 runner/功能 runner
+  SHA256 分别为 `35b8b098...5290`、`36a9ff74...1701`、`dfac86fb...506`、
+  `75e9cded...65e3`。
+- 结论：correctness blocker 已由最小 source route 修复并完成 source-overlay 性能刻画；共享 source
+  tree 含大量其他未归属 diff，当前不构建/安装 wheel，不把 source-overlay 写成 installed 成功。
+
+### E-184：P-020 隔离 wheel、安装态验证与关闭（2026-08-27）
+
+- 从 `83cc452480c3546fd5cccf853bfe3a360ce9dbfc` 创建 detached worktree，只应用 P-020 的
+  lowering/UT 两个产品文件，共 139 行新增；完整 wheel 构建成功。构建期 editable-PyTorch 路径
+  辅助均已撤销，最终 tracked 产品 diff 仍只有两文件且 `git diff --check` 通过。
+- wheel SHA256 为 `028f678f39d6c353a408dfd621942b6ebd68a36469544e90b11da99b1a5c2822`；wheel、
+  source 与专用 venv 安装态 lowering SHA256 同为 `35b8b098...5290`，实际 import 路径确认位于
+  `/home/z50063656/Pass/venvs/p020-installed`。安装态目标 UT 6/6。
+- Ascend910B2 物理 NPU 1 上安装态功能矩阵 8/8：int64 mul/gt/sum/copy/in-place/dynamic add
+  对 eager/CPU exact，FP32 保持 Triton，embedding index 代码 hash 保持 `217991d4...0c3ed`。
+  原 mul/gt/sum 无 shim 通过；copy companion Triton 仍需既有 T-022 editable-header shim，失败与
+  通过日志均保留，shim 未进入产品产物。
+- 安装态三轮 paired 的 host mean/P50/P99 中位为
+  `0.3182/0.2846/0.4442 → 0.4223/0.4073/0.5125 ms`，NPU Event 为
+  `0.1920/0.1885/0.2189 → 0.3052/0.3031/0.3422 ms`；绝对安全路径成本约
+  `0.07–0.12 ms`，稳态峰值两侧同为 `8389120 B`。installed generated code 三轮固定为
+  1 ATen fallback、0 Triton、0 downcast，hash `8ed16917...54f0`。
+- P-020 在显式 overload/910B2/CANN 9.0.1 范围内由 FAIL→PASS，状态更新为
+  `installed-wheel-verified-correctness-restored-performance-characterized`；未列入集合的其他 int64
+  op、其他设备与训练/反向不外推。诊断知识库新增模式 `P-COM-008`。
+
+### E-185：P-019 隔离 wheel、安装态矩阵与性能关闭（2026-08-27）
+
+- 从 `83cc452480c3546fd5cccf853bfe3a360ce9dbfc` 创建 detached worktree，只应用 P-019 的
+  `triton.py` 与目标 UT。tracked diff 只有两文件，产品 19+/11-、测试 61+/0-；`git diff --check`
+  通过。source/wheel/安装态 `triton.py` SHA256 均为 `93ad31c1...fdf73`。
+- 完整 wheel SHA256 为 `c6971fb009481c476368a4e256dc642e8c07a5ecd594807d260a666fda21baf9`，
+  已 `--force-reinstall --no-deps` 安装到独立 `p019-installed` venv；实际 import 路径和版本验真，
+  安装态 target UT 5/5。
+- 安装态 NPU 矩阵 9/9：static/dynamic FP32、FP16、BF16 的 RMS DEFAULT 正例均为 2 kernels；
+  small-r、r<x、amax、variance/multi-reduction 和 pre-codegen opt-out 均保持 1 kernel，数值对
+  eager/CPU 通过。
+- 三轮 installed paired 的 device P50/P99 改善中位数为 `32.67%/28.58%`，三轮同向；host P50
+  改善中位数 `26.20%`。host P99 中位改善仅 `1.75%`，第 3 轮 ON P99/max 为
+  `2.66936/4.61040 ms`，长尾原样保留监控。
+- max allocated `134,788,608→135,182,336 B`（+`393,728 B`）；forced-fresh 首编+首跑中位
+  `22.210→43.640 s`（+`96.48%`）。no-shim 在 `ATen/ATen.h` 缺失处失败，正式矩阵使用既有
+  T-022 audit-only shim，不宣称环境闭环。
+- 首轮误用进程环境变量提前激活 experimental backend，codegen 在 config 前加载；4 个正例结构/
+  数值实际通过，但生命周期断言拒绝，保留在 `installed_matrix_preloaded_backend_env/`，不计产品
+  失败或正式成功。最终使用 per-compile backend 顺序闭环。
+- P-019 升级为 `installed-wheel-verified-beneficial-device-host-p99-tail-monitor`。默认开启保留；
+  后续只监控 host tail、workspace/首编成本和正式 no-shim launcher。当前仍不提交、不推送。
+
+
+### E-186：T-062 generate-list fallback 合同、候选和性能关闭（2026-08-28）
+
+- 使用 P-019 独立 venv；current source、P-019 worktree 与安装态
+  `lowering_override_list.py` SHA256 均为 `cc750008...d29944`，没有 source overlay 或产品修改。
+  registry probe 记录 80/78 个 generate entry、展开后 450 个 key，以及 7/17 个 keep entry/key；
+  合成路由六项、control-deps/Bernoulli 定向 UT 2/2 通过。
+- 安装态有效功能矩阵 12/12：baseline ceil 为 0 Triton ATen fallback；audit-only generate 的
+  ceil/floor/trunc/round/isnan/isinf、FP16/BF16、dynamic 均逐元素 exact；mixed baseline 为
+  2 Triton + 1 ATen ceil，audit generate 融合为 1 Triton，两侧 exact。
+- standalone ceil 三轮 generate 相对 fallback 的 Event mean/P50/P99 中位改善为
+  `-7.11%/-7.39%/+0.16%`，peak +`525,312 B`，首编+首跑中位
+  `2.716→18.341 s`（回退 575.40%）；不满足全局扩大 allowlist 门槛。
+- mixed 三轮 Event mean/P50/P99 改善中位数 `32.76%/33.53%/28.15%`，host P50
+  `32.10%`，peak -`787,968 B`，首编+首跑改善 `50.58%`；host P99 一轮回退 4.44%。该收益
+  只登记为上下文感知融合机会，不能掩盖 standalone 回退。
+- 首轮沙箱内 `aclInit 507008` 和 registry 对 pre-P020 wheel 的可选函数假设错误均保留为环境/
+  探针失败；修正后有效结果不计产品失败。TE-LOW-001 关闭为
+  `fallback-policy-verified-global-expansion-rejected`；不新增 allowlist entry、不写 Triton、不构建
+  wheel。当前不提交、不推送，进入 T-063/TE-CG-005。
+
+### E-187：T-063 range-tree 六门控关闭与 TE-CG-007 邻接缺陷分流（2026-08-28）
+
+- 使用 P-019 安装态 experimental codegen，SHA256
+  `93ad31c1...df73`。AST 精确确认六项默认 True 配置只在对应 helper 读取；五类 synthetic
+  on/off 表达式与 mapping 契约全部通过。
+- fresh-process NPU 有效矩阵 14/14 配置、18/18 eager 对照通过。strided 正例开启时把
+  `2*x0+1` 拆为两轴表达式，关闭时保持单轴；root modulo 正例开启时重定向 leaf、外轴 39，
+  关闭时映射 root、外轴 78。reduction/collapse/scalar 的自然图由 scheduler 预拆、布局间隙或
+  size-1 专门化阻止真实变换，明确只计“静态精确契约 + 运行态邻接”，不冒充命中。
+- 两个真实命中图各做三轮交错 on/off、warmup 10/runs 100。strided/root device P50 中位改善
+  `-2.14%/+0.08%`，编译首跑 `-0.59%/-0.24%`，peak 差均为 0；device P99 与 host tail 原样
+  保留监控。证据不足以推翻默认策略，六项默认值保持，不产生产品修改。
+- 探索总规约时发现 `rtree_real_block` 在 zero-kept-x-axis 图生成未定义 `xmask`；probe-only
+  去掉 conjunct 后继续出现三维 reduction 值写二维目标的 rank mismatch。该错误在
+  `split_reduction_modulo` on/off 都存在，分流至 T-064/TE-CG-007，不把猴补写入产品源码。
+- TE-CG-005 状态为
+  `range-tree-contract-verified-defaults-retained-device-p99-host-tail-monitor`。当前不提交、
+  不推送，进入 T-064/TE-CG-007。
+
+### E-188：T-064 reduction tiling、P-021/P-022 与默认策略关闭（2026-08-28）
+
+- 修复前默认 `rtree_real_block=True` 的 scalar total reduction 编译失败：生成 broadcast guard
+  引用未定义 `xmask`；关闭 real-block 后同图通过。P-021 新增真实 kept-axis guard，zero-X
+  回落 legacy 路径，动态 kept-X 仍命中 promotion。
+- P-021 独立 wheel/venv 的 source、wheel installed product hash 一致；target UT 6/6。zero-X
+  FP16/BF16 static、FP32/BF16 dynamic，kept-X default/autotune-off/rtree-off，以及 sum/max
+  where-elision on/off 全部通过。
+- 邻接检查发现 `flatten_small_outer_rnodes=True` 的动态多轴 reduction 静默错算。根因一是
+  composite `tree.numel` 被渲染为 inner-node numel，二是 flattened linear loop 错用了 nested
+  direct-index rewrite。P-022 保存 composite bound/flatten state，三处 rewrite 统一处理并保留
+  modulo/floor-div 坐标分解。
+- P-022 独立 wheel/venv 的 product hash 一致；target UT 7/7，P-022 NPU 6/6，T-064 选定矩阵
+  累计 18/18。FP16/BF16 使用 dtype-scaled reduction 容差，严格阈值失败原样保留。
+- flatten on/off 各三轮、warmup 10/runs 100；on 相对 off 的 device P50/P99 中位回退
+  `147.96%/141.33%`，首编 +`4.97%`，peak 相同。故 P-022 保留以消除 opt-in 静默错算，但
+  `flatten_small_outer_rnodes` 默认继续关闭；`rtree_real_block` 携 P-021 guard 保持开启。
+- TE-CG-007 状态为 `verified-with-p021-p022-keep-flatten-disabled`。当前不提交、不推送，
+  进入 T-065/TE-CG-008。
+
+### E-189：T-065 header tiling/odometer 默认策略关闭（2026-08-28）
+
+- 在 P-022 独立安装态对五项配置完成 fresh-process NPU 开/关验证，最终正确性 10/10；
+  input-stride 改变 reduction free-axis 顺序，odometer 改变 cumulative-block 分解，align-8 改变
+  real-block 表达式，均确认真实可达。
+- `unify_block` on/off 和 `pad_min_block_to_8` on/off 的 header trace 分别完全相同。源码确认
+  greedy allocator 把所有合法非 scalar axes 无条件加入 `_unify_names`，padding 又跳过所有
+  balanced/scalar axes；两项配置当前无效。只登记配置清理，不恢复有正确性风险的 legacy
+  real-block/inner-loop 分支。
+- 三个有效开关 on/off 各三轮、warmup 10/runs 100，18/18 有效。input-stride device
+  P50/P99 改善 `27.81%/24.23%`，odometer 改善 `3.44%/5.57%`，align-8 为
+  `-0.19%/+1.87%`，peak 均不变；默认值全部保持。
+- 设备 6 的 align-off 样本出现 CANN `507033` TSD 启动超时，健康设备替代样本通过；首版
+  odometer probe 的 dynamic broadcast 约束错误也原样保留，二者均不计产品失败。
+- TE-CG-008 状态为
+  `verified-active-defaults-retained-two-configs-ineffective-cleanup`。本轮无产品修改、不构建
+  wheel、不提交、不推送，进入 T-066/TE-CG-009。
+
+### E-190：T-066 group/all-block dispatch 与 P-023 关闭（2026-08-28）
+
+- 静态契约确认 `group_dispatch` config snapshot 无消费者；非 A5 的 group prologue/loop 无条件
+  生成。experimental Inductor underfill、dynamic-tail、multi-axis on/off 6/6 正确，两态都生成
+  `total_thread=48` group loop，故只登记死配置清理，不发明 off 路径。
+- plain grid 65535/env-off 通过，65536/env-off 预期触发 EE1003 `coreDim <= 65535`，同一
+  65536/env-on 通过；group 100003/env-off 也正确。证明 backend 真正能力由
+  `TRITON_ALL_BLOCKS_PARALLEL` 控制，不能把 torch_npu config 当作 backend enable。
+- 修正为运行时 48 cores 后，group 相对 backend auto size-1 的三轮 device P50/P99 中位改善
+  `3.15%/3.55%`，编译首跑 +`0.62%`，peak 相同，保留非 A5 group-dispatch。
+- auto-blockify size 1/2/4/8 均正确，但本 workload 上 2/4/8 的 P50 相对 size 1 分别回退
+  `578.10%/548.51%/537.74%`。不全局开启 backend env，也不删除 env-on 时的合法 autotune
+  候选。
+- P-023 仅在 torch_npu config 与 Triton env gate 同时开启时生成 2/4/8；full wheel SHA256
+  `41d67250...36d879`，源码/安装哈希一致，target UT 3/3、近邻 2/2、candidate 两态、dynamic
+  NPU smoke 和 lintrunner 均通过。
+- 首次 P-023 dynamic smoke 因缺 CPATH 报 `ATen/ATen.h`；已按图模式规则检查失败 run 的
+  `output_code.py`，确认 experimental kernel/group loop 已生成，复用既有 launcher 环境重跑
+  通过。构建前两次子模块环境失败及硬编码 40-core 样本原样保留，不计产品失败。
+- TE-CG-009 状态为 `verified-group-retained-dead-config-recorded-p023-local-fix`。P-023 留在
+  独立本地工作树，不提交、不推送；进入 T-067/TE-AUTO-001。
+
 ## 提案记录
+
+### P-023：experimental auto-blockify 候选与 Triton backend gate 对齐
+
+- 状态：`installed-wheel-verified-gate-aligned-local-hold`。只修改
+  `triton_experimental/npu_triton_heuristics.py`、对应 config 注释和 autotune target UT；不设置或
+  清除进程级环境变量，不修改 Triton/CANN/C++，不改变 group-dispatch codegen。
+- 问题：`all_blocks_parallel=True` 当前会为 >65535-grid 加入 `auto_blockify_size=2/4/8`，但
+  installed Triton Ascend 3.2.0 独立要求 `TRITON_ALL_BLOCKS_PARALLEL=1`。环境 gate 关闭时，
+  compiler 把这些候选全部强制回 size 1，造成重复编译/调优且仍不能解决 65536 coreDim。
+- 修改：增加动态 helper，只有 torch_npu config 与 Triton 环境 gate 同时开启时才生成
+  auto-blockify 候选；formula 和 legacy 两条候选路径统一调用。`group_dispatch` 无消费者的问题
+  仅记录，不在本提案中发明未经验证的 off 路径。
+- 验证：target UT 覆盖 config/env 三种关键组合，source-built wheel 与独立 venv 验证候选列表；原
+  experimental Inductor underfill/dynamic-tail/multi-axis 数值和 generated group-loop 回归；保留
+  65535/65536 环境边界及 auto-blockify 1/2/4/8 性能证据。target UT 3/3、近邻 2/2、
+  dynamic smoke 和六类 lintrunner 均通过。当前只做本地闭环，不提交、不推送。
+
+### P-022：experimental flattened R-tree composite bound/index 修复
+
+- 状态：`installed-wheel-verified-correctness-restored-default-disabled-performance-rejected`。
+- 修改：记录 composite `inner_len_code` 与 flattened 状态；统一三处 loop bound；flattened 模式
+  保留 modulo/floor-div 分解。
+- 验证：安装态 target UT 7/7、NPU 6/6、性能开/关各三轮。默认保持关闭；只在用户显式开启
+  时消除静默错算。当前本地保留，不提交、不推送。
+
+### P-021：experimental zero-X R-tree promotion guard
+
+- 状态：`installed-wheel-verified-correctness-restored-default-retained`。
+- 修改：只有存在未被 mapping 消去的真实自由 x node 才允许 `rtree_real_block` promotion。
+- 验证：安装态 target UT 6/6；zero-X、kept-X、autotune、rtree off 和 where-elision 矩阵通过。
+  默认 real-block 保留，当前本地保留，不提交、不推送。
 
 ### P-020：experimental int64 数据计算 dtype-aware fallback
 
-- 状态：`audit-fallback-proven-design-pending`；正式 diff 尚未登记/实施。
+- 状态：`installed-wheel-verified-correctness-restored-performance-characterized`；隔离 source diff、
+  完整 wheel、专用 venv 安装、UT、安装态 NPU 功能矩阵与三轮正确基线性能均已通过。
 - blocker：原生 boundary downcast 在超 int32 值域或中间结果溢出时静默 wrap，复核 4096/4096
   mismatch；`int64_boundary_cast` 配置当前不控制 wrapper。
-- replacement：优先复用 ATen/CANN fallback；audit-only mul fallback 已 exact。手写 Triton int64
-  因设备 compute type 不支持而拒绝。
-- 下一步：先完成算子/索引角色矩阵和 source-overlay route prototype，再决定最小产品修改。
+- replacement：已在 experimental lowering 对明确 compute/copy overload 安装 dtype-aware ATen/CANN
+  fallback；浮点和 embedding/gather index 路径保持原路由。手写 Triton int64 因设备 compute type
+  不支持而拒绝。
+- 下一步：进入代码审查/独立提交；合入后由 CI 和目标分支环境复验。当前结论只覆盖显式 overload、
+  Ascend910B2/CANN 9.0.1；其余 int64 数据 op、其他设备与训练/反向需独立登记。
 
 ### P-019：experimental rsplit DEFAULT hint 恢复门禁
 
-- 状态：`source-verified-wheel-pending-environment-monitor`。目标是在 `triton_experimental` rsplit 局部，为可证明是目标
+- 状态：`installed-wheel-verified-beneficial-device-host-p99-tail-monitor`。目标是在 `triton_experimental` rsplit 局部，为可证明是目标
   OUTER/INNER 访问模式但 generic Inductor 标成 DEFAULT 的 reduction 恢复方向，不全局修改
   PyTorch `Reduction.num_splits()` 或 `SIMDKernelFeatures.get_reduction_hint()`。
 - 已有证据：current wheel scalar INNER 原生命中；RMS/outer/非标量 inner 被 DEFAULT gate 拒绝；
@@ -2457,27 +2717,31 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   非 welford、唯一 output、x/r threshold 与 homogeneous epilogue gate；没有全局修改 hint，也没有
   修改 kernel/codegen。目标 UT 5/5 已覆盖 DEFAULT 正例、小 r、非 sum、超宽 x、OUTER_TINY、
   fused-output 和 nested-reduction；source-overlay static/dynamic 与 r<2048 已通过。
-- 剩余门禁：共享 diff 可隔离后构建 wheel，统一重跑
-  FP16/BF16/FP32、dynamic、r<2048、r<x、非 sum/welford 和三轮 paired。正式无 shim 环境仍单独
-  pending，当前不得把 source-overlay 写成 installed 成功。
+- installed 关闭：独立 wheel SHA256 `c6971fb...21baf9`；source/wheel/venv 文件一致，target UT
+  5/5，三 dtype/dynamic/四类 guard/opt-out 矩阵 9/9。三轮 device P50/P99 改善中位数
+  `32.67%/28.58%`，host P50 `26.20%`；peak +`393,728 B`、首编 +`96.48%`，host P99 长尾监控。
+- 正式无 shim 环境仍单独 pending；不得把 T-022 audit shim 写成产品环境闭环。当前不提交、
+  不推送，等待其他 pass 本地闭环后统一处理。
+
 
 ### P-018：experimental addmm fusion capability gate
 
-- 状态：`source-verified-wheel-pending-host-tail-monitor`。目标不是删除 opt-out，而是把
+- 状态：`verified-installed-wheel-beneficial-host-tail-monitor`。目标不是删除 opt-out，而是把
   `disable_addmm_fusion` source 默认改为 False，让原上游 validity check 继续控制 dtype/shape/
-  bias；显式 True 路径保留为可恢复门禁。
+  bias；显式 True 路径保留为导入后也可用的 live 门禁。
 - 首批 FP16/static/contiguous/vector-bias 证据满足 p50/p99/内存门槛，且现有 extern addmm lowering
   已正确承接。候选无需手写 Triton kernel，也不得修改 PyTorch 通用 post_grad pattern。
-- 上述 11 项覆盖和 unaligned 第二性能 cohort 已完成。设计必须保存 original extra_check、幂等；
-  `disable=True` 包装为 False，重复调用不叠加，随后 `disable=False` 调用恢复 original，并补
-  device-independent source probe。P-015 仍负责完整 backend loader 回切，不在 P-018 扩大修改。
-- 已按上述边界只修改 experimental config.py 与 fx_passes.py；source gate 通过。未改 PyTorch
-  通用 pattern、lowering、C++、Triton kernel 或其他 gate。当前仍为 wheel-pending，installed
-  P-013 和 P-014/P-016/P-017 边界不变；unaligned 的单轮 host 长尾必须在 installed 复验中保留。
+- 上述 11 项覆盖和 unaligned 第二性能 cohort 已完成。最终设计保存 original extra_check、幂等；
+  wrapper 在每次 match 时读取 config，`disable=True` 返回 False，False 委托 original，重复
+  installer 不叠加。P-015 仍负责完整 backend loader 回切，不在 P-018 扩大修改。
+- 已按上述边界只修改 experimental config.py 与 fx_passes.py；source gate 和专属 wheel 通过。
+  未改 PyTorch 通用 pattern、lowering、C++、Triton kernel 或其他 gate。installed
+  default/late-opt-out/restore、11/11 capability 和两组 paired 性能已经闭环；unaligned host
+  长尾继续保留监控。P-014/P-016/P-017 的独立 wheel 与共享 P-013 安装态均不改变。
 
 ### P-017：experimental GELU approximate 参数合同修复
 
-- 状态：`source-verified-wheel-pending-shared-diff`。回滚边界为当前 P-014 后
+- 状态：`verified-installed-wheel`。回滚边界为当前 P-014 后
   `torch_npu/_inductor/decomposition.py` SHA256 `bd6ac8ac...7ac373`；不得删除 P-014 erfc cleanup。
 - 只在 `_override_gelu_decomp()` 按 `approximate` 分支：tanh 保持现有 sigmoid 公式；none 同步
   PyTorch erf forward 和 CDF/PDF backward；非法值报错。不改 eager/op-plugin、通用 lowering、
@@ -2485,27 +2749,29 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 实施后文件 SHA256 `059ec0db...02d7d5b`。AST source contract、非法参数和 NPU
   FP32/FP16/BF16 × none/tanh 共 6 组均已完成；none 生成 `libdevice.erf` 并对 CPU reference
   通过，tanh 保持 sigmoid 且对当前 eager NPU 回归。详细证据见 E-160 与 T-057 报告。
-- 当前 shared tree 有其他未安装 diff，source 通过后状态只能到 wheel-pending；不得为 P-017
-  直接打包。eager NPU 两模式相同是独立 op-plugin/CANN 兼容问题，不在本提案内顺带修改。
+- 已从 detached worktree 完整构建并在独立 venv 验证，不打包共享 tree 的 P-016/P-018/P-020
+  diff。安装态六组模式/dtype、非法参数与 P-014 同文件近邻均通过。eager NPU 两模式相同仍是
+  独立 op-plugin/CANN 兼容问题，不在本提案内顺带修改。
 
 ### P-016：experimental int→float→int 默认安全门禁
 
-- 状态：`source-verified-wheel-pending-shared-diff`。第一阶段只把
-  `triton_experimental/config.py:elide_int_float_int` 默认值从 True 改为 False，并修正文档注释；
-  不改通用 lowering/codegen、其他 pass、C++、Triton kernel 或 backend 状态恢复。
+- 状态：`verified-installed-wheel`。第一阶段把
+  `triton_experimental/config.py:elide_int_float_int` 默认值从 True 改为 False，并让 installer
+  始终、幂等安装 wrapper；实际 pass 在 rewrite 时动态读取 flag。未改 tracer/rewrite 算法、
+  通用 lowering/codegen、其他 pass、C++、Triton kernel 或 backend 状态恢复。
 - 依据：Float32 fresh ON/OFF 已单点证明数值差 1；三个 dtype 的 ON 都把 eager 新 tensor 改成
   input alias。FP16/BF16 OFF 的 compute-type 上浮另立问题，不能用本 pass 掩盖。
-- source 验证：语法/格式、默认 config 值、未显式 opt-in 时 installer 不注册；显式 True 时既有
-  pass 仍可注册，保证这是 default safety gate 而不是删除实现。
-- installed 验证：共享源码中有其他人的未安装 tracked diff，当前不得直接构建污染 wheel；待
-  隔离快照或共享 diff 收敛后，从相同 source 构建并 `--no-deps --force-reinstall`，在 fresh
-  experimental 进程验证默认 OFF 与显式 ON 边界。
+- source 验证：语法/格式、默认 config 值、默认 wrapper 注册但 pass no-op、重复 installer 幂等、
+  显式 True wrapper 可用及原 post-pass 恢复全部通过。首版默认关闭后 installer 直接 no-op 会
+  破坏 late opt-in，已由安装态失败发现并修复。
+- installed 验证：detached worktree 完整构建的专属 wheel 已在独立 venv 安装；默认 OFF 的
+  Float32 边界精确一致且不 alias，导入后显式 ON 能真实激活旧 rewrite 并复现边界错误/alias。
 - 第二阶段只有在 tracer 记录真实 float dtype、具备完整 dtype/range capability、graph-output
   alias 保护及边界测试后，才允许讨论重新默认开启和 DIFM paired 性能。Int64 无 runtime 值域
   证明时不得放行；错误结果更快不计性能收益。
-- 实施结果：上述两个 source 文件和 gate probe 均通过；T-056 inventory 已同步。当前 source
-  默认安全，但 installed wheel 仍保持 P-013，因此运行 installed experimental 时必须继续在
-  worker 中显式设 `elide_int_float_int=False`，直到隔离构建完成。
+- 实施结果：两个 source 文件、source gate、完整 wheel、隔离安装和两条真实 NPU 路径均通过；
+  wheel SHA256 `b48961a...8f33a`，详细证据见 E-165 与 P-016 四份交付文档。共享 Benchmark
+  安装态仍保持 P-013；P-016 专属 venv 默认无需 worker 手动关闭。
 
 ### P-015：default / triton_experimental 全局状态隔离
 
@@ -2522,7 +2788,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 
 ### P-014：default / triton_experimental decomposition 重入修复
 
-- 状态：`source-verified-wheel-pending-shared-diff`。目标仅为同进程 backend 回切时
+- 状态：`verified-installed-wheel`。目标仅为同进程 backend 回切时
   `_register_triton_decompositions()` 的 `aten.erfc.default` duplicate registration；不改变
   experimental pass、算子语义、fallback 列表、lowering 或 device kernel。
 - 修改前 `torch_npu/_inductor/decomposition.py` 源码/安装态 SHA256 都为
@@ -2533,13 +2799,19 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   再注册当前 erfc decomposition。不得用 `@run_once` 跳过 default 状态重建。
 - 验证：registrar 连续调用重入；default→experimental 和
   experimental→default→experimental marker/数值隔离；原 13 项 13/13；最终从同一源码构建
-  wheel、`--no-deps --force-reinstall` 后复验。共享测试/provenance 修改不得被本任务覆盖；
-  audit shim 不关闭正式无 shim launcher 缺口。
+  wheel、安装到任务专属 venv 后复验。共享测试/provenance 修改不得被本任务覆盖；audit shim
+  不关闭正式无 shim launcher 缺口。
 - 实施结果：只新增 `aten.erfc` cleanup entry；修改后 SHA256 `bd6ac8ac...7ac373`，语法/空白
   检查通过。source registrar 连续两次调用通过；只 overlay 该 registrar 后，预加载
   experimental 的现有 isolation test 1/1 通过，完整覆盖 experimental→default→experimental。
-  当前安装 wheel 未变。由于共享树中另有未安装且非本轮产生的 experimental `triton.py`
-  tracked diff，直接构建会扩大安装范围；在隔离构建快照或该修改完成前保持 wheel pending。
+  随后从基线 `83cc452480c3546fd5cccf853bfe3a360ce9dbfc` 建立 detached worktree，只保留该
+  单文件 1 行 product diff，完整构建 wheel（SHA256
+  `b1eca2a4dd0ce95559aece796f503e0ce72f745af8081b4d13b00bd4db7137f8`）并安装到独立
+  `p014-installed` venv。wheel/source/installed 文件 SHA256 均为 `bd6ac8ac...7ac373`；installed
+  registrar 重入、原 T-055 13/13 和 default erfc 数值/wrapper 近邻回归全部通过。共享 Benchmark
+  安装态及 P-016/P-017/P-018/P-019/P-020 diff 未被覆盖。完整证据见
+  `issues/P014_backend_decomposition_reentry/`；P-015 全局状态串态与 T-022 no-shim launcher
+  仍独立开放。
 
 ### P-013：pattern 5 NPU half-inference 性能负域门禁
 
@@ -2698,3 +2970,201 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 2026-08-21，T-014 至 T-016 恢复：unaligned 正确性通过；candidate profiler 在两 shape 都确认 10/10 单 task且低于预算；端到端 p50 改善 15.60%/17.12%，同时记录 additional peak 多约 1.38 MiB。当前结论限定为 fp16/contiguous/static forward，进入覆盖扩展而非源码接入。
 - 2026-08-21，T-017 至 T-019：bf16/fp32、真实 transposed stride、dynamic replay 和 backward 语义通过。dynamic 的新 shape/divisibility 可触发一次 Triton specialization compile；backward 应由 AOTAutograd 切分的独立图承接，audit-only wrapper 不是正式接入。
 - 2026-08-21，T-020：bf16/fp32 contiguous 与 fp16 transposed 的 paired p50 改善 11.20%/15.25%/12.70%；large 隔离有效重测的 p50 中位数改善 11.58% 但因方差、长尾、单轮 p50 回退和 additional peak 增至 5.90 MB 而 hold。P-005 进入正式设计阶段，未修改功能源码。
+
+### E-191：T-067 autotune 与 P-024 live gate 关闭（2026-08-28）
+
+- TE-AUTO-001 候选契约、9/9 NPU E2E、12/12 三轮 paired runtime 全部通过；默认公式路径
+  保留，`autotune_fallback` 继续仅作为显式 A/B 诊断入口。
+- pointwise 公式相对 legacy 的首编、autotune benchmark、peak、device P50 中位分别改善
+  `23.18%/100%/92.42%/7.76%`；reduction 首编/调优改善 `6.43%/27.25%`，峰值与选中
+  tile 不变。legacy 秒级 Event 尾部保留但不冒充纯 kernel P99 收益。
+- 基线发现 `autotune_enhance` 被模块导入快照，晚期 `config.patch(False)` 无效；P-024 删除
+  快照并让六个消费点实时读取配置，默认值与公式算法不变。
+- P-024 全量 wheel SHA256 为
+  `dcbce2bb65787f49533d41feb0aec52f3476a9633633bfd1531b3971e9b8116a`；独立安装态 L0
+  53/53、pointwise/reduction/persistent-reduction live patch、真实 NPU True/False 两态和 lint
+  均通过。
+- `pointwise_tile_max` 只约束 size-aware 扩展，不被错误解释为所有基础候选的硬上限。T-067
+  verdict 为 `verified-default-formula-retained-p024-live-gate-fix`。P-024 留在本地隔离工作树，
+  不提交、不推送；进入 T-068/TE-WRAP-001。
+
+### E-192：T-068 wrapper 与 P-025 planner 委托关闭（2026-08-28）
+
+- TE-WRAP-001 静态合同确认 NPU 主/子图 factory、header import、直接 allocator 和 rsplit
+  workspace 生命周期；P-019/P-024 安装 wrapper 与当前基线源码哈希一致。PyTorch 2.14 上游
+  `memory_plan_reuse()` 已增加 per-subgraph peak stack/graph handler，NPU 完整 copy 缺失。
+- `_empty_strided_npu` 基线 UT 11/11，fast/dispatcher 三轮六个 worker 与四类 metadata 全部
+  通过；每次 allocation P50 中位为 `3.167990/7.156705 us`，fast 改善 `55.73%`，直接
+  binding 保留。
+- P-025 只弹出末尾 node 无 `.name` 的 planning line，随后委托上游 planner；tracked 产品
+  diff 为 wrapper `+9/-29`，新增 65 行目标测试，无 C/C++/ABI 修改。P-024 基线契约 2 FAIL，
+  P-025 安装态 2 PASS。
+- P-025 完整 wheel SHA256 为
+  `ed713d864aaa33e0733312a5381e55591c47771e0ec40fafdfd1e1184a4d41bf`；source/wheel/installed
+  wrapper SHA256 均为
+  `22a25786710fdec910b02cea2484fe682c3e2752f6efe1b44b83164e4f7e4898`。
+- 安装态 allocation UT 11/11、真实 pointwise、two-kernel outer-rsplit workspace、静态 18/18、
+  聚合 17/17 与 lint 通过。rsplit 单次 allocation 后严格执行 partial→combine→delete，CPU/
+  NPU eager 与 replay allclose。
+- large `torch.cond` 在 wrapper 前 control-flow lowering 因 `Subgraph.dtype` 失败，作为独立
+  TE-LOW 邻接缺口保留，不扩大 P-025。T-068 verdict 为
+  `verified-fast-allocation-retained-p025-upstream-planner-delegation`；P-025 留在本地，不提交、
+  不推送，进入 T-069/TE-AUTO-002。
+
+### E-193：T-069 MSPTI/Event benchmark 关闭（2026-08-28）
+
+- P-025 安装态 heuristics 与当前源码 SHA256 均为
+  `9dbcfa13b15526f85f9137460dd064b458a15e25d1c8850d79ffeb02445818fc`；静态合同 29/29、
+  合成合同 3/3 通过。
+- 自动 dlopen 与启动前显式 `LD_PRELOAD` 均精确采集 175/175 条 Triton 记录并选中
+  `XBLOCK=3424`；三轮自动 MSPTI 与 Event 也都稳定选中相同配置，真实运行共 10/10 worker
+  正确。
+- 三轮 paired 的 autotune benchmark wall 中位为 `115.481260/877.190360 ms`，MSPTI 改善
+  `86.84%`；peak allocated 为 `20,989,952/276,974,592 B`，少 `255,984,640 B`
+  （`92.42%`）。
+- 同图 MSPTI device P50 中位 `30.40 us`，grouped Event `148.07 us`，Event 为 `4.89x`；
+  小 kernel 的真实 device-time 以 MSPTI callback 为准。
+- 显式关闭配置和强制 MSPTI 记录失败均安全落到 Event；后者执行 7 个 candidate bench、
+  warning 原因正确且数值 allclose。默认 MSPTI 与 Event fallback 均保留，不修改产品源码。
+- T-069 verdict 为 `verified-mspti-device-time-preferred-event-fallback-retained`。experimental
+  尚余 P1 16 个、P2 4 个；不提交、不推送，进入 T-070/TE-FX-002。
+
+### E-194：T-070 Max(1,size) loop-merge 关闭（2026-08-28）
+
+- 安装态目标函数与当前源码一致；静态合同 22/22，开启/关闭合成合同 29/29 + 5/5，覆盖
+  raw/clamped/empty extent、布尔公式、非连续 gap、index-dependent Max、reindex/prune 与
+  install-time gate。
+- 真实动态卷积 pointwise 开启时从 4 维合为 1 维，关闭时保留 3 个 x node；两组动态 shape
+  两侧均正确。shape-factory 开启态两组正 shape 和 `[2,8,0,0]` 空输出通过；关闭态因标量值
+  与三维 store mask rank mismatch 而所有 Triton config 编译失败，证明默认 fold 也是当前
+  多轴 codegen 的 correctness 前置。
+- 接受 10 个 NPU worker、19 次比较。三轮同卡 warmup10/runs100 的 device mean/P50/P99
+  中位改善为 `+0.04%/-0.06%/+0.75%`，稳态判为中性；peak 两侧均为 `418,934,272 B`。
+  compile + first run 中位改善 `2.71%` 只作支持证据，不单独归因。
+- 整段类方法替换存在未来上游漂移风险，但当前定制深入 merge 判定三处，未发现默认路径缺陷，
+  因而不机械改写、不新增 P-026。verdict 为
+  `verified-required-default-retained-no-product-change`。
+- experimental 尚余 P1 15 个、P2 4 个；不提交、不推送，进入 T-071/TE-GUARD-001。
+
+### E-195：T-071 recursive dict tag guard 关闭（2026-08-28）
+
+- 静态合同 12/12、合成合同 6/6 通过。当前 PyTorch 2.14 上游
+  `use_recursive_dict_tags_for_guards=False`，所以默认 NPU gate 在普通路径中为幂等 no-op；
+  只有 activation 前显式设 True 时才会被强制关闭。
+- 两个 64-block 深层 ModuleList 训练 worker 各 5/5，通过首次前后向、3 次 guard replay 和
+  Python 属性变更后的重编译；共 20 次输出/梯度比较 bitwise equal，最大误差 0，未复现
+  `none_dealloc` 崩溃，compile peak 两侧均为 `333,824 B`。
+- 三轮 CPU guard、六个 worker 各 6/6。递归开启/关闭 P50 中位为
+  `102.950/141.395 us`；关闭态 paired 开销中位 `36.57%`，确认这是有性能代价的稳定性保护，
+  不是吞吐优化。
+- 该 gate 是 activation-time process-global write，backend restore 不恢复；inventory binding
+  已从误导性的 live-read 更正。源码“default True”注释与当前上游不一致，仅登记维护项。
+- verdict 为 `verified-upstream-default-false-safety-override-retained`；不新增 P-026，不修改
+  产品源码。experimental 尚余 P1 14 个、P2 4 个；不提交、不推送，进入 T-072/TE-DEC-001。
+
+### E-196：T-072 matmul fold 与 P-026 作用域收窄关闭（2026-08-28）
+
+- 修复前静态合同 18/18、CPU 合成合同 11/11；确认 rank-sorted wrapper 除 seq-first 外还会
+  强制 inner-transpose、stride-0 expand、反向 `2D×3D`、vector 和高阶布局。
+- 同一 Ascend910B2、FP16、三轮交叉顺序 paired：seq-first device P50 中位改善 `5.53%`、
+  peak 下降 `83.09%`；inner/expand/reverse P50 中位分别回退
+  `19.80%/23.93%/49.08%`，reverse peak 还增加 `5.82%`。原广泛作用域否决。
+- P-026 先保留 upstream True，再只识别 3D LHS×2D RHS 且 LHS stride 为 `[E,S*E,1]`
+  的 seq-first 合同。候选 CPU 合同 7/7、产品 UT 4/4、8 个 NPU 功能 worker 和 30 次比较
+  通过；三类回退布局恢复 BMM，目标三 dtype 继续 MM。
+- 正式 wheel SHA256 为
+  `56aa5205b7d51530d9e419cbe69b9bc02aaf8a66233980bf1ed50becb9fe27f2`；clean venv
+  source/installed SHA256 均为
+  `938198eab22a28b61e4d5341155b22e351a7ac64a13417dca01027f31ee87c85`。最终 clean-wheel
+  NPU 4/4、10 次比较通过；聚合 22/22、lintrunner 与静态质量检查通过。
+- verdict 为
+  `verified-p026-seq-first-fold-retained-broad-scope-regressions-removed`。experimental 已完成
+  18/35，剩余 P1 13 个、P2 4 个；不提交、不推送，进入 T-073/TE-DEC-002。
+
+### E-197：主工作环境纠正为 Conda Pass 与交接冻结（2026-08-28）
+
+- 状态：`documented-handoff-frozen-pass-revalidation-required`。用户明确当前工作虚拟环境应为
+  `Pass`；此条取代“新测试继续使用 Benchmark”的执行口径，但不改写旧结果的实际环境。
+- 唯一新测试入口：从 `/home/z50063656/tmp` 执行
+  `source /home/z50063656/Pass/activate_pass.sh`。禁止在 PyTorch/torch_npu 源码目录中 import
+  torch；禁止新 runner 继续 source `Benchmark/env.sh`。
+- 只读验真：Conda `/home/z50063656/envs/Pass`，Python 3.11.15；PyTorch
+  `2.14.0a0+git8e86e0a` 从 `/home/z50063656/Pass/src/pytorch` editable 加载；torch_npu
+  `2.14.0a0+git83cc452` 从 Pass site-packages 加载；限制物理 NPU 1 后 NPU 可用且型号为
+  Ascend910B2。
+- wheel 冻结：installed direct-url 记录哈希 `263ffec2...2792704`，当前 dist 同名 wheel 哈希
+  `3909fd64...c2d4989`。不得因文件名相同直接 reinstall；下一对话应先确定 intended baseline，
+  再按 `--no-deps` 规则处理。
+- Triton 边界：实际模块 3.2.0，metadata 同时存在 `triton 3.5.0` 和
+  `triton_ascend 3.2.2`；性能/编译报告必须继续同时记录代码版本和 metadata。
+- 证据分层：T-055 至 T-072 以及当前 T-073 结果来自 Benchmark 或各独立 venv，保留为历史
+  证据。准备交付的 P-020 至 P-026 和 T-073 至少需在 Pass 做环境验真、target UT、关键 NPU
+  功能与 generated-code 复核；是否重跑完整三轮性能由复核结果和成本决定。
+- 本条只修正文档并生成交接文件，不修改 runner、产品源码、环境或 wheel，不提交、不推送。
+
+### E-198：T-074 社区原生 pass/pattern 与上游测例去重索引（2026-08-29）
+
+- 状态：`verified-static-index-first-pass-manual-review-open`。本条承接 2026-08-29 需求变更，不继续以 35 个
+  experimental feature family 作为原生 pass 完成度分母。
+- 目标：对 T-056 中 203 条 `inherited-upstream-needs-dynamic-validation` 候选建立
+  “实现/注册 -> 配置开关 -> PyTorch 社区测例 -> NPU 去重验收单元”映射；每条保留
+  `direct-trigger-test` / `indirect-regression-test` / `no-test-found` 及正负例、counter、
+  device assumption 和可追溯源码锚点。另把 3 条 pad 和 1 条 addmm
+  `inherited-upstream-explicitly-disabled` 行作为显式关闭控制集纳入同一索引；主候选数
+  仍为 203，输出总行数为 207。候选行、控制行与去重验收单元分开计数。
+- 首批回填：`mm_plus_mm`、pad mm/bmm/addmm 与 add+mm -> addmm，优先复用
+  `test_pattern_matcher.py`、`test_pad_mm.py` 及 post-grad 社区直接触发用例，并只把旧结果
+  标为历史证据，不升级为当前 Pass installed verdict。
+- 计划修改：新增
+  `t074_build_upstream_test_index.py`、
+  `report/upstream_pass_test_index_20260829/{candidate_test_index.csv,acceptance_units.csv}` 和
+  `report/t074_upstream_pass_test_index_20260829.md`；必要时只更新本审计目录的
+  `README.md` / `outcome_index.md` / `current_status_and_background.md`。不修改 PyTorch、
+  torch_npu、Triton 产品源码、
+  测试源码、环境或 wheel。
+- 文档镜像：将同一份 T-074 report/CSV 和主线入口摘要同步到
+  `/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization`；只更新本地工作树，
+  不覆盖无关 diff，不提交、不推送。
+- 当前证据：T-056 路由表只识别了 203 条上游候选，尚无社区测例字段和
+  去重键；交接文档明确新口径闭环数为 0。本阶段属静态索引缺口，不是 NPU
+  lowering、fallback、精度或性能问题。
+- 方案对比：不以纯文本同名命中直接宣称覆盖；生成器使用标准库静态扫描源码和
+  `test/inductor`，对明确社区契约使用可审查 override，未证实项宁可标记
+  `no-test-found` 或需人工复核。不在本阶段选用 NPU lowering、vendor op、CATLASS、
+  AscendC 或手写 Triton kernel。
+- 静态验证：生成器不得导入 `torch`；检查主候选恰为 203 条、显式关闭控制项
+  恰为 4 条、输出总行数恰为 207，并为每个源码行生成
+  唯一 `candidate_id`。T-056 的 203 行只有 197 个唯一 `record_id`，其中 4 个 ID 在不同
+  源码行重复（共 6 个额外行）；保留该历史字段并显式报告重复，不原地改写 T-056。
+  所有非 `no-test-found` 的测试文件/用例在冻结 PyTorch 源码中存在、
+  每条候选绑定一个去重验收单元，并输出覆盖分类和人工复核汇总。
+- 执行结果：207 行已全部建立唯一 `candidate_id` 并聚合为 188 个验收单元；
+  其中 158 个仅标记 `yes-provisional`，30 个注册容器/扩展 hook 不进入分母。
+  候选/控制行的初始分类为 direct 120、indirect 33、`no-test-found` 54；去重单元
+  为 111/29/48。只有 `mm_plus_mm`、pad mm/bmm/addmm 和 addmm 共 5 个首批单元
+  已人工回填，其余 183 个单元仍为 `generated-needs-human-review`，因此 158 不得作为
+  冻结分母或完成率。
+- 验证结果：生成器 `py_compile` 通过，AST 确认无 `torch` import，207/203/4、
+  188/158/30、唯一 candidate ID、5 个首批回填和所有动态字段
+  `not-run-current-Pass` 断言通过。连续两次生成的 script/candidate CSV/unit CSV/report
+  SHA256 一致，分别为 `1d7c57ce...a6f4f`、`7c79d4c5...71da8`、
+  `9b0a2c54...f5322`、`b762659b...04c6`。
+- 正确性/性能边界：本条不执行 NPU 或 `torch.compile`，不得产生命中、可用或
+  性能 verdict。dtype、shape、stride、dynamic、backward、空 Tensor 与 paired benchmark 作为
+  后续 NPU 迁移契约字段，不用静态推断替代运行验证。
+- 回退：产物只位于审计目录，可删除新生成器/CSV/报告回退；不需要回退
+  任何产品代码、wheel 或环境。本条不提交、不推送。
+
+### E-199：T-062 至 T-074 文档归档与远端推送（2026-08-29）
+
+- 状态：`approved-user-authorized-docs-delivery`。用户在 E-198 静态验证完成后明确要求更新文档
+  并推送到仓库；本条是新的交付授权，取代 E-197/E-198 对本地审计阶段“不提交、不推送”的
+  限制，但不改变那些条目的技术结论和运行证据边界。
+- 提交范围仅限
+  `/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization` 文档仓中累计的 P020 收尾、
+  T-062 至 T-074 报告/CSV、环境更正、交接和导航更新。不得包含
+  `/home/z50063656/Pass/src/{pytorch,torch_npu,triton-ascend}` 或审计 runner/生成器源码。
+- 提交前检查：逐文件审阅 `git status`/`git diff --stat`，执行 `git diff --check`，核对
+  T-074 镜像 report/CSV 与审计源产物一致，并确认无凭据、运行缓存或大型二进制进入提交。
+- 推送目标为文档仓 `origin/main`。推送前只读核对远端 main，提交后核对本地 HEAD、
+  `origin/main` 和远端引用一致；具体 commit ID 与推送结果在交付回复中报告。

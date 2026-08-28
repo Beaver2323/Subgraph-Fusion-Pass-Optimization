@@ -1,10 +1,19 @@
 # Inductor Pass 在 NPU 上的替代与优化计划
 
-> 状态：使用共享 `Benchmark/env.sh`，尚未创建单独环境。T-011、T-023、T-029/T-031、T-036、T-038、T-040、T-042、T-043、T-046 与 T-047/P-012 已按 `change_control.md` 的先登记合同完成 torch_npu 修改、source-built wheel 和 NPU 验证；其他源码仍遵守“先登记、后实施”。
+> 当前状态（2026-08-28）：主环境已纠正为
+> `/home/z50063656/Pass/activate_pass.sh` 激活的 Conda `Pass`。此前 Benchmark/独立 venv
+> 结果保留为历史证据；任何新验证先在 `change_control.md` 登记，并从
+> `/home/z50063656/tmp` 启动。T-011、T-023、T-029/T-031、T-036、T-038、T-040、T-042、
+> T-043、T-046 与 T-047/P-012 的历史验证不因环境口径更正而被删除。
 
 ## 当前结论
 
-当前 `Pass/src` 概念级清单为 251 条；动态基线是 `benchmark-py311 + CANN 9.0.1 + 8×Ascend910B2`。P1 B2/B3 已关闭；B4 八个代表 attention family 功能通过。pattern 1 latency-beneficial，pattern 13 resource-beneficial；5/21/29 因 additive float mask 不满足 vendor bool/None gate而安全 math fallback，无 mask pattern 30 走 vendor。这里不用 Triton 掩盖语义错误、环境依赖或 capability 分流。全量记录见 `report/pass_src_20260820/`。
+当前 `Pass/src` 概念级清单为 251 条；新的动态基线是
+`Conda Pass + CANN 9.0.1 + 8×Ascend910B2`，尚待按交接文档完成关键结果复核。原
+`benchmark-py311` 数据保留其历史标签。P1 B2/B3 已关闭；B4 八个代表 attention family 功能
+通过。pattern 1 latency-beneficial，pattern 13 resource-beneficial；5/21/29 因 additive float
+mask 不满足 vendor bool/None gate 而安全 math fallback，无 mask pattern 30 走 vendor。这里不用
+Triton 掩盖语义错误、环境依赖或 capability 分流。全量记录见 `report/pass_src_20260820/`。
 
 源码证据表明，当前后端已经存在若干明确的 NPU 约束：
 

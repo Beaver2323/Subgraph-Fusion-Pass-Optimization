@@ -24,10 +24,10 @@ P-017 的 `decomposition.py` 修改和 P-016 的 experimental `config.py`/注释
 
 | 产物 | SHA256 |
 |---|---|
-| `t056_build_experimental_inventory.py` | `4cf45c67...cdc9` |
-| `experimental_pass_route_matrix.csv` | `6e0ea82d...2e1d` |
-| `experimental_config_inventory.csv` | `69b1d629...1a66` |
-| `experimental_feature_families.csv` | `c2af2532...c1ae` |
+| `t056_build_experimental_inventory.py` | `ee1b73b4...88c9` |
+| `experimental_pass_route_matrix.csv` | `b1c1cdf8...a46f` |
+| `experimental_config_inventory.csv` | `1d804039...455` |
+| `experimental_feature_families.csv` | `0c34580d...0c2a` |
 
 这些 CSV 是静态任务地图，不是测试结果；不得把 `active` 路由写成 `supported`。
 
@@ -81,21 +81,25 @@ entry，loop-merge 直接替换类方法。因此正式 pass-on/pass-off 一律�
 
 ## 静态高风险与高收益候选
 
-### 1. int→float→int elide：已证伪并 source 默认关闭
+### 1. int→float→int elide：已证伪并完成默认关闭 wheel 验证
 
 T-057 已覆盖 FP16/BF16/FP32 边界。Float32 pass ON/OFF 单点证明 `±(2**24+1)` 数值差 1；
 三个 dtype 的 ON 都把 eager 新 tensor 改成 input alias。P-016 已把 source 默认值改为 False，
-并通过默认 installer no-op/显式 opt-in probe；installed wheel 尚未重建。TE-FX-001 的 feature
-verdict 已回填为 `correctness-failed-source-default-disabled-wheel-pending`，详细证据见
-`t057_int_float_int_boundary_20260826.md`。错误结果不测性能。
+并把 installer 改为始终、幂等注册，pass body 在 rewrite 时读取动态配置。独立 wheel 的默认
+关闭路径精确一致且不 alias；导入后显式开启能真实激活旧 rewrite，并按预期复现边界错误与
+alias。TE-FX-001 的 feature verdict 已回填为
+`correctness-failed-default-disabled-verified-installed-wheel`，详细证据见
+`t057_int_float_int_boundary_20260826.md` 和
+`issues/P016_int_float_int_gate/修复验证报告.md`。错误结果不测性能。
 
-### 2. GELU decomposition：installed 失败，P-017 source 已恢复合同
+### 2. GELU decomposition：installed 历史失败，P-017 wheel 已恢复合同
 
 installed P-013 override 无论 `approximate="none"` 还是 `"tanh"` 都使用 sigmoid 形式的 tanh
 近似，CPU reference 证明 none forward/backward 合同失败。P-017 current source 已让 none 使用
 erf/CDF/PDF，tanh 保持原公式；FP32/FP16/BF16 六组 NPU source-overlay、非法参数和生成代码检查
-通过。TE-DEC-003 已回填为 `upstream-contract-restored-source-wheel-pending`；共享 diff 可隔离前
-不构建 wheel，也不对错误 installed-none 做性能测试。详见
+通过。随后独立 wheel 的六组无 overlay NPU 验证、非法参数 compile 与 P-014 近邻回归也通过。
+TE-DEC-003 已回填为 `upstream-contract-restored-verified-installed-wheel`；仍不对错误的历史
+installed-none 做性能测试。详见
 `t057_gelu_approximate_20260826.md`。
 
 ### 3. backend 隔离已动态确认失败
@@ -112,43 +116,110 @@ T-057 无模型状态快照已确认：34 个 addmm check、五项 config/guard�
 decomposition 回切 default 后仍残留 experimental 状态。TE-INFRA-001 已回填
 `backend-switch-isolation-failed`；P-015 设计中。跨 backend 对照必须使用不同 fresh process。
 
-### 4. addmm gate：首个 experimental cohort 有益，覆盖待扩展
+### 4. addmm gate：独立 wheel 已闭环，host tail 保留监控
 
 default 历史中 8/8 代表配置收益超过 10%，而 experimental 默认永久关闭该 pattern。它是当前
 最明确的性能提升候选。T-058 已用 fresh process 恢复激活前保存的原 check：FP16 vector-bias
 从 `mm+Triton add` 变为单 extern addmm，三轮 p50 中位数改善 `22.17%`、p99 改善 `14.05%`，
 峰值 allocated 不变。后续 11/11 capability 扩展、
 unaligned 第二性能 cohort 和 NPU Event 分解也已完成，P-018 source 默认已改为启用，显式 opt-out
-为幂等可恢复 wrapper；TE-GATE-002 已回填
-`source-verified-beneficial-wheel-pending-host-tail-monitor`。source probe 通过，installed wheel 与
-host-tail 复验仍 pending；详见 `t058_experimental_addmm_gate_20260826.md`。
+进一步修成 match-time 读取配置的幂等 live wrapper。专属 wheel 的正常用户顺序
+default/late-opt-out/restore 和 11/11 capability 全部通过；installed shape-A/unaligned host p50
+改善 `17.10%/13.52%`，unaligned Event device p50/p99 改善 `19.87%/19.10%`，显存不增加。
+host 同步长尾原样保留为监控项；TE-GATE-002 已回填
+`verified-installed-wheel-beneficial-host-tail-monitor`。详见
+`t058_experimental_addmm_gate_20260826.md` 和
+`../issues/P018_addmm_gate/修复验证报告.md`。
 
-### 5. permute-gather 与 outer rsplit：源码自述收益大，风险面也大
+### 5. permute-gather 与 outer rsplit：代表场景均已闭环
 
-`realize_permute_gather` 注释记录 T5 softmax 相对位置 bias 约 110x 的历史观察；`rsplit_outer`
-把单 reduction 变为 40-core partial+combine。二者都值得优先实测，但前者会引入物化 copy 和
-alias/layout 变化，后者会引入 workspace、双 kernel、padding-lane 与 provenance 问题。必须同时
-记录数值、task、allocated peak、首次编译和 steady P50/P99。
+T-059 在现有安装态完成 permute-gather 6/6 dtype/dynamic/guard 覆盖；代表 shape 的 device
+P50/P99 改善 `8.14%/8.99%`。代价是一个额外 copy kernel、peak +`1,560,576 B`、首编增加和
+host P99 长尾，因此保持默认 ON、不修改源码，状态为
+`supported-beneficial-host-tail-memory-environment-monitor`。
 
-### 6. int64 boundary downcast：可用性优化也是边界正确性风险
+T-060/P-019 只在 rsplit 局部接受 generic Inductor 的 `ReductionHint.DEFAULT`，保留单 sum、
+非 Welford、唯一输出、size/free-axis 和 nested-reduction 等既有门禁，不新增 kernel。专属 wheel
+target UT 5/5、安装态矩阵 9/9；三轮 Event device P50/P99 改善中位数 `32.67%/28.58%`，host P50
+改善 `26.20%`。peak +`393,728 B`、首编 +`96.48%` 和 host P99 长尾继续监控。
 
-NPU AI Vector Core 不支持原生 int64 算术，experimental 在 boundary/compute type 中降成 int32。
-这可能让常规索引可编译，但超出 int32 的 shape/index/值不能从小样本推断。该功能族排在 P0，
-先做边界负例，再谈 dedup 的任务/带宽收益。
+### 6. int64 boundary downcast：正确性已由 dtype-aware fallback 恢复
+
+T-061/P-020 证明 launcher 把 int64 数据降成 int32 会在边界算术中静默环绕。修复只对显式
+int64 数据 overload 路由 NPU ATen fallback，FP32 Triton 与 embedding/gather index 路径保持。
+专属 wheel target UT 6/6、安装态矩阵 8/8 exact；性能以正确 eager 基线归档且 peak 不变，状态为
+`installed-wheel-verified-correctness-restored-performance-characterized`。
+
+### 7. header tiling/odometer：有效默认策略保留，两项配置清理
+
+T-065/TE-CG-008 在 P-022 安装态完成五项开关 10/10 正确性和三个有效开关 18/18 paired
+性能。input-stride device P50/P99 改善 `27.81%/24.23%`，odometer 改善
+`3.44%/5.57%`，align-8 在约 2% 内中性，三项默认值保留。`unify_block` 和
+`pad_min_block_to_8` 在当前 greedy allocator 中不可生效，只登记配置清理，不恢复旧路径。
+状态为 `verified-active-defaults-retained-two-configs-ineffective-cleanup`。
+
+### 8. group/all-block dispatch：保留实际 group 路径，修复候选双门控
+
+T-066/TE-CG-009 完成静态契约、6/6 experimental Inductor 正确性、65535/65536 边界和
+三轮性能。`group_dispatch` config 无消费者，但非 A5 48-core group codegen 相对 backend
+auto size-1 的 device P50/P99 改善 `3.15%/3.55%`，因此保留实际路径并仅登记死配置清理。
+P-023 只有在 torch_npu config 与 `TRITON_ALL_BLOCKS_PARALLEL` 同时开启时才生成 2/4/8；
+独立 wheel/venv 的 target UT 3/3、近邻 2/2、candidate 两态、dynamic smoke 与 lint 均通过。
+状态为 `verified-group-retained-dead-config-recorded-p023-local-fix`。
+
+### 9. autotune：保留公式默认路径，修复动态 gate 生命周期
+
+T-067/TE-AUTO-001 完成候选契约、9/9 NPU E2E、12/12 三轮 paired runtime 与 P-024
+安装态验证。公式路径相对 legacy 在 pointwise 上减少 `23.18%` 首编、`100%` 调优、
+`92.42%` peak 和 `7.76%` device P50；reduction 首编/调优改善 `6.43%/27.25%`，选中
+tile 不变。P-024 删除 `autotune_enhance` 导入快照，三类入口 live patch UT 与真实 NPU
+开/关两态通过。状态为 `verified-default-formula-retained-p024-live-gate-fix`。
+
+### 10. wrapper：保留快速 allocation，消除 memory planner 复制漂移
+
+T-068/TE-WRAP-001 完成静态、安装态和真实 NPU wrapper 闭环。NPU direct allocation 三轮
+P50 中位 `3.167990 us`，dispatcher 为 `7.156705 us`，改善 `55.73%`，因此保留。P-025
+只预先移除末尾无 `.name` 的 WorkspaceArg planning line，再委托上游
+`memory_plan_reuse()`；基线 2 FAIL→候选 2 PASS，allocation UT 11/11，pointwise 和真实
+outer-rsplit workspace 均通过。状态为
+`verified-fast-allocation-retained-p025-upstream-planner-delegation`。
 
 ## 下一步
 
-T-057 三项 correctness 已完成，后续按以下顺序执行：
+experimental 第一批 P0 correctness/performance 闸门已完成，当前顺序为：
 
 1. 已完成：backend 状态快照，结论 `backend-switch-isolation-failed`；
-2. 已完成：int-float-int compiled 边界，P-016 source 默认关闭、wheel pending；
-3. 已完成：GELU exact/tanh forward/backward，P-017 source 验证、wheel pending；
-4. 已完成：addmm 11/11 扩展、两性能 cohort 与 P-018 source gate；wheel/host-tail pending；
-5. 已完成：permute-gather 与 outer rsplit 的代表功能、guard 和 paired 性能；T-059 不需源码修改，
-   P-019 已完成 source gate、5/5 target UT 与 source-overlay 验证，wheel pending；
-6. 当前：T-061 已证明 int32 范围内/in-place exact，但超界 `x*2` 4096/4096 wrap；audit-only
-   ATen mul fallback exact，P-020 dtype-aware fallback 设计 pending。功能矩阵闭环前不测性能。
+2. 已完成：int-float-int compiled 边界，P-016 独立 wheel 默认关闭与 late opt-in；
+3. 已完成：GELU exact/tanh forward/backward，P-017 独立 wheel 安装态验证；
+4. 已完成：addmm 11/11 扩展、动态 late opt-out、两性能 cohort 与 P-018 独立 wheel；host-tail
+   转为持续监控；
+5. 已完成：T-059 permute-gather 与 P-019 outer rsplit 功能、guard、资源和 paired 性能；
+6. 已完成：P-020 int64 dtype-aware fallback 的正确性、近邻控制组和正确基线性能；
+7. 已完成：T-062/TE-LOW-001 registry、keep-list、12/12 功能矩阵和两 cohort 三轮性能；现有
+   fallback 策略通过，全局 `ceil` generate 因 standalone 回退否决；
+8. 已完成 T-063/TE-CG-005：六项 AST/合成契约、NPU 14/14 配置和 18/18 对照通过；保留
+   默认值并监控 device p99/host tail；
+9. 已完成 T-064/TE-CG-007：P-021/P-022 安装态 UT 6/6、7/7，NPU 正确性 18/18；
+   `rtree_real_block` 携 kept-axis guard 保持开启，flatten 正确性恢复但因 device P50 回退
+   147.96% 保持默认关闭；
+10. 已完成 T-065/TE-CG-008：五项配置正确性 10/10，三个有效开关 paired 性能 18/18；
+    input-stride/odometer 保持开启，align-8 中性保留，unify/padding 两项无效配置登记清理；
+11. 已完成 T-066/TE-CG-009：group config 死配置已记录，48-core group 路径保留；P-023
+    双门控独立 wheel/venv 验证通过；
+12. 已完成 T-067/TE-AUTO-001：默认公式路径保留，P-024 live gate 独立 wheel/venv 验证通过；
+13. 已完成 T-068/TE-WRAP-001：fast allocation 保留，P-025 planner 委托独立 wheel/venv
+    验证通过；
+14. 已完成 T-069/TE-AUTO-002：默认 MSPTI device-time 保留，自动加载、显式预加载、Event
+    opt-out 与运行态失败回退均验证通过；
+15. 已完成 T-070/TE-FX-002：动态卷积 pointwise `3→1` 轴、空输出正确、关闭态隔离图
+    rank-mismatch，三轮 device 性能中性且峰值相同；默认保留，无产品修改。
+16. 已完成 T-071/TE-GUARD-001：当前上游默认 recursive=False；深层 NPU 训练两态正确，
+    三轮 CPU guard 量化关闭 fast path 的 P50 开销中位 `36.57%`；默认安全覆盖保留。
+17. 已完成 T-072/TE-DEC-001：P-026 把 rank-sorted 广泛 matmul fold 收窄到精确 seq-first
+    stride；目标 P50 中位改善 `5.53%`、peak 下降 `83.09%`，三类扩大作用域回退恢复上游。
+18. 当前 T-073：TE-DEC-002 softmax backward no-FMA。剩余 P1 13 个、P2 4 个。
 
-P-014/P-016/P-017/P-018 installed wheel 仍待共享 diff 可隔离后构建；在此之前后续 installed worker 必须
-显式 `elide_int_float_int=False`，并标明 installed/current-source-overlay 边界。不得把
+P-014/P-016/P-017/P-018/P-019/P-020/P-021/P-022/P-023/P-024/P-025/P-026 已用 detached worktree 和独立 venv 完成 installed wheel 验证。共享
+Benchmark 安装态仍是 P-013，因此在该共享环境运行的后续 worker 仍须显式
+`elide_int_float_int=False`，并标明 installed/current-source-overlay 边界。不得把
 audit-only launcher shim 当作正式环境成功。

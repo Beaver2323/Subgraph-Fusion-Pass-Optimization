@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-状态：`source-verified-beneficial-wheel-pending-environment-monitor`。
+状态：`installed-wheel-verified-beneficial-device-host-p99-tail-monitor`。
 
 当前 wheel 的 `rsplit_outer=True` 不是完全不可用：静态 scalar sum 能原生命中，生成
 partial+combine 两个 Triton kernel 并正确执行。但目标 OUTER/RMSNorm dweight 图在
@@ -13,8 +13,9 @@ partial+combine 两个 Triton kernel 并正确执行。但目标 OUTER/RMSNorm d
 仅在审计 worker 内把该图的 `DEFAULT` 强制解释为 `OUTER` 后，既有 rsplit codegen 无需重写
 Triton 就能正确生成并执行；最终 P-019 真实 source-overlay 三轮 device P50/P99 中位改善
 `29.93%/29.94%`。因此当前优先修复点是 reduction hint 与 experimental gate 的衔接，不是手写
-替代 kernel。P-019 随后只在 rsplit 局部接受 DEFAULT，并保留其余 gate；target UT、source-overlay
-static/dynamic NPU 和阈值负例已通过，尚未构建或安装 wheel。
+替代 kernel。P-019 随后只在 rsplit 局部接受 DEFAULT，并保留其余 gate；独立 wheel 已完成构建、
+隔离安装、target UT 5/5、安装态 NPU 矩阵 9/9 和三轮 paired 性能。安装态 device P50/P99
+改善中位数为 `32.67%/28.58%`，保持默认开启；host P99 长尾和 launcher 环境继续监控。
 
 ## 机制与目标
 
@@ -98,9 +99,10 @@ applicability gate 内局部接受 DEFAULT，并继续依赖单 sum、唯一输�
   nested reduction 负例继续执行。
 
 P-019 验证 checkpoint 的源码/测试 SHA256 为 `9faa1655...0d3a5`/`76450d98...a58ed`；随后只把同处
-gate 说明改成准确的 `ncfg.rsplit_outer` 名称，并由 T-061 增加 memo UT，current SHA256 为
-`93ad31c1...fdf73`/`bde5da4a...657f7`。从 `/home/z50063656/tmp` 发起的 P-019 source-overlay
-目标 UT 为 5/5 通过，加入 T-061 后 current suite 为 6/6；lintrunner 在 Benchmark 环境不可用
+gate 说明改成准确的 `ncfg.rsplit_outer` 名称，最终产品 SHA256 为 `93ad31c1...fdf73`。隔离
+worktree 保持 P-019 专属测试 SHA256 `76450d98...a58ed`；共享 current suite 另含 T-061 memo UT，
+测试 SHA256 为 `bde5da4a...657f7`。从 `/home/z50063656/tmp` 发起的 P-019 source-overlay 目标 UT
+为 5/5，通过；加入 T-061 后共享 current suite 为 6/6。lintrunner 在 Benchmark 环境不可用
 （command not found），已完成 `py_compile` 与 `git diff --check`。
 
 设备覆盖结果：
@@ -145,21 +147,43 @@ host P50/P99 改善中位数为 `26.09%/25.36%`。round 1 OFF 的
 `mean±stdev=0.87937±0.82712 ms` 与 `P99=2.61278 ms` 是真实长尾，保留但不用于夸大收益；device
 三轮结果仍稳定。
 
+## 安装态独立 wheel 闭环
+
+从基线 `83cc452480c3546fd5cccf853bfe3a360ce9dbfc` 创建 detached worktree，仅应用 P-019 的
+`triton.py` 和目标测试 diff。完整 wheel SHA256 为
+`c6971fb009481c476368a4e256dc642e8c07a5ecd594807d260a666fda21baf9`；source、wheel 内与
+`p019-installed` venv 的 `triton.py` SHA256 都为 `93ad31c1...fdf73`。安装态 target UT 5/5。
+
+安装态 NPU 矩阵 9/9：static/dynamic FP32、FP16、BF16 RMS 正例都在 DEFAULT hint 下命中
+2 kernels；`r=1024`、`r<x`、amax、variance/multi-reduction 和 pre-codegen opt-out 都正确保持
+1 kernel。所有 worker 均来自独立 venv，`source_overlay=false`，数值对 NPU eager/CPU 通过。
+
+安装态三轮 paired 的 NPU Event 结果：
+
+| round | P50 OFF/ON ms | P99 OFF/ON ms | P50 改善 | P99 改善 |
+|---|---:|---:|---:|---:|
+| 1 | 0.35841/0.24068 | 0.37850/0.26996 | 32.85% | 28.68% |
+| 2 | 0.35473/0.25595 | 0.38022/0.27708 | 27.85% | 27.13% |
+| 3 | 0.36072/0.24288 | 0.37810/0.27004 | 32.67% | 28.58% |
+
+device P50/P99 改善中位数为 `32.67%/28.58%`，三轮同向。host P50 三轮改善中位数为
+`26.20%`；host P99 改善中位数仅 `1.75%`，第 3 轮 ON 出现 P99 `2.66936 ms`、max
+`4.61040 ms` 的同步长尾，原样保留。
+
 ## 成本与边界
 
-- max allocated：OFF `134,788,608 B`，ON `135,182,336 B`，增加 `393,728 B`；生成代码中的
-  workspace 本体为 `393,216 B`，其余为分配/对齐差；
-- 强制禁缓存的首次编译+运行中位数：OFF `23.31 s`，ON `43.26 s`，约增加 `85.6%`；
-- 三轮 ON 对 NPU eager 最大误差 `6.1035e-05`，OFF 为 `5.3406e-05`；两者对 CPU 最大误差均
-  不超过 `4.5776e-05`，均在预设 FP32 合同内；
-- dynamic、FP16/BF16、r<2048、r<x、非 sum 和 variance/multi-reduction 已有设备或等价 overlay
-  证据；超宽 x、`OUTER_TINY`、fused-output 和 nested-reduction 已由 source gate UT 覆盖，installed
-  wheel 尚未统一复验；
-- 本轮已做 P-019 两文件纯 Python source 修改，没有构建或安装 wheel，也没有手写 Triton 替身。
+- 安装态 max allocated：OFF `134,788,608 B`，ON `135,182,336 B`，增加 `393,728 B`；
+- 安装态 forced-fresh 首次编译+运行中位数：OFF `22.210 s`，ON `43.640 s`，增加 `96.48%`；
+- FP32 dynamic replay 最大绝对误差 `9.1553e-05`；FP16/BF16 最大绝对误差 `0.125/1.0`，均在
+  预设容差内；
+- no-shim fresh launcher 仍在 `ATen/ATen.h` 缺失处失败；正式结果采用 T-022 audit-only shim，
+  不扩张为正式环境闭环；
+- 首轮把 `TORCHINDUCTOR_NPU_BACKEND=triton_experimental` 提前放入环境导致 codegen 在 config
+  前加载；结构/数值通过但被生命周期断言排除，完整保留为中性启动记录；
+- 未写手工 Triton kernel，也未打包 P-014/P-016/P-017/P-018/P-020 或共享树其他 diff。
 
-## 下一步
+## 结论与后续
 
-1. 在共享 source 其他 diff 可隔离后，按既定流程构建 torch_npu wheel并 `--no-deps` 安装；
-2. installed wheel 统一重跑 static/dynamic、三 dtype、四类 negative 和三轮 paired；
-3. 正式无 shim launcher 环境复验仍单独保留，P-019 不能顺带打包 P-014/P-016/P-017/P-018 或
-   其他人的未安装改动。
+P-019 状态升级为 `installed-wheel-verified-beneficial-device-host-p99-tail-monitor`。登记范围内的
+功能、结构和设备性能均闭环；默认开启保留。后续只保留 host P99、workspace/首编成本和正式
+no-shim launcher 监控。按当前用户口径，不在此阶段提交或推送。

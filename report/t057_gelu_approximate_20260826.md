@@ -152,9 +152,15 @@ backward 相对 CPU 的最大绝对误差虽只有 `3.457e-6`，但因接近零�
 `507033/E39007` 结束，目录中没有 `result.json`，仅作为环境失败保留；确认 NPU1 健康空闲后的
 retry1 成功，不能把前一轮记成 P-017 功能失败。
 
-### 当前边界
+### 独立 wheel 收口（2026-08-27）
 
-shared source tree 还有其他未安装 diff，本轮不构建/安装 wheel，installed wheel 仍为 P-013。
-因此 P-017 状态是 `source-verified-wheel-pending-shared-diff`，不是 installed-complete。错误的
-installed `none` 不做性能测试；修复后的 exact 公式也先以正确性为目标，只有最终 wheel 验证后
-才决定是否需要性能优化。现有 Triton codegen 已能承接，不进入手写 kernel 路线。
+从相同基线创建 detached worktree，保留已验证的 P-014 erfc cleanup，并只叠加 P-017 15 行
+GELU 修复。完整构建的 wheel SHA256 为
+`5b928d5a4f219c5f3c744feb90e85685c67b676de154c12b6d27229572c27b13`；source、wheel 内和
+独立 venv 安装态的 `decomposition.py` SHA256 均为
+`059ec0db0a6d71dfcb5cbe1da606d4aa5f6ead4c130abfdae8d35bf0b5027d5b`。
+
+无 source overlay 的 FP32/FP16/BF16 × none/tanh 六组 NPU 验证 6/6；非法 approximate 的
+forward/backward compile 2/2 抛出预期消息；P-014 近邻 1/1。阶段状态升级为
+`verified-installed-wheel`。共享 Benchmark 安装态仍为 P-013，未被覆盖。错误的历史 installed
+`none` 不做性能测试；修复以正确性为目标，现有 Triton codegen 已能承接，不进入手写 kernel 路线。

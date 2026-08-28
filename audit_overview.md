@@ -51,17 +51,16 @@ Static inventory and the first P0 dynamic/function/performance checkpoint are co
 - Launch every test from `/home/z50063656/tmp`; never import torch while the
   current directory is inside a torch_npu source tree.
 
-The current dynamic runtime is Conda `benchmark-py311`, activated by
-`/home/z50063656/Benchmark/env.sh`: Python 3.11.15, PyTorch
-`2.14.0a0+git8e86e0a` as an editable source install from
-`/home/z50063656/Benchmark/pytorch-upstream`, source-built torch_npu
-`2.14.0a0+git83cc452` installed from the local `dist` wheel with `--no-deps`,
-Triton runtime 3.2.0, CANN 9.0.1, and 8 Ascend 910B2 devices. Runtime NPU tests
-pass, but T-022 found that a fresh Triton host launcher cannot be compiled by
-this exact mixed header contract without an audit-only shim; product validation
-must not rely on that shim. The installed T-036 source wheel SHA256 is
-`d745cf3afd6a2859a68d6c31dd02a46498264e82dedff34d726c2be2609c6b9d`;
-the previous T-031 wheel remains preserved for rollback.
+The current dynamic runtime is Conda `Pass`, activated by
+`/home/z50063656/Pass/activate_pass.sh`: Python 3.11.15, PyTorch
+`2.14.0a0+git8e86e0a` from editable `/home/z50063656/Pass/src/pytorch`,
+torch_npu `2.14.0a0+git83cc452`, Triton runtime 3.2.0, CANN 9.0.1, and 8
+Ascend 910B2 devices. New tests must start from `/home/z50063656/tmp`.
+The installed torch_npu direct-url hash (`263ffec2...2792704`) differs from the
+current same-named dist wheel (`3909fd64...c2d4989`), so reinstall is frozen
+until the baseline is explicitly recorded. Earlier Benchmark and independent
+candidate-venv results remain historical evidence. See
+[HANDOFF_20260828_PASS_ENV.md](HANDOFF_20260828_PASS_ENV.md).
 
 Read [current_status_and_background.md](current_status_and_background.md) before
 choosing a wheel or source build and before restarting any probe.

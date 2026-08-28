@@ -1,5 +1,9 @@
 # Pass NPU 审计暂停检查点（2026-08-26，P-013/T-054）
 
+> 历史检查点：本文件记录 2026-08-26 暂停时的 Benchmark 环境，不能作为 2026-08-28 之后
+> 新测试的启动说明。当前入口是 `/home/z50063656/Pass/activate_pass.sh`；最新交接见
+> [HANDOFF_20260828_PASS_ENV.md](HANDOFF_20260828_PASS_ENV.md)。
+
 ## 暂停状态
 
 - 状态：`paused-by-user`。
