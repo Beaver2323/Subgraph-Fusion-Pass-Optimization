@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-08-31 17:50 CST（UTC+08:00）
+> 日志校准时间：2026-08-31 18:45 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3198,3 +3198,23 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   计数和 `git diff --check`。结果：活动根文件严格为 README/TODO/WORKFLOW，Markdown 相对链接
   全部可解析，活动文档中文/2026-08-31 时间戳检查通过，T-074 207/188/158/5 与动态未运行状态
   保持不变；形成独立文档提交，便于审查。
+
+### E-201：T-075 首批 Acceptance Unit 静态映射（2026-08-31）
+
+- 登记时间：2026-08-31 18:45 CST（UTC+08:00）。状态：
+  `completed-first-wave-static-mapping-await-gpu-reference`。
+- 范围：冻结首批 manifest schema，人工复核 `mm_plus_mm`、pad mm/bmm/addmm 和 addmm 5 个
+  contracts，建立 candidate/registration/community test/unit 多对多映射；不运行 GPU/NPU。
+- 结果：首批仍为 5 个 acceptance units，共 20 个 variants、13 个 community test 引用；所有
+  单元均为 `mapped-static-await-gpu-reference`/`pending-reference`，正式分母和闭环数均为 0。
+- 关键决策：same-K/different-K 归入同一 `mm_plus_mm` contract；pad mm/bmm/addmm 保持三个
+  独立 contracts；两种 add+mm operand order 共用一个 addmm contract。生成式 training/inference
+  registration 作为同一 contract 的承载证据，不拆成单元。
+- 证据修正：`test_no_autocast_in_pad_bmm_joint_graph_pass` 降级为 related regression；补入 pad
+  stride、static bmm 和 addmm 2D bias 证据；CUDA-specific 负例不直接投射为 NPU verdict。
+- 环境边界：torch_npu 冻结 commit、已有 dirty source overlay 与 installed Pass wheel 分开记录；
+  本轮没有修改 PyTorch/torch_npu/Triton 源码、环境或 wheel，也没有导入 `torch`。
+- 产物：新增 `upstream/{manifest.schema.json,manifest.yaml,pass_map.yaml}`、静态校验脚本和 T-075
+  复核报告。T-074 v1 CSV 保持原 SHA256，不重跑、不覆盖。
+- 下一步：T-076 为首批 5 个单元生成 GPU/reference runner；GPU 先尝试原生 community
+  test/helper，direct 受阻时才使用最小 adapter。reference 有效前不进入 NPU comparison 或冻结分母。

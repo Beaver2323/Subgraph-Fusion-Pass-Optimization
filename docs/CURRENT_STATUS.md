@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-08-31 17:50 CST（UTC+08:00）
+> 更新时间：2026-08-31 18:45 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：文档校准与仓库结构收束；尚未启动新的大规模 GPU/NPU 实验。
+> 当前阶段：T-075 首批静态 mapping 完成；尚未启动新的 GPU/NPU 动态实验。
 
 ## 1. 总结
 
@@ -17,6 +17,10 @@ PyTorch community-native Inductor compatibility。需要修正的不是基础候
 - 动态顺序从“逐个 NPU case”改为 mapping → GPU baseline → NPU → compare → repair；
 - GPU 无 Agent，NPU 为控制节点；
 - 历史 default/custom/feature-family 结果保留，但不计入新主线完成率。
+
+在此基础上，T-075 已完成首批 5 个单元的 schema、manifest、pass map 和人工复核：单元数仍为
+5，共 20 个 variants、13 个 community test 引用。所有单元仍等待 GPU/reference，正式冻结分母
+与正式闭环数均为 0。
 
 ## 2. 工作线吻合性
 
@@ -58,18 +62,19 @@ contract：
 因此 188 个单元和 158 个 `yes-provisional` 只能描述 T-074 v1 的 heuristic 输出，不能作为
 项目规模、成功率或剩余 Pass 总数。
 
-### 3.3 是否重新生成数据
+### 3.3 是否重新生成 T-074 v1
 
-本轮不重新运行或覆盖 T-074：
+T-075 首批复核没有重新运行或覆盖 T-074：
 
 1. registration candidate inventory 没有因 8 月 31 日术语校准失效；
 2. 直接重跑同一 heuristic 只会得到相同 188/158，不能解决 contract 定义问题；
-3. 应先冻结 acceptance-unit schema，并人工复核 community test/contract/variant；
-4. 审核发现合并、拆分或 schema 字段缺口后，再生成 T-074 v2/manifest，并保留 v1 作为输入证据。
+3. 已单独创建 acceptance-unit schema/manifest，并人工复核首批 community
+   test/contract/variant；
+4. 后续审核发现合并、拆分或字段缺口时，再生成 T-074 v2，并保留 v1 作为输入证据。
 
 当前数量因此**没有变化**：207 candidate rows、188 provisional units、158 provisional eligible、
-5 个首批人工映射、正式闭环 0。未来人工审核可以改变 acceptance-unit 数量，这是预期的可审计
-修正，不是数据回归。
+5 个首批静态审核单元、20 个 variants、13 个 community test 引用、正式闭环 0。未来人工审核
+可以改变 acceptance-unit 数量，这是预期的可审计修正，不是数据回归。
 
 ## 4. 已修正的概念问题
 
@@ -100,30 +105,26 @@ report/         不可改写的实验事实和 T-074 数据
 旧 README、旧 current status、旧 audit overview、检查点、计划和交接全部移动到
 `docs/archive/`，没有删除。`docs/HISTORY.md` 保留成果索引，`report/README.md` 提供证据导航。
 
-## 6. 当前 TODO 的下一项
+## 6. T-075 首批完成项与剩余边界
 
-T-075：acceptance-unit mapping 收敛。
+已完成：
 
-具体第一步不是跑设备，而是创建可审核的 manifest/schema 草案，然后把 T-074 首批 5 个单元
-逐个套入 schema，确认 contract 和 variants 是否合理。首批通过后，再审核 48 个
-`no-test-found` 与 29 个 indirect acceptance units。
+- `upstream/manifest.schema.json` 与首批 `manifest.yaml`；
+- 5 条 candidate → registration → test → acceptance unit 多对多映射；
+- 首批 5 个 contract/variant 人工决策；
+- T-074 v1 → T-075 的证据角色修正；
+- 不导入 `torch` 的静态一致性校验。
 
-T-075 输出应包含：
+仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核、统一运行 result
+schema、GPU/NPU baseline 和冻结 denominator。它们不能被首批静态完成状态掩盖。
 
-- schema/字段定义；
-- 首批 5 个单元的 contract/variant 决策；
-- candidate → test → acceptance unit 多对多映射；
-- needs-review 队列；
-- denominator 是否可冻结的结论；
-- 若数量变化，提供 v1 → v2 的逐项变更表。
-
-## 7. 建议的下一条 Codex 任务
+## 7. 下一条 Codex 任务
 
 ```text
-执行 T-075，不运行大规模 GPU/NPU：基于 WORKFLOW.md 定义 acceptance-unit manifest/schema，
-先人工复核 T-074 的 mm_plus_mm、pad mm/bmm/addmm、addmm 五个单元；以 PyTorch community
-tests 为事实源，明确 contract、variants、tracking_mode、registration evidence 和 denominator
-状态。保留 T-074 v1，不覆盖 CSV；输出首批 manifest、mapping review 和 v1→v2 变更建议。
+执行 T-076：基于 upstream/manifest.yaml 为首批 5 个 acceptance units 生成 GPU/reference
+runner 与人工操作说明。每个单元先尝试 community 原生测例/原生 helper，确认是否实际命中；
+只有 direct 路径受设备、backend 或 artifacts 采集阻塞时，才生成不改变图与 expected behavior
+的最小 adapter。单个 case 失败不得终止批次，输出结构化 artifacts，不运行 NPU comparison。
 ```
 
 ## 8. 当前环境边界
@@ -133,4 +134,5 @@ tests 为事实源，明确 contract、variants、tracking_mode、registration e
 - 不在 PyTorch/torch_npu 源码树中 import `torch`；
 - installed torch_npu wheel 与 `dist` 同名 wheel 哈希冲突仍未解除，不重装；
 - T-055～T-073 的 Benchmark/isolated venv 结果保留原环境标签；
-- 本轮只调整文档仓，不修改 PyTorch、torch_npu、Triton、runner、环境或 wheel。
+- T-075 只修改 tracker 文档、`upstream/` 数据与静态校验脚本；不修改 PyTorch、torch_npu、
+  Triton、环境或 wheel，不执行设备测试。

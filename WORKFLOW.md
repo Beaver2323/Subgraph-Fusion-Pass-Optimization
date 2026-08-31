@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-08-31 17:50 CST（UTC+08:00）
+> 更新时间：2026-08-31 18:45 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -109,13 +109,20 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
 
 ## 6. 仓库结构
 
-当前文档层：
+当前活动结构：
 
 ```text
 .
 ├── README.md
 ├── TODO.md
 ├── WORKFLOW.md
+├── upstream/
+│   ├── README.md
+│   ├── manifest.schema.json
+│   ├── manifest.yaml
+│   └── pass_map.yaml
+├── scripts/
+│   └── validate_tracker_data.py
 ├── docs/
 │   ├── CURRENT_STATUS.md
 │   ├── SCOPE_AND_CODE_MAP.md
@@ -126,15 +133,14 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
 │   └── archive/
 └── report/
     ├── README.md
+    ├── t075_acceptance_unit_mapping_review_20260831.md
     ├── t074_upstream_pass_test_index_20260829.md
     └── upstream_pass_test_index_20260829/
 ```
 
-Tracker 实现稳定后再增量增加：
+T-076 及后续在有真实产物时再增量增加：
 
 ```text
-upstream/manifest.yaml
-upstream/pass_map.yaml
 adapters/{pre_grad,joint_graph,post_grad}/
 runners/{reference_runner.py,npu_runner.py}
 scripts/{check_upstream.py,run_reference_all.sh,run_npu_all.sh,compare_runs.py}
@@ -184,6 +190,9 @@ extracted case 必须重新审查。
 `pass_map.yaml` 保存 registration/pattern/test/acceptance unit 的多对多关系；manifest 只保留已审核
 的 contracts。T-074 candidate CSV 作为 inventory 输入，不直接等价于 manifest。
 
+T-075 已在 `upstream/` 落盘首批 5 个静态审核单元，共 20 个 variants、13 个 community test
+引用。它们均为 `mapped-static-await-gpu-reference`/`pending-reference`，不能计入冻结分母。
+
 ## 9. 统一 result schema
 
 每个运行结果至少包含：
@@ -232,6 +241,10 @@ UPSTREAM_MAPPING_BROKEN
 reference 行为变化时，先更新 upstream contract，不能直接判为 NPU regression。
 
 ## 11. GPU/reference baseline
+
+GPU runner 必须先尝试直接执行 community 原生测例或原生 helper，确认原图和原断言是否在 GPU
+reference 上命中。只有 direct 路径被设备常量、backend 注入或 artifacts 采集阻塞时，才进入
+最小 adapter；adapter 不得改变图、shape、dtype、正负例语义或 expected match。
 
 GPU runner 对每个 acceptance unit/variant 保存：
 
@@ -376,3 +389,7 @@ acceptance units 来自 source/name 归一化和少量显式 semantic group，�
 因此当前处理是：保留 candidate 数据和 188/158 provisional 统计，先用本工作流人工审核；
 只有审核发现需要调整 grouping/schema 时，再增量生成新版 acceptance-unit/manifest 产物，并保留
 旧版本作为可追溯输入。
+
+T-075 首批复核没有改变 5 个单元的数量，但修正了 variants 和测试证据角色；T-074 v1 未覆盖。
+下一执行项为 T-076 首批 GPU/reference runner。48 个 `no-test-found` 和 29 个 indirect 单元仍待
+人工审核，可在等待 GPU artifacts 时继续推进；reference 缺失前不冻结 denominator。

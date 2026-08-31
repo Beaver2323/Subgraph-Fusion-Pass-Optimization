@@ -1,6 +1,6 @@
 # Inductor Pass NPU 调研任务与代码地图
 
-> 更新时间：2026-08-31 17:50 CST（UTC+08:00）
+> 更新时间：2026-08-31 18:45 CST（UTC+08:00）
 > 当前主线以 community test 定义 upstream contract，以 acceptance unit 组织 GPU/reference 与
 > NPU `triton_experimental` 验收。本文中 T-054 以前的大段案例保留为历史源码导航。
 
@@ -225,9 +225,11 @@ P50 回退 103.23%，P-013 exact guard 恢复原图后 P50 改善 50.28%、task 
   共 207 行；
 - T-074 v1 通过 heuristic 聚合出 188 个 provisional acceptance units，其中 158 个暂列
   eligible、30 个 registry/hook 暂不进入分母；
-- 当前只有 `mm_plus_mm`、pad mm/bmm/addmm、addmm 共 5 个单元完成第一轮人工 mapping；
+- `mm_plus_mm`、pad mm/bmm/addmm、addmm 共 5 个单元已完成 T-075 静态人工 mapping，落盘为
+  20 个 variants、13 个 community test 引用；
 - 188/158 尚未按 community optimization contract 冻结，正式动态闭环数仍为 0；
-- 当前下一任务为 T-075：定义 manifest/schema，复核首批 5 个单元，再审核 48 个
-  `no-test-found` 和 29 个 indirect 单元；
-- T-075 收敛后进入 T-076 GPU/reference runner，再进入 NPU、comparison 和 repair queue；
+- 当前下一执行任务为 T-076：为首批 5 个单元生成 GPU/reference runner，先跑原生 community
+  测例，只有 direct 路径阻塞时才做最小 adapter；
+- 48 个 `no-test-found` 和 29 个 indirect 单元仍待静态审核；可在等待 GPU artifacts 时推进，
+  但 reference 缺失前不冻结 denominator；
 - default backend、B2/B3/B4 和 T-055～T-073 继续作为历史机制/性能证据，不直接计入新主线。

@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Beaver2323/Subgraph-Fusion-Pass-Optimization/main/upstream/manifest.schema.json",
+  "title": "Inductor Acceptance Unit Manifest",
+  "$comment": "更新时间：2026-08-31 18:34 CST；registration inventory 不能直接作为 acceptance-unit 分母。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "status",
+    "source_baselines",
+    "reference_contract",
+    "counting_policy",
+    "acceptance_units"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string"
+    },
+    "source_baselines": {
+      "type": "object",
+      "required": ["pytorch", "torch_npu", "t074_candidate_index"]
+    },
+    "counting_policy": {
+      "type": "object",
+      "required": [
+        "primary_fact_source",
+        "inventory_role",
+        "tracking_key",
+        "denominator_rule"
+      ]
+    },
+    "reference_contract": {
+      "type": "object",
+      "required": [
+        "device_class",
+        "device_identity",
+        "backend",
+        "execution_order",
+        "runtime_fingerprint"
+      ],
+      "properties": {
+        "device_class": {"const": "GPU"},
+        "device_identity": {"type": "string"},
+        "backend": {"type": "string"},
+        "execution_order": {
+          "const": "native-community-test-first-then-minimal-adapter-if-required"
+        },
+        "runtime_fingerprint": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "acceptance_units": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/acceptance_unit"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "source_anchor": {
+      "type": "object",
+      "required": ["path", "line", "symbol", "role"],
+      "properties": {
+        "path": {"type": "string"},
+        "line": {"type": "integer", "minimum": 1},
+        "symbol": {"type": "string"},
+        "role": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "community_test": {
+      "type": "object",
+      "required": ["nodeid", "role", "evidence_scope"],
+      "properties": {
+        "nodeid": {"type": "string"},
+        "role": {
+          "enum": ["primary-positive", "primary-negative", "related-regression"]
+        },
+        "evidence_scope": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "variant": {
+      "type": "object",
+      "required": [
+        "variant_id",
+        "kind",
+        "expected_reference_match",
+        "expected_behavior",
+        "reference_status",
+        "npu_status"
+      ],
+      "properties": {
+        "variant_id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["positive", "negative", "guard", "regression"]},
+        "expected_reference_match": {
+          "oneOf": [{"type": "boolean"}, {"type": "string", "const": "not-directly-asserted"}]
+        },
+        "expected_behavior": {"type": "string"},
+        "expected_counter": {"type": "string"},
+        "reference_status": {"type": "string"},
+        "npu_status": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "tracking": {
+      "type": "object",
+      "required": [
+        "reference_mode",
+        "npu_mode",
+        "allowed_local_deviation",
+        "forbidden_local_deviation"
+      ],
+      "properties": {
+        "reference_mode": {"enum": ["direct", "adapter", "extracted"]},
+        "npu_mode": {"enum": ["direct", "adapter", "extracted"]},
+        "adapter_reason": {"type": "string"},
+        "extraction_reason": {"type": "string"},
+        "allowed_local_deviation": {"type": "array", "items": {"type": "string"}},
+        "forbidden_local_deviation": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "anyOf": [
+              {"properties": {"reference_mode": {"const": "adapter"}}},
+              {"properties": {"npu_mode": {"const": "adapter"}}}
+            ]
+          },
+          "then": {"required": ["adapter_reason"]}
+        },
+        {
+          "if": {
+            "anyOf": [
+              {"properties": {"reference_mode": {"const": "extracted"}}},
+              {"properties": {"npu_mode": {"const": "extracted"}}}
+            ]
+          },
+          "then": {"required": ["extraction_reason"]}
+        }
+      ]
+    },
+    "acceptance_unit": {
+      "type": "object",
+      "required": [
+        "acceptance_unit_id",
+        "contract_name",
+        "stage",
+        "review_status",
+        "denominator_eligible",
+        "upstream_sources",
+        "community_tests",
+        "variants",
+        "tracking",
+        "npu_control",
+        "historical_evidence"
+      ],
+      "properties": {
+        "acceptance_unit_id": {"type": "string", "pattern": "^AU-"},
+        "contract_name": {"type": "string"},
+        "stage": {"enum": ["pre_grad", "joint_graph", "post_grad"]},
+        "review_status": {
+          "enum": ["needs-review", "mapped-static-await-gpu-reference", "frozen", "retired"]
+        },
+        "denominator_eligible": {
+          "enum": ["no", "pending-reference", "yes-frozen"]
+        },
+        "upstream_sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/source_anchor"}
+        },
+        "community_tests": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/community_test"}
+        },
+        "variants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/variant"}
+        },
+        "tracking": {"$ref": "#/$defs/tracking"},
+        "npu_control": {"type": "object"},
+        "historical_evidence": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}

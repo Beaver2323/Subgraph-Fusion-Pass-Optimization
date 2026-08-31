@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-08-31 17:50 CST（UTC+08:00）
+> 文档更新时间：2026-08-31 18:45 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -20,10 +20,10 @@
   共 207 行；这些是静态 inventory，不是 207 个 Pass。
 - T-074 的自动规则暂时聚合出 188 个 acceptance unit，其中 158 个仅为
   `yes-provisional`。该聚合仍需按 upstream optimization contract 人工审核，不能作为冻结分母。
-- 目前只有 5 个单元完成第一轮人工映射；尚未形成同时具备 GPU baseline、当前 Pass 环境 NPU
+- T-075 已把首批 5 个单元写入 schema/manifest，并完成 contract/variant 人工复核；尚未形成具备 GPU baseline、当前 Pass 环境 NPU
   结果和 comparison verdict 的正式闭环，因此新口径完成数仍为 0。
-- 本阶段暂停新增大规模 pass 测例和 GPU/NPU 批量运行，先完成 T-074 映射收敛、manifest 和
-  统一结果 schema。
+- 下一阶段只为这 5 个单元生成 T-076 GPU/reference runner：先尝试 community 原生测例确认
+  是否命中，受设备/backend 或采集接口阻塞时再做最小 adapter。
 
 ## 统一术语
 
@@ -72,19 +72,21 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/HISTORY.md](docs/HISTORY.md) | 已完成成果、失败与中性尝试索引 |
 | [docs/requirements/20260831_requirement_change.md](docs/requirements/20260831_requirement_change.md) | 8 月 31 日需求合同与决策 |
 | [docs/archive/README.md](docs/archive/README.md) | 旧检查点、旧计划、旧交接与旧总览 |
-| [report/README.md](report/README.md) | 实验报告和 T-074 数据导航 |
+| [upstream/README.md](upstream/README.md) | Acceptance-unit schema、manifest 与多对多映射入口 |
+| [report/README.md](report/README.md) | 实验报告、T-074 数据和 T-075 复核导航 |
 
 ## 当前下一步
 
-下一条执行任务定义为 T-075：
+T-075 首批静态复核已完成：
 
-1. 冻结 acceptance-unit manifest/schema，明确 `acceptance_unit_id`、contract、variant、
-   community test、registration evidence 和 review status；
-2. 用该 schema 复核 T-074 已人工映射的 5 个单元，判断是否需要合并或拆分；
-3. 再审核 48 个 `no-test-found` 单元和 29 个 indirect 单元对应的 community test 证据；
-4. 审核完成前不改变 188/158 的“provisional”性质，也不启动大规模设备实验。
+1. 首批仍为 5 个 acceptance units，共 20 个 variants、13 个 community test 引用；
+2. `mm_plus_mm` 的 same-K/different-K 保持一个 contract；pad mm/bmm/addmm 保持三个；
+   两种 add+mm 顺序共享一个 addmm contract；
+3. 5 个单元仍为 `pending-reference`，冻结分母和正式闭环数均为 0；
+4. 48 个 `no-test-found` 和 29 个 indirect 单元继续待人工审核，T-074 v1 不覆盖。
 
-T-075 收敛后进入 T-076：生成 manifest-driven GPU/reference runner 和人工操作说明。
+下一条执行任务为 T-076：生成 manifest-driven GPU/reference runner 和人工操作说明。GPU 上先
+运行原生 community test/helper；只有 direct 路径不可用时，才增加不改变图和预期行为的最小适配。
 
 ## 执行环境合同
 

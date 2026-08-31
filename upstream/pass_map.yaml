@@ -1,0 +1,230 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-31T18:34:09+08:00",
+  "status": "t075-first-wave-manual-map",
+  "source_candidate_index": "report/upstream_pass_test_index_20260829/candidate_test_index.csv",
+  "global_decisions": [
+    "T-074 v1 candidate rows remain read-only inventory input",
+    "five first-wave units remain five units after static contract review",
+    "same-K/different-K/output-mismatch are variants of one mm_plus_mm contract",
+    "pad mm/bmm/addmm remain three contracts because search/replacement/runtime semantics are independent",
+    "two symmetric add+mm registrations share one addmm replacement contract",
+    "related regression tests do not prove direct target match"
+  ],
+  "mapping_entries": [
+    {
+      "candidate_id": "a9b7cb230d3d-1016-93528801",
+      "candidate_set": "primary-203",
+      "t074_acceptance_unit": "AU-post-grad-mm-plus-mm",
+      "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
+      "mapping_decision": "retain-one-unit-with-three-variants",
+      "registration_expansion": [
+        {
+          "source": "torch/_inductor/fx_passes/post_grad.py:1007",
+          "kind": "register_lowering_pattern",
+          "handler": "mm_plus_mm",
+          "expected_entries": 1
+        }
+      ],
+      "pattern_variants": [
+        "same-k-positive",
+        "different-k-positive-pattern-fallback",
+        "output-shape-mismatch-negative"
+      ],
+      "community_test_mapping": [
+        {
+          "nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_mm_plus_mm",
+          "role": "primary-positive-and-negative",
+          "t075_decision": "retain-direct; add target-specific counter/codegen capture because negative total counter includes another pattern"
+        }
+      ],
+      "v1_to_t075_change": "unit count unchanged; variants and counter-scope limitation made explicit",
+      "review_status": "mapped-static-await-gpu-reference"
+    },
+    {
+      "candidate_id": "2f13340f939c-812-75e4c5ef",
+      "candidate_set": "explicitly-disabled-control-4",
+      "t074_acceptance_unit": "AU-pad-mm-mm",
+      "acceptance_unit_id": "AU-pad-mm-mm",
+      "mapping_decision": "retain-independent-mm-padding-contract",
+      "registration_expansion": [
+        {
+          "source": "torch/_inductor/fx_passes/pad_mm.py:999",
+          "kind": "generated-training-registration",
+          "handler": "mm_pattern_training",
+          "expected_entries": 1
+        },
+        {
+          "source": "torch/_inductor/fx_passes/pad_mm.py:1013",
+          "kind": "generated-inference-registration",
+          "handler": "mm_pattern_inference",
+          "expected_entries": 1
+        }
+      ],
+      "pattern_variants": [
+        "dynamic-m-positive",
+        "training-inference-registration",
+        "stride-preservation",
+        "disabled-baseline-negative"
+      ],
+      "community_test_mapping": [
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_mm_dyn_m",
+          "role": "primary-positive",
+          "t075_decision": "retain-direct-reference"
+        },
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_original_aten_preserved_pad_mm",
+          "role": "primary-positive-codegen",
+          "t075_decision": "retain-direct-reference"
+        },
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_mm_output_strides_preserved",
+          "role": "related-regression",
+          "t075_decision": "add-to-v2-mapping"
+        },
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_exclude_padding",
+          "role": "primary-negative-selection",
+          "t075_decision": "retain-but-require-target-specific interpretation"
+        }
+      ],
+      "v1_to_t075_change": "unit count unchanged; expand stride regression and generated registration evidence",
+      "review_status": "mapped-static-await-gpu-reference"
+    },
+    {
+      "candidate_id": "95cc946c66b4-885-eeb96b53",
+      "candidate_set": "explicitly-disabled-control-4",
+      "t074_acceptance_unit": "AU-pad-mm-bmm",
+      "acceptance_unit_id": "AU-pad-mm-bmm",
+      "mapping_decision": "retain-independent-bmm-padding-contract",
+      "registration_expansion": [
+        {
+          "source": "torch/_inductor/fx_passes/pad_mm.py:999",
+          "kind": "generated-training-registration",
+          "handler": "bmm_pattern_training",
+          "expected_entries": 1
+        },
+        {
+          "source": "torch/_inductor/fx_passes/pad_mm.py:1013",
+          "kind": "generated-inference-registration",
+          "handler": "bmm_pattern_inference",
+          "expected_entries": 1
+        }
+      ],
+      "pattern_variants": [
+        "dynamic-batch-positive",
+        "training-inference-registration",
+        "dtype-gradient-related-regression",
+        "disabled-baseline-negative"
+      ],
+      "community_test_mapping": [
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_bmm_dyn_b",
+          "role": "primary-positive",
+          "t075_decision": "retain-direct-reference"
+        },
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_batch",
+          "role": "primary-positive-static-fp16",
+          "t075_decision": "add-to-v2-mapping"
+        },
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_no_autocast_in_pad_bmm_joint_graph_pass",
+          "role": "related-regression",
+          "t075_decision": "downgrade-from-v1-direct-evidence; it checks dtype/gradient and does not alone prove target padding hit"
+        }
+      ],
+      "v1_to_t075_change": "unit count unchanged; one test role downgraded to related regression and static fp16 test added",
+      "review_status": "mapped-static-await-gpu-reference"
+    },
+    {
+      "candidate_id": "79a7f46b0054-197-5f9354b1",
+      "candidate_set": "explicitly-disabled-control-4",
+      "t074_acceptance_unit": "AU-pad-mm-addmm",
+      "acceptance_unit_id": "AU-pad-mm-addmm",
+      "mapping_decision": "retain-independent-addmm-padding-contract",
+      "registration_expansion": [
+        {
+          "source": "torch/_inductor/fx_passes/pad_mm.py:999",
+          "kind": "generated-training-registration",
+          "handler": "addmm_pattern_training",
+          "expected_entries": 1
+        },
+        {
+          "source": "torch/_inductor/fx_passes/pad_mm.py:1013",
+          "kind": "generated-inference-registration",
+          "handler": "addmm_pattern_inference",
+          "expected_entries": 1
+        }
+      ],
+      "pattern_variants": [
+        "dynamic-m-positive",
+        "bias-broadcast-positive",
+        "beta-zero-mismatched-bias-negative",
+        "training-inference-registration",
+        "disabled-baseline-negative"
+      ],
+      "community_test_mapping": [
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_addmm_dyn_m",
+          "role": "primary-positive",
+          "t075_decision": "retain-direct-reference"
+        },
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_addmm_2d_bias",
+          "role": "primary-positive-broadcast",
+          "t075_decision": "add-to-v2-mapping"
+        },
+        {
+          "nodeid": "test/inductor/test_pad_mm.py::PadMMTest.test_addmm_beta_zero_mismatched_bias_skips_padding",
+          "role": "primary-negative-cuda-specific",
+          "t075_decision": "retain-reference-only; do not project CUDA beta=0 behavior onto NPU"
+        }
+      ],
+      "v1_to_t075_change": "unit count unchanged; add bias-broadcast evidence and mark CUDA-specific negative scope",
+      "review_status": "mapped-static-await-gpu-reference"
+    },
+    {
+      "candidate_id": "ae25cdda35b0-2033-0c4f3e92",
+      "candidate_set": "explicitly-disabled-control-4",
+      "t074_acceptance_unit": "AU-post-grad-addmm",
+      "acceptance_unit_id": "AU-post-grad-addmm",
+      "mapping_decision": "retain-one-contract-for-two-symmetric-registrations",
+      "registration_expansion": [
+        {
+          "source": "torch/_inductor/fx_passes/post_grad.py:2013",
+          "kind": "add-mm-order-registration",
+          "handler": "addmm",
+          "expected_entries": 1
+        },
+        {
+          "source": "torch/_inductor/fx_passes/post_grad.py:2023",
+          "kind": "mm-add-order-registration",
+          "handler": "addmm",
+          "expected_entries": 1
+        }
+      ],
+      "pattern_variants": [
+        "matrix-bias-both-orders-positive",
+        "vector-bias-both-orders-positive",
+        "non-expandable-or-batched-bias-negative",
+        "python-or-symbolic-scalar-negative"
+      ],
+      "community_test_mapping": [
+        {
+          "nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_addmm",
+          "role": "primary-positive-and-negative",
+          "t075_decision": "retain-direct-reference; two output orders intentionally count as two matches under one contract"
+        },
+        {
+          "nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_addmm_symbolic_scalar",
+          "role": "primary-negative",
+          "t075_decision": "retain-direct-reference"
+        }
+      ],
+      "v1_to_t075_change": "unit count unchanged; two registrations and bias/scalar variants made explicit; current source overlay separated from commit baseline",
+      "review_status": "mapped-static-await-gpu-reference"
+    }
+  ]
+}

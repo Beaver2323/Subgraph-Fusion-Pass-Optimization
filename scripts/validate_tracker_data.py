@@ -1,0 +1,314 @@
+#!/usr/bin/env python3
+"""验证 tracker 首批 manifest/pass_map；只使用标准库，不导入 torch。"""
+
+from __future__ import annotations
+
+import argparse
+import ast
+import csv
+import hashlib
+import json
+from pathlib import Path
+from typing import Any
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise TypeError(f"{path} 顶层必须是 object")
+    return value
+
+
+def require_keys(value: dict[str, Any], keys: set[str], context: str) -> None:
+    missing = sorted(keys - value.keys())
+    if missing:
+        raise ValueError(f"{context} 缺少字段: {missing}")
+
+
+def python_qualnames(path: Path) -> set[str]:
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    result: set[str] = set()
+
+    class Visitor(ast.NodeVisitor):
+        def __init__(self) -> None:
+            self.scope: list[str] = []
+
+        def visit_ClassDef(self, node: ast.ClassDef) -> None:
+            self.scope.append(node.name)
+            self.generic_visit(node)
+            self.scope.pop()
+
+        def _visit_function(
+            self, node: ast.FunctionDef | ast.AsyncFunctionDef
+        ) -> None:
+            result.add(".".join([*self.scope, node.name]))
+            self.scope.append(node.name)
+            self.generic_visit(node)
+            self.scope.pop()
+
+        def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+            self._visit_function(node)
+
+        def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+            self._visit_function(node)
+
+    Visitor().visit(tree)
+    return result
+
+
+def validate_pytorch_evidence(
+    units: list[dict[str, Any]], pytorch_root: Path
+) -> None:
+    qualname_cache: dict[Path, set[str]] = {}
+    for unit in units:
+        unit_id = unit["acceptance_unit_id"]
+        for source in unit["upstream_sources"]:
+            path = pytorch_root / source["path"]
+            if not path.is_file():
+                raise FileNotFoundError(f"{unit_id} source 不存在: {path}")
+            lines = path.read_text(encoding="utf-8").splitlines()
+            line = source["line"]
+            if not isinstance(line, int) or not 1 <= line <= len(lines):
+                raise ValueError(f"{unit_id} source line 越界: {path}:{line}")
+            anchor_window = "\n".join(lines[max(0, line - 6) : line + 5])
+            if source["symbol"] not in anchor_window:
+                raise ValueError(
+                    f"{unit_id} source symbol 不在锚点附近: "
+                    f"{path}:{line}:{source['symbol']}"
+                )
+
+        for test in unit["community_tests"]:
+            try:
+                relative, qualname = test["nodeid"].split("::", 1)
+            except ValueError as error:
+                raise ValueError(
+                    f"{unit_id} community nodeid 格式错误: {test['nodeid']}"
+                ) from error
+            path = pytorch_root / relative
+            if not path.is_file():
+                raise FileNotFoundError(f"{unit_id} community test 不存在: {path}")
+            qualnames = qualname_cache.setdefault(path, python_qualnames(path))
+            if qualname not in qualnames:
+                raise ValueError(
+                    f"{unit_id} community test 方法不存在: {path}::{qualname}"
+                )
+
+
+def validate(repo_root: Path, pytorch_root: Path | None) -> None:
+    manifest_path = repo_root / "upstream/manifest.yaml"
+    map_path = repo_root / "upstream/pass_map.yaml"
+    schema_path = repo_root / "upstream/manifest.schema.json"
+    candidate_path = (
+        repo_root
+        / "report/upstream_pass_test_index_20260829/candidate_test_index.csv"
+    )
+
+    manifest = load_json(manifest_path)
+    pass_map = load_json(map_path)
+    schema = load_json(schema_path)
+    require_keys(
+        manifest,
+        {
+            "schema_version",
+            "generated_at",
+            "status",
+            "source_baselines",
+            "reference_contract",
+            "counting_policy",
+            "acceptance_units",
+        },
+        "manifest",
+    )
+    require_keys(
+        pass_map,
+        {
+            "schema_version",
+            "generated_at",
+            "status",
+            "source_candidate_index",
+            "global_decisions",
+            "mapping_entries",
+        },
+        "pass_map",
+    )
+    if manifest["schema_version"] != "1.0":
+        raise ValueError("manifest schema_version 必须为 1.0")
+    if pass_map["schema_version"] != manifest["schema_version"]:
+        raise ValueError("manifest/pass_map schema_version 不一致")
+    if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+        raise ValueError("manifest.schema.json draft 不符合预期")
+    reference_contract = manifest["reference_contract"]
+    require_keys(
+        reference_contract,
+        {
+            "device_class",
+            "device_identity",
+            "backend",
+            "execution_order",
+            "runtime_fingerprint",
+        },
+        "reference_contract",
+    )
+    if reference_contract["device_class"] != "GPU":
+        raise ValueError("首批 reference device_class 必须为 GPU")
+    if reference_contract["execution_order"] != (
+        "native-community-test-first-then-minimal-adapter-if-required"
+    ):
+        raise ValueError("reference execution_order 必须先原生测例再最小适配")
+
+    units = manifest["acceptance_units"]
+    if not isinstance(units, list) or len(units) != 5:
+        raise ValueError(f"首批 manifest 必须恰为 5 个单元，实际 {len(units)}")
+    unit_ids = [unit["acceptance_unit_id"] for unit in units]
+    if len(unit_ids) != len(set(unit_ids)):
+        raise ValueError("acceptance_unit_id 必须唯一")
+
+    for unit in units:
+        unit_id = unit["acceptance_unit_id"]
+        require_keys(
+            unit,
+            {
+                "acceptance_unit_id",
+                "contract_name",
+                "stage",
+                "review_status",
+                "denominator_eligible",
+                "upstream_sources",
+                "community_tests",
+                "variants",
+                "tracking",
+                "npu_control",
+                "historical_evidence",
+            },
+            unit_id,
+        )
+        if unit["review_status"] != "mapped-static-await-gpu-reference":
+            raise ValueError(f"{unit_id} review_status 不能提前冻结")
+        if unit["denominator_eligible"] != "pending-reference":
+            raise ValueError(f"{unit_id} denominator 不能提前进入分母")
+        if unit["stage"] not in {"pre_grad", "joint_graph", "post_grad"}:
+            raise ValueError(f"{unit_id} stage 非法: {unit['stage']}")
+        tracking = unit["tracking"]
+        require_keys(
+            tracking,
+            {
+                "reference_mode",
+                "npu_mode",
+                "allowed_local_deviation",
+                "forbidden_local_deviation",
+            },
+            f"{unit_id}.tracking",
+        )
+        for mode_key in ("reference_mode", "npu_mode"):
+            mode = tracking[mode_key]
+            if mode not in {"direct", "adapter", "extracted"}:
+                raise ValueError(f"{unit_id} {mode_key} 非法: {mode}")
+        if "adapter" in {tracking["reference_mode"], tracking["npu_mode"]}:
+            require_keys(tracking, {"adapter_reason"}, f"{unit_id}.tracking")
+        if "extracted" in {tracking["reference_mode"], tracking["npu_mode"]}:
+            require_keys(tracking, {"extraction_reason"}, f"{unit_id}.tracking")
+        for source in unit["upstream_sources"]:
+            require_keys(source, {"path", "line", "symbol", "role"}, unit_id)
+        for test in unit["community_tests"]:
+            require_keys(test, {"nodeid", "role", "evidence_scope"}, unit_id)
+            if test["role"] not in {
+                "primary-positive",
+                "primary-negative",
+                "related-regression",
+            }:
+                raise ValueError(f"{unit_id} community test role 非法")
+        for variant in unit["variants"]:
+            require_keys(
+                variant,
+                {
+                    "variant_id",
+                    "kind",
+                    "expected_reference_match",
+                    "expected_behavior",
+                    "reference_status",
+                    "npu_status",
+                },
+                unit_id,
+            )
+            if variant["kind"] not in {
+                "positive",
+                "negative",
+                "guard",
+                "regression",
+            }:
+                raise ValueError(f"{unit_id} variant kind 非法")
+        variant_ids = [variant["variant_id"] for variant in unit["variants"]]
+        if not variant_ids or len(variant_ids) != len(set(variant_ids)):
+            raise ValueError(f"{unit_id} variant_id 缺失或重复")
+        nodeids = [test["nodeid"] for test in unit["community_tests"]]
+        if not nodeids or len(nodeids) != len(set(nodeids)):
+            raise ValueError(f"{unit_id} community test 缺失或重复")
+
+    with candidate_path.open(newline="", encoding="utf-8") as handle:
+        candidates = {
+            row["candidate_id"]: row for row in csv.DictReader(handle)
+        }
+    candidate_source = manifest["source_baselines"]["t074_candidate_index"]
+    actual_candidate_sha = hashlib.sha256(candidate_path.read_bytes()).hexdigest()
+    if actual_candidate_sha != candidate_source["sha256"]:
+        raise ValueError("T-074 candidate CSV SHA256 与 manifest 不一致")
+    if len(candidates) != candidate_source["candidate_rows"]:
+        raise ValueError("T-074 candidate CSV 行数与 manifest 不一致")
+    mappings = pass_map["mapping_entries"]
+    if not isinstance(mappings, list) or len(mappings) != 5:
+        raise ValueError(f"首批 pass_map 必须恰为 5 条，实际 {len(mappings)}")
+    mapped_candidates = [mapping["candidate_id"] for mapping in mappings]
+    if len(mapped_candidates) != len(set(mapped_candidates)):
+        raise ValueError("pass_map candidate_id 必须唯一")
+    if set(mapping["acceptance_unit_id"] for mapping in mappings) != set(unit_ids):
+        raise ValueError("pass_map 与 manifest 的 unit 集合不一致")
+
+    units_by_id = {unit["acceptance_unit_id"]: unit for unit in units}
+    for mapping in mappings:
+        candidate_id = mapping["candidate_id"]
+        if candidate_id not in candidates:
+            raise ValueError(f"pass_map candidate 不在 T-074 v1: {candidate_id}")
+        candidate = candidates[candidate_id]
+        if mapping["t074_acceptance_unit"] != candidate["acceptance_unit"]:
+            raise ValueError(f"{candidate_id} T-074 unit 与原 CSV 不一致")
+        unit = units_by_id[mapping["acceptance_unit_id"]]
+        manifest_tests = {test["nodeid"] for test in unit["community_tests"]}
+        mapped_tests = {
+            test["nodeid"] for test in mapping["community_test_mapping"]
+        }
+        if mapped_tests != manifest_tests:
+            raise ValueError(
+                f"{mapping['acceptance_unit_id']} manifest/pass_map tests 不一致"
+            )
+
+    if pytorch_root is not None:
+        validate_pytorch_evidence(units, pytorch_root)
+
+    variant_count = sum(len(unit["variants"]) for unit in units)
+    test_count = sum(len(unit["community_tests"]) for unit in units)
+    print("tracker_data_validation=OK")
+    print(f"acceptance_units={len(units)}")
+    print(f"mapped_candidates={len(mappings)}")
+    print(f"variants={variant_count}")
+    print(f"community_tests={test_count}")
+    print("denominator_frozen=0")
+    print("torch_imported=0")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--repo-root",
+        type=Path,
+        default=Path(__file__).resolve().parents[1],
+    )
+    parser.add_argument("--pytorch-root", type=Path)
+    args = parser.parse_args()
+    validate(
+        args.repo_root.resolve(),
+        args.pytorch_root.resolve() if args.pytorch_root else None,
+    )
+
+
+if __name__ == "__main__":
+    main()

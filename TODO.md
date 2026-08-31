@@ -1,8 +1,8 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-08-31 17:50 CST（UTC+08:00）
-> 状态：文档与工作线校准完成，等待 T-075 acceptance-unit mapping 收敛。
-> 约束：在 T-075 完成前，不新增大规模 pass 测例，不启动 GPU/NPU 批量执行。
+> 更新时间：2026-08-31 18:45 CST（UTC+08:00）
+> 状态：T-075 首批 5 个单元静态复核完成；下一执行任务为 T-076 GPU/reference runner。
+> 约束：当前只生成首批 runner；不新增大规模 pass 测例，不提前启动 NPU comparison。
 
 ## 任务计数规则
 
@@ -26,29 +26,29 @@
 
 ## P0-B：T-075 acceptance-unit mapping 收敛
 
-这是当前唯一立即执行项。
+首批 schema/mapping 已完成；B3 的规模化人工审核继续待办，不阻塞首批 T-076 runner。
 
 ### B1. 冻结 schema
 
-- [ ] 定义 `acceptance_unit_id`，不得从 registration 数量直接推导；
-- [ ] 定义 `contract_name` 和预期 transformation/behavior；
-- [ ] 记录 upstream source/test/commit；
-- [ ] 记录 registration/pattern evidence，但将其标记为辅助证据；
-- [ ] 定义 `variant_id` 及 dtype/shape/layout/dynamic/forward/backward 维度；
-- [ ] 定义 `tracking_mode`：`direct`、`adapter`、`extracted`；
-- [ ] `extracted` 必须记录 `extraction_reason` 和 `local_deviation`；
-- [ ] 定义 `review_status`：`needs-review`、`mapped`、`frozen`、`retired`；
-- [ ] 定义 denominator 是否进入分母及理由；
+- [x] 定义 `acceptance_unit_id`，不得从 registration 数量直接推导；
+- [x] 定义 `contract_name` 和预期 transformation/behavior；
+- [x] 记录 upstream source/test/commit；
+- [x] 记录 registration/pattern evidence，但将其标记为辅助证据；
+- [x] 定义 `variant_id` 及正例、负例、guard、regression 分支；
+- [x] 定义 `tracking_mode`：`direct`、`adapter`、`extracted`；
+- [x] `extracted` 必须记录 `extraction_reason` 和 `local_deviation`；
+- [x] 定义 `review_status`：`needs-review`、`mapped`、`frozen`、`retired`；
+- [x] 定义 denominator 是否进入分母及理由；
 - [ ] 定义 GPU/NPU/result/failure/repair 字段。
 
 ### B2. 复核首批 5 个单元
 
-- [ ] `mm_plus_mm`：以 community `test_mm_plus_mm` 为事实源，确认 same-K/different-K 是
+- [x] `mm_plus_mm`：以 community `test_mm_plus_mm` 为事实源，确认 same-K/different-K 是
   一个 contract 的 variants 还是独立 acceptance units；
-- [ ] pad-mm：确认 mm/bmm/addmm 是三个独立 contracts，保留 positive/negative guard tests；
-- [ ] add+mm → addmm：确认 symbolic-scalar 负例与正常融合的 contract/variant 关系；
-- [ ] 对每个单元记录 upstream/GPU expected match 和现有历史 NPU 证据边界；
-- [ ] 不把旧自建 runner 直接升级为 community-test baseline。
+- [x] pad-mm：确认 mm/bmm/addmm 是三个独立 contracts，保留 positive/negative guard tests；
+- [x] add+mm → addmm：确认 symbolic-scalar 负例与正常融合的 contract/variant 关系；
+- [x] 对每个单元记录 upstream/GPU expected match 和现有历史 NPU 证据边界；
+- [x] 不把旧自建 runner 直接升级为 community-test baseline。
 
 ### B3. 收敛未确认映射
 
@@ -65,15 +65,15 @@
 
 T-075 schema 确认后执行。
 
-- [ ] 创建 `upstream/manifest.yaml`，主键是 acceptance unit，不是 pass/registration 行；
-- [ ] 创建 `upstream/pass_map.yaml`，保存 registration/pattern/test 的多对多证据；
-- [ ] 记录 source commit、source test 和 reference device；
-- [ ] 记录 expected reference match、重要 counter/assertion；
+- [x] 创建 `upstream/manifest.yaml`，主键是 acceptance unit，不是 pass/registration 行；
+- [x] 创建 `upstream/pass_map.yaml`，保存 registration/pattern/test 的多对多证据；
+- [x] 记录 source commit、source test 和 reference device 合同；具体 GPU 指纹由 T-076 采集；
+- [x] 记录 expected reference match、重要 counter/assertion；
 - [ ] 建立 `adapters/{pre_grad,joint_graph,post_grad}`；
 - [ ] direct 可运行的 community test 不保留长期复制；
-- [ ] adapter 只注入 device/backend/input/artifact capture；
-- [ ] extracted case 必须建立 upstream drift 检查；
-- [ ] 先纳入首批已审核单元，不一次导入全部 provisional 单元。
+- [x] adapter 合同限定为只注入 device/backend/input/artifact capture；
+- [ ] extracted case 必须建立 upstream drift 检查；首批当前不使用 extracted；
+- [x] 先纳入首批已审核单元，不一次导入全部 provisional 单元。
 
 ## P0-D：T-076 GPU/reference runner
 
@@ -147,14 +147,13 @@ GPU 机器没有 Agent，runner 必须可由人工一次执行完整批次。
 
 ## 立即执行顺序
 
-1. T-075：冻结 acceptance-unit schema；
-2. 用 schema 复核首批 5 个单元；
-3. 审核 no-test-found 和 indirect 映射；
-4. 冻结首版 denominator 与 manifest；
-5. T-076：生成 GPU/reference runner 和操作说明；
-6. 等待/接收 GPU artifacts，同时完成不依赖 GPU 的 NPU runner 静态准备；
-7. 执行 NPU、compare、failure classification；
-8. 创建 repair queue 并逐项闭环。
+1. [x] T-075：冻结首批 acceptance-unit schema 并复核 5 个单元；
+2. [ ] T-076：生成 GPU/reference runner 和操作说明；
+3. [ ] GPU 上先尝试原生 community test/helper，必要时才进入最小 adapter；
+4. [ ] 等待/接收 GPU artifacts，同时继续审核 no-test-found 和 indirect 映射；
+5. [ ] reference 有效后冻结首版 denominator，并准备 NPU runner；
+6. [ ] 执行 NPU、compare、failure classification；
+7. [ ] 创建 repair queue 并逐项闭环。
 
 ## 第一阶段完成标准
 
