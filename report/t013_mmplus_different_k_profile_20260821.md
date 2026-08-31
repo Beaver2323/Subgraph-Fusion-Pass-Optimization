@@ -79,6 +79,7 @@ shape-A/current 的第一、第二个 matmul 分别为 `4.820±0.258 μs` 和 `4
 
 ## 证据
 
-- 正式结果根目录：[`results/t013_mmplus_different_k_profile_20260821`](../results/t013_mmplus_different_k_profile_20260821/)
+- 正式结果根目录：审计工作区 `results/t013_mmplus_different_k_profile_20260821/`
+  （未镜像到文档仓）
 - T-012 baseline：[`t012_mmplus_different_k_baseline_20260821.md`](t012_mmplus_different_k_baseline_20260821.md)
-- 变更与失败记录：[`change_control.md`](../change_control.md)
+- 变更与失败记录：[CHANGE_CONTROL.md](../docs/CHANGE_CONTROL.md)

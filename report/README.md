@@ -1,0 +1,34 @@
+# 实验报告与数据索引
+
+> 索引更新时间：2026-08-31 17:50 CST（UTC+08:00）
+> 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
+> `../docs/CURRENT_STATUS.md` 为准。
+
+## 当前主线证据
+
+| 文件 | 作用 | 当前边界 |
+| --- | --- | --- |
+| [t074_upstream_pass_test_index_20260829.md](t074_upstream_pass_test_index_20260829.md) | T-074 registration candidate、community test 和 provisional unit 总结 | 静态 v1，不是冻结分母 |
+| [candidate_test_index.csv](upstream_pass_test_index_20260829/candidate_test_index.csv) | 207 条 candidate/control 行与测试映射 | inventory 输入，动态状态均未运行 |
+| [acceptance_units.csv](upstream_pass_test_index_20260829/acceptance_units.csv) | 188 个 heuristic 去重单元 | 158 eligible 仍为 provisional |
+| [t056_triton_experimental_inventory_20260826.md](t056_triton_experimental_inventory_20260826.md) | T-074 的静态路由来源 | candidate discovery 辅助证据 |
+| [triton_experimental_20260826/](triton_experimental_20260826/) | config、feature family 和 route CSV | previous inventory，不是任务分母 |
+
+## 历史阶段导航
+
+| 阶段 | 文件范围 | 说明 |
+| --- | --- | --- |
+| 初始 inventory/P0 | `pass_inventory*`、`pass_src_20260820/`、`p0_*` | default-backend 早期清单和基线 |
+| MM/pad 第一批 | `t012_*`～`t025_t026_*` | mm_plus_mm、pad family 和替代方案证据 |
+| torch_npu custom pass | `t027_*`～`t043_t046_*` | B2 结构、语义、alias 和性能 |
+| DVM/MLIR/attention | `t047_*`～`t054_*` | B3/B4 历史结果 |
+| experimental feature family | `t055_*`～`t072_*` | backend 启用、lowering、codegen、autotune 等专项证据 |
+
+## 使用规则
+
+1. 先从文件名日期和报告正文确认真实环境；
+2. old Benchmark/isolated venv 结果不得自动升级为当前 Pass 环境 verdict；
+3. 历史报告中的 “pass 数” 可能使用旧 inventory 口径，引用时必须同时说明是 registration、
+   pattern family、custom pass 还是当前 acceptance unit；
+4. 新 tracker 产物必须记录生成时间戳、schema version、source commit 和环境指纹；
+5. 报告增长时优先更新本索引，不在根 README 重复堆叠完整实验叙述。

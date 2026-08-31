@@ -1,5 +1,8 @@
 # Inductor Pass NPU 调研：现状、环境选择与背景知识
 
+> 历史归档时间：2026-08-31 17:50 CST（UTC+08:00）。
+> 本文件冻结 2026-08-29 前的累计状态；当前 tracker 状态见 `../../CURRENT_STATUS.md`。
+
 > **当前环境口径更正（2026-08-28）**：从本条开始，项目主工作环境固定为
 > `/home/z50063656/Pass/activate_pass.sh` 激活的 Conda `Pass`
 > (`/home/z50063656/envs/Pass`)。所有新测试仍必须从 `/home/z50063656/tmp` 发起。
@@ -19,8 +22,8 @@
 P-013/T-054 default-backend 工作已归档；用户随后恢复任务并明确把负责后端改为
 `torch_npu/_inductor/triton_experimental`，但要求现有 Benchmark 环境、版本和 wheel 构建方式
 全部保持原样，只复用 meta worktree 的变更控制、构建分流、缓存隔离和验证流程。新的恢复入口为
-[triton_experimental_migration_20260826.md](triton_experimental_migration_20260826.md)；
-[PAUSED_CHECKPOINT_20260826_P013.md](PAUSED_CHECKPOINT_20260826_P013.md) 保留为 default 历史闭环。
+[triton_experimental_migration_20260826.md](../plans/triton_experimental_migration_20260826.md)；
+[PAUSED_CHECKPOINT_20260826_P013.md](../checkpoints/PAUSED_CHECKPOINT_20260826_P013.md) 保留为 default 历史闭环。
 此前正式性能结论不能自动升级为 experimental verdict。T-055 已证明三种 experimental 入口
 12/12 可编译、数值正确并命中独立 wrapper；同进程回切 default 暴露 erfc decomposition 重复
 注册。P-014 的单行 cleanup 已在 detached worktree 隔离构建专属 wheel，并在独立 venv 完成

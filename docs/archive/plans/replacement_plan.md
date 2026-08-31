@@ -1,5 +1,8 @@
 # Inductor Pass 在 NPU 上的替代与优化计划
 
+> 历史归档时间：2026-08-31 17:50 CST（UTC+08:00）。
+> 当前修复策略以根目录 `WORKFLOW.md` 的 first-divergence 状态机为准。
+
 > 当前状态（2026-08-28）：主环境已纠正为
 > `/home/z50063656/Pass/activate_pass.sh` 激活的 Conda `Pass`。此前 Benchmark/独立 venv
 > 结果保留为历史证据；任何新验证先在 `change_control.md` 登记，并从

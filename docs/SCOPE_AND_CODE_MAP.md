@@ -1,8 +1,19 @@
 # Inductor Pass NPU 调研任务与代码地图
 
+> 更新时间：2026-08-31 17:50 CST（UTC+08:00）
+> 当前主线以 community test 定义 upstream contract，以 acceptance unit 组织 GPU/reference 与
+> NPU `triton_experimental` 验收。本文中 T-054 以前的大段案例保留为历史源码导航。
+
 ## 任务最终要交付什么
 
-本任务的目标不是简单统计源码中的 pass，也不是把每个 pass 都改成 Triton。最终交付应是一张覆盖 NPU 的可审计矩阵：每个 pass 都有适用范围、最小触发图、是否实际触发、正确性、fallback/codegen 证据、性能数据和最终处理结论。
+本任务的目标不是统计 registration 或函数名数量，也不是把每个优化都改成 Triton。最终交付是
+一张以 acceptance unit 为主键的可审计兼容性矩阵：每个 upstream optimization contract 都有
+community test、GPU/reference baseline、NPU trigger/correctness、lowering/scheduler/codegen、
+runtime path、性能、final verdict 和 repair status。
+
+registration inventory 是 coverage 辅助输入；一个 registration 可能展开多个 pattern/variants，
+多个 registration 也可能共同实现一个 acceptance unit。不得假设
+`registration == pattern == pass == acceptance unit`。
 
 最终判定分为：
 
@@ -208,11 +219,15 @@ P50 回退 103.23%，P-013 exact guard 恢复原图后 P50 改善 50.28%、task 
 
 ## 当前进度与剩余工作
 
-- 已生成旧 `/Dynamo` 静态快照 194 条。
-- `Pass/src` 与旧扫描同口径时为 189 条；少的 5 条全部来自当前未初始化的 torchair 子模块，不是主干 pass 回退。
-- 在同口径基础上补入 8 个 DVM/MLIR 图变换、53 个函数式/生成式 pattern 和 1 个 pad-mm 控制 gate，当前概念级清单为 251 条。
-- 当前矩阵中 direct case 164 条、observer 41 条、registry container 25 条、人工审查 21 条；生成变体不重复计数。
-- 环境已确认稳定并完成 P0、T-011 至 T-054；pad family、B2 27 条和 B3 8 条已完成结构/
-  NPU/性能或环境分流。B4 八个代表 family 功能、pattern 1/13/5 性能与 P-013 已完成，
-  下一步为 pattern 21/29 paired 与剩余 family；完整 MLIR 和 T-023 无 shim 只在匹配依赖/
-  headers 的独立环境复验。
+- 旧 `/Dynamo` 194 条、当前概念级 251 条和 35 个 experimental feature family 都是历史
+  inventory/phase 统计，不是当前 acceptance-unit 分母；
+- T-074 保留 203 条 inherited-upstream registration candidate 与 4 条显式关闭控制项，
+  共 207 行；
+- T-074 v1 通过 heuristic 聚合出 188 个 provisional acceptance units，其中 158 个暂列
+  eligible、30 个 registry/hook 暂不进入分母；
+- 当前只有 `mm_plus_mm`、pad mm/bmm/addmm、addmm 共 5 个单元完成第一轮人工 mapping；
+- 188/158 尚未按 community optimization contract 冻结，正式动态闭环数仍为 0；
+- 当前下一任务为 T-075：定义 manifest/schema，复核首批 5 个单元，再审核 48 个
+  `no-test-found` 和 29 个 indirect 单元；
+- T-075 收敛后进入 T-076 GPU/reference runner，再进入 NPU、comparison 和 repair queue；
+- default backend、B2/B3/B4 和 T-055～T-073 继续作为历史机制/性能证据，不直接计入新主线。

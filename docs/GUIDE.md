@@ -1,32 +1,39 @@
 # PyTorch Feature 设计与实现分析
 
+> 更新时间：2026-08-31 17:50 CST（UTC+08:00）
+> 定位：机制与历史案例指南。当前 tracker 主线、术语和执行顺序以仓库根目录
+> `README.md`、`TODO.md`、`WORKFLOW.md` 及 [CURRENT_STATUS.md](CURRENT_STATUS.md) 为准。
+
 > 目标模块：TorchInductor pass 在 Ascend NPU 上的可用性、性能评估与替代实现。
 >
 > 面向读者：了解 Python 和基本 PyTorch 用法，但尚未系统阅读 TorchDynamo、AOTAutograd、Inductor 或 torch_npu 源码的开发者。
 >
-> 当前源码基线：PyTorch <code>release/2.14@8e86e0a</code>、torch_npu <code>master@83cc452</code>、Triton Ascend <code>release/3.2.2@8bd9f38</code>。当前运行基线、wheel 哈希和设备信息以 [current_status_and_background.md](current_status_and_background.md) 为准。
+> 当前源码基线：PyTorch <code>release/2.14@8e86e0a</code>、torch_npu <code>master@83cc452</code>、Triton Ascend <code>release/3.2.2@8bd9f38</code>。当前运行边界以 [CURRENT_STATUS.md](CURRENT_STATUS.md) 为准。
 >
 > 2026-08-28 当前口径：负责后端为 `triton_experimental`，主环境使用
 > `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`，不安装 meta worktree 的 2.13
 > 环境。此前 Benchmark/独立 venv 结果是历史证据，交付前需按范围在 Pass 复核。先阅读
-> [triton_experimental 迁移基线](triton_experimental_migration_20260826.md)；本文中已经完成的
+> [triton_experimental 历史迁移基线](archive/plans/triton_experimental_migration_20260826.md)；本文中已经完成的
 > default-backend 数据继续作为机制学习和迁移对照，不能直接当作 experimental verdict。
 >
-> experimental 新读者接着阅读 [T-055 入口/隔离报告](report/t055_triton_experimental_enable_20260826.md)
-> 和 [T-056 静态 inventory](report/t056_triton_experimental_inventory_20260826.md)。前者解释
+> experimental 新读者接着阅读 [T-055 入口/隔离报告](../report/t055_triton_experimental_enable_20260826.md)
+> 和 [T-056 静态 inventory](../report/t056_triton_experimental_inventory_20260826.md)。前者解释
 > “backend 能选中”为什么仍不等于“backend 可安全往返”，后者把 251 条上游/历史 pass、69 个
 > config 和 35 个可验收 feature family 分开，避免把开关数量误当 pass 数量。
-> 然后阅读 [T-057 backend 状态报告](report/t057_backend_state_isolation_20260826.md) 和
-> [T-057 int→float→int 报告](report/t057_int_float_int_boundary_20260826.md)：前者说明为什么 A/B
+> 然后阅读 [T-057 backend 状态报告](../report/t057_backend_state_isolation_20260826.md) 和
+> [T-057 int→float→int 报告](../report/t057_int_float_int_boundary_20260826.md)：前者说明为什么 A/B
 > 必须 fresh process，后者用 generated code 展示“删掉 kernel”如何同时造成数值和 alias 错误。
 
 ## 模块设计目标与背景
 
 ### 1. 先把任务翻译成工程问题
 
-本任务不是统计源码中有多少个名为 pass 的函数，也不是把所有计算改写成 Triton。最终交付是一张可审计的 NPU 评估矩阵：每个 pass 都要有适用性、最小触发图、实际匹配证据、正确性、generated code/fallback、性能和最终处理结论。完整任务边界见 [task_scope_and_code_map.md](task_scope_and_code_map.md)。
+本任务不是统计源码中有多少个名为 pass 的函数，也不是把所有计算改写成 Triton。最终交付是一张
+以 acceptance unit 为主键的可审计兼容性矩阵：community test/GPU baseline 定义 upstream
+contract，NPU 侧记录命中、正确性、generated code/runtime path、性能和最终处理结论。完整任务
+边界见 [SCOPE_AND_CODE_MAP.md](SCOPE_AND_CODE_MAP.md)。
 
-对每条记录需要回答：
+对每个冻结 acceptance unit 需要回答：
 
 1. 这个 pass 是否应该作用于 NPU 图？
 2. 正例是否真正触发，负例是否避免误触发？
@@ -36,7 +43,7 @@
 6. pass-on 相对同 backend 的 pass-off 是否有稳定收益？
 7. 若不支持或回退，应修改 gate、lowering、kernel 还是编译器？
 
-这七个问题对应评估矩阵中的动态字段。矩阵说明见 [pass_evaluation_matrix.md](report/pass_src_20260820/pass_evaluation_matrix.md)，机器可填写版本见 [pass_evaluation_matrix.csv](report/pass_src_20260820/pass_evaluation_matrix.csv)。
+这七个问题对应评估矩阵中的动态字段。矩阵说明见 [pass_evaluation_matrix.md](../report/pass_src_20260820/pass_evaluation_matrix.md)，机器可填写版本见 [pass_evaluation_matrix.csv](../report/pass_src_20260820/pass_evaluation_matrix.csv)。
 
 ### 2. 必须先掌握的术语
 
@@ -53,7 +60,7 @@
 | fallback | 图仍可编译，但某个 op 没有专用 lowering，转为 Aten/extern 等保底路径 | <code>torch/_inductor/graph.py::GraphLowering.call_function():1405</code> |
 | backend | NPU 代码生成和运行路径的组合，不只是一个性能开关 | <code>torch_npu/_inductor/__init__.py::_BACKEND_LOADERS:323</code> |
 
-一个模型能成功执行，不代表目标 pass 可用。例如原始 <code>aten.mm</code> 能被 NPU 承接，但 <code>pad_mm</code> 可能从未匹配；因此必须同时观察变换图和 generated code。这个区别已经在 [P0 功能报告](report/p0_gate_first_run_20260820.md) 中得到实机验证。
+一个模型能成功执行，不代表目标 pass 可用。例如原始 <code>aten.mm</code> 能被 NPU 承接，但 <code>pad_mm</code> 可能从未匹配；因此必须同时观察变换图和 generated code。这个区别已经在 [P0 功能报告](../report/p0_gate_first_run_20260820.md) 中得到实机验证。
 
 ### 3. 为什么 pass、lowering 和 kernel 必须分开判断
 
@@ -73,7 +80,7 @@
 
 ### 4. 当前项目已经做到哪里
 
-当前事实以 [当前状态文档](current_status_and_background.md) 和两份 P0 报告为准：
+当前事实以 [当前状态文档](CURRENT_STATUS.md) 和两份 P0 报告为准：
 
 - experimental T-055 三种入口 12/12 编译、数值和 wrapper marker 通过；同进程回切 default
   暴露 erfc decomposition 重入失败。P-014 单行 cleanup 已通过 source registrar 和
@@ -119,35 +126,35 @@
 如果当前只负责 experimental，在第 1 项后先读迁移基线、T-055、T-056 和两份 T-057 报告，再回到 default
 报告学习通用方法；default 性能数字只能作为候选优先级。
 
-1. [task_scope_and_code_map.md](task_scope_and_code_map.md)：先理解目标、编译链和源码分工。
-2. [current_status_and_background.md](current_status_and_background.md)：掌握当前环境、已有结论和性能方法。
-3. [outcome_index.md](outcome_index.md)：先区分成功、失败、中性、未归因与环境阻塞。
-4. [p0_case_design.md](p0_case_design.md)：学习如何为一个 pass 设计正例、负例和 gate。
-5. [p0_gate_first_run_20260820.md](report/p0_gate_first_run_20260820.md)：学习如何区分“编译成功”和“目标 pass 触发”。
-6. [p0_ab_first_shape_20260820.md](report/p0_ab_first_shape_20260820.md)：学习单 pass paired A/B。
-7. [pass_evaluation_matrix.md](report/pass_src_20260820/pass_evaluation_matrix.md)：理解矩阵字段和批次。
-8. [T-023 集成报告](report/t023_mmplus_different_k_integration_20260821.md) 与 [T-024 workspace 审计](report/t024_mmplus_different_k_workspace_20260821.md)：学习如何在性能收益和显存代价冲突时形成条件性结论。
-9. [B2 alias/性能报告](report/t029_t030_b2_alias_fix_performance_20260824.md)：学习为什么数值正确仍可能失败，以及正确方案也可能因性能被否决。
-10. [T-032 结构/NPU 报告](report/t032_b2_redundancy_compile_20260824.md) 与 [T-033 fold_cat 性能报告](report/t033_fold_cat_performance_20260824.md)：学习如何把“前序已消除”的中性结果与“目标 pass 真正带来收益”分开。
-11. [T-034 结构/NPU 报告](report/t034_b2_view_copy_compile_20260824.md) 与 [T-035 fold_where 性能报告](report/t035_fold_where_performance_20260824.md)：学习对象身份检查、审计门禁纠错，以及 kernel 变快但端到端仍中性的情况。
-12. [T-036 layout alias 修复报告](report/t036_b2_layout_alias_fix_20260825.md)：学习为什么逐元素误差为 0 仍可能是错误 pass，以及如何用保守 capability gate 修复 storage/stride 语义。
-13. [T-037 layout 性能报告](report/t037_layout_pass_performance_20260825.md)：学习如何用单 pass 开/关、三轮中位、task profile 和显存分解证明修复后的安全路径确实有益。
-14. [T-057 int→float→int 报告](report/t057_int_float_int_boundary_20260826.md)：学习如何把
+1. [task_scope_and_code_map.md](SCOPE_AND_CODE_MAP.md)：先理解目标、编译链和源码分工。
+2. [current_status_and_background.md](CURRENT_STATUS.md)：掌握当前环境、已有结论和性能方法。
+3. [outcome_index.md](HISTORY.md)：先区分成功、失败、中性、未归因与环境阻塞。
+4. [p0_case_design.md](archive/plans/p0_case_design.md)：学习如何为一个 pass 设计正例、负例和 gate。
+5. [p0_gate_first_run_20260820.md](../report/p0_gate_first_run_20260820.md)：学习如何区分“编译成功”和“目标 pass 触发”。
+6. [p0_ab_first_shape_20260820.md](../report/p0_ab_first_shape_20260820.md)：学习单 pass paired A/B。
+7. [pass_evaluation_matrix.md](../report/pass_src_20260820/pass_evaluation_matrix.md)：理解矩阵字段和批次。
+8. [T-023 集成报告](../report/t023_mmplus_different_k_integration_20260821.md) 与 [T-024 workspace 审计](../report/t024_mmplus_different_k_workspace_20260821.md)：学习如何在性能收益和显存代价冲突时形成条件性结论。
+9. [B2 alias/性能报告](../report/t029_t030_b2_alias_fix_performance_20260824.md)：学习为什么数值正确仍可能失败，以及正确方案也可能因性能被否决。
+10. [T-032 结构/NPU 报告](../report/t032_b2_redundancy_compile_20260824.md) 与 [T-033 fold_cat 性能报告](../report/t033_fold_cat_performance_20260824.md)：学习如何把“前序已消除”的中性结果与“目标 pass 真正带来收益”分开。
+11. [T-034 结构/NPU 报告](../report/t034_b2_view_copy_compile_20260824.md) 与 [T-035 fold_where 性能报告](../report/t035_fold_where_performance_20260824.md)：学习对象身份检查、审计门禁纠错，以及 kernel 变快但端到端仍中性的情况。
+12. [T-036 layout alias 修复报告](../report/t036_b2_layout_alias_fix_20260825.md)：学习为什么逐元素误差为 0 仍可能是错误 pass，以及如何用保守 capability gate 修复 storage/stride 语义。
+13. [T-037 layout 性能报告](../report/t037_layout_pass_performance_20260825.md)：学习如何用单 pass 开/关、三轮中位、task profile 和显存分解证明修复后的安全路径确实有益。
+14. [T-057 int→float→int 报告](../report/t057_int_float_int_boundary_20260826.md)：学习如何把
     pass 数值错误、输出 alias 错误和下游低精度 codegen 现象分层归因，以及为什么错误结果不做
     性能测试。
-14. [T-038 dtype/index/mask 语义报告](report/t038_dtype_index_mask_semantic_fix_20260825.md)：学习 dtype、shape、Inf 与整数溢出为什么必须作为正确性合同，而不只是比较普通随机数值。
-15. [T-039 dtype/index/mask 性能报告](report/t039_dtype_index_mask_performance_20260825.md)：学习同为“删节点/降宽”，为什么两个 pass 能获得 50% 以上收益，而 mask pass 仍应判 neutral。
-16. [T-040 mask/hamming 语义报告](report/t040_mask_hamming_semantic_fix_20260825.md)：学习 signed zero、NaN 分类和 dtype capability guard，以及“功能通过、性能待测”的边界。
-17. [T-041 mask/hamming 性能报告](report/t041_mask_hamming_performance_20260825.md)：学习同一个 pass 的 direct/view 路径为什么可能一慢一快，以及为什么 device duration 不能代替端到端 gate。
-18. [T-042 bool view guard 报告](report/t042_bool_view_guard_integration_20260825.md)：学习如何用最小 capability guard 保留性能正域、停用负域并完成 wheel 闭环。
-19. [T-043～T-046 composite 报告](report/t043_t046_b2_composite_passes_20260825.md)：学习 schema/meta/alias 修复、性能与内存冲突，以及为何同一 vendor kernel 的接口替换应按芯片停用。
-20. [T-047/T-048 DVM/MLIR 报告](report/t047_t048_b3_dvm_mlir_20260826.md)：学习 aggregate 与 subpass 的调用关系、直接可用但产品不可达、上游预分解，以及可用性 pass 为什么没有安全性能 baseline。
-21. [T-049/T-050 attention 首轮报告](report/t049_t050_b4_attention_first_20260826.md)：学习 matcher 命中与 vendor kernel 落地的区别、等价 pattern 接管、scale divisor 合同和 paired isolate。
-22. [T-051 pattern 13 性能报告](report/t051_b4_attention_pattern13_performance_20260826.md)：学习同一 vendor kernel 为何在不同 family 可能只有资源收益、没有稳态时延收益。
-23. [T-052 float-mask 分流报告](report/t052_b4_attention_float_mask_dispatch_20260826.md)：学习 matcher 命中后的设备 capability 分支，以及为何一般 additive mask 不能直接转 bool。
-24. [T-053/T-054 pattern 5 报告](report/t054_b4_attention_pattern5_guard_20260826.md)：学习如何把性能负 rewrite 缩窄为 NPU exact guard，并用同 wheel 恢复旧 generator 做 paired。
-25. [p1_batch_design.md](p1_batch_design.md)：查看 attention 全批设计和剩余覆盖。
-25. [change_control.md](change_control.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
+14. [T-038 dtype/index/mask 语义报告](../report/t038_dtype_index_mask_semantic_fix_20260825.md)：学习 dtype、shape、Inf 与整数溢出为什么必须作为正确性合同，而不只是比较普通随机数值。
+15. [T-039 dtype/index/mask 性能报告](../report/t039_dtype_index_mask_performance_20260825.md)：学习同为“删节点/降宽”，为什么两个 pass 能获得 50% 以上收益，而 mask pass 仍应判 neutral。
+16. [T-040 mask/hamming 语义报告](../report/t040_mask_hamming_semantic_fix_20260825.md)：学习 signed zero、NaN 分类和 dtype capability guard，以及“功能通过、性能待测”的边界。
+17. [T-041 mask/hamming 性能报告](../report/t041_mask_hamming_performance_20260825.md)：学习同一个 pass 的 direct/view 路径为什么可能一慢一快，以及为什么 device duration 不能代替端到端 gate。
+18. [T-042 bool view guard 报告](../report/t042_bool_view_guard_integration_20260825.md)：学习如何用最小 capability guard 保留性能正域、停用负域并完成 wheel 闭环。
+19. [T-043～T-046 composite 报告](../report/t043_t046_b2_composite_passes_20260825.md)：学习 schema/meta/alias 修复、性能与内存冲突，以及为何同一 vendor kernel 的接口替换应按芯片停用。
+20. [T-047/T-048 DVM/MLIR 报告](../report/t047_t048_b3_dvm_mlir_20260826.md)：学习 aggregate 与 subpass 的调用关系、直接可用但产品不可达、上游预分解，以及可用性 pass 为什么没有安全性能 baseline。
+21. [T-049/T-050 attention 首轮报告](../report/t049_t050_b4_attention_first_20260826.md)：学习 matcher 命中与 vendor kernel 落地的区别、等价 pattern 接管、scale divisor 合同和 paired isolate。
+22. [T-051 pattern 13 性能报告](../report/t051_b4_attention_pattern13_performance_20260826.md)：学习同一 vendor kernel 为何在不同 family 可能只有资源收益、没有稳态时延收益。
+23. [T-052 float-mask 分流报告](../report/t052_b4_attention_float_mask_dispatch_20260826.md)：学习 matcher 命中后的设备 capability 分支，以及为何一般 additive mask 不能直接转 bool。
+24. [T-053/T-054 pattern 5 报告](../report/t054_b4_attention_pattern5_guard_20260826.md)：学习如何把性能负 rewrite 缩窄为 NPU exact guard，并用同 wheel 恢复旧 generator 做 paired。
+25. [p1_batch_design.md](archive/plans/p1_batch_design.md)：查看 attention 全批设计和剩余覆盖。
+25. [change_control.md](CHANGE_CONTROL.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
 
 根目录旧 <code>report/pass_inventory.md</code> 属于历史诊断；当前静态基线是
 <code>report/pass_src_20260820/</code>，当前动态环境由
@@ -546,7 +553,7 @@ NPU 分化：
 - triton_experimental 在加载前恢复 Inductor baseline，并能进入上游 <code>tuned_mm_plus_mm</code>。
 - T-023 没有解除共享 gate，而是在 default backend 另行注册 NPU-only different-K handler；它只在环境开关启用、static positive 2D、K1!=K2、同 dtype/device、受支持 stride 和 output 上限内追加 template choice，extern 始终保留。
 
-实测结论见 [P0 功能报告](report/p0_gate_first_run_20260820.md#mm_plus_mm)、[性能 A/B](report/p0_ab_first_shape_20260820.md#mm_plus_mm--triton_experimental) 与 [T-023 集成报告](report/t023_mmplus_different_k_integration_20260821.md)。
+实测结论见 [P0 功能报告](../report/p0_gate_first_run_20260820.md#mm_plus_mm)、[性能 A/B](../report/p0_ab_first_shape_20260820.md#mm_plus_mm--triton_experimental) 与 [T-023 集成报告](../report/t023_mmplus_different_k_integration_20260821.md)。
 
 ### P0 源码案例二：pad_mm / pad_bmm / pad_addmm
 
@@ -581,7 +588,7 @@ constant_pad_nd -> mm/bmm/addmm -> slice
 
 若 padding、额外读写和 slice 抵消了 GEMM 对齐收益，正确结论可能是保持关闭，而不是实现一个 Triton 替身。
 
-T-025/T-026 已实际完成这组比较。positive 图和 aligned negative 的功能gate全部通过，但mm/bmm/addmm每步设备task分别从1增至5/5/7，三轮p50均明显回退，峰值allocated还多约272–288 KiB。因此当前device gate不仅是未适配边界，也避免了代表shape上的真实性能回退。详见 [pad family报告](report/t025_t026_pad_family_20260821.md)。
+T-025/T-026 已实际完成这组比较。positive 图和 aligned negative 的功能gate全部通过，但mm/bmm/addmm每步设备task分别从1增至5/5/7，三轮p50均明显回退，峰值allocated还多约272–288 KiB。因此当前device gate不仅是未适配边界，也避免了代表shape上的真实性能回退。详见 [pad family报告](../report/t025_t026_pad_family_20260821.md)。
 
 ### P0 源码案例三：addmm fusion
 
@@ -726,7 +733,7 @@ lowering 需要说明：
 
 ### 本任务下一步的实际执行计划
 
-#### 当前第一步：继续剩余 experimental P0 family
+#### 历史阶段：experimental feature-family 扫描（不再是当前第一步）
 
 T-055～T-061 已关闭首批 experimental 正确性和性能闸门。P-014/P-016/P-017/P-018/P-019/P-020
 均从 detached worktree 构建专属 wheel 并在独立 venv 完成安装态验证；T-059 permute-gather 不需
@@ -765,6 +772,10 @@ smoke 均通过。按当时 feature-family 顺序下一项为 T-073/TE-DEC-002�
 Benchmark 仍安装 P-013；
 只有专属 venv 的结果能代表各 isolated pass。
 
+2026-08-31 后的当前第一步是 T-075 acceptance-unit schema 与 community-test mapping 收敛，
+随后才是 GPU/reference runner、NPU runner、comparison 和 repair queue。下文保留的 feature-family
+顺序仅用于理解历史实验，不应作为当前 TODO。
+
 #### 已完成：P0 addmm 覆盖与通用 blocker
 
 上述 dtype、shape、layout、dynamic、bias/shape guard、forward/backward 和三轮交错 paired A/B 已完成。T-011 还展示了一个重要工程方法：pass 本身已经正确改图，但训练路径可被下游公共 reduction lowering 阻断；应修复真实跨切面接口，而不是修改 addmm pattern 或手写 Triton 绕开。源码改动仅在 `torch_npu/_inductor/lowering.py`，新 wheel 以 `--no-deps` 安装，原 blocker 与近邻回归通过。
@@ -797,16 +808,16 @@ T-027 至 T-031 已把首批 7 个 B2 custom pass 推进到 33/33 个结构测�
 
 这说明 pass 验收至少有四层：目标是否到达、图是否按预期改变、完整语义是否一致、
 性能是否相对同 backend 的 pass-off baseline 有益。任一层失败，都不能用上一层的成功代替。
-完整证据见 [T-028 报告](report/t028_p1_b2_npu_compile_20260821.md) 和
-[T-029/T-030/T-031 报告](report/t029_t030_b2_alias_fix_performance_20260824.md)。
+完整证据见 [T-028 报告](../report/t028_p1_b2_npu_compile_20260821.md) 和
+[T-029/T-030/T-031 报告](../report/t029_t030_b2_alias_fix_performance_20260824.md)。
 
 T-032/T-033 继续用同一方法覆盖 `fold_cast`、`fold_cat`、`fold_clone`、`fold_detach`：
 其中除 `fold_cat` 外的三条，代表 positive 都在目标 pass 前被规范化消除或旁路，只能记
 reachability-neutral；`fold_cat` 则在 registry wrapper 内明确执行 cat `2→1`，三轮
 pass-on/pass-off p50/p99 改善 10.14%/10.32%，task 2→1、allocated peak 减少
 2,097,664 B。这个对照说明“最终图更简单”仍不足以归因；必须证明节点到达了目标 pass，
-再用只关闭该 pass 的 baseline 测量。详见 [T-032 报告](report/t032_b2_redundancy_compile_20260824.md)
-和 [T-033 报告](report/t033_fold_cat_performance_20260824.md)。
+再用只关闭该 pass 的 baseline 测量。详见 [T-032 报告](../report/t032_b2_redundancy_compile_20260824.md)
+和 [T-033 报告](../report/t033_fold_cat_performance_20260824.md)。
 
 T-034/T-035 再覆盖 `fold_sink_view`、`fold_squeeze`、`fold_to_copy`、`fold_where` 和
 `fold_redundant_ops`。这里新增两个经验：第一，dynamic pipeline 会把 `aten.view` 规范化为
@@ -814,8 +825,8 @@ T-034/T-035 再覆盖 `fold_sink_view`、`fold_squeeze`、`fold_to_copy`、`fold
 第二，`fold_where` 虽把 where 改为 clone，并让 device kernel 时间下降约 26.46%，但 task
 仍为 1→1、显存不变，三轮端到端 p50 只改善 1.16%。所以性能 verdict 必须以预登记的
 端到端门槛为准，不能只挑 profiler 中最好看的指标。详见
-[T-034 报告](report/t034_b2_view_copy_compile_20260824.md) 和
-[T-035 报告](report/t035_fold_where_performance_20260824.md)。
+[T-034 报告](../report/t034_b2_view_copy_compile_20260824.md) 和
+[T-035 报告](../report/t035_fold_where_performance_20260824.md)。
 
 T-036 覆盖 `cat_slice_cat_fold_pass` 与 `pad_slice_fold`。两条 pass 的安全正例在 NPU 上
 都能触发且数值误差为 0，但原实现分别把 eager 中两个独立 cat 输出合并成同一 storage，
@@ -826,8 +837,8 @@ T-036 覆盖 `cat_slice_cat_fold_pass` 与 `pad_slice_fold`。两条 pass 的安
 再用 pass-off/pass-on 三轮 paired 测量：cat-slice-cat p50/p99 改善 24.00%/22.87%、
 task 2→1；pad-slice p50/p99 改善 31.35%/30.34%、task 3→1、allocated peak 少
 10,485,248 B。两条都为 `supported-beneficial`，详见
-[T-036 报告](report/t036_b2_layout_alias_fix_20260825.md)和
-[T-037 报告](report/t037_layout_pass_performance_20260825.md)。
+[T-036 报告](../report/t036_b2_layout_alias_fix_20260825.md)和
+[T-037 报告](../report/t037_layout_pass_performance_20260825.md)。
 
 T-038/T-039 覆盖 `dtype_optimal_pass`、`fold_iota_arithmetic_pass` 与
 `broadcast_const_mask_compress`。这批展示了另一类“数值误差为 0”的陷阱：int64 arange
@@ -836,8 +847,8 @@ T-038/T-039 覆盖 `dtype_optimal_pass`、`fold_iota_arithmetic_pass` 与
 经 where 广播后的大输出也不能直接替换回小 mask。T-038 用比较闭包、来源 dtype、静态
 shape 与删除危险子改写修复这些边界，67/67 FX 和 9/9 NPU 功能通过。T-039 再证明 safe
 dtype/iota 降宽的 p50 改善 52.06%/55.78%，而 mask baseline 已融合为单 kernel，p50 只有
-0.30%，因此为 neutral。详见 [T-038 报告](report/t038_dtype_index_mask_semantic_fix_20260825.md)
-和 [T-039 报告](report/t039_dtype_index_mask_performance_20260825.md)。
+0.30%，因此为 neutral。详见 [T-038 报告](../report/t038_dtype_index_mask_semantic_fix_20260825.md)
+和 [T-039 报告](../report/t039_dtype_index_mask_performance_20260825.md)。
 
 T-040 接着覆盖 `masked_add_compose_pass`、`bool_cast_mul_to_where_pass` 与
 `sign_diff_hamming_fuse_pass`。前两条原实现对普通有限随机数看起来正确，但浮点边界暴露
@@ -848,9 +859,9 @@ multi-user 边界均通过。新 wheel 下 76/76 FX 与 9/9 NPU 功能 worker �
 发现 masked-add/Hamming p50 仅改善 3.71%/3.64%，均为 neutral；bool-cast view-chain
 p50/p99 改善 36.30%/39.90%，direct 却 p99 回退 19.02%。T-042 因此增加非空 chain
 guard：direct/float 保持，view-chain 继续改写，新 wheel 的 76/76 与 3/3 NPU 通过。
-详见 [T-040 报告](report/t040_mask_hamming_semantic_fix_20260825.md)、
-[T-041 报告](report/t041_mask_hamming_performance_20260825.md)和
-[T-042 报告](report/t042_bool_view_guard_integration_20260825.md)。
+详见 [T-040 报告](../report/t040_mask_hamming_semantic_fix_20260825.md)、
+[T-041 报告](../report/t041_mask_hamming_performance_20260825.md)和
+[T-042 报告](../report/t042_bool_view_guard_integration_20260825.md)。
 
 T-043～T-046 关闭最后三个复合 pass。batch embedding 展示了“值正确仍不够”的第三种
 形式：普通输入逐元素误差为 0，但多个 reduce 输出由独立 storage 变成 alias；显式
@@ -862,7 +873,7 @@ attention 又展示“换成更新接口不一定更快”：legacy 与 v3 在 B
 FlashAttentionScore task，显存相同，v3 的 P50/P99 反而回退 4.85%/31.72%。因此 P-011
 选择按 SoC 保留 legacy，而不是手写另一份 attention kernel。A5 路径仍保留修复后的
 schema、输出用户和 6-tuple fake meta guard，但必须在 A5 真机重新验证。详见
-[T-043～T-046 报告](report/t043_t046_b2_composite_passes_20260825.md)。
+[T-043～T-046 报告](../report/t043_t046_b2_composite_passes_20260825.md)。
 
 T-047/T-048 展示了 backend pass 调研最容易混淆的四个层次：
 
@@ -880,7 +891,7 @@ aggregate DVM fusion 则有合法 default baseline：同一 add→mul→sum→ad
 0.279905/0.374470 ms 降到 0.212175/0.224960 ms，首次编译从 20.32 s 降到 2.81 s，显存不增。
 有趣的是 DVM 每步 3 个 task，default 只有 1 个 Triton task，但 DVM 总 device duration 更短；
 所以 kernel 数只是资源指标之一，最终仍看端到端 gate。完整源码、修复和证据见
-[T-047/T-048 报告](report/t047_t048_b3_dvm_mlir_20260826.md)。
+[T-047/T-048 报告](../report/t047_t048_b3_dvm_mlir_20260826.md)。
 
 T-049/T-050 又展示了 attention 审计的关键分层。七个代表 family 的 exact matcher 和
 `fuse_attention` counter 都为 1，但只有 pattern 1/13 最终直接执行 vendor FlashAttention；
@@ -889,29 +900,30 @@ T-049/T-050 又展示了 attention 审计的关键分层。七个代表 family �
 还必须同时关闭等价 pattern 3，否则另一个 matcher 会接管同一图，使所谓 pass-off 实际仍是
 pass-on。正确隔离后，P50/P99 改善 46.70%/44.26%，task 4→1，说明已有 vendor kernel 明显优于
 数学展开，不需要手写 Triton。详见
-[T-049/T-050 报告](report/t049_t050_b4_attention_first_20260826.md)。
+[T-049/T-050 报告](../report/t049_t050_b4_attention_first_20260826.md)。
 
 T-051 进一步说明“落到同一个 vendor kernel”仍不能跨 family 外推性能。pattern 13 的 candidate
 也只有一个 FlashAttention task，但其 baseline 已只有 2 BMM + 1 softmax，三轮 P50 只改善
 0.99%；它的 task、首次编译和 allocated peak 却分别改善 3→1、91.37% 和 87.31%。所以项目
 把它写成 `supported-neutral-resource-beneficial`，保留真实资源价值，也不夸大 latency。
-详见 [T-051 报告](report/t051_b4_attention_pattern13_performance_20260826.md)。
+详见 [T-051 报告](../report/t051_b4_attention_pattern13_performance_20260826.md)。
 
 T-052 则把“为什么有的 pattern 又展开”落到设备源码：5/21/29 replacement 保留的是 additive
 float bias，而 torch_npu 两条 vendor SDPA 分支只接受 bool/None，随后按设计走 math fallback。
 无 mask pattern 30 在 fresh cache 中 exact 命中 vendor attention。这里不能把 float mask 粗暴转
 bool，因为加性偏置与屏蔽语义不同；详见
-[T-052 报告](report/t052_b4_attention_float_mask_dispatch_20260826.md)。
+[T-052 报告](../report/t052_b4_attention_float_mask_dispatch_20260826.md)。
 
 这里的背景知识是：逐元素相等只验证了“这批输入的值”。一个 PyTorch 算子的完整可观察
 合同还包括 dtype、shape、stride、storage alias、对象身份、梯度以及 NaN/Inf/overflow
 边界。另一方面，FX 节点数减少也不保证 kernel 数减少，因为 scheduler 可能早已把原链
 融合。因此正确性要看完整合同，性能要看 pass-on/pass-off 的端到端与 profiler 两层证据。
 
-按 [p1_batch_design.md](p1_batch_design.md) 顺序：
+按 [p1_batch_design.md](archive/plans/p1_batch_design.md) 的历史顺序：
 
 1. DVM/MLIR 的 8 条记录已完成结构层、后端层和可隔离 aggregate 性能；
-2. attention 八个代表 family 已完成，pattern 1/13/5 性能与 pattern 5 guard 已闭环；下一步做 21/29 paired，再扩到 30 个；
+2. attention 八个代表 family 已完成，pattern 1/13/5 性能与 pattern 5 guard 已闭环；当时计划做
+   21/29 paired 再扩到 30 个，该计划现已由 T-075 tracker 主线取代；
 3. 只对暴露出的真实 lowering/kernel 缺口提出替代。
 
 #### 后续：只对真实缺口实施替代
@@ -978,4 +990,4 @@ torch.compile
 2. **gate 练习**：从 <code>pad_mm.py::check_device()</code> 向上追到 pattern 注册，向下追到 replacement，解释为什么 <code>force_shape_pad=True</code> 仍无效。
 3. **性能练习**：阅读 fold_cat 的六个 worker JSON，自己计算 p50/p99 三轮中位数、task 2→1 和约 2 MiB 中间张量消失的关系，并解释为什么 eager-vs-compiled 不能作为单 pass baseline。
 
-这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后继续读 [T-049/T-050 attention 报告](report/t049_t050_b4_attention_first_20260826.md)、[T-051 pattern 13 报告](report/t051_b4_attention_pattern13_performance_20260826.md)、[T-052 float-mask 报告](report/t052_b4_attention_float_mask_dispatch_20260826.md) 和 [T-054 pattern 5 guard 报告](report/t054_b4_attention_pattern5_guard_20260826.md)。当前 B2/B3 已闭环，B4 三条性能与首个负域 guard 已关闭；下一步做 21/29 paired 与剩余 family，不要重跑已闭环 case。
+这三个练习对应的项目证据已经形成，适合作为新接手者的复盘入口。复盘后继续读 [T-049/T-050 attention 报告](../report/t049_t050_b4_attention_first_20260826.md)、[T-051 pattern 13 报告](../report/t051_b4_attention_pattern13_performance_20260826.md)、[T-052 float-mask 报告](../report/t052_b4_attention_float_mask_dispatch_20260826.md) 和 [T-054 pattern 5 guard 报告](../report/t054_b4_attention_pattern5_guard_20260826.md)。B2/B3 和 B4 已有结果只作为历史案例；当前下一步以根目录 `TODO.md` 的 T-075 acceptance-unit mapping 为准。

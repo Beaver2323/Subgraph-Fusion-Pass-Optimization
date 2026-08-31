@@ -1,5 +1,8 @@
 # P1：NPU Custom、DVM/MLIR 与 Attention 批次设计
 
+> 历史归档时间：2026-08-31 17:50 CST（UTC+08:00）。
+> 这是 previous-phase 批次设计，不是当前 acceptance-unit 分母或执行顺序。
+
 ## 范围
 
 评估矩阵中的 P1 共 66 条：

@@ -1,5 +1,8 @@
 # Pass NPU 项目变更控制记录
 
+> 日志校准时间：2026-08-31 17:50 CST（UTC+08:00）
+> 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
+
 ## 当前冻结状态
 
 - 2026-08-28 环境口径修正：当前主工作环境为
@@ -3168,3 +3171,30 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   T-074 镜像 report/CSV 与审计源产物一致，并确认无凭据、运行缓存或大型二进制进入提交。
 - 推送目标为文档仓 `origin/main`。推送前只读核对远端 main，提交后核对本地 HEAD、
   `origin/main` 和远端引用一致；具体 commit ID 与推送结果在交付回复中报告。
+
+### E-200：2026-08-31 Tracker 工作线校准与文档树收束（2026-08-31）
+
+- 登记时间：2026-08-31 17:50 CST（UTC+08:00）。状态：
+  `verified-document-calibration-structure-converged`。
+- 需求：暂停新增 pass 测例和大规模 GPU/NPU 执行，先按 8 月 31 日需求检查 README、TODO、
+  WORKFLOW、任务范围、T-074 和后续计划，明确 community test 是主要事实源、acceptance unit
+  是跟踪主键，并整理远端文档仓结构。
+- 概念修正：registration candidate、pattern、community test、acceptance unit 和 variant
+  不得等同；T-074 的 203+4 行保留为 inventory，188/158 保留为 provisional heuristic 输出，
+  不作为 Pass 总数、冻结分母或完成率。
+- T-074 决策：本轮不重跑/覆盖生成器和 CSV。先执行 T-075 schema 与首批 5 个单元人工复核；
+  发现 contract 合并/拆分后再增量生成 v2，并保留 v1 可追溯性。当前正式闭环数仍为 0。
+- 结构修改：根目录收束为 README/TODO/WORKFLOW；当前状态、范围、指南、变更控制和历史索引
+  归入 `docs/`；旧总览、检查点、计划和交接归入 `docs/archive/`；`report/` 增加导航但不删除或
+  改写历史实验事实。
+- 工作流：固定为 community test → GPU/reference → NPU → compare → first divergence → repair
+  → regression。GPU 无 Agent，只执行预生成批量脚本；NPU 为 mapping、runner、分析和修复控制节点。
+- 文档要求：活动文档使用中文并标记 2026-08-31 时间戳。归档文件保留原语言和历史口径，由
+  archive 索引统一说明。
+- 变更边界：只修改
+  `/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization` 文档仓；不修改 PyTorch、torch_npu、
+  Triton、审计生成器、runner、环境或 wheel，不运行 GPU/NPU 动态实验。
+- 验收：检查目录树、Git rename/新增范围、Markdown 相对链接、时间戳、术语风险、T-074 CSV
+  计数和 `git diff --check`。结果：活动根文件严格为 README/TODO/WORKFLOW，Markdown 相对链接
+  全部可解析，活动文档中文/2026-08-31 时间戳检查通过，T-074 207/188/158/5 与动态未运行状态
+  保持不变；形成独立文档提交，便于审查。

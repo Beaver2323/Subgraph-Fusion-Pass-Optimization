@@ -1,10 +1,13 @@
 # 成果、失败与中性尝试索引
 
-> 更新到 2026-08-29。这里汇总已执行的动态工作，不代表 251 条 pass 全部完成；逐条状态
+> 索引更新时间：2026-08-31 17:50 CST（UTC+08:00）。
+> 这里汇总 2026-08-29 前已执行的动态工作，不代表 251 条 registration/inventory 记录全部完成；逐条状态
 > 仍以 `report/pass_src_20260820/pass_evaluation_matrix.csv` 为准。
 > P-013/default 工作已归档；用户随后恢复任务并将目标切换到
 > `triton_experimental`。2026-08-29 起新测试的唯一主环境是 Conda `Pass`，所有测试从
 > `/home/z50063656/tmp` 发起；旧 Benchmark/独立 venv 结果保留真实环境标签。
+> 当前活动任务和 acceptance-unit 口径以 `../TODO.md`、`../WORKFLOW.md` 和
+> [CURRENT_STATUS.md](CURRENT_STATUS.md) 为准。
 
 ## 社区原生 pass 静态索引主线
 
@@ -162,7 +165,7 @@ seq-first 三轮 P50 中位改善 `5.53%`、peak 下降 `83.09%`，作为 resour
 按当时 feature-family 顺序下一项为 T-073/TE-DEC-002；该项现已降为次级支线。
 旧 default 结论只作为迁移优先级，不直接计入 experimental 成功率。
 
-2026-08-29 主线校准：T-073 降为次级支线，当前已进入 T-074 的“社区原生
-pass/pattern -> 社区测例 -> NPU 去重验收单元”映射。第一版静态索引已生成，
-下一步是人工复核 `no-test-found`/indirect 项并冻结分母，再对首批社区用例做
-Pass 主环境 NPU `triton_experimental` 最小迁移。
+2026-08-31 再校准：T-074 candidate inventory 保留，但 188/158 仅是 heuristic provisional
+acceptance-unit 统计，不称为 Pass 总数或冻结分母。当前先执行 T-075 schema 与 community-test
+mapping 收敛；随后生成 GPU/reference baseline，再进行 NPU `triton_experimental`、comparison、
+failure classification 和 repair queue。历史结果不直接升级为 tracker verdict。

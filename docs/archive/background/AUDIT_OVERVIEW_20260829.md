@@ -1,5 +1,8 @@
 # Inductor Pass NPU Audit
 
+> 历史归档时间：2026-08-31 17:50 CST（UTC+08:00）。
+> 本文件是旧审计总览，保留原始语言和阶段口径；当前状态见 `../../CURRENT_STATUS.md`。
+
 This directory is the audit, evidence, and report area for the local PyTorch
 and torch_npu source trees. The project working directory is
 `/home/z50063656/Pass`. T-011, T-023, T-029/T-031, and T-036 contain pre-registered torch_npu source
@@ -14,7 +17,7 @@ isolation, and the audit-only launcher workaround are recorded explicitly.
 Static inventory and the first P0 dynamic/function/performance checkpoint are complete:
 
 - Work resumed from the user-requested 2026-08-21 checkpoint. The preserved
-  baseline is [PAUSED_CHECKPOINT_20260821.md](PAUSED_CHECKPOINT_20260821.md),
+  baseline is [PAUSED_CHECKPOINT_20260821.md](../checkpoints/PAUSED_CHECKPOINT_20260821.md),
   and the resumed evidence starts at `change_control.md:E-030`. T-014 through
   T-026 have now closed standalone correctness, dtype/layout/dynamic/backward
   semantics, default-off wheel integration, fresh-process paired performance,
@@ -60,26 +63,26 @@ The installed torch_npu direct-url hash (`263ffec2...2792704`) differs from the
 current same-named dist wheel (`3909fd64...c2d4989`), so reinstall is frozen
 until the baseline is explicitly recorded. Earlier Benchmark and independent
 candidate-venv results remain historical evidence. See
-[HANDOFF_20260828_PASS_ENV.md](HANDOFF_20260828_PASS_ENV.md).
+[HANDOFF_20260828_PASS_ENV.md](../handoffs/HANDOFF_20260828_PASS_ENV.md).
 
-Read [current_status_and_background.md](current_status_and_background.md) before
+Read [current_status_and_background.md](CURRENT_STATUS_20260829.md) before
 choosing a wheel or source build and before restarting any probe.
 For a one-page separation of successful, rejected, neutral, and environment
-attempts, read [outcome_index.md](outcome_index.md).
+attempts, read [outcome_index.md](../../HISTORY.md).
 
 For a source-backed, from-scratch learning path, start with
-[inductor_pass_npu_beginner_guide.md](inductor_pass_npu_beginner_guide.md). It
+[inductor_pass_npu_beginner_guide.md](../../GUIDE.md). It
 connects the compile pipeline, PyTorch/torch_npu source entry points, P0
 evidence, matrix workflow, and the next implementation stages.
 
 For the exact project scope and source edit map, read
-[task_scope_and_code_map.md](task_scope_and_code_map.md). The current source
+[task_scope_and_code_map.md](../../SCOPE_AND_CODE_MAP.md). The current source
 inventory is under `report/pass_src_20260820/`; the root-level report is the
 older `/Dynamo` snapshot and is retained for comparison.
 
-P0 gate cases are specified in [p0_case_design.md](p0_case_design.md). The next
+P0 gate cases are specified in [p0_case_design.md](../plans/p0_case_design.md). The next
 66 P1 records (NPU custom, DVM/MLIR, and attention) are routed in
-[p1_batch_design.md](p1_batch_design.md).
+[p1_batch_design.md](../plans/p1_batch_design.md).
 
 P0 current behavior has been executed for 20 positive/negative backend pairs;
 all compile and compare correctly. Three pad families remain product-unsupported
@@ -96,15 +99,15 @@ source wheel with `--no-deps`, and closed vector/full-bias backward plus neighbo
 regressions. Addmm is now `supported-beneficial`; T-023 has moved different-K
 `mm_plus_mm` to `conditional-supported-beneficial` through a default-off NPU
 template with extern fallback. See
-[p0_sweep_function_matrix_20260820.md](report/p0_sweep_function_matrix_20260820.md)
+[p0_sweep_function_matrix_20260820.md](../../../report/p0_sweep_function_matrix_20260820.md)
 and
-[p0_sweep_performance_20260820.md](report/p0_sweep_performance_20260820.md), then
-[p0_semantic_matrix_20260821.md](report/p0_semantic_matrix_20260821.md).
+[p0_sweep_performance_20260820.md](../../../report/p0_sweep_performance_20260820.md), then
+[p0_semantic_matrix_20260821.md](../../../report/p0_semantic_matrix_20260821.md).
 The different-K pass-on/pass-off baseline is in
-[t012_mmplus_different_k_baseline_20260821.md](report/t012_mmplus_different_k_baseline_20260821.md):
+[t012_mmplus_different_k_baseline_20260821.md](../../../report/t012_mmplus_different_k_baseline_20260821.md):
 shape-A is -0.30% and unaligned is +2.53% at p50, so the current fallback is
 performance-neutral. The follow-up kernel breakdown is in
-[t013_mmplus_different_k_profile_20260821.md](report/t013_mmplus_different_k_profile_20260821.md):
+[t013_mmplus_different_k_profile_20260821.md](../../../report/t013_mmplus_different_k_profile_20260821.md):
 two in-step gaps plus add leave a 17.68%/16.02% theoretical ceiling, which
 allows a standalone microprototype but not a source integration. T-014 through
 T-019 show that the 128³ candidate is one-task and covers fp16/bf16/fp32,
@@ -120,14 +123,14 @@ fallback. T-022 re-profiled three large tiles: device p50 is
 6.64%/6.97%/7.55%, so large is now `supported-neutral-hold`. Its steady memory
 decomposition shows candidate allocated peak exceeds baseline by one 655,360 B
 logical output; the older 5.90 MB value included long-lived first outputs. See the
-[T-014–T-016 report](report/t014_t016_mmplus_different_k_candidate_20260821.md),
-[T-017–T-019 coverage report](report/t017_t019_mmplus_different_k_coverage_20260821.md),
-the [T-020 extended benchmark](report/t020_mmplus_different_k_extended_benchmark_20260821.md),
-the [T-021 integration design](report/t021_mmplus_different_k_integration_design_20260821.md),
-the [T-022 large decomposition](report/t022_mmplus_different_k_large_profile_20260821.md),
-the [T-023 integration report](report/t023_mmplus_different_k_integration_20260821.md),
-the [T-024 workspace audit](report/t024_mmplus_different_k_workspace_20260821.md),
-and the [T-025/T-026 pad audit](report/t025_t026_pad_family_20260821.md).
+[T-014–T-016 report](../../../report/t014_t016_mmplus_different_k_candidate_20260821.md),
+[T-017–T-019 coverage report](../../../report/t017_t019_mmplus_different_k_coverage_20260821.md),
+the [T-020 extended benchmark](../../../report/t020_mmplus_different_k_extended_benchmark_20260821.md),
+the [T-021 integration design](../../../report/t021_mmplus_different_k_integration_design_20260821.md),
+the [T-022 large decomposition](../../../report/t022_mmplus_different_k_large_profile_20260821.md),
+the [T-023 integration report](../../../report/t023_mmplus_different_k_integration_20260821.md),
+the [T-024 workspace audit](../../../report/t024_mmplus_different_k_workspace_20260821.md),
+and the [T-025/T-026 pad audit](../../../report/t025_t026_pad_family_20260821.md).
 T-023 shape-A/unaligned integrated p50 improves 15.29%/18.04%, but candidate
 peak allocated is 270,336 B above baseline because Triton Ascend allocates
 65,536 B workspace for each of six blocks. T-024 found no configuration that
@@ -136,23 +139,23 @@ remains default-off with a 131072-element output cap; the formal matrix verdict
 is conditional until a matching no-shim launcher environment is verified.
 
 The first P1 B2 checkpoint is in
-[T-028](report/t028_p1_b2_npu_compile_20260821.md) and the
-[T-029/T-030/T-031 closure report](report/t029_t030_b2_alias_fix_performance_20260824.md).
+[T-028](../../../report/t028_p1_b2_npu_compile_20260821.md) and the
+[T-029/T-030/T-031 closure report](../../../report/t029_t030_b2_alias_fix_performance_20260824.md).
 The important distinction is explicit: `fold_reduce -> clone` was a correct but
 performance-regressed intermediate attempt; `cat_to_view -> clone` is retained
 as `supported-neutral-resource-beneficial`. Three other positives were removed
 before their target pass and remain reachability-neutral, not attributed wins.
 The second cohort is in the
-[T-032 compile report](report/t032_b2_redundancy_compile_20260824.md) and
-[T-033 fold_cat performance report](report/t033_fold_cat_performance_20260824.md).
+[T-032 compile report](../../../report/t032_b2_redundancy_compile_20260824.md) and
+[T-033 fold_cat performance report](../../../report/t033_fold_cat_performance_20260824.md).
 The third cohort is in the
-[T-034 compile report](report/t034_b2_view_copy_compile_20260824.md) and
-[T-035 fold_where performance report](report/t035_fold_where_performance_20260824.md).
+[T-034 compile report](../../../report/t034_b2_view_copy_compile_20260824.md) and
+[T-035 fold_where performance report](../../../report/t035_fold_where_performance_20260824.md).
 The fourth cohort's alias defects, conservative source fix, rebuilt wheel, and
 functional closure are in the
-[T-036 layout alias report](report/t036_b2_layout_alias_fix_20260825.md); its
+[T-036 layout alias report](../../../report/t036_b2_layout_alias_fix_20260825.md); its
 three-round paired performance is in the
-[T-037 layout performance report](report/t037_layout_pass_performance_20260825.md).
+[T-037 layout performance report](../../../report/t037_layout_pass_performance_20260825.md).
 
 ## 1. Generate the full source inventory
 
@@ -204,7 +207,7 @@ python /home/z50063656/Pass/inductor_pass_npu_audit/run_p0_gate_probe.py \
 ```
 
 The full parameter contract and the non-Cartesian cohort plan are documented
-in [p0_case_design.md](p0_case_design.md#p0-覆盖扩展参数).
+in [p0_case_design.md](../plans/p0_case_design.md#p0-覆盖扩展参数).
 
 ## 3. Run broader representative probes
 

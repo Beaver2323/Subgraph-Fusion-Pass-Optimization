@@ -1,5 +1,9 @@
 # T-074 社区原生 pass/pattern 与上游测试索引（2026-08-29）
 
+> 原始生成时间：2026-08-29
+> 术语复核时间：2026-08-31 17:50 CST（UTC+08:00）
+> 状态：T-074 v1 静态 inventory/provisional mapping；不是冻结的 Pass 或 acceptance-unit 分母。
+
 ## 结论
 
 已完成第一版静态索引生成与首批人工回填：T-056 的 203 条主候选全部进入索引，
@@ -10,6 +14,19 @@ PyTorch、torch_npu、Triton、环境或 wheel。
 207 行当前聚合为 188 个去重验收单元。其中 158 个标为
 `yes-provisional`，30 个注册容器/扩展 hook 标为不进入分母。这个 158 **不是冻结分母**：
 除首批 5 个单元外，其余自动映射仍需逐项人工审阅，不能据此宣称完成率。
+
+## 2026-08-31 术语与工作流复核
+
+- 203 条主候选和 4 条控制项是 registration/inventory candidate 行，不称为 207 个 Pass；
+- 188 个单元来自 source/name 归一化和少量显式 semantic group，是 heuristic provisional
+  grouping，不自动等于 188 个 upstream optimization contracts；
+- community test 是 contract 的主要事实源，registration/pattern evidence 用于辅助 coverage；
+- 一个 registration 可能展开多个需分别验证的 variants，多个 registration 也可能共同实现
+  一个 acceptance unit；
+- 当前 candidate CSV 可以继续复用，不需要因术语变化立即重扫；
+- 先冻结 acceptance-unit schema 并人工复核 mapping，发现合并/拆分后再生成 v2，保留 v1；
+- 当前数量不变：207 candidate rows、188 provisional units、158 provisional eligible、
+  5 个首批人工 mapping、正式 tracker 闭环 0。
 
 ## 输入边界与索引修正
 
@@ -90,18 +107,18 @@ T-074 保留历史 `record_id`，另生成包含 source/line/name 摘要的唯�
 ## 产物
 
 - `t074_build_upstream_test_index.py`：标准库静态生成器，不导入 `torch`。
-- `report/upstream_pass_test_index_20260829/candidate_test_index.csv`：207 行源码
+- `upstream_pass_test_index_20260829/candidate_test_index.csv`：207 行源码
   候选/控制项映射，包含注册、config、社区测试、device、NPU 状态和证据边界。
-- `report/upstream_pass_test_index_20260829/acceptance_units.csv`：188 个去重单元及
+- `upstream_pass_test_index_20260829/acceptance_units.csv`：188 个 provisional 单元及
   provisional 分母角色。
 
 ## 下一步
 
-1. 先人工审阅 54 条 `no-test-found` 和 33 条 indirect 行，修正一对多注册/生成器
-   关系，再冻结真正的 eligible 分母；不得直接采用 158。
-2. 对首批 5 个单元以社区图为准设计 NPU 最小迁移，优先运行 `mm_plus_mm`；
-   每个 pass-on/off 仍使用 fresh process。
-3. 动态测试前只读核验 Pass 环境、installed wheel identity 和空闲 NPU；wheel 哈希
-   冲突未登记处理前不重装 `dist/` 中同名 wheel。
-4. 只有通过 trigger、数值/梯度、generated code、graph break/fallback 门禁后才做
-   paired 性能；本轮所有动态字段保持 `not-run-current-Pass`。
+1. 执行 T-075：先定义 acceptance-unit manifest/schema，再复核首批 5 个单元的 contract、
+   variants、tracking mode 和 denominator 状态。
+2. 按单元审核 48 个 `no-test-found` 和 29 个 indirect，同时保留其对应的 54/33 条 candidate
+   行；无法确认时标记 `needs-review`，不得猜测。
+3. mapping 收敛后生成 manifest-driven GPU/reference runner；GPU baseline 有效后才进行 NPU
+   `triton_experimental` comparison。
+4. NPU 动态测试继续遵守 Pass 环境、fresh process、wheel 身份和 correctness-before-performance
+   门禁；当前所有动态字段保持 `not-run-current-Pass`。
