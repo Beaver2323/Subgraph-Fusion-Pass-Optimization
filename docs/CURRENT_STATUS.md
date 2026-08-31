@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-08-31 18:45 CST（UTC+08:00）
+> 更新时间：2026-08-31 20:00 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-075 首批静态 mapping 完成；尚未启动新的 GPU/NPU 动态实验。
+> 当前阶段：T-076 GPU/reference runner 静态完成；尚未取得新的 GPU/NPU 动态结果。
 
 ## 1. 总结
 
@@ -20,7 +20,8 @@ PyTorch community-native Inductor compatibility。需要修正的不是基础候
 
 在此基础上，T-075 已完成首批 5 个单元的 schema、manifest、pass map 和人工复核：单元数仍为
 5，共 20 个 variants、13 个 community test 引用。所有单元仍等待 GPU/reference，正式冻结分母
-与正式闭环数均为 0。
+与正式闭环数均为 0。T-076 已把 13 个引用全部落成 direct execution cases，并提供独立结果
+schema、fresh-process runner 和 GPU 人工说明；当前没有 direct artifacts，因此没有 adapter。
 
 ## 2. 工作线吻合性
 
@@ -105,7 +106,7 @@ report/         不可改写的实验事实和 T-074 数据
 旧 README、旧 current status、旧 audit overview、检查点、计划和交接全部移动到
 `docs/archive/`，没有删除。`docs/HISTORY.md` 保留成果索引，`report/README.md` 提供证据导航。
 
-## 6. T-075 首批完成项与剩余边界
+## 6. T-075/T-076 首批完成项与剩余边界
 
 已完成：
 
@@ -113,26 +114,33 @@ report/         不可改写的实验事实和 T-074 数据
 - 5 条 candidate → registration → test → acceptance unit 多对多映射；
 - 首批 5 个 contract/variant 人工决策；
 - T-074 v1 → T-075 的证据角色修正；
-- 不导入 `torch` 的静态一致性校验。
+- 不导入 `torch` 的静态一致性校验；
+- 13 个 community tests 的 direct reference plan 与批量执行器；
+- 20 个 variants 的完整 reference 处置：14 个进入动态 case，3 个 registration-only，3 个
+  NPU-only gate；
+- 环境/commit 严格门禁、单 case 隔离、失败继续、FX before/after、稳定 signature 和结构化 summary；
+- GPU 静态校验、整批/单 case 执行、打包与回传说明。
 
 仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核、统一运行 result
-schema、GPU/NPU baseline 和冻结 denominator。它们不能被首批静态完成状态掩盖。
+schema 的 NPU/comparison 部分、GPU/NPU baseline 和冻结 denominator。它们不能被 runner 静态
+完成状态掩盖。
 
 ## 7. 下一条 Codex 任务
 
 ```text
-执行 T-076：基于 upstream/manifest.yaml 为首批 5 个 acceptance units 生成 GPU/reference
-runner 与人工操作说明。每个单元先尝试 community 原生测例/原生 helper，确认是否实际命中；
-只有 direct 路径受设备、backend 或 artifacts 采集阻塞时，才生成不改变图与 expected behavior
-的最小 adapter。单个 case 失败不得终止批次，输出结构化 artifacts，不运行 NPU comparison。
+在 GPU 机器按 docs/REFERENCE_RUNNER_GPU.md 运行 T-076 的 13 个 direct community cases，回传
+完整 run 目录。NPU 控制节点先复核 execution、内部 counter/FileCheck 断言、FX before/after 和
+环境指纹；只有 direct 路径受设备、backend 或 artifacts 采集阻塞时，才生成不改变图与 expected
+behavior 的最小 adapter。reference 有效前不运行 NPU comparison。
 ```
 
 ## 8. 当前环境边界
 
 - 所有新测试从 `/home/z50063656/tmp` 发起；
-- 主环境为 `/home/z50063656/Pass/activate_pass.sh` 激活的 Conda `Pass`；
+- NPU 控制节点动态任务使用 `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`；GPU
+  reference 使用与冻结 PyTorch commit 一致的独立 CUDA 环境；
 - 不在 PyTorch/torch_npu 源码树中 import `torch`；
 - installed torch_npu wheel 与 `dist` 同名 wheel 哈希冲突仍未解除，不重装；
 - T-055～T-073 的 Benchmark/isolated venv 结果保留原环境标签；
-- T-075 只修改 tracker 文档、`upstream/` 数据与静态校验脚本；不修改 PyTorch、torch_npu、
-  Triton、环境或 wheel，不执行设备测试。
+- T-076 只修改 tracker 文档、schema、执行计划和 runner；不修改 PyTorch、torch_npu、Triton、
+  环境或 wheel。本机无 `nvidia-smi`，只完成 `torch_imported=0/gpu_executed=0` 静态校验。

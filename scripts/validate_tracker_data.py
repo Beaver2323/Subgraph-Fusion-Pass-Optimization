@@ -98,6 +98,9 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
     manifest_path = repo_root / "upstream/manifest.yaml"
     map_path = repo_root / "upstream/pass_map.yaml"
     schema_path = repo_root / "upstream/manifest.schema.json"
+    reference_plan_path = repo_root / "upstream/reference_plan.yaml"
+    reference_plan_schema_path = repo_root / "upstream/reference_plan.schema.json"
+    reference_result_schema_path = repo_root / "schemas/reference_result.schema.json"
     candidate_path = (
         repo_root
         / "report/upstream_pass_test_index_20260829/candidate_test_index.csv"
@@ -106,6 +109,9 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
     manifest = load_json(manifest_path)
     pass_map = load_json(map_path)
     schema = load_json(schema_path)
+    reference_plan = load_json(reference_plan_path)
+    reference_plan_schema = load_json(reference_plan_schema_path)
+    reference_result_schema = load_json(reference_result_schema_path)
     require_keys(
         manifest,
         {
@@ -137,6 +143,12 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
         raise ValueError("manifest/pass_map schema_version 不一致")
     if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
         raise ValueError("manifest.schema.json draft 不符合预期")
+    for name, value in (
+        ("reference_plan.schema.json", reference_plan_schema),
+        ("reference_result.schema.json", reference_result_schema),
+    ):
+        if value.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+            raise ValueError(f"{name} draft 不符合预期")
     reference_contract = manifest["reference_contract"]
     require_keys(
         reference_contract,
@@ -281,6 +293,122 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
                 f"{mapping['acceptance_unit_id']} manifest/pass_map tests 不一致"
             )
 
+    require_keys(
+        reference_plan,
+        {
+            "schema_version",
+            "generated_at",
+            "status",
+            "manifest",
+            "execution_policy",
+            "cases",
+            "non_executed_variants",
+        },
+        "reference_plan",
+    )
+    if reference_plan["schema_version"] != "1.0":
+        raise ValueError("reference_plan schema_version 必须为 1.0")
+    if reference_plan["manifest"] != {
+        "path": "upstream/manifest.yaml",
+        "schema_version": manifest["schema_version"],
+        "pytorch_commit": manifest["source_baselines"]["pytorch"]["commit"],
+    }:
+        raise ValueError("reference_plan manifest 锚点不一致")
+    policy = reference_plan["execution_policy"]
+    require_keys(
+        policy,
+        {
+            "order",
+            "case_isolation",
+            "failure_behavior",
+            "artifact_capture",
+            "benchmark_gate",
+            "default_timeout_seconds",
+        },
+        "reference_plan.execution_policy",
+    )
+    if policy["order"] != reference_contract["execution_order"]:
+        raise ValueError("reference_plan 未保持 direct-first 顺序")
+    if policy["case_isolation"] != "fresh-process":
+        raise ValueError("reference case 必须 fresh-process")
+    if policy["failure_behavior"] != "continue-and-record":
+        raise ValueError("reference case 失败后必须继续")
+    if policy["benchmark_gate"] != "functional-reference-valid-first":
+        raise ValueError("benchmark 必须位于 reference 功能门禁之后")
+
+    cases = reference_plan["cases"]
+    if not isinstance(cases, list) or len(cases) != 13:
+        raise ValueError(
+            f"首批 reference plan 必须恰为 13 个 case，实际 {len(cases)}"
+        )
+    case_ids = [case["case_id"] for case in cases]
+    if len(case_ids) != len(set(case_ids)):
+        raise ValueError("reference case_id 必须唯一")
+    manifest_test_pairs = {
+        (unit["acceptance_unit_id"], test["nodeid"])
+        for unit in units
+        for test in unit["community_tests"]
+    }
+    plan_test_pairs: set[tuple[str, str]] = set()
+    covered_variants: set[tuple[str, str]] = set()
+    for case in cases:
+        require_keys(
+            case,
+            {
+                "case_id",
+                "acceptance_unit_id",
+                "source_test",
+                "tracking_mode",
+                "variant_ids",
+                "expected_match",
+                "expected_assertions",
+                "required_artifacts",
+                "benchmark",
+            },
+            case["case_id"],
+        )
+        if case["tracking_mode"] != "direct":
+            raise ValueError(f"首批 case 必须先使用 direct: {case['case_id']}")
+        if case["benchmark"] != "not-configured-first-reference-wave":
+            raise ValueError(f"首批 case 不得提前配置 benchmark: {case['case_id']}")
+        pair = (case["acceptance_unit_id"], case["source_test"])
+        if pair in plan_test_pairs:
+            raise ValueError(f"reference community test 重复: {pair}")
+        plan_test_pairs.add(pair)
+        unit = units_by_id.get(case["acceptance_unit_id"])
+        if unit is None:
+            raise ValueError(f"reference case unit 不存在: {pair}")
+        known_variants = {
+            variant["variant_id"] for variant in unit["variants"]
+        }
+        for variant_id in case["variant_ids"]:
+            if variant_id not in known_variants:
+                raise ValueError(
+                    f"reference case variant 不存在: {pair}:{variant_id}"
+                )
+            covered_variants.add((case["acceptance_unit_id"], variant_id))
+    if plan_test_pairs != manifest_test_pairs:
+        raise ValueError("reference plan 未一一覆盖 13 个 manifest community tests")
+
+    dispositions: set[tuple[str, str]] = set()
+    for item in reference_plan["non_executed_variants"]:
+        require_keys(
+            item,
+            {"acceptance_unit_id", "variant_id", "disposition", "reason"},
+            "reference_plan.non_executed_variants",
+        )
+        key = (item["acceptance_unit_id"], item["variant_id"])
+        if key in dispositions or key in covered_variants:
+            raise ValueError(f"reference variant 重复执行/排除: {key}")
+        dispositions.add(key)
+    all_variants = {
+        (unit["acceptance_unit_id"], variant["variant_id"])
+        for unit in units
+        for variant in unit["variants"]
+    }
+    if covered_variants | dispositions != all_variants:
+        raise ValueError("reference plan 未完整处置 20 个 variants")
+
     if pytorch_root is not None:
         validate_pytorch_evidence(units, pytorch_root)
 
@@ -291,6 +419,9 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
     print(f"mapped_candidates={len(mappings)}")
     print(f"variants={variant_count}")
     print(f"community_tests={test_count}")
+    print(f"reference_cases={len(cases)}")
+    print(f"reference_executed_variants={len(covered_variants)}")
+    print(f"reference_non_executed_variants={len(dispositions)}")
     print("denominator_frozen=0")
     print("torch_imported=0")
 

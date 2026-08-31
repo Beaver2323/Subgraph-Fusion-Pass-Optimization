@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Beaver2323/Subgraph-Fusion-Pass-Optimization/main/schemas/reference_result.schema.json",
+  "title": "GPU Reference Case Result",
+  "$comment": "更新时间：2026-08-31 20:00 CST；这是 T-076 reference 结果合同，不等同于后续 GPU/NPU unified verdict schema。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "run_id",
+    "case",
+    "source",
+    "environment_fingerprint_ref",
+    "execution",
+    "match",
+    "fx",
+    "correctness",
+    "benchmark",
+    "adapter_decision",
+    "reference_valid"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "run_id": {"type": "string"},
+    "case": {
+      "type": "object",
+      "required": [
+        "case_id",
+        "acceptance_unit_id",
+        "variant_ids",
+        "source_test",
+        "tracking_mode"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": ["pytorch_root", "expected_commit", "actual_commit"]
+    },
+    "environment_fingerprint_ref": {"type": "string"},
+    "execution": {
+      "type": "object",
+      "required": [
+        "status",
+        "success",
+        "return_code",
+        "duration_seconds",
+        "command",
+        "working_directory",
+        "timeout_seconds",
+        "tests_ran",
+        "tests_skipped",
+        "skip_reason"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["passed", "failed", "skipped", "timed-out", "no-tests"]
+        },
+        "success": {"type": "boolean"},
+        "return_code": {"type": ["integer", "null"]},
+        "duration_seconds": {"type": "number", "minimum": 0},
+        "command": {"type": "array", "items": {"type": "string"}},
+        "working_directory": {"type": "string"},
+        "timeout_seconds": {"type": "integer", "minimum": 1},
+        "tests_ran": {"type": ["integer", "null"], "minimum": 0},
+        "tests_skipped": {"type": ["integer", "null"], "minimum": 0},
+        "skip_reason": {"type": ["string", "null"]}
+      }
+    },
+    "match": {
+      "type": "object",
+      "required": [
+        "expected",
+        "expected_assertions",
+        "assertion_status",
+        "observed_count",
+        "evidence_method"
+      ]
+    },
+    "fx": {
+      "type": "object",
+      "required": ["before", "after", "stable_signature"]
+    },
+    "correctness": {
+      "type": "object",
+      "required": ["status", "evidence_method"]
+    },
+    "benchmark": {
+      "type": "object",
+      "required": ["status", "functional_gate", "reason"]
+    },
+    "adapter_decision": {
+      "enum": [
+        "not-needed-direct-valid",
+        "adapter-valid-after-recorded-direct-blocker",
+        "extracted-valid-after-recorded-direct-blocker",
+        "review-direct-blocker-before-adapter",
+        "not-applicable-until-direct-runs"
+      ]
+    },
+    "reference_valid": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-08-31 18:45 CST（UTC+08:00）
+> 文档更新时间：2026-08-31 20:00 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -22,8 +22,8 @@
   `yes-provisional`。该聚合仍需按 upstream optimization contract 人工审核，不能作为冻结分母。
 - T-075 已把首批 5 个单元写入 schema/manifest，并完成 contract/variant 人工复核；尚未形成具备 GPU baseline、当前 Pass 环境 NPU
   结果和 comparison verdict 的正式闭环，因此新口径完成数仍为 0。
-- 下一阶段只为这 5 个单元生成 T-076 GPU/reference runner：先尝试 community 原生测例确认
-  是否命中，受设备/backend 或采集接口阻塞时再做最小 adapter。
+- T-076 已生成 13 个 direct community cases、reference plan/schema、批量 runner 和 GPU 人工
+  操作说明；本机无 CUDA GPU，当前仍等待原生 GPU artifacts，不存在 adapter case。
 
 ## 统一术语
 
@@ -68,6 +68,7 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) | 2026-08-31 校准结论、T-074 边界与下一任务 |
 | [docs/SCOPE_AND_CODE_MAP.md](docs/SCOPE_AND_CODE_MAP.md) | 任务范围、Inductor 调用链和源码入口 |
 | [docs/GUIDE.md](docs/GUIDE.md) | 机制说明与历史案例阅读指南 |
+| [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | GPU 机器静态校验、整批执行、重跑、打包与回传说明 |
 | [docs/CHANGE_CONTROL.md](docs/CHANGE_CONTROL.md) | 环境、产品代码、文档和交付变更记录 |
 | [docs/HISTORY.md](docs/HISTORY.md) | 已完成成果、失败与中性尝试索引 |
 | [docs/requirements/20260831_requirement_change.md](docs/requirements/20260831_requirement_change.md) | 8 月 31 日需求合同与决策 |
@@ -85,8 +86,10 @@ T-075 首批静态复核已完成：
 3. 5 个单元仍为 `pending-reference`，冻结分母和正式闭环数均为 0；
 4. 48 个 `no-test-found` 和 29 个 indirect 单元继续待人工审核，T-074 v1 不覆盖。
 
-下一条执行任务为 T-076：生成 manifest-driven GPU/reference runner 和人工操作说明。GPU 上先
-运行原生 community test/helper；只有 direct 路径不可用时，才增加不改变图和预期行为的最小适配。
+T-076 runner 已就绪：13 个原生 community cases 一一覆盖 manifest 的 13 个测试引用，20 个
+variants 中 14 个进入动态执行，3 个 registration-only 和 3 个 NPU-only gate 显式保留为非动态
+处置。下一条执行任务是在 GPU 机器上运行该 direct suite 并回传 artifacts；只有 artifacts 证明
+设备、backend 或采集接口阻塞时，才增加不改变图和预期行为的最小适配。
 
 ## 执行环境合同
 

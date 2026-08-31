@@ -1,8 +1,8 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-08-31 18:45 CST（UTC+08:00）
-> 状态：T-075 首批 5 个单元静态复核完成；下一执行任务为 T-076 GPU/reference runner。
-> 约束：当前只生成首批 runner；不新增大规模 pass 测例，不提前启动 NPU comparison。
+> 更新时间：2026-08-31 20:00 CST（UTC+08:00）
+> 状态：T-076 首批 GPU/reference runner 已生成并通过静态校验；等待 GPU direct artifacts。
+> 约束：当前不预建 adapter、不新增大规模 pass 测例、不提前启动 NPU comparison。
 
 ## 任务计数规则
 
@@ -79,19 +79,24 @@ T-075 schema 确认后执行。
 
 GPU 机器没有 Agent，runner 必须可由人工一次执行完整批次。
 
-- [ ] 从 manifest 枚举 acceptance units/variants；
-- [ ] 支持 direct/adapter/extracted；
-- [ ] 保存 PyTorch commit、source test、tracking mode；
-- [ ] 保存 execution、match count、counter/assertion；
-- [ ] 保存 FX before/after 与稳定 signature；
-- [ ] 保存 correctness、traceback、stdout/stderr；
-- [ ] 功能门禁通过后才运行 benchmark；
-- [ ] 单个 case 失败不终止整个 suite；
-- [ ] 生成结构化 reference summary；
-- [ ] 提供 GPU 人工操作说明：`git pull`、运行脚本、打包/提交 artifacts；
-- [ ] 不要求 GPU 机器进行交互分析或自动 Git 决策。
+- [x] 从 manifest 枚举 5 个 acceptance units、20 个 variants 和 13 个 community cases；
+- [x] runner 支持 direct/adapter/extracted 入口合同；adapter/extracted 必须先带 direct blocker；
+- [x] 保存 PyTorch commit、source test、tracking mode 与环境指纹；
+- [x] 保存 execution、预期 match/counter/FileCheck 断言及其社区测试内验证状态；
+- [x] 保存 FX before/after、artifact inventory 与归一化稳定 signature；
+- [x] 保存 correctness、runner error、stdout/stderr 和 structured trace；
+- [x] 功能与 artifact 门禁通过后才允许 benchmark；首批 benchmark 未配置；
+- [x] 单个 case 失败、skip 或超时不终止整个 suite；
+- [x] 生成结构化 `reference_summary.json/.md`；
+- [x] 提供 GPU 人工操作说明：`git pull`、静态校验、整批/单 case、打包/回传；
+- [x] 不要求 GPU 机器进行交互分析或自动 Git 决策；
+- [ ] GPU 机器执行 13 个 direct cases 并回传完整 artifacts；
+- [ ] 逐项复核 direct blocker；只有设备/backend/artifact capture 阻塞才设计最小 adapter；
+- [ ] reference 有效后决定是否更新 `review_status` 与 denominator。
 
 ## P0-E：统一 result schema
+
+T-076 已增加 reference case 子集 schema；以下仍是 GPU/NPU comparison 的统一合同待办。
 
 - [ ] 环境：upstream/torch_npu/Triton/CANN/driver/SoC commit 或版本；
 - [ ] 输入：dtype、shape、stride、dynamic、forward/backward；
@@ -148,8 +153,8 @@ GPU 机器没有 Agent，runner 必须可由人工一次执行完整批次。
 ## 立即执行顺序
 
 1. [x] T-075：冻结首批 acceptance-unit schema 并复核 5 个单元；
-2. [ ] T-076：生成 GPU/reference runner 和操作说明；
-3. [ ] GPU 上先尝试原生 community test/helper，必要时才进入最小 adapter；
+2. [x] T-076：生成 GPU/reference runner、reference 子集 schema 和操作说明；
+3. [ ] GPU 上执行 13 个原生 community cases，必要时才进入最小 adapter；
 4. [ ] 等待/接收 GPU artifacts，同时继续审核 no-test-found 和 indirect 映射；
 5. [ ] reference 有效后冻结首版 denominator，并准备 NPU runner；
 6. [ ] 执行 NPU、compare、failure classification；

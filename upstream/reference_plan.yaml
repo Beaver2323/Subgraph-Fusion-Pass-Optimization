@@ -1,0 +1,254 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-31T20:00:00+08:00",
+  "status": "t076-first-wave-native-community-tests-ready-await-gpu",
+  "manifest": {
+    "path": "upstream/manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "TORCH_COMPILE_DEBUG and TORCH_TRACE per case",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 1800
+  },
+  "cases": [
+    {
+      "case_id": "REF-mm-plus-mm-native",
+      "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_mm_plus_mm",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "same-k-positive",
+        "different-k-positive-pattern-fallback",
+        "output-shape-mismatch-negative"
+      ],
+      "expected_match": "mixed",
+      "expected_assertions": [
+        "same-K 与 different-K 两个正例各满足 pattern_matcher_count=1、nodes=3",
+        "两个输出形状不匹配负例只满足非目标 add-mm pattern 的 count=1、nodes=2",
+        "四组 compiled 输出均与 eager 对齐"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-pad-mm-dynamic-m-native",
+      "acceptance_unit_id": "AU-pad-mm-mm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_mm_dyn_m",
+      "tracking_mode": "direct",
+      "variant_ids": ["dynamic-m-positive"],
+      "expected_match": true,
+      "expected_assertions": [
+        "动态 M 保持且 generated code 包含 padding 后的 K",
+        "compiled 输出与 eager 对齐"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-pad-mm-original-aten-native",
+      "acceptance_unit_id": "AU-pad-mm-mm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_original_aten_preserved_pad_mm",
+      "tracking_mode": "direct",
+      "variant_ids": [],
+      "expected_match": true,
+      "expected_assertions": [
+        "CUDA 上 pattern_matcher_count=1",
+        "生成的 Triton template 名称保留原始 mm 语义"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-pad-mm-stride-native",
+      "acceptance_unit_id": "AU-pad-mm-mm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_mm_output_strides_preserved",
+      "tracking_mode": "direct",
+      "variant_ids": ["stride-preservation"],
+      "expected_match": true,
+      "expected_assertions": [
+        "padding/slice 后 compiled 输出与 eager 数值相同",
+        "用户可见输出 stride 与 eager 相同"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-pad-mm-exclusion-native",
+      "acceptance_unit_id": "AU-pad-mm-mm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_exclude_padding",
+      "tracking_mode": "direct",
+      "variant_ids": [],
+      "expected_match": "mixed",
+      "expected_assertions": [
+        "直接 mm 的 padding cache 保持 exclude_pad:False",
+        "带前置 pointwise 的 mm 新增 exclude_pad:True 选择证据"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-pad-bmm-dynamic-batch-native",
+      "acceptance_unit_id": "AU-pad-mm-bmm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_bmm_dyn_b",
+      "tracking_mode": "direct",
+      "variant_ids": ["dynamic-batch-positive"],
+      "expected_match": true,
+      "expected_assertions": [
+        "动态 batch 保持且 generated code 包含 padding 后的 K",
+        "compiled bmm 输出与 eager 对齐"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-pad-bmm-static-fp16-native",
+      "acceptance_unit_id": "AU-pad-mm-bmm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_batch",
+      "tracking_mode": "direct",
+      "variant_ids": [],
+      "expected_match": true,
+      "expected_assertions": [
+        "fp16 alignment=8 且 can_pad 为真",
+        "generated code 中两个输入 padding 与 padded output allocation 存在",
+        "compiled bmm 输出与 eager 对齐"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-pad-bmm-autocast-regression-native",
+      "acceptance_unit_id": "AU-pad-mm-bmm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_no_autocast_in_pad_bmm_joint_graph_pass",
+      "tracking_mode": "direct",
+      "variant_ids": ["dtype-gradient-related-regression"],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": [
+        "joint graph pass 前后 bmm 输出 dtype 不变",
+        "backward 后两个输入梯度均不含 NaN",
+        "该 related regression 不单独证明 pad-bmm target 命中"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave",
+      "timeout_seconds": 3600
+    },
+    {
+      "case_id": "REF-pad-addmm-dynamic-m-native",
+      "acceptance_unit_id": "AU-pad-mm-addmm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_addmm_dyn_m",
+      "tracking_mode": "direct",
+      "variant_ids": ["dynamic-m-positive"],
+      "expected_match": true,
+      "expected_assertions": [
+        "动态 M 保持且 generated code 包含 padding 后的 K",
+        "compiled addmm 输出与 eager 对齐"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-pad-addmm-bias-native",
+      "acceptance_unit_id": "AU-pad-mm-addmm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_pad_addmm_2d_bias",
+      "tracking_mode": "direct",
+      "variant_ids": ["bias-broadcast-positive"],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": [
+        "1D/2D bias 的全部 broadcast 组合与 eager 对齐",
+        "目标命中需要结合 debug artifacts 复核，不能仅从数值通过推断"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-pad-addmm-beta-zero-negative-native",
+      "acceptance_unit_id": "AU-pad-mm-addmm",
+      "source_test": "test/inductor/test_pad_mm.py::PadMMTest.test_addmm_beta_zero_mismatched_bias_skips_padding",
+      "tracking_mode": "direct",
+      "variant_ids": ["beta-zero-mismatched-bias-negative"],
+      "expected_match": false,
+      "expected_assertions": [
+        "CUDA beta=0 且 bias 不可广播时跳过 padding 后仍与 eager 对齐",
+        "此 CUDA 特例不外推为 NPU expected behavior"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-addmm-contract-native",
+      "acceptance_unit_id": "AU-post-grad-addmm",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_addmm",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "matrix-bias-both-orders-positive",
+        "vector-bias-both-orders-positive",
+        "non-expandable-or-batched-bias-negative",
+        "python-or-symbolic-scalar-negative"
+      ],
+      "expected_match": "mixed",
+      "expected_assertions": [
+        "matrix/vector bias 的 add+mm 与 mm+add 两个顺序均满足 count=2、nodes=4",
+        "不可广播、额外 batch rank 与 Python scalar 分支满足 count=0、nodes=0",
+        "所有 compiled 输出与 eager 对齐"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    },
+    {
+      "case_id": "REF-addmm-symbolic-scalar-negative-native",
+      "acceptance_unit_id": "AU-post-grad-addmm",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_addmm_symbolic_scalar",
+      "tracking_mode": "direct",
+      "variant_ids": ["python-or-symbolic-scalar-negative"],
+      "expected_match": false,
+      "expected_assertions": [
+        "dynamic=True 下 SymInt bias 不融合，pattern_matcher_count=0",
+        "compiled 输出与 eager 对齐"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-first-reference-wave"
+    }
+  ],
+  "non_executed_variants": [
+    {
+      "acceptance_unit_id": "AU-pad-mm-mm",
+      "variant_id": "training-inference-registration",
+      "disposition": "static-registration-evidence-only",
+      "reason": "该分支描述两个 generated registrations 对同一 contract 的承载关系，不应伪造独立动态 case。"
+    },
+    {
+      "acceptance_unit_id": "AU-pad-mm-mm",
+      "variant_id": "disabled-baseline-negative",
+      "disposition": "not-applicable-reference-guard",
+      "reason": "这是 NPU triton_experimental 产品 gate，GPU reference 不适用。"
+    },
+    {
+      "acceptance_unit_id": "AU-pad-mm-bmm",
+      "variant_id": "training-inference-registration",
+      "disposition": "static-registration-evidence-only",
+      "reason": "该分支是 registration 结构证据，不拆成 GPU 动态测例。"
+    },
+    {
+      "acceptance_unit_id": "AU-pad-mm-bmm",
+      "variant_id": "disabled-baseline-negative",
+      "disposition": "not-applicable-reference-guard",
+      "reason": "这是 NPU triton_experimental 产品 gate，GPU reference 不适用。"
+    },
+    {
+      "acceptance_unit_id": "AU-pad-mm-addmm",
+      "variant_id": "training-inference-registration",
+      "disposition": "static-registration-evidence-only",
+      "reason": "该分支是 registration 结构证据，不拆成 GPU 动态测例。"
+    },
+    {
+      "acceptance_unit_id": "AU-pad-mm-addmm",
+      "variant_id": "disabled-baseline-negative",
+      "disposition": "not-applicable-reference-guard",
+      "reason": "这是 NPU triton_experimental 产品 gate，GPU reference 不适用。"
+    }
+  ]
+}

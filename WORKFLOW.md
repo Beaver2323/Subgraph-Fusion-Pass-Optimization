@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-08-31 18:45 CST（UTC+08:00）
+> 更新时间：2026-08-31 20:00 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -120,13 +120,21 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
 │   ├── README.md
 │   ├── manifest.schema.json
 │   ├── manifest.yaml
-│   └── pass_map.yaml
+│   ├── pass_map.yaml
+│   ├── reference_plan.schema.json
+│   └── reference_plan.yaml
+├── schemas/
+│   └── reference_result.schema.json
+├── runners/
+│   └── reference_runner.py
 ├── scripts/
+│   ├── run_reference_all.sh
 │   └── validate_tracker_data.py
 ├── docs/
 │   ├── CURRENT_STATUS.md
 │   ├── SCOPE_AND_CODE_MAP.md
 │   ├── GUIDE.md
+│   ├── REFERENCE_RUNNER_GPU.md
 │   ├── CHANGE_CONTROL.md
 │   ├── HISTORY.md
 │   ├── requirements/
@@ -138,12 +146,12 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
     └── upstream_pass_test_index_20260829/
 ```
 
-T-076 及后续在有真实产物时再增量增加：
+T-076 已增加首批真实 runner/schema；后续只在有真实产物时增量增加：
 
 ```text
 adapters/{pre_grad,joint_graph,post_grad}/
-runners/{reference_runner.py,npu_runner.py}
-scripts/{check_upstream.py,run_reference_all.sh,run_npu_all.sh,compare_runs.py}
+runners/npu_runner.py
+scripts/{check_upstream.py,run_npu_all.sh,compare_runs.py}
 baselines/
 results/history/
 regressions/{known_issues.yaml,fixed_issues.yaml}
@@ -257,6 +265,19 @@ stdout.log
 stderr.log
 benchmark.json（功能门禁通过后）
 ```
+
+T-076 首批执行计划包含 13 个 `direct` community cases：20 个 variants 中 14 个由动态 case
+覆盖，3 个 generated-registration 分支保留为静态结构证据，3 个 NPU product gate 在 reference
+侧标记为不适用。部分 community case 只提供 contract 证据，不强行绑定到不对应的 variant。
+
+每个 case 使用 fresh process，并配置独立 `TORCHINDUCTOR_CACHE_DIR`、
+`TORCH_COMPILE_DEBUG_DIR` 和 `TORCH_TRACE`。有效 reference 同时要求原生测试通过和计划要求的
+FX before/after 已捕获；全部 skip、未发现测试或缺失必需 artifact 均为 invalid。社区测试内部
+未打印的 counter 不能由 runner 从 return code 推造，只能记录 expected assertion 与“原断言通过”。
+
+`reference_plan.yaml` 若增加 `adapter` 或 `extracted` case，必须同时登记原 direct blocker 和新
+entrypoint。当前没有 direct GPU artifacts，因此 `adapters/` 不创建。人工命令和回传合同见
+[`docs/REFERENCE_RUNNER_GPU.md`](docs/REFERENCE_RUNNER_GPU.md)。
 
 baseline 先比较 previous reference 与 current reference：match、FX signature 或行为变化时标记
 `UPSTREAM_CHANGED`。reference invalid、missing 或 mapping broken 时，NPU 结果只能保留为运行证据，
@@ -391,5 +412,6 @@ acceptance units 来自 source/name 归一化和少量显式 semantic group，�
 旧版本作为可追溯输入。
 
 T-075 首批复核没有改变 5 个单元的数量，但修正了 variants 和测试证据角色；T-074 v1 未覆盖。
-下一执行项为 T-076 首批 GPU/reference runner。48 个 `no-test-found` 和 29 个 indirect 单元仍待
-人工审核，可在等待 GPU artifacts 时继续推进；reference 缺失前不冻结 denominator。
+T-076 runner/schema/人工说明已静态完成，下一执行项是在 GPU 上运行 13 个 direct cases 并回传
+artifacts。48 个 `no-test-found` 和 29 个 indirect 单元仍待人工审核，可在等待 GPU artifacts 时
+继续推进；reference 缺失前不冻结 denominator。

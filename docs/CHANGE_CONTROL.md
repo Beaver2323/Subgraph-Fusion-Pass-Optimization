@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-08-31 18:45 CST（UTC+08:00）
+> 日志校准时间：2026-08-31 20:00 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3218,3 +3218,27 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   复核报告。T-074 v1 CSV 保持原 SHA256，不重跑、不覆盖。
 - 下一步：T-076 为首批 5 个单元生成 GPU/reference runner；GPU 先尝试原生 community
   test/helper，direct 受阻时才使用最小 adapter。reference 有效前不进入 NPU comparison 或冻结分母。
+
+### E-202：T-076 首批 GPU/reference Runner（2026-08-31）
+
+- 登记时间：2026-08-31 20:00 CST（UTC+08:00）。状态：
+  `runner-ready-static-validated-await-gpu-execution`。
+- 范围：为 T-075 的 5 个 acceptance units 建立原生 community-test reference plan、结果子集
+  schema、fresh-process runner 和 GPU 人工操作说明；不修改上游测试，不预建 adapter，不运行 NPU。
+- 执行映射：13 个 manifest community tests 一一对应 13 个 direct cases；20 个 variants 中
+  14 个绑定动态 case，3 个 generated-registration 分支只保留静态证据，3 个 NPU product gate
+  在 GPU reference 侧明确不适用。无关联 variant 的 community case 仍作为 contract 证据执行。
+- Direct-first 门禁：`adapter/extracted` 入口要求同时登记 direct blocker 和 entrypoint；当前无
+  GPU direct artifacts，因此 adapter 数为 0。runner 不自动降级、不修改图/shape/dtype/正负例。
+- 运行合同：环境探针严格核对 source HEAD、`torch.version.git_version`、CUDA 和 Triton；每个
+  case 独立进程/cache/debug/trace，失败、skip、超时继续；return code 0 但全 skip、无测试或缺少
+  FX before/after 时仍为 invalid reference。
+- 证据合同：保存环境指纹、source test、tracking mode、execution、社区测试内 counter/FileCheck
+  断言状态、FX before/after、稳定签名、stdout/stderr、benchmark gate 和结构化 summary。未打印的
+  原始 counter 保持 `null`，不得从退出码推造。
+- 静态验证：从 `/home/z50063656/tmp` 完成 JSON 解析、`py_compile`、tracker validator 和 runner
+  `--validate-only`；结果为 5/13/20/14/6 映射一致，`torch_imported=0`、`gpu_executed=0`。
+- 环境/产品边界：本机无 `nvidia-smi`，没有导入 `torch` 或执行设备测试；没有修改 PyTorch、
+  torch_npu、Triton、Conda 环境或 wheel。T-074 CSV SHA 与 T-075 denominator 状态保持不变。
+- 下一步：GPU 机器执行 13 个 direct cases 并回传完整 run 目录；NPU 控制节点先复核 blocker，
+  再决定是否需要最小 adapter。reference 有效前不冻结 denominator、不启动 NPU comparison。

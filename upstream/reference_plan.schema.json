@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Beaver2323/Subgraph-Fusion-Pass-Optimization/main/upstream/reference_plan.schema.json",
+  "title": "GPU Reference Execution Plan",
+  "$comment": "更新时间：2026-08-31 20:00 CST；先执行原生社区测例，未取得 direct blocker 证据前不得切换 adapter/extracted。",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "status",
+    "manifest",
+    "execution_policy",
+    "cases",
+    "non_executed_variants"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "status": {"type": "string"},
+    "manifest": {
+      "type": "object",
+      "required": ["path", "schema_version", "pytorch_commit"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {"type": "string"},
+        "schema_version": {"type": "string"},
+        "pytorch_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "execution_policy": {
+      "type": "object",
+      "required": [
+        "order",
+        "case_isolation",
+        "failure_behavior",
+        "artifact_capture",
+        "benchmark_gate",
+        "default_timeout_seconds"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "order": {
+          "const": "native-community-test-first-then-minimal-adapter-if-required"
+        },
+        "case_isolation": {"const": "fresh-process"},
+        "failure_behavior": {"const": "continue-and-record"},
+        "artifact_capture": {"type": "string"},
+        "benchmark_gate": {"const": "functional-reference-valid-first"},
+        "default_timeout_seconds": {"type": "integer", "minimum": 1}
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/case"}
+    },
+    "non_executed_variants": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/non_executed_variant"}
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "case": {
+      "type": "object",
+      "required": [
+        "case_id",
+        "acceptance_unit_id",
+        "source_test",
+        "tracking_mode",
+        "variant_ids",
+        "expected_match",
+        "expected_assertions",
+        "required_artifacts",
+        "benchmark"
+      ],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^REF-"},
+        "acceptance_unit_id": {"type": "string", "pattern": "^AU-"},
+        "source_test": {"type": "string"},
+        "tracking_mode": {"enum": ["direct", "adapter", "extracted"]},
+        "variant_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string"}
+        },
+        "expected_match": {
+          "oneOf": [
+            {"type": "boolean"},
+            {"enum": ["mixed", "not-directly-asserted"]}
+          ]
+        },
+        "expected_assertions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string"}
+        },
+        "required_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"enum": ["fx-before", "fx-after"]}
+        },
+        "benchmark": {"const": "not-configured-first-reference-wave"},
+        "timeout_seconds": {"type": "integer", "minimum": 1},
+        "entrypoint": {"type": "string"},
+        "direct_blocker": {"$ref": "#/$defs/direct_blocker"}
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "tracking_mode": {"enum": ["adapter", "extracted"]}
+            }
+          },
+          "then": {"required": ["entrypoint", "direct_blocker"]}
+        }
+      ]
+    },
+    "direct_blocker": {
+      "type": "object",
+      "required": ["direct_case_id", "artifact_ref", "classification"],
+      "properties": {
+        "direct_case_id": {"type": "string", "pattern": "^REF-"},
+        "artifact_ref": {"type": "string"},
+        "classification": {
+          "enum": [
+            "device-constant-blocker",
+            "backend-injection-blocker",
+            "artifact-capture-blocker"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "non_executed_variant": {
+      "type": "object",
+      "required": [
+        "acceptance_unit_id",
+        "variant_id",
+        "disposition",
+        "reason"
+      ],
+      "properties": {
+        "acceptance_unit_id": {"type": "string", "pattern": "^AU-"},
+        "variant_id": {"type": "string"},
+        "disposition": {
+          "enum": [
+            "static-registration-evidence-only",
+            "not-applicable-reference-guard"
+          ]
+        },
+        "reason": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  }
+}
