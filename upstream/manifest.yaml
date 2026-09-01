@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-02T03:00:00+08:00",
-  "status": "t076-reference-frozen-first-npu-unit-validated-await-unified-comparison",
+  "generated_at": "2026-09-02T03:35:00+08:00",
+  "status": "t076-first-npu-unit-formally-closed-pad-mm-first-case-validated",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -36,7 +36,7 @@
     "denominator_rule": "only yes-frozen units with valid reference baseline enter denominator",
     "current_manifest_units": 5,
     "current_frozen_denominator_units": 5,
-    "current_formally_closed_units": 0
+    "current_formally_closed_units": 1
   },
   "acceptance_units": [
     {
@@ -80,7 +80,7 @@
           "expected_behavior": "目标 pattern 命中；same-K 可进入 mm_plus_mm template/extern choice",
           "expected_counter": "community helper total pattern_matcher_count=1,nodes=3",
           "reference_status": "valid-reference",
-          "npu_status": "validated-target-match-current-Pass"
+          "npu_status": "formally-compared-behavior-unchanged-current-Pass"
         },
         {
           "variant_id": "different-k-positive-pattern-fallback",
@@ -89,7 +89,7 @@
           "expected_behavior": "M/N 相同而 K 不同仍命中目标 pattern；tuned_mm_plus_mm 按源码回退为 two-mm-plus-add",
           "expected_counter": "community helper total pattern_matcher_count=1,nodes=3; runtime path 尚未由 test 直接断言",
           "reference_status": "valid-reference",
-          "npu_status": "validated-pattern-match-fallback-current-Pass"
+          "npu_status": "formally-compared-behavior-unchanged-current-Pass"
         },
         {
           "variant_id": "output-shape-mismatch-negative",
@@ -98,7 +98,7 @@
           "expected_behavior": "目标 mm_plus_mm pattern 不命中；community total counter 的 1/2 来自其他 add-mm pattern，必须用目标 counter/codegen 复核",
           "expected_counter": "suite-global-non-target count=1,nodes=2",
           "reference_status": "valid-reference",
-          "npu_status": "validated-target-negative-current-Pass"
+          "npu_status": "formally-compared-behavior-unchanged-current-Pass"
         }
       ],
       "tracking": {
@@ -118,14 +118,20 @@
       },
       "npu_control": {
         "expected_source_control": "inherited-upstream-no-explicit-disable",
-        "current_result": "adapter-valid-current-Pass-await-unified-comparison-record",
+        "current_result": "formally-closed-BEHAVIOR_UNCHANGED-current-Pass",
         "source_test_direct_result": "NO_TESTS-because-upstream-HAS_GPU-excludes-NPU",
         "adapter_result": "1 test run, 0 failures, 0 errors, 0 skipped; four target-contract variants valid",
         "backend": "triton_experimental",
         "runtime_path": "same-K extern _mm_plus_mm; different-K two-mm-plus-NPU-Triton-add fallback; negatives two-mm-plus-NPU-Triton-add",
         "evidence": "issues/REF-mm-plus-mm-native/复现报告.md",
+        "npu_result": "results/current/REF-mm-plus-mm-native/npu_result.json",
+        "comparison_result": "results/current/REF-mm-plus-mm-native/comparison_result.json",
+        "final_verdict": "BEHAVIOR_UNCHANGED",
+        "repair_status": "not-needed",
         "result_sha256": "c5b75ec79fef3a72b0961698bf469a1d3982e2bc44e27e9e1b8dda2b028c7cd6",
-        "caveat": "GPU 负例的 suite-global 1/2 来自非目标 add-mm pattern；NPU 依 manifest 用目标 codegen 未出现判定负向 gate。未进入统一 comparison schema 前不升级正式闭环数。"
+        "npu_record_sha256": "c4ef27ff67a4f174611f70935b09c87680fb0fb066e0ca0ea6418cdf07117e84",
+        "comparison_sha256": "d189d6fb0220435f7473c2db737c297eb480930d6bbe4b893784d1172f55c7ff",
+        "caveat": "GPU 负例的 suite-global 1/2 来自非目标 add-mm pattern；正式 comparison 依目标 FX/codegen 未出现判定负向 gate，不把非目标 counter 差异误判为 NPU regression。"
       },
       "historical_evidence": [
         "report/p0_gate_first_run_20260820.md",
@@ -199,7 +205,7 @@
           "expected_behavior": "未对齐静态 K 被 padding，动态 M 保持；结果与 eager 一致",
           "expected_counter": "generated code FileCheck contains padded K",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "expected-disabled-product-gate-correctness-valid-current-Pass"
         },
         {
           "variant_id": "training-inference-registration",
@@ -226,17 +232,18 @@
           "expected_behavior": "NPU triton_experimental 默认 disable_pad_mm=True，不允许把未命中写成不支持",
           "expected_counter": "NPU target match=0 under product baseline",
           "reference_status": "not-applicable-reference-guard",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "validated-expected-disabled-current-Pass"
         }
       ],
       "tracking": {
         "reference_mode": "direct",
         "npu_mode": "adapter",
-        "adapter_reason": "community suite 依赖 big-GPU、GPU_TYPE 和 CUDA/XPU device check；NPU baseline 只移植图/断言并保留产品 gate",
+        "adapter_reason": "community suite 依赖 big-GPU、GPU_TYPE、CUDA/XPU device check 和 TRITON-only GEMM 候选；NPU baseline 只移植图/断言、增加原始 mm 的 ATEN choice 并保留产品 gate",
         "allowed_local_deviation": [
           "device=npu",
           "backend=triton_experimental",
-          "跳过 big-GPU test harness 前置检查但记录偏离"
+          "跳过 big-GPU test harness 前置检查但记录偏离",
+          "TRITON-only GEMM 候选扩为 TRITON,ATEN 以验证 gate 关闭后的原始 mm"
         ],
         "forbidden_local_deviation": [
           "baseline 中绕过 disable_pad_mm 或 check_device",
@@ -246,12 +253,20 @@
       },
       "npu_control": {
         "expected_source_control": "disabled-by-triton-experimental-disable_pad_mm",
-        "current_result": "not-run-current-Pass",
+        "current_result": "dynamic-m-product-baseline-EXPECTED_DISABLED-correctness-valid-current-Pass",
+        "source_test_direct_result": "NO_TESTS-because-upstream-HAS_GPU_AND_TRITON-excludes-NPU",
+        "adapter_result": "1 test run, 0 failures, 0 errors, 0 skipped; disable_pad_mm=true, shape_padding=false, target count=0/0, correctness passed",
+        "first_failed_adapter_result": "NoValidChoicesError-at-lowering-because-GPU-test-restricted-GEMM-to-TRITON-only",
+        "adapter_deviation": "add ATEN choice without bypassing disable_pad_mm",
+        "evidence": "issues/REF-pad-mm-dynamic-m-native/复现报告.md",
+        "result_sha256": "498e860d8939fa7a44ec1a075fe95c4755706d6cf03730ef0f4213091a8dc109",
+        "case_status": "validated-partial-unit-not-formally-closed",
         "diagnostic_gate_bypass": "separate-non-product-diagnostic-only"
       },
       "historical_evidence": [
         "report/t025_t026_pad_family_20260821.md",
-        "report/t076_gpu_reference_20260901.md"
+        "report/t076_gpu_reference_20260901.md",
+        "issues/REF-pad-mm-dynamic-m-native/复现报告.md"
       ]
     },
     {

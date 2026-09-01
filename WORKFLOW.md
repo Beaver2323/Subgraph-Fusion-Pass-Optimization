@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-02 03:00 CST（UTC+08:00）
+> 更新时间：2026-09-02 03:35 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -209,9 +209,9 @@ extracted case 必须重新审查。
 
 T-075 已在 `upstream/` 落盘首批 5 个审核单元，共 20 个 variants、13 个 community test 引用。
 T-076 的 13 个 GPU direct cases 全部有效后，它们已更新为 `frozen`/`yes-frozen`，构成首版
-denominator=5。当前 `AU-post-grad-mm-plus-mm` 已通过 case-specific adapter 完成
-NPU 目标合同验证，因此 NPU 执行进度为 1/5；统一 NPU/comparison schema 与
-compatibility matrix 尚未完成，正式闭环为 0/5。
+denominator=5。当前 `AU-post-grad-mm-plus-mm` 已通过 case-specific adapter 和统一
+NPU/comparison 记录完成 `BEHAVIOR_UNCHANGED` 正式闭环，因此正式闭环为 1/5；
+`AU-pad-mm-mm` 的首个 dynamic-M 产品 baseline 已验证为 `EXPECTED_DISABLED`，单元仍待其余 case。
 
 ## 9. 统一 result schema
 
@@ -222,6 +222,8 @@ schema_version / generated_at
 acceptance_unit_id / variant_id
 upstream_commit / source_test / tracking_mode
 environment fingerprint
+input dtype / shape / stride / dynamic / direction
+NPU control: enabled | disabled | guarded | patched
 execution_success
 match expectation / match count / counter
 FX before/after / signature
@@ -236,6 +238,12 @@ recommended_action
 final_verdict
 repair_status
 ```
+
+结构合同分别位于 `schemas/npu_result.schema.json` 与
+`schemas/comparison_result.schema.json`；当前结果位于 `results/current/<case_id>/`。
+`scripts/validate_comparison_data.py` 使用标准库交叉检查 manifest、环境指纹、仓库工件 hash、
+variant 完整性和 formal verdict 门禁，不导入 `torch`。首个正式样本是
+`REF-mm-plus-mm-native`。
 
 禁止只输出笼统 PASS/FAIL。`torch.compile` 成功但走 fallback 时，不得标为完全 native supported。
 
@@ -425,5 +433,6 @@ acceptance units 来自 source/name 归一化和少量显式 semantic group，�
 
 T-075 首批复核没有改变 5 个单元的数量，但修正了 variants 和测试证据角色；T-074 v1 未覆盖。
 T-076 GPU reference 已完成并通过文本 handoff 复核，13 个 direct cases 全部有效，不创建 GPU
-adapter。下一执行项是从同一 manifest 生成 NPU runner/comparison；48 个 `no-test-found` 和 29 个
-indirect 单元仍待人工审核，但不阻塞首批 5 个冻结单元的 NPU 验证。
+adapter。首个 NPU unit 已生成统一 comparison 并正式闭环；pad-mm 首个产品 baseline 也已完成，
+下一执行项是继续同一单元的 original-aten、stride、exclusion cases。48 个 `no-test-found` 和
+29 个 indirect 单元仍待人工审核，但不阻塞首批 5 个冻结单元的 NPU 验证。

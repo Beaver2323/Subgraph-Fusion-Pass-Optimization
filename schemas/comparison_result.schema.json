@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/subgraph-fusion-pass-optimization/comparison_result.schema.json",
+  "title": "GPU reference and NPU comparison result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "acceptance_unit_id",
+    "upstream_commit",
+    "reference",
+    "npu",
+    "variant_comparisons",
+    "first_divergence",
+    "root_cause",
+    "recommended_action",
+    "final_verdict",
+    "repair_status"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "acceptance_unit_id": {"type": "string", "minLength": 1},
+    "upstream_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "reference": {"$ref": "#/$defs/reference"},
+    "npu": {"$ref": "#/$defs/npu"},
+    "variant_comparisons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/variantComparison"}
+    },
+    "first_divergence": {
+      "enum": [
+        "upstream", "config", "graph", "pattern", "replacement", "decomposition",
+        "lowering", "scheduler", "codegen", "triton_compile", "runtime",
+        "correctness", "performance", "none"
+      ]
+    },
+    "root_cause": {"type": "string", "minLength": 1},
+    "recommended_action": {"type": "string", "minLength": 1},
+    "final_verdict": {
+      "enum": [
+        "UPSTREAM_CHANGED", "NPU_REGRESSION", "NEWLY_SUPPORTED", "PERF_IMPROVED",
+        "PERF_REGRESSED", "BEHAVIOR_UNCHANGED", "INCONCLUSIVE"
+      ]
+    },
+    "repair_status": {"enum": ["not-needed", "queued", "in-progress", "verified", "blocked"]}
+  },
+  "$defs": {
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id", "suite_status", "suite_valid", "environment_fingerprint",
+        "payload_sha256", "case_id", "case_status", "reference_valid",
+        "reference_result_sha256", "artifact_inventory_sha256"
+      ],
+      "properties": {
+        "run_id": {"type": "string", "minLength": 1},
+        "suite_status": {"const": "valid-reference-suite"},
+        "suite_valid": {"const": true},
+        "environment_fingerprint": {"$ref": "#/$defs/sha256"},
+        "payload_sha256": {"$ref": "#/$defs/sha256"},
+        "case_id": {"type": "string", "minLength": 1},
+        "case_status": {"const": "passed"},
+        "reference_valid": {"const": true},
+        "reference_result_sha256": {"$ref": "#/$defs/sha256"},
+        "artifact_inventory_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "npu": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result_path", "result_sha256", "environment_fingerprint",
+        "tracking_mode", "execution_success", "correctness_status"
+      ],
+      "properties": {
+        "result_path": {"type": "string", "minLength": 1},
+        "result_sha256": {"$ref": "#/$defs/sha256"},
+        "environment_fingerprint": {"$ref": "#/$defs/sha256"},
+        "tracking_mode": {"enum": ["direct", "adapter", "extracted"]},
+        "execution_success": {"type": "boolean"},
+        "correctness_status": {"enum": ["passed", "failed", "not-run"]}
+      }
+    },
+    "variantComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variant_id", "reference_contract_stable", "reference_target_match",
+        "npu_target_match", "match_contract_aligned", "runtime_path",
+        "correctness_status", "performance_status", "verdict", "note"
+      ],
+      "properties": {
+        "variant_id": {"type": "string", "minLength": 1},
+        "reference_contract_stable": {"type": "boolean"},
+        "reference_target_match": {"type": "boolean"},
+        "npu_target_match": {"type": "boolean"},
+        "match_contract_aligned": {"type": "boolean"},
+        "runtime_path": {"enum": ["triton", "extern", "fallback", "mixed", "not-executed"]},
+        "correctness_status": {"enum": ["passed", "failed", "not-run"]},
+        "performance_status": {"enum": ["passed", "failed", "not-configured", "not-applicable"]},
+        "verdict": {"enum": ["BEHAVIOR_UNCHANGED", "NPU_REGRESSION", "INCONCLUSIVE"]},
+        "note": {"type": "string", "minLength": 1}
+      }
+    },
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

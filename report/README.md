@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-02 03:00 CST（UTC+08:00）
+> 索引更新时间：2026-09-02 03:35 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -8,7 +8,8 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
-| [REF-mm-plus-mm-native NPU 复现报告](../issues/REF-mm-plus-mm-native/复现报告.md) | 原生直接 `NO_TESTS`、最小 adapter、4/4 NPU 目标合同和 graph-mode 证据 | NPU 目标合同已验证；待统一 comparison schema |
+| [REF-mm-plus-mm-native NPU 复现报告](../issues/REF-mm-plus-mm-native/复现报告.md) | 原生直接 `NO_TESTS`、最小 adapter、4/4 NPU 目标合同和 graph-mode 证据 | 统一 comparison 已落盘；`BEHAVIOR_UNCHANGED` |
+| [REF-pad-mm-dynamic-m-native NPU 复现报告](../issues/REF-pad-mm-dynamic-m-native/复现报告.md) | 原生 `NO_TESTS`、TRITON-only lowering 阻断、产品 gate baseline | `EXPECTED_DISABLED`；单元部分完成 |
 | [t076_gpu_reference_20260901.md](t076_gpu_reference_20260901.md) | 13/13 GPU direct valid、环境、FX signature 与结构化哈希 | reference 已冻结；原始大 artifacts 保留在 GPU |
 | [t076_reference_runner_20260831.md](t076_reference_runner_20260831.md) | 首批 direct GPU/reference plan、runner、schema 与静态验证 | runner 已完成 GPU 执行；设计边界保留 |
 | [t075_acceptance_unit_mapping_review_20260831.md](t075_acceptance_unit_mapping_review_20260831.md) | 首批 5 个 acceptance units 的 contract/variant 与证据角色人工复核 | 静态 mapping 完成；reference 已冻结 |

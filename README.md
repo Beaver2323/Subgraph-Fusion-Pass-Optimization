@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-02 03:00 CST（UTC+08:00）
+> 文档更新时间：2026-09-02 03:35 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -20,15 +20,19 @@
   共 207 行；这些是静态 inventory，不是 207 个 Pass。
 - T-074 的自动规则暂时聚合出 188 个 acceptance unit，其中 158 个仅为
   `yes-provisional`。该聚合仍需按 upstream optimization contract 人工审核，不能作为冻结分母。
-- T-075 已把首批 5 个单元写入 schema/manifest，并完成 contract/variant 人工复核；尚未形成具备 GPU baseline、当前 Pass 环境 NPU
-  结果和 comparison verdict 的正式闭环，因此新口径完成数仍为 0。
+- T-075 已把首批 5 个单元写入 schema/manifest，并完成 contract/variant 人工复核；
+  `AU-post-grad-mm-plus-mm` 已具备 GPU baseline、当前 Pass 环境 NPU 结果和 comparison verdict，
+  新口径正式闭环为 1/5。
 - T-076 的 GPU 环境与精确 source build 已验真，13/13 direct community cases 均 passed 且
   `reference_valid=true`；不存在 adapter case。GPU 禁止 Git/二进制上传，已通过通用文本导出器
   回传并复核环境、summary、逐 case FX signature 和关键文件哈希，当前进入 NPU comparison。
 - `AU-post-grad-mm-plus-mm` 已按原生优先执行：直接入口因上游 `HAS_GPU`
-  不包含 NPU 而为 `NO_TESTS`；case-specific adapter 仅注入 NPU/backend/目标断言，
-  在 `triton_experimental` 上 4/4 variants 有效。统一 comparison schema 尚未落盘，
-  因此 NPU 已验证单元为 1/5，正式闭环仍为 0/5。
+  不包含 NPU 而为 `NO_TESTS`；case-specific adapter 在 `triton_experimental` 上
+  4/4 输入分支有效，统一 NPU/comparison 记录已落盘，正式 verdict 为
+  `BEHAVIOR_UNCHANGED`。
+- `AU-pad-mm-mm` 的首个 dynamic-M case 已完成产品 baseline：原生入口为 `NO_TESTS`；
+  adapter 保留 `disable_pad_mm=true`，加入 ATEN choice 后 correctness 通过，目标 pad 计数为
+  0/0，分类为 `EXPECTED_DISABLED`。该单元仍是部分进度，不增加正式闭环数。
 
 ## 统一术语
 
@@ -88,14 +92,15 @@ T-075 首批静态复核已完成：
 1. 首批仍为 5 个 acceptance units，共 20 个 variants、13 个 community test 引用；
 2. `mm_plus_mm` 的 same-K/different-K 保持一个 contract；pad mm/bmm/addmm 保持三个；
    两种 add+mm 顺序共享一个 addmm contract；
-3. GPU 文本证据已复核，5 个单元冻结进入 denominator；`mm_plus_mm` 已完成 NPU 目标合同验证，但统一 comparison 未完成，正式闭环仍为 0/5；
+3. GPU 文本证据已复核，5 个单元冻结进入 denominator；`mm_plus_mm` 已完成统一 comparison，正式闭环为 1/5；
 4. 48 个 `no-test-found` 和 29 个 indirect 单元继续待人工审核，T-074 v1 不覆盖。
 
 T-076 已完成：13 个原生 community cases 全部 direct valid，20 个 variants 中 14 个取得动态
 reference，3 个 registration-only 和 3 个 NPU-only gate 保持显式非动态处置。完整环境、逐 case
 FX signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.md`。首个 NPU 单元证据见
-`issues/REF-mm-plus-mm-native/复现报告.md`；下一条任务是固化统一 NPU/comparison schema，
-然后继续 pad-mm 单元。
+`issues/REF-mm-plus-mm-native/复现报告.md` 和
+`results/current/REF-mm-plus-mm-native/`。pad-mm 首个产品基线见
+`issues/REF-pad-mm-dynamic-m-native/复现报告.md`；下一条任务是继续该单元其余 community cases。
 
 ## 执行环境合同
 

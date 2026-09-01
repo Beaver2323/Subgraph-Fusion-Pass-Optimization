@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-02 03:00 CST（UTC+08:00）
-> 状态：T-076 reference 已冻结；NPU 目标合同验证 1/5，统一 comparison 闭环 0/5。
+> 更新时间：2026-09-02 03:35 CST（UTC+08:00）
+> 状态：T-076 reference 已冻结；统一 comparison 正式闭环 1/5，pad-mm 首个产品基线完成。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -11,7 +11,7 @@
 - acceptance unit 是跟踪、比较和 verdict 的基本单位；
 - 一个 registration 可以展开多个 pattern/variant，也可能与其他 registration 共同服务一个 contract；
 - 只有人工审核并冻结的 acceptance unit 才能进入完成率分母；
-- T-074 当前 188/158 均为 provisional，正式闭环数为 0。
+- T-074 当前 188/158 均为 provisional；首批冻结 denominator 的正式闭环数为 1/5。
 
 ## P0-A：仓库与文档收束
 
@@ -39,7 +39,7 @@
 - [x] `extracted` 必须记录 `extraction_reason` 和 `local_deviation`；
 - [x] 定义 `review_status`：`needs-review`、`mapped`、`frozen`、`retired`；
 - [x] 定义 denominator 是否进入分母及理由；
-- [ ] 定义 GPU/NPU/result/failure/repair 字段。
+- [x] 定义 GPU/NPU/result/failure/repair 字段。
 
 ### B2. 复核首批 5 个单元
 
@@ -101,29 +101,29 @@ GPU 机器没有 Agent，runner 必须可由人工一次执行完整批次。
 
 ## P0-E：统一 result schema
 
-T-076 已增加 reference case 子集 schema；以下仍是 GPU/NPU comparison 的统一合同待办。
+T-076 已增加 reference case 子集 schema；首个统一 NPU/comparison 样本已落盘并通过交叉校验。
 
-- [ ] 环境：upstream/torch_npu/Triton/CANN/driver/SoC commit 或版本；
-- [ ] 输入：dtype、shape、stride、dynamic、forward/backward；
-- [ ] reference：execution、matched、signature、correctness、latency；
-- [ ] NPU control：enabled/disabled/guarded/patched；
-- [ ] NPU 链路：graph、pattern、replacement、decomposition、lowering、scheduler、codegen；
-- [ ] `runtime_path`：triton/extern/fallback/mixed；
-- [ ] `first_divergence`、`root_cause`、`recommended_action`；
-- [ ] pass-on/pass-off 结果（仅需要时）；
-- [ ] final verdict、failure layer、repair status；
-- [ ] schema 版本和生成时间戳。
+- [x] 环境：upstream/torch_npu/Triton/CANN/driver/SoC commit 或版本；
+- [x] 输入：dtype、shape、stride、dynamic、forward/backward；
+- [x] reference：execution、matched、signature、correctness、latency/未配置状态；
+- [x] NPU control：enabled/disabled/guarded/patched；
+- [x] NPU 链路：graph、pattern、replacement、decomposition、lowering、scheduler、codegen；
+- [x] `runtime_path`：triton/extern/fallback/mixed；
+- [x] `first_divergence`、`root_cause`、`recommended_action`；
+- [x] pass-on/pass-off 结果（仅需要时；不需要时必须记录原因）；
+- [x] final verdict、failure layer、repair status；
+- [x] schema 版本和生成时间戳。
 
 ## P0-F：NPU runner 与 comparison
 
 - [ ] 从同一 manifest 运行 NPU；
-- [ ] reference 缺失或 invalid 时停止 compatibility verdict；
-- [ ] 使用 `options={"npu_backend": "triton_experimental"}`；
-- [ ] fresh process 隔离 backend 与 pass-on/pass-off；
-- [ ] 采集 trigger/counter、FX、IR、generated code、fallback/graph-break；
-- [ ] correctness 通过后才 benchmark；
+- [x] reference 缺失或 invalid 时停止 compatibility verdict；
+- [x] 使用 `options={"npu_backend": "triton_experimental"}`；
+- [x] 首批已执行 case 使用 fresh process 隔离 backend 与 pass-on/pass-off；
+- [x] 首个正式 comparison 采集 trigger/counter、FX、IR、generated code、fallback/graph-break；
+- [x] correctness 通过后才 benchmark；首轮未配置 benchmark 并显式记录；
 - [ ] 实现 reference previous/current、NPU previous/current、reference/NPU 三组比较；
-- [ ] 输出 `UPSTREAM_CHANGED`、`NPU_REGRESSION`、`NEWLY_SUPPORTED`、
+- [x] schema 支持输出 `UPSTREAM_CHANGED`、`NPU_REGRESSION`、`NEWLY_SUPPORTED`、
   `PERF_IMPROVED`、`PERF_REGRESSED`、`BEHAVIOR_UNCHANGED`。
 
 首个单元进展：
@@ -132,7 +132,15 @@ T-076 已增加 reference case 子集 schema；以下仍是 GPU/NPU comparison �
 - [x] 最小 adapter 仅注入 `device=npu`、`npu_backend=triton_experimental` 和目标专属断言；
 - [x] same-K、different-K 两个正例和两个 output-shape mismatch 负例 4/4 通过；
 - [x] 保存 counter、generated code、FX/IR/output_code、trace 和环境选择；
-- [ ] 将首个单元的已有 JSON 转入统一 NPU/comparison schema，再升级 compatibility verdict。
+- [x] 将首个单元的已有 JSON 转入统一 NPU/comparison schema，verdict 升级为 `BEHAVIOR_UNCHANGED`。
+
+pad-mm 首个 case 进展：
+
+- [x] `REF-pad-mm-dynamic-m-native` 原生入口确认为 `NO_TESTS`；
+- [x] 记录 GPU-only `TRITON` 候选在 NPU gate baseline 下触发的 lowering `NoValidChoicesError`；
+- [x] 最小扩为 `TRITON,ATEN`，不绕过 `disable_pad_mm`，correctness 通过；
+- [x] 记录 `disable_pad_mm=true`、`shape_padding=false`、目标计数 0/0，为 `EXPECTED_DISABLED`；
+- [ ] 继续 original-aten、stride、exclusion cases 后形成 `AU-pad-mm-mm` 的正式 comparison。
 
 ## P0-G：首批跟踪闭环
 
@@ -170,7 +178,7 @@ T-076 已增加 reference case 子集 schema；以下仍是 GPU/NPU comparison �
 3. [x] GPU 上执行 13 个原生 community cases，必要时才进入最小 adapter；
 4. [x] 接收并复核 GPU 文本 artifacts；no-test-found 和 indirect 映射仍继续审核；
 5. [x] reference 有效后冻结首版 denominator，并启动 NPU 单 case 执行；
-6. [ ] 执行 NPU、compare、failure classification（已完成目标合同 1/5）；
+6. [ ] 执行 NPU、compare、failure classification（正式闭环 1/5；pad-mm 首个 case 已完成）；
 7. [ ] 创建 repair queue 并逐项闭环。
 
 ## 第一阶段完成标准

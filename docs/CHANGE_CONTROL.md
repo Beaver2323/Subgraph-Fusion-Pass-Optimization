@@ -3309,3 +3309,28 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   `c5b75ec79fef3a72b0961698bf469a1d3982e2bc44e27e9e1b8dda2b028c7cd6`。
 - 口径：NPU 目标合同已验证 1/5；统一 result/comparison schema 与 compatibility matrix
   未完成，因此正式闭环仍为 0/5。
+
+### E-206：统一 comparison 首样本与 pad-mm 产品基线（2026-09-02）
+
+- 登记时间：2026-09-02 03:35 CST（UTC+08:00）。新增
+  `schemas/npu_result.schema.json`、`schemas/comparison_result.schema.json` 和
+  `scripts/validate_comparison_data.py`；统一记录覆盖环境、输入合同、NPU control、直接/选定
+  execution、FX/replacement/decomposition/lowering/scheduler/codegen、runtime path、正确性、
+  性能状态、first divergence、root cause、action、verdict 与 repair status。
+- 首个正式样本：`results/current/REF-mm-plus-mm-native/` 保存 NPU result 与 GPU/NPU
+  comparison；交叉校验 reference run/hash、NPU 环境指纹、仓库 adapter hash、manifest variants
+  和正式 verdict 门禁，结果为 1 unit/3 variants、`torch_imported=0`。该单元正式 verdict 为
+  `BEHAVIOR_UNCHANGED`、repair status 为 `not-needed`，正式闭环升为 1/5。
+- pad-mm 原生优先：`REF-pad-mm-dynamic-m-native` 直接执行退出 0 但未进入 test body，记
+  `NO_TESTS`。产品源码明确 `disable_pad_mm=True` 并在 backend 加载时令
+  `shape_padding=false`。
+- 首轮 adapter：保持 GPU 测试的 `max_autotune_gemm_backends=TRITON` 后，产品 gate 关闭
+  pad replacement，原始 dynamic/strided fp32 `aten.mm` 在 lowering 报
+  `NoValidChoicesError`。失败轮 debug 仅生成等价的 `slice -> aten.mm` FX before/after，尚无
+  IR 或 `output_code.py`；对照 NPU lowering 列表确认 mm 已 override、不是 eager 算子缺失。
+- 最小修正：只把 GPU-only GEMM 候选扩为 `TRITON,ATEN`，不修改图、shape、stride、dtype、
+  dynamic 维或产品 gate。最终 1 test/0 failure/0 error/0 skip；
+  `disable_pad_mm=true`、`shape_padding=false`、目标计数 0/0、GPU padded-K 标记缺失，
+  eager/compiled correctness 通过，分类为 `EXPECTED_DISABLED`。
+- 边界：pad-mm 本轮只完成首个 community case，未绕过产品 gate，也未发布 replacement 支持或
+  性能结论；original-aten、stride、exclusion cases 和 unit-level comparison 仍待执行。

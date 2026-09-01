@@ -1,5 +1,10 @@
 __pycache__/
 *.py[cod]
-results/
+results/*
+!results/current/
+results/current/*
+!results/current/*/
+results/current/*/*
+!results/current/*/*.json
 *.tar.gz
 *.tar.gz.sha256

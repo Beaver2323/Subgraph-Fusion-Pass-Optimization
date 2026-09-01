@@ -1,0 +1,276 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-02T03:20:00+08:00",
+  "case_id": "REF-mm-plus-mm-native",
+  "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_mm_plus_mm",
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "enabled",
+    "source_control": "继承 upstream post-grad mm_plus_mm，无 torch_npu 显式关闭控制。",
+    "product_gate_bypassed": false
+  },
+  "paired_control": {
+    "status": "not-required",
+    "reason": "本单元验证 upstream 继承启用合同；目标正负例已在同一 community case 中覆盖，不需要额外 pass-on/pass-off。"
+  },
+  "direct_execution": {
+    "status": "no-tests",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 0,
+    "reason": "上游入口由 GPU_TYPE/HAS_GPU 路由，当前 NPU 环境未进入 test body。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 1,
+    "tests_skipped": 0,
+    "reason": "case-specific adapter 保持原图、shape、dtype 和数值断言，仅注入 NPU device/backend 及目标产物采集。",
+    "duration_seconds": 76.694
+  },
+  "variants": [
+    {
+      "variant_id": "same-k-positive",
+      "kind": "positive",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [[16, 16], [16, 16], [16, 16], [16, 16]],
+            "strides": [[16, 1], [16, 1], [16, 1], [16, 1]],
+            "dynamic_dimensions": []
+          }
+        ]
+      },
+      "match_expectation": true,
+      "match": {
+        "target_matched": true,
+        "count": 1,
+        "nodes": 3,
+        "scope": "target-pattern",
+        "note": "变换后 FX 与生成代码均出现 mm_plus_mm。"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "输入图为两个 aten.mm 后相加，变换后图含目标 mm_plus_mm。",
+        "signatures": [
+          "5e258a8d7402f5d112f53e124a9c700cf262030b78ed8c7d2fa74741bd941ad2",
+          "48562ce780d675cb6875ce79c2fedf0295e68a9ebc7f2112b5a8d6f5b0488d74"
+        ]
+      },
+      "replacement": {
+        "status": "observed",
+        "evidence": "目标 post-grad pattern 被替换为 mm_plus_mm。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "same-K 分支无需回退分解。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "生成代码调用 extern_kernels._mm_plus_mm。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "已捕获对应 ir_pre_fusion.txt 与 ir_post_fusion.txt。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "generated_code_1.py 含 _mm_plus_mm 调用。",
+        "signatures": [
+          "25af20b3a5984122a5aae606c1efe20aa3c9cddcdd377f0994c31e3a08f93663"
+        ]
+      },
+      "runtime_path": "extern",
+      "correctness": {
+        "status": "passed",
+        "assertion": "沿用上游 eager/compiled 数值一致断言。"
+      },
+      "performance": {
+        "status": "not-configured",
+        "reason": "首轮功能闭环未配置独立性能门禁。"
+      },
+      "first_divergence": "none",
+      "root_cause": "目标合同与 GPU reference 一致，无产品分歧。",
+      "recommended_action": "保留当前合同作为后续版本回归基线。"
+    },
+    {
+      "variant_id": "different-k-positive-pattern-fallback",
+      "kind": "positive",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [[1, 4], [4, 2], [1, 5], [5, 2]],
+            "strides": [[4, 1], [2, 1], [5, 1], [2, 1]],
+            "dynamic_dimensions": []
+          }
+        ]
+      },
+      "match_expectation": true,
+      "match": {
+        "target_matched": true,
+        "count": 1,
+        "nodes": 3,
+        "scope": "target-pattern",
+        "note": "目标 pattern 命中；lowering 按上游合同回退为两个 mm 与 add。"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "输入图为两个不同 K 的 aten.mm 后相加，变换后图含目标 mm_plus_mm。",
+        "signatures": [
+          "c593d308e4ffdacb14b067b4fb00ec971abf46990f5e0ab9fc79060c6ed8a27f",
+          "b4c1a93602ffab099c1ac82902773559ffe7fec48235442d01bdf7f2618d62ed"
+        ]
+      },
+      "replacement": {
+        "status": "observed",
+        "evidence": "目标 post-grad pattern 被替换为 mm_plus_mm。"
+      },
+      "decomposition": {
+        "status": "observed",
+        "evidence": "tuned_mm_plus_mm 的 different-K 路径分解为 two-mm-plus-add。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "生成代码包含两个 extern_kernels.mm 与 NPU Triton pointwise add。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "已捕获对应 ir_pre_fusion.txt 与 ir_post_fusion.txt。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "generated_code_2.py 保留目标合同并呈现 two-mm-plus-add 路径。",
+        "signatures": [
+          "8bae33971937c4d0e79a10eaa8787b6c61b62c31a6ccf447df5190f10a321f4a"
+        ]
+      },
+      "runtime_path": "mixed",
+      "correctness": {
+        "status": "passed",
+        "assertion": "沿用上游 eager/compiled 数值一致断言。"
+      },
+      "performance": {
+        "status": "not-configured",
+        "reason": "该 variant 的合同是 pattern 命中后允许 fallback；首轮未配置收益门禁。"
+      },
+      "first_divergence": "none",
+      "root_cause": "different-K fallback 是上游明示合同，不是 NPU 回归。",
+      "recommended_action": "后续版本继续同时检查目标命中与 mixed runtime path。"
+    },
+    {
+      "variant_id": "output-shape-mismatch-negative",
+      "kind": "negative",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [[1, 4], [4, 2], [1, 2], [2, 1]],
+            "strides": [[4, 1], [2, 1], [2, 1], [1, 1]],
+            "dynamic_dimensions": []
+          },
+          {
+            "shapes": [[1, 2], [2, 1], [1, 4], [4, 2]],
+            "strides": [[2, 1], [1, 1], [4, 1], [2, 1]],
+            "dynamic_dimensions": []
+          }
+        ]
+      },
+      "match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "count": 0,
+        "nodes": 0,
+        "scope": "target-pattern",
+        "note": "两种 operand 顺序均未出现目标 mm_plus_mm；GPU 的 suite-global 1/2 来自非目标 add-mm pattern。"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "两组变换后图均保留两个 aten.mm 与 aten.add，未出现 mm_plus_mm。",
+        "signatures": [
+          "2eb99da225cde13e1c462e465c1b915fa641d2711f848a749a0e7da270078a09",
+          "7d8d36ed853ed6be2c994379b1fb880eae2e4706fff0b587242aa2d004edbf60"
+        ]
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "目标形状 guard 生效，未替换为 mm_plus_mm。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "目标 replacement 未发生，不存在目标分解步骤。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "原始两个 mm 与 add 分别进入可用 NPU lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "两组负例均捕获 ir_pre_fusion.txt 与 ir_post_fusion.txt。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "两份生成代码均无 _mm_plus_mm，保留 two-mm-plus-add。",
+        "signatures": [
+          "bfac7697f888966fd0f3be0cf5a7698f6b01ae77dc0a37b0eb5beeaa3728218b",
+          "eb1f8274fbf2575629982565ac91db731bb305e75fe3877f5ba39b0b76a74a4b"
+        ]
+      },
+      "runtime_path": "mixed",
+      "correctness": {
+        "status": "passed",
+        "assertion": "两种 operand 顺序均沿用上游 eager/compiled 数值一致断言。"
+      },
+      "performance": {
+        "status": "not-applicable",
+        "reason": "负向 guard 仅验证不得误命中，不发布性能结论。"
+      },
+      "first_divergence": "pattern",
+      "root_cause": "GPU/NPU suite-global counter 差异来自非目标 pattern 集合；目标 mm_plus_mm 负向合同一致。",
+      "recommended_action": "NPU 验收持续使用目标 FX/codegen 断言，不移植非目标 suite-global counter。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "adapter-source",
+      "path": "issues/REF-mm-plus-mm-native/npu_adapter.py",
+      "sha256": "06b22271b370f466a27e5f7f3677fe26a891d800c59a6629999ac10a52efa716",
+      "availability": "repository"
+    },
+    {
+      "role": "adapter-result",
+      "path": "/home/z50063656/tmp/t076-npu-results/REF-mm-plus-mm-native/adapter-20260902T025636+0800/artifacts/adapter_result.json",
+      "sha256": "c5b75ec79fef3a72b0961698bf469a1d3982e2bc44e27e9e1b8dda2b028c7cd6",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "execution-log",
+      "path": "/home/z50063656/tmp/t076-npu-results/REF-mm-plus-mm-native/adapter-20260902T025636+0800/execution.log",
+      "sha256": "4329e4de2905e0c8ebd38e416ab76b14e95bd28db5dd5fcb47afb1b7b8356e0c",
+      "availability": "external-run-root"
+    }
+  ]
+}

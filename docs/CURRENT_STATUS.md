@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-02 03:00 CST（UTC+08:00）
+> 更新时间：2026-09-02 03:35 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076 GPU reference 已冻结；NPU 目标合同验证 1/5，统一 comparison 闭环 0/5。
+> 当前阶段：T-076 GPU reference 已冻结；统一 comparison 正式闭环 1/5，pad-mm 首个产品基线完成。
 
 ## 1. 总结
 
@@ -21,12 +21,15 @@ PyTorch community-native Inductor compatibility。需要修正的不是基础候
 在此基础上，T-075 已完成首批 5 个单元的 schema、manifest、pass map 和人工复核：单元数仍为
 5，共 20 个 variants、13 个 community test 引用。T-076 的 13 个 direct cases 已全部 passed 且
 reference valid，文本 handoff 的环境、FX signature 和关键文件哈希已复核；5 个单元进入冻结
-denominator，GPU 侧没有 adapter。NPU comparison 已启动首个单元，但尚未完成统一 schema
-和全部 matrix，因此正式闭环仍为 0/5。
+denominator，GPU 侧没有 adapter。统一 NPU/comparison schema、首个结果样本和零 torch
+导入交叉校验已落盘，正式闭环为 1/5。
 `AU-post-grad-mm-plus-mm` 已在当前 Pass 环境进入 NPU：原生直接入口因
 upstream `HAS_GPU` 不包含 NPU 而为 `NO_TESTS`，随后 case-specific adapter 按 manifest
 允许范围注入 NPU 设备、`triton_experimental` backend 和目标专属负向断言，
-4/4 variants 全部有效。由于统一 NPU/comparison schema 尚未落盘，正式闭环仍为 0/5。
+4/4 输入分支全部有效，unit-level verdict 为 `BEHAVIOR_UNCHANGED`。
+`AU-pad-mm-mm` 的首个 dynamic-M case 也已完成：原生入口 `NO_TESTS`；首次 adapter 因
+GPU-only `TRITON` 候选限制在 lowering 报 `NoValidChoicesError`，最小扩为 `TRITON,ATEN`
+且不绕过 `disable_pad_mm` 后 correctness 通过，产品状态为 `EXPECTED_DISABLED`。
 
 ## 2. 工作线吻合性
 
@@ -36,7 +39,7 @@ upstream `HAS_GPU` 不包含 NPU 而为 `NO_TESTS`，随后 case-specific adapte
 | 静态 inventory | 203 主候选 + 4 控制行 | registration 只能辅助查漏 | 保留 207 行，不称为 Pass 数量 |
 | 验收单元 | 188 个、158 provisional | contract 才是基本单位 | 保留当前版本，但必须人工复核后冻结 |
 | 测试事实源 | 已映射 community tests，仍夹杂源码扫描中心表述 | community tests 为主要事实源 | README/TODO/WORKFLOW 全部改为 test-first |
-| 动态测试 | 首批 5 个拟做 NPU 最小迁移 | 先 GPU baseline，再 NPU comparison | GPU 已完成；NPU 目标合同 1/5 |
+| 动态测试 | 首批 5 个拟做 NPU 最小迁移 | 先 GPU baseline，再 NPU comparison | GPU 已完成；正式闭环 1/5，pad-mm 首 case 完成 |
 | 双机 | 旧流程主要围绕 NPU | GPU 无 Agent、NPU 有 Agent | 明确固定脚本与 artifacts 交接 |
 | 历史结果 | 保留 old Benchmark/isolated venv | historical/archived evidence | 归档，不删除、不升级 verdict |
 
@@ -79,8 +82,8 @@ T-075 首批复核没有重新运行或覆盖 T-074：
 4. 后续审核发现合并、拆分或字段缺口时，再生成 T-074 v2，并保留 v1 作为输入证据。
 
 当前数量因此**没有变化**：207 candidate rows、188 provisional units、158 provisional eligible、
-5 个首批冻结单元、20 个 variants、13 个 community test 引用、冻结 denominator 5、NPU 目标合同已验证
-1/5、正式闭环 0/5。未来人工审核
+5 个首批冻结单元、20 个 variants、13 个 community test 引用、冻结 denominator 5、正式闭环
+1/5。未来人工审核
 可以改变 acceptance-unit 数量，这是预期的可审计修正，不是数据回归。
 
 ## 4. 已修正的概念问题
@@ -128,18 +131,18 @@ report/         不可改写的实验事实和 T-074 数据
 - GPU 静态校验、整批/单 case 执行、打包与回传说明。
 - GPU 13/13 direct valid、文本 handoff 与逐 case FX/result/inventory 哈希复核；
 - 首批 5 个 acceptance units 冻结进入 denominator。
-- `REF-mm-plus-mm-native` 已按原生优先执行，记录直接入口 `NO_TESTS`，并用最小 adapter 完成 NPU 4/4 目标合同验证。
+- `REF-mm-plus-mm-native` 已落盘统一 NPU/comparison 结果，正式 verdict 为 `BEHAVIOR_UNCHANGED`；
+- `REF-pad-mm-dynamic-m-native` 已完成产品默认 gate baseline，分类为 `EXPECTED_DISABLED`。
 
-仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核、统一运行 result
-schema 的 NPU/comparison 部分、其余 4 个单元的 NPU baseline 和 5 个正式 comparison verdict。它们不能被 GPU
-reference 完成状态掩盖。
+仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核、其余 4 个单元的
+完整 NPU baseline 和 4 个正式 comparison verdict。它们不能被 GPU reference 或单 case 完成状态掩盖。
 
 ## 7. 下一条 Codex 任务
 
 ```text
-先将 `REF-mm-plus-mm-native` 的已有结构化 JSON 固化为统一 NPU/comparison schema 首个样本，
-再按原生优先、fresh process 规则执行 pad-mm 单元。继续记录产品默认 gate、correctness、
-FX、runtime path 和 first divergence，不得把诊断 gate-bypass 冒充产品 baseline。
+继续 `AU-pad-mm-mm` 的 original-aten、stride、exclusion community cases，保持原生优先和
+fresh process。完成 unit-level NPU 记录与 comparison；诊断 gate-bypass 只能作为独立非产品证据，
+不得覆盖已确认的 `EXPECTED_DISABLED` 产品 baseline。
 ```
 
 ## 8. 当前环境边界

@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/subgraph-fusion-pass-optimization/npu_result.schema.json",
+  "title": "NPU acceptance case result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "case_id",
+    "acceptance_unit_id",
+    "upstream_commit",
+    "source_test",
+    "tracking_mode",
+    "environment",
+    "npu_control",
+    "paired_control",
+    "direct_execution",
+    "selected_execution",
+    "variants",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "case_id": {"type": "string", "minLength": 1},
+    "acceptance_unit_id": {"type": "string", "minLength": 1},
+    "upstream_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "source_test": {"type": "string", "minLength": 1},
+    "tracking_mode": {"enum": ["direct", "adapter", "extracted"]},
+    "environment": {"$ref": "#/$defs/environment"},
+    "npu_control": {"$ref": "#/$defs/npuControl"},
+    "paired_control": {"$ref": "#/$defs/pairedControl"},
+    "direct_execution": {"$ref": "#/$defs/execution"},
+    "selected_execution": {"$ref": "#/$defs/execution"},
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/variant"}
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/artifact"}
+    }
+  },
+  "$defs": {
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fingerprint_sha256",
+        "python_version",
+        "torch_version",
+        "torch_commit",
+        "torch_npu_version",
+        "torch_npu_commit",
+        "triton_version",
+        "triton_ascend_commit",
+        "cann_version",
+        "driver_version",
+        "device",
+        "backend"
+      ],
+      "properties": {
+        "fingerprint_sha256": {"$ref": "#/$defs/sha256"},
+        "python_version": {"type": "string"},
+        "torch_version": {"type": "string"},
+        "torch_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "torch_npu_version": {"type": "string"},
+        "torch_npu_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "triton_version": {"type": "string"},
+        "triton_ascend_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "cann_version": {"type": "string"},
+        "driver_version": {"type": "string"},
+        "device": {"type": "string"},
+        "backend": {"type": "string"}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "execution_success", "tests_run", "tests_skipped", "reason"],
+      "properties": {
+        "status": {
+          "enum": ["passed", "failed", "skipped", "timed-out", "no-tests", "env-blocked"]
+        },
+        "execution_success": {"type": "boolean"},
+        "tests_run": {"type": "integer", "minimum": 0},
+        "tests_skipped": {"type": "integer", "minimum": 0},
+        "reason": {"type": "string", "minLength": 1},
+        "duration_seconds": {"type": "number", "minimum": 0}
+      }
+    },
+    "npuControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "source_control", "product_gate_bypassed"],
+      "properties": {
+        "state": {"enum": ["enabled", "disabled", "guarded", "patched"]},
+        "source_control": {"type": "string", "minLength": 1},
+        "product_gate_bypassed": {"type": "boolean"}
+      }
+    },
+    "pairedControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason"],
+      "properties": {
+        "status": {"enum": ["not-required", "not-run", "passed", "failed"]},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variant_id",
+        "kind",
+        "input_contract",
+        "match_expectation",
+        "match",
+        "fx",
+        "replacement",
+        "decomposition",
+        "lowering",
+        "scheduler",
+        "codegen",
+        "runtime_path",
+        "correctness",
+        "performance",
+        "first_divergence",
+        "root_cause",
+        "recommended_action"
+      ],
+      "properties": {
+        "variant_id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["positive", "negative", "guard", "regression"]},
+        "input_contract": {"$ref": "#/$defs/inputContract"},
+        "match_expectation": {"type": "boolean"},
+        "match": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["target_matched", "count", "nodes", "scope"],
+          "properties": {
+            "target_matched": {"type": "boolean"},
+            "count": {"type": "integer", "minimum": 0},
+            "nodes": {"type": "integer", "minimum": 0},
+            "scope": {"enum": ["target-pattern", "suite-global"]},
+            "note": {"type": "string"}
+          }
+        },
+        "fx": {"$ref": "#/$defs/stageEvidence"},
+        "replacement": {"$ref": "#/$defs/stageEvidence"},
+        "decomposition": {"$ref": "#/$defs/stageEvidence"},
+        "lowering": {"$ref": "#/$defs/stageEvidence"},
+        "scheduler": {"$ref": "#/$defs/stageEvidence"},
+        "codegen": {"$ref": "#/$defs/stageEvidence"},
+        "runtime_path": {"enum": ["triton", "extern", "fallback", "mixed", "not-executed"]},
+        "correctness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "assertion"],
+          "properties": {
+            "status": {"enum": ["passed", "failed", "not-run"]},
+            "assertion": {"type": "string", "minLength": 1}
+          }
+        },
+        "performance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "reason"],
+          "properties": {
+            "status": {"enum": ["passed", "failed", "not-configured", "not-applicable"]},
+            "reason": {"type": "string", "minLength": 1}
+          }
+        },
+        "first_divergence": {
+          "enum": [
+            "upstream", "config", "graph", "pattern", "replacement", "decomposition",
+            "lowering", "scheduler", "codegen", "triton_compile", "runtime",
+            "correctness", "performance", "none"
+          ]
+        },
+        "root_cause": {"type": "string", "minLength": 1},
+        "recommended_action": {"type": "string", "minLength": 1}
+      }
+    },
+    "inputContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["direction", "dtype", "dynamic", "cases"],
+      "properties": {
+        "direction": {"enum": ["forward", "backward", "forward-and-backward"]},
+        "dtype": {"type": "string", "minLength": 1},
+        "dynamic": {"type": "boolean"},
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["shapes", "strides"],
+            "properties": {
+              "shapes": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {"type": "integer", "minimum": 0}
+                }
+              },
+              "strides": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {"type": "integer", "minimum": 0}
+                }
+              },
+              "dynamic_dimensions": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "stageEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "evidence"],
+      "properties": {
+        "status": {"enum": ["observed", "not-observed", "not-applicable", "not-captured"]},
+        "evidence": {"type": "string", "minLength": 1},
+        "signatures": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "path", "sha256", "availability"],
+      "properties": {
+        "role": {"type": "string", "minLength": 1},
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "availability": {"enum": ["repository", "external-run-root"]}
+      }
+    },
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

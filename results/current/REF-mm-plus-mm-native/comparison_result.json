@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-02T03:22:00+08:00",
+  "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260901T180826+0800",
+    "suite_status": "valid-reference-suite",
+    "suite_valid": true,
+    "environment_fingerprint": "8f0b3a0d3291d9c70872444dc3c430e12a7593aeaa1a5e1576a93da62161d7ee",
+    "payload_sha256": "7fb9033a765dd632fc3288640ac33803a30a9d63848acddb14f48065b11b6a8d",
+    "case_id": "REF-mm-plus-mm-native",
+    "case_status": "passed",
+    "reference_valid": true,
+    "reference_result_sha256": "93f2d14f28fbe55a3950f09d02867632dcee4710b4c3ccb15635a785fbf00953",
+    "artifact_inventory_sha256": "703c706c7b1528d5091e1310ed71cf896609dfc09dabc3ec164256d2b979a1c3"
+  },
+  "npu": {
+    "result_path": "results/current/REF-mm-plus-mm-native/npu_result.json",
+    "result_sha256": "c4ef27ff67a4f174611f70935b09c87680fb0fb066e0ca0ea6418cdf07117e84",
+    "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "tracking_mode": "adapter",
+    "execution_success": true,
+    "correctness_status": "passed"
+  },
+  "variant_comparisons": [
+    {
+      "variant_id": "same-k-positive",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "extern",
+      "correctness_status": "passed",
+      "performance_status": "not-configured",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "GPU/NPU 均命中同一目标合同；NPU 生成代码调用 extern _mm_plus_mm。"
+    },
+    {
+      "variant_id": "different-k-positive-pattern-fallback",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "mixed",
+      "correctness_status": "passed",
+      "performance_status": "not-configured",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "目标 pattern 命中；two-mm-plus-add mixed 路径符合上游 different-K fallback 合同。"
+    },
+    {
+      "variant_id": "output-shape-mismatch-negative",
+      "reference_contract_stable": true,
+      "reference_target_match": false,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "mixed",
+      "correctness_status": "passed",
+      "performance_status": "not-applicable",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "两侧目标 mm_plus_mm 均不命中；GPU 的全局 1/2 是非目标 add-mm pattern，不参与目标合同比较。"
+    }
+  ],
+  "first_divergence": "config",
+  "root_cause": "上游原生入口以 GPU_TYPE/HAS_GPU 路由而未进入 NPU test body，需要只注入 device/backend 的最小 adapter；adapter 后目标 pattern、guard、lowering、runtime 与 correctness 合同一致。",
+  "recommended_action": "保留 case-specific adapter 与目标 codegen 断言作为回归入口；不修改 PyTorch/torch_npu 产品源码。",
+  "final_verdict": "BEHAVIOR_UNCHANGED",
+  "repair_status": "not-needed"
+}
