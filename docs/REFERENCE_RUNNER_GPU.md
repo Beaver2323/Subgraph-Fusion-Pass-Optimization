@@ -1,7 +1,7 @@
 # T-076 GPU/reference Runner 人工操作说明
 
-> 更新时间：2026-09-01 18:00 CST（UTC+08:00）
-> 状态：runner 已完成静态校验；GPU 环境已确定，等待安装、验真并执行原生社区测例。
+> 更新时间：2026-09-02 02:11 CST（UTC+08:00）
+> 状态：GPU 环境已验真；13/13 direct cases 均 passed 且 `reference_valid=true`，等待文本证据回传。
 > 核心规则：先取得 direct 结果；没有 direct blocker 证据，不创建或运行 adapter。
 
 ## 1. GPU 机器环境合同
@@ -10,18 +10,19 @@
 
 | 项目 | 合同 |
 | --- | --- |
-| 执行用户 | `root` |
+| 执行用户 | 登录账号 `z00824525`，具有 sudo 权限；`HOME=/data/z50063656` |
 | GPU | 8 × NVIDIA A100-SXM4-80GB，SM 8.0 |
 | 宿主驱动 | `550.54.15`，保持不变 |
 | CUDA Toolkit | 12.6.3，安装到 `/data/z50063656/cuda-12.6` |
-| CUDA compat | `cuda-compat-12-6`，解压到 `/data/z50063656/cuda-compat-12.6` |
-| cuDNN | 9.x，安装在 GPU Conda 环境中 |
-| Conda | `/data/z50063656/envs/PassGPURef`，Python 3.12 |
+| CUDA compat | 当前未启用；Driver API 12.4 + CUDA 12.6 minor compatibility 已通过 kernel 验真 |
+| cuDNN | pip `nvidia-cudnn-cu12` 9.25.1 |
+| Python | `/data/z50063656/envs/PassGPURef` pip venv，Python 3.12 |
+| Triton | 3.8.0 |
 | PyTorch source | `/data/z50063656/src/pytorch`，commit `8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b` |
 | 测试工作目录 | `/data/z50063656/tmp`，必须位于 PyTorch 源码树外 |
 | 结果目录 | `/data/z50063656/tmp/t076-reference-results` |
 
-根分区只剩少量空间，CUDA、Conda、源码、缓存、构建产物和测试结果都必须写入 `/data`。不要
+根分区只剩少量空间，CUDA、venv、源码、缓存、构建产物和测试结果都必须写入 `/data`。不要
 使用 `apt install cuda-*` 把 Toolkit 写入根分区，不升级宿主驱动，不修改
 `/usr/local/cuda -> /usr/local/cuda-12.4`。NPU 的 `/home/z50063656/Pass/activate_pass.sh`
 不能代替 GPU 环境。
@@ -38,28 +39,25 @@ runner 还要求：
 CUDA 12.6.3 使用 NVIDIA runfile，只安装 Toolkit、不安装驱动：
 
 ```bash
-mkdir -p /data/z50063656/{downloads,cuda-12.6,cuda-compat-12.6,conda-pkgs,envs,src,tmp,pip-cache,cache,triton-cache,inductor-cache,torch-extensions}
+mkdir -p /data/z50063656/{downloads,cuda-12.6,envs,src,tmp,pip-cache,cache,triton-cache,inductor-cache,torch-extensions}
 
 export TMPDIR=/data/z50063656/tmp
 cd /data/z50063656/downloads
 wget -c https://developer.download.nvidia.com/compute/cuda/12.6.3/local_installers/cuda_12.6.3_560.35.05_linux.run
 sh cuda_12.6.3_560.35.05_linux.run --silent --toolkit \
   --toolkitpath=/data/z50063656/cuda-12.6
-
-apt download cuda-compat-12-6
-dpkg-deb -x cuda-compat-12-6_*.deb /data/z50063656/cuda-compat-12.6
 ```
 
-创建独立 Conda 环境并准备冻结源码。若目标目录已存在，先核对其来源，不要直接覆盖：
+创建独立 pip venv 并准备冻结源码。若目标目录已存在，先核对其来源，不要直接覆盖：
 
 ```bash
 export TMPDIR=/data/z50063656/tmp
 export PIP_CACHE_DIR=/data/z50063656/pip-cache
-export CONDA_PKGS_DIRS=/data/z50063656/conda-pkgs
 
-conda create --prefix /data/z50063656/envs/PassGPURef python=3.12 -y
-conda activate /data/z50063656/envs/PassGPURef
-conda install -c nvidia "cudnn=9" -y
+python3.12 -m venv /data/z50063656/envs/PassGPURef
+source /data/z50063656/envs/PassGPURef/bin/activate
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install nvidia-cudnn-cu12 cmake ninja mkl-static mkl-include
 
 git clone --recursive --branch release/2.14 \
   https://github.com/pytorch/pytorch.git /data/z50063656/src/pytorch
@@ -71,30 +69,30 @@ git -C /data/z50063656/src/pytorch submodule update --init --recursive
 cd /data/z50063656/src/pytorch
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python -m pip install cmake ninja mkl-static mkl-include
 make triton
 ```
 
-上述下载、Conda 包、pip cache 和源码都位于 `/data`；不要执行 `apt autoremove` 清理共享机器。
+上述下载、venv、pip cache 和源码都位于 `/data`；不要执行 `apt autoremove` 清理共享机器。
 
-每次 root 登录后执行：
+每次登录后执行：
 
 ```bash
 export TMPDIR=/data/z50063656/tmp
 export PIP_CACHE_DIR=/data/z50063656/pip-cache
-export CONDA_PKGS_DIRS=/data/z50063656/conda-pkgs
-export CONDA_ENVS_PATH=/data/z50063656/envs
 export XDG_CACHE_HOME=/data/z50063656/cache
 export TRITON_CACHE_DIR=/data/z50063656/triton-cache
 export TORCHINDUCTOR_CACHE_DIR=/data/z50063656/inductor-cache
 export TORCH_EXTENSIONS_DIR=/data/z50063656/torch-extensions
 
+source /data/z50063656/envs/PassGPURef/bin/activate
 export CUDA_HOME=/data/z50063656/cuda-12.6
-export CUDA_COMPAT_DIR=/data/z50063656/cuda-compat-12.6/usr/local/cuda-12.6/compat
 export PATH="${CUDA_HOME}/bin:${PATH}"
-export LD_LIBRARY_PATH="${CUDA_COMPAT_DIR}:${CUDA_HOME}/lib64:${LD_LIBRARY_PATH:-}"
+export CUDNN_ROOT="${VIRTUAL_ENV}/lib/python3.12/site-packages/nvidia/cudnn"
+export CUDNN_INCLUDE_DIR="${CUDNN_ROOT}/include"
+export CUDNN_LIBRARY="${CUDNN_ROOT}/lib"
+export LD_LIBRARY_PATH="${CUDNN_ROOT}/lib:${CUDA_HOME}/lib64:${LD_LIBRARY_PATH:-}"
+unset CUDA_COMPAT_DIR CONDA_PREFIX CONDA_DEFAULT_ENV PYTHONPATH
 
-conda activate /data/z50063656/envs/PassGPURef
 export PYTHON="$(command -v python)"
 export PASS_TRACKER_WORK_DIR=/data/z50063656/tmp
 ```
@@ -104,7 +102,7 @@ export PASS_TRACKER_WORK_DIR=/data/z50063656/tmp
 ```bash
 cd /data/z50063656/src/pytorch
 export USE_CUDA=1 USE_CUDNN=1 TORCH_CUDA_ARCH_LIST=8.0 MAX_JOBS=8
-export CMAKE_PREFIX_PATH="${CONDA_PREFIX}:${CMAKE_PREFIX_PATH:-}"
+export CMAKE_PREFIX_PATH="${VIRTUAL_ENV}"
 python -m pip install -e . -v --no-build-isolation
 ```
 
@@ -113,8 +111,8 @@ python -m pip install -e . -v --no-build-isolation
 ## 3. 更新仓库并核对 commit
 
 ```bash
-cd /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization
-git pull --ff-only origin main
+export TRACKER_ROOT=/data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization
+git -C "${TRACKER_ROOT}" pull --ff-only origin main
 
 git -C /data/z50063656/src/pytorch rev-parse HEAD
 git -C /data/z50063656/src/pytorch status --short
@@ -129,7 +127,7 @@ export PASS_TRACKER_WORK_DIR=/data/z50063656/tmp
 export PYTHON=/data/z50063656/envs/PassGPURef/bin/python
 cd /data/z50063656/tmp
 
-bash /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/run_reference_all.sh \
+bash "${TRACKER_ROOT}/scripts/run_reference_all.sh" \
   --pytorch-root /data/z50063656/src/pytorch \
   --validate-only
 ```
@@ -149,7 +147,7 @@ torch_imported=0 gpu_executed=0
 export CUDA_VISIBLE_DEVICES=<空闲GPU编号>
 cd /data/z50063656/tmp
 
-bash /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/run_reference_all.sh \
+bash "${TRACKER_ROOT}/scripts/run_reference_all.sh" \
   --pytorch-root /data/z50063656/src/pytorch \
   --output-root /data/z50063656/tmp/t076-reference-results
 ```
@@ -163,7 +161,7 @@ bash /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/run_referenc
 
 ```bash
 cd /data/z50063656/tmp
-bash /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/run_reference_all.sh \
+bash "${TRACKER_ROOT}/scripts/run_reference_all.sh" \
   --pytorch-root /data/z50063656/src/pytorch \
   --output-root /data/z50063656/tmp/t076-reference-results \
   --case REF-mm-plus-mm-native
@@ -184,6 +182,26 @@ sha256sum reference-<timestamp>.tar.gz > reference-<timestamp>.tar.gz.sha256
 ```
 
 退出码非零也要回传完整 run 目录，不先删除失败 case 或大日志。runner 不自动提交 artifacts。
+
+若机器禁止 Git/二进制文件上传，使用通用文本导出器。输出必须位于原始 run 目录外：
+
+```bash
+export RUN_DIR=/data/z50063656/tmp/t076-reference-results/reference-<timestamp>
+export TEXT_HANDOFF=/data/z50063656/tmp/t076-reference-results/reference-<timestamp>-text-handoff.json
+
+cd /data/z50063656/tmp
+python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
+  --run-dir "${RUN_DIR}" \
+  --output "${TEXT_HANDOFF}"
+
+python -m json.tool "${TEXT_HANDOFF}" >/dev/null
+sha256sum "${TEXT_HANDOFF}"
+wc -c "${TEXT_HANDOFF}"
+```
+
+该文件只包含完整环境、suite 摘要、逐 case 审核字段、关键证据文件的大小/SHA256，以及文本
+payload 的稳定 SHA256；不包含大体积 debug 正文，不修改原始 run。通过终端复制该 JSON 即可
+完成受限机器的结构化交接。原始 run 仍须保留在 GPU 机器，供后续按哈希追溯。
 
 ## 8. Direct blocker 与 adapter 决策
 

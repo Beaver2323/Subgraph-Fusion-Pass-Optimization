@@ -296,6 +296,8 @@ except Exception as error:
 selected_environment = {
     name: os.environ.get(name)
     for name in (
+        "HOME",
+        "VIRTUAL_ENV",
         "CUDA_HOME",
         "CUDA_COMPAT_DIR",
         "CUDA_VISIBLE_DEVICES",

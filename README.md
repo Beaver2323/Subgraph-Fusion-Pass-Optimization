@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-01 18:00 CST（UTC+08:00）
+> 文档更新时间：2026-09-02 02:11 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -22,9 +22,9 @@
   `yes-provisional`。该聚合仍需按 upstream optimization contract 人工审核，不能作为冻结分母。
 - T-075 已把首批 5 个单元写入 schema/manifest，并完成 contract/variant 人工复核；尚未形成具备 GPU baseline、当前 Pass 环境 NPU
   结果和 comparison verdict 的正式闭环，因此新口径完成数仍为 0。
-- T-076 已生成 13 个 direct community cases、reference plan/schema、批量 runner 和 GPU 人工
-  操作说明；GPU 机器已确定采用 root、A100、R550、`/data` 上的 CUDA 12.6.3 + compat 和精确
-  source build，当前仍等待环境验真与原生 GPU artifacts，不存在 adapter case。
+- T-076 的 GPU 环境与精确 source build 已验真，13/13 direct community cases 均 passed 且
+  `reference_valid=true`；不存在 adapter case。GPU 禁止 Git/二进制上传，当前通过通用文本导出器
+  回传环境、summary、逐 case FX signature 和关键文件哈希，完成复核后进入 NPU comparison。
 
 ## 统一术语
 
@@ -69,7 +69,7 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) | 2026-08-31 校准结论、T-074 边界与下一任务 |
 | [docs/SCOPE_AND_CODE_MAP.md](docs/SCOPE_AND_CODE_MAP.md) | 任务范围、Inductor 调用链和源码入口 |
 | [docs/GUIDE.md](docs/GUIDE.md) | 机制说明与历史案例阅读指南 |
-| [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | GPU 机器静态校验、整批执行、重跑、打包与回传说明 |
+| [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | GPU 静态校验、整批执行、重跑、二进制/文本回传说明 |
 | [docs/CHANGE_CONTROL.md](docs/CHANGE_CONTROL.md) | 环境、产品代码、文档和交付变更记录 |
 | [docs/HISTORY.md](docs/HISTORY.md) | 已完成成果、失败与中性尝试索引 |
 | [docs/requirements/20260831_requirement_change.md](docs/requirements/20260831_requirement_change.md) | 8 月 31 日需求合同与决策 |
@@ -98,7 +98,7 @@ variants 中 14 个进入动态执行，3 个 registration-only 和 3 个 NPU-on
 - NPU 新测试从 `/home/z50063656/tmp` 发起，并使用
   `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`；
 - GPU T-076 测试从 `/data/z50063656/tmp` 发起，使用
-  `/data/z50063656/envs/PassGPURef`，重型环境、源码、缓存和产物均写入 `/data`；
+  `/data/z50063656/envs/PassGPURef` pip venv，重型环境、源码、缓存和产物均写入 `/data`；
 - 不在 PyTorch 或 torch_npu 源码树中 import `torch`；
 - 不使用旧 `Benchmark/env.sh` 启动新任务；
 - installed wheel 与同名 `dist` wheel 的哈希冲突解决前，不得直接重装；

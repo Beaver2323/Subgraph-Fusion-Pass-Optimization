@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-01 18:00 CST（UTC+08:00）
+> 更新时间：2026-09-02 02:11 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076 runner 静态完成，GPU 环境合同已确定；尚未取得新的 GPU/NPU 动态结果。
+> 当前阶段：T-076 GPU 13/13 direct valid；等待文本证据复核后启动 NPU comparison。
 
 ## 1. 总结
 
@@ -128,19 +128,17 @@ schema 的 NPU/comparison 部分、GPU/NPU baseline 和冻结 denominator。它�
 ## 7. 下一条 Codex 任务
 
 ```text
-在 GPU 机器先按 docs/REFERENCE_RUNNER_GPU.md 完成 `/data/z50063656` 环境安装与精确 commit
-验真，再运行 T-076 的 13 个 direct community cases，回传
-完整 run 目录。NPU 控制节点先复核 execution、内部 counter/FileCheck 断言、FX before/after 和
-环境指纹；只有 direct 路径受设备、backend 或 artifacts 采集阻塞时，才生成不改变图与 expected
-behavior 的最小 adapter。reference 有效前不运行 NPU comparison。
+在 GPU 机器使用 `scripts/export_reference_text.py` 导出已完成 run
+`reference-20260901T180826+0800` 的文本 handoff。NPU 控制节点复核 13 个 execution、FX signature、
+环境指纹和关键文件哈希；13 个 direct 均 valid，因此不创建 adapter，复核后启动 NPU comparison。
 ```
 
 ## 8. 当前环境边界
 
 - NPU 新测试从 `/home/z50063656/tmp` 发起；GPU T-076 从 `/data/z50063656/tmp` 发起；
 - NPU 控制节点动态任务使用 `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`；GPU
-  reference 固定使用 root、A100/R550、CUDA 12.6.3 + compat、Python 3.12 和与冻结 PyTorch
-  commit 一致的 `/data/z50063656/envs/PassGPURef`；
+  reference 使用 `z00824525`/sudo、A100/R550、CUDA 12.6.3、pip venv Python 3.12 和与冻结
+  PyTorch commit 一致的 `/data/z50063656/envs/PassGPURef`；compat 当前未启用；
 - 不在 PyTorch/torch_npu 源码树中 import `torch`；
 - installed torch_npu wheel 与 `dist` 同名 wheel 哈希冲突仍未解除，不重装；
 - T-055～T-073 的 Benchmark/isolated venv 结果保留原环境标签；
