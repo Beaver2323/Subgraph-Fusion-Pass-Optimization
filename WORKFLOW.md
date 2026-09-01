@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-08-31 20:00 CST（UTC+08:00）
+> 更新时间：2026-09-01 18:00 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -92,6 +92,10 @@ GPU 机器没有 Agent，只做被动批量执行：
 
 GPU 机器不承担 testcase 设计、交互式归因、backend 修改或自动 Git 决策。runner 必须在单个 case
 失败后继续执行，并保存足够 traceback、图、counter 和环境信息供 NPU 侧离线分析。
+
+T-076 当前 GPU 执行合同为 root 用户、A100/R550、`/data/z50063656` 上的 CUDA 12.6.3、
+`cuda-compat-12-6`、Python 3.12 Conda 和冻结 commit source build。GPU 测试从
+`/data/z50063656/tmp` 发起；该路径是 NPU `/home/z50063656/tmp` 规则的显式机器级例外。
 
 ### 5.2 NPU 机器
 

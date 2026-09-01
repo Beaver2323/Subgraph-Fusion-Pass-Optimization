@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-08-31 20:00 CST（UTC+08:00）
-> 状态：T-076 首批 GPU/reference runner 已生成并通过静态校验；等待 GPU direct artifacts。
+> 更新时间：2026-09-01 18:00 CST（UTC+08:00）
+> 状态：T-076 runner 已静态通过；GPU 环境合同已确定，等待安装验真和 direct artifacts。
 > 约束：当前不预建 adapter、不新增大规模 pass 测例、不提前启动 NPU comparison。
 
 ## 任务计数规则
@@ -89,7 +89,10 @@ GPU 机器没有 Agent，runner 必须可由人工一次执行完整批次。
 - [x] 单个 case 失败、skip 或超时不终止整个 suite；
 - [x] 生成结构化 `reference_summary.json/.md`；
 - [x] 提供 GPU 人工操作说明：`git pull`、静态校验、整批/单 case、打包/回传；
+- [x] 固定 GPU root/A100/R550、`/data`、CUDA 12.6.3 + compat、Python 3.12 和精确 source build 合同；
+- [x] 环境指纹补充执行用户、CUDA/compat 路径、Driver API、宿主驱动和缓存路径；
 - [x] 不要求 GPU 机器进行交互分析或自动 Git 决策；
+- [ ] GPU 机器完成 `/data/z50063656` 环境安装和精确 commit 运行时验真；
 - [ ] GPU 机器执行 13 个 direct cases 并回传完整 artifacts；
 - [ ] 逐项复核 direct blocker；只有设备/backend/artifact capture 阻塞才设计最小 adapter；
 - [ ] reference 有效后决定是否更新 `review_status` 与 denominator。

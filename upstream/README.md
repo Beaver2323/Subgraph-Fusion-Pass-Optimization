@@ -1,6 +1,6 @@
 # Upstream Contract 与 Acceptance Unit 数据
 
-> 更新时间：2026-08-31 20:00 CST（UTC+08:00）
+> 更新时间：2026-09-01 18:00 CST（UTC+08:00）
 > 状态：T-075 首批 5 个单元完成静态人工复核；T-076 direct reference plan 已就绪，等待 GPU 执行。
 
 本目录保存 tracker 的活动数据入口：
@@ -29,7 +29,8 @@ Python 标准库 `json` 解析，避免 GPU 机器额外安装 PyYAML。
 
 ## 验证
 
-从 `/home/z50063656/tmp` 执行：
+NPU 控制节点从 `/home/z50063656/tmp` 执行；GPU 机器从
+`/data/z50063656/tmp` 执行并替换为 `/data/z50063656/src/pytorch`：
 
 ```bash
 python /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/validate_tracker_data.py \

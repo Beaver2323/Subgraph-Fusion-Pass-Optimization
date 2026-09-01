@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-08-31 20:00 CST（UTC+08:00）
+> 日志校准时间：2026-09-01 18:00 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3242,3 +3242,25 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   torch_npu、Triton、Conda 环境或 wheel。T-074 CSV SHA 与 T-075 denominator 状态保持不变。
 - 下一步：GPU 机器执行 13 个 direct cases 并回传完整 run 目录；NPU 控制节点先复核 blocker，
   再决定是否需要最小 adapter。reference 有效前不冻结 denominator、不启动 NPU comparison。
+
+### E-203：T-076 GPU 环境合同与取证增强（2026-09-01）
+
+- 登记时间：2026-09-01 18:00 CST（UTC+08:00）。状态：
+  `gpu-environment-contract-fixed-await-install-and-execution`。
+- 机器事实：GPU 节点为 8 张 A100-SXM4-80GB，宿主驱动 `550.54.15`、系统 CUDA 12.4；根分区
+  仅余约 5.6 GB，`/data` 有约 19 TB 可用。用户确认长期使用 root 登录，GPU 测试允许直接从
+  `/data/z50063656/tmp` 发起。
+- 环境决策：不升级宿主驱动、不修改 `/usr/local/cuda -> /usr/local/cuda-12.4`，使用 NVIDIA
+  runfile 将完整 CUDA 12.6.3 Toolkit 安装到 `/data/z50063656/cuda-12.6`；将
+  `cuda-compat-12-6` 解压到 `/data` 并通过进程级 `LD_LIBRARY_PATH` 启用。cuDNN 9、Python 3.12
+  Conda、精确 PyTorch source、缓存、构建和 artifacts 全部放在 `/data/z50063656`。
+- 版本理由：冻结 PyTorch 源码硬门槛为 CUDA 12.6；PyTorch 2.14 官方同期 CUDA wheel 线为
+  cu126。CUDA 12.8.1 仅保留为已知 CI 组合，不再误写为 T-076 的硬要求。
+- runner 变更：保留 `/home/z50063656/tmp` 默认值和 `PASS_TRACKER_WORK_DIR` 通用覆盖；错误提示
+  增加 GPU `/data` 用法。环境指纹新增用户/UID、选定 CUDA/compat/Conda/缓存变量、
+  `cuDriverGetVersion()`、逐卡宿主驱动查询和 `nvidia-smi --version`，不降低 source/runtime commit、
+  CUDA、Triton 或 artifact 门禁。
+- 文档变更：GPU 操作说明、README、TODO、WORKFLOW、当前状态和 upstream 导航统一更新为中文
+  `2026-09-01 18:00 CST` 时间戳；明确 GPU `/data` 是 NPU `/home` 测试规则的机器级例外。
+- 当前边界：只确定环境和增强取证，尚未证明 CUDA/compat/cuDNN、精确 source build 或 13 个 direct
+  cases 已通过。安装验真和动态结果必须由 GPU 机器 artifacts 证明。

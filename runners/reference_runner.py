@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import getpass
 import hashlib
 import json
 import os
@@ -258,12 +259,57 @@ def collect_environment(
     run_dir: Path,
 ) -> dict[str, Any]:
     probe = """
+import ctypes
+import getpass
 import importlib.metadata
 import json
+import os
 import platform
 import sys
 import torch
 from torch.testing._internal.inductor_utils import GPU_TYPE, HAS_GPU_AND_TRITON
+
+cuda_driver_api = {
+    "library_loaded": False,
+    "init_return_code": None,
+    "version_return_code": None,
+    "version": None,
+    "error": None,
+}
+try:
+    libcuda = ctypes.CDLL("libcuda.so.1")
+    cuda_driver_api["library_loaded"] = True
+    libcuda.cuInit.argtypes = [ctypes.c_uint]
+    libcuda.cuInit.restype = ctypes.c_int
+    libcuda.cuDriverGetVersion.argtypes = [ctypes.POINTER(ctypes.c_int)]
+    libcuda.cuDriverGetVersion.restype = ctypes.c_int
+    cuda_driver_api["init_return_code"] = libcuda.cuInit(0)
+    driver_version = ctypes.c_int()
+    cuda_driver_api["version_return_code"] = libcuda.cuDriverGetVersion(
+        ctypes.byref(driver_version)
+    )
+    if cuda_driver_api["version_return_code"] == 0:
+        cuda_driver_api["version"] = driver_version.value
+except Exception as error:
+    cuda_driver_api["error"] = f"{type(error).__name__}: {error}"
+
+selected_environment = {
+    name: os.environ.get(name)
+    for name in (
+        "CUDA_HOME",
+        "CUDA_COMPAT_DIR",
+        "CUDA_VISIBLE_DEVICES",
+        "CONDA_PREFIX",
+        "LD_LIBRARY_PATH",
+        "PATH",
+        "TMPDIR",
+        "PIP_CACHE_DIR",
+        "XDG_CACHE_HOME",
+        "TRITON_CACHE_DIR",
+        "TORCHINDUCTOR_CACHE_DIR",
+        "TORCH_EXTENSIONS_DIR",
+    )
+}
 
 packages = {}
 for name in ("torch", "triton", "pytorch-triton", "pytorch-triton-rocm"):
@@ -286,6 +332,9 @@ if torch.cuda.is_available():
         })
 
 print(json.dumps({
+    "user": getpass.getuser(),
+    "uid": os.getuid() if hasattr(os, "getuid") else None,
+    "effective_uid": os.geteuid() if hasattr(os, "geteuid") else None,
     "python_version": sys.version,
     "python_executable": sys.executable,
     "platform": platform.platform(),
@@ -298,6 +347,8 @@ print(json.dumps({
     "cuda_device_count": torch.cuda.device_count(),
     "gpu_type": GPU_TYPE,
     "has_gpu_and_triton": HAS_GPU_AND_TRITON,
+    "cuda_driver_api": cuda_driver_api,
+    "selected_environment": selected_environment,
     "devices": devices,
     "packages": packages,
 }, sort_keys=True))
@@ -326,11 +377,30 @@ print(json.dumps({
     executable = shutil.which("nvidia-smi")
     if executable:
         smi = run_command([executable, "-L"], cwd=work_dir)
+        driver_query = run_command(
+            [
+                executable,
+                "--query-gpu=index,name,driver_version",
+                "--format=csv,noheader",
+            ],
+            cwd=work_dir,
+        )
+        smi_version = run_command([executable, "--version"], cwd=work_dir)
         nvidia_smi = {
             "available": True,
             "return_code": smi.returncode,
             "stdout": smi.stdout.strip(),
             "stderr": smi.stderr.strip(),
+            "driver_query": {
+                "return_code": driver_query.returncode,
+                "stdout": driver_query.stdout.strip(),
+                "stderr": driver_query.stderr.strip(),
+            },
+            "version": {
+                "return_code": smi_version.returncode,
+                "stdout": smi_version.stdout.strip(),
+                "stderr": smi_version.stderr.strip(),
+            },
         }
     nvcc: dict[str, Any] = {"available": False, "stdout": None, "stderr": None}
     executable = shutil.which("nvcc")
@@ -350,6 +420,10 @@ print(json.dumps({
             "hostname": platform.node(),
             "platform": platform.platform(),
             "machine": platform.machine(),
+            "user": getpass.getuser(),
+            "uid": os.getuid() if hasattr(os, "getuid") else None,
+            "effective_uid": os.geteuid() if hasattr(os, "geteuid") else None,
+            "working_directory": str(work_dir),
         },
         "source": {
             "pytorch_root": str(pytorch_root),
