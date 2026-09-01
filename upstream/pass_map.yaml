@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-31T18:34:09+08:00",
-  "status": "t075-first-wave-manual-map",
+  "generated_at": "2026-09-02T02:22:00+08:00",
+  "status": "t076-first-wave-reference-frozen",
   "source_candidate_index": "report/upstream_pass_test_index_20260829/candidate_test_index.csv",
   "global_decisions": [
     "T-074 v1 candidate rows remain read-only inventory input",
@@ -39,7 +39,7 @@
         }
       ],
       "v1_to_t075_change": "unit count unchanged; variants and counter-scope limitation made explicit",
-      "review_status": "mapped-static-await-gpu-reference"
+      "review_status": "frozen"
     },
     {
       "candidate_id": "2f13340f939c-812-75e4c5ef",
@@ -90,7 +90,7 @@
         }
       ],
       "v1_to_t075_change": "unit count unchanged; expand stride regression and generated registration evidence",
-      "review_status": "mapped-static-await-gpu-reference"
+      "review_status": "frozen"
     },
     {
       "candidate_id": "95cc946c66b4-885-eeb96b53",
@@ -136,7 +136,7 @@
         }
       ],
       "v1_to_t075_change": "unit count unchanged; one test role downgraded to related regression and static fp16 test added",
-      "review_status": "mapped-static-await-gpu-reference"
+      "review_status": "frozen"
     },
     {
       "candidate_id": "79a7f46b0054-197-5f9354b1",
@@ -183,7 +183,7 @@
         }
       ],
       "v1_to_t075_change": "unit count unchanged; add bias-broadcast evidence and mark CUDA-specific negative scope",
-      "review_status": "mapped-static-await-gpu-reference"
+      "review_status": "frozen"
     },
     {
       "candidate_id": "ae25cdda35b0-2033-0c4f3e92",
@@ -224,7 +224,7 @@
         }
       ],
       "v1_to_t075_change": "unit count unchanged; two registrations and bias/scalar variants made explicit; current source overlay separated from commit baseline",
-      "review_status": "mapped-static-await-gpu-reference"
+      "review_status": "frozen"
     }
   ]
 }

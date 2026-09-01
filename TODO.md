@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-02 02:11 CST（UTC+08:00）
-> 状态：T-076 GPU 13/13 direct valid；等待文本证据回传与 NPU 侧复核。
+> 更新时间：2026-09-02 02:22 CST（UTC+08:00）
+> 状态：T-076 文本证据已复核、首批 denominator=5；进入 NPU runner/comparison。
 > 约束：当前不预建 adapter、不新增大规模 pass 测例、不提前启动 NPU comparison。
 
 ## 任务计数规则
@@ -59,7 +59,7 @@
 - [ ] 判断一个 registration 是否展开多个必须分别验证的 variants；
 - [ ] 无法确认时标记 `needs-review`，不得猜测；
 - [ ] 审核完成后才决定是否重新生成 T-074 acceptance-unit 输出；
-- [ ] 冻结第一版 denominator，并记录从 188/158 到新数量的可审计变化。
+- [x] 冻结第一版 denominator=5；188/158 仍为 T-074 provisional inventory，不与冻结数混算。
 
 ## P0-C：Manifest 与映射文件
 
@@ -95,9 +95,9 @@ GPU 机器没有 Agent，runner 必须可由人工一次执行完整批次。
 - [x] 不要求 GPU 机器进行交互分析或自动 Git 决策；
 - [x] GPU 机器完成 `/data/z50063656` 环境安装和精确 commit 运行时验真；
 - [x] GPU 机器执行 13 个 direct cases，13/13 passed 且 `reference_valid=true`；
-- [ ] 通过文本 handoff 回传结构化摘要与哈希，并在 NPU 控制节点完成证据复核；
-- [ ] 逐项复核 direct blocker；只有设备/backend/artifact capture 阻塞才设计最小 adapter；
-- [ ] reference 有效后决定是否更新 `review_status` 与 denominator。
+- [x] 通过文本 handoff 回传结构化摘要与哈希，并在 NPU 控制节点完成证据复核；
+- [x] 13 个 direct 均有效，没有 blocker，不创建 GPU adapter；
+- [x] 5 个单元更新为 `review_status=frozen`、`denominator_eligible=yes-frozen`。
 
 ## P0-E：统一 result schema
 

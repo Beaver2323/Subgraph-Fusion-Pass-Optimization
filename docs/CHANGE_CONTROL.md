@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-02 02:11 CST（UTC+08:00）
+> 日志校准时间：2026-09-02 02:22 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3267,9 +3267,9 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 
 ### E-204：T-076 GPU direct 全通过与文本交接工具（2026-09-02）
 
-- 登记时间：2026-09-02 02:11 CST（UTC+08:00）。GPU 控制台报告 run
+- 登记时间：2026-09-02 02:22 CST（UTC+08:00）。GPU run
   `reference-20260901T180826+0800` 的 13/13 direct cases 均 `passed` 且
-  `reference_valid=true`，suite 为 `valid-reference-suite`；完整结构化文本尚待回传复核。
+  `reference_valid=true`，suite 为 `valid-reference-suite`；完整结构化文本已回传复核。
 - 实际环境修正：登录账号为 `z00824525` 并具有 sudo 权限，`HOME=/data/z50063656`；使用 pip venv
   Python 3.12、CUDA 12.6、cuDNN 9.25.1、Triton 3.8.0 和冻结 PyTorch commit。宿主 Driver API
   12.4 通过 CUDA 12.x minor compatibility 成功执行 kernel，当前没有启用 compat 包。
@@ -3278,5 +3278,8 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   SHA256，并为规范化 payload 生成稳定 SHA256。输出必须位于原 run 外，不导入 torch、不修改原证据。
 - 后续环境指纹补充 `HOME` 与 `VIRTUAL_ENV`；历史 run 不回写，仍以其中的 Python executable、用户
   和 UID 证明本轮 pip venv 身份。
-- 决策：13 个 direct 当前没有 blocker，不创建 adapter。NPU comparison 仍以文本 handoff 的
-  environment、summary、case audit 和 hashes 在控制节点复核通过为启动门禁；GPU 原始 run 继续保留。
+- 复核：环境 fingerprint 为 `8f0b3a0d3291d9c70872444dc3c430e12a7593aeaa1a5e1576a93da62161d7ee`，
+  canonical payload SHA256 为 `7fb9033a765dd632fc3288640ac33803a30a9d63848acddb14f48065b11b6a8d`；
+  13 个 case 均 commit 一致、return code 0、tests ran 1/skip 0、before/after FX captured。
+- 决策：13 个 direct 没有 blocker，不创建 adapter；5 个 acceptance units 冻结为首版 denominator，
+  正式闭环仍为 0/5。下一步启动 NPU runner/comparison；GPU 原始 run 继续保留。

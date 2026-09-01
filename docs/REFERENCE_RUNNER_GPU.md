@@ -1,7 +1,7 @@
 # T-076 GPU/reference Runner 人工操作说明
 
-> 更新时间：2026-09-02 02:11 CST（UTC+08:00）
-> 状态：GPU 环境已验真；13/13 direct cases 均 passed 且 `reference_valid=true`，等待文本证据回传。
+> 更新时间：2026-09-02 02:22 CST（UTC+08:00）
+> 状态：GPU 环境与文本 handoff 已复核；13/13 direct cases 均 passed 且 `reference_valid=true`。
 > 核心规则：先取得 direct 结果；没有 direct blocker 证据，不创建或运行 adapter。
 
 ## 1. GPU 机器环境合同

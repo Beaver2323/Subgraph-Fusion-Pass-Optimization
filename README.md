@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-02 02:11 CST（UTC+08:00）
+> 文档更新时间：2026-09-02 02:22 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -23,8 +23,8 @@
 - T-075 已把首批 5 个单元写入 schema/manifest，并完成 contract/variant 人工复核；尚未形成具备 GPU baseline、当前 Pass 环境 NPU
   结果和 comparison verdict 的正式闭环，因此新口径完成数仍为 0。
 - T-076 的 GPU 环境与精确 source build 已验真，13/13 direct community cases 均 passed 且
-  `reference_valid=true`；不存在 adapter case。GPU 禁止 Git/二进制上传，当前通过通用文本导出器
-  回传环境、summary、逐 case FX signature 和关键文件哈希，完成复核后进入 NPU comparison。
+  `reference_valid=true`；不存在 adapter case。GPU 禁止 Git/二进制上传，已通过通用文本导出器
+  回传并复核环境、summary、逐 case FX signature 和关键文件哈希，当前进入 NPU comparison。
 
 ## 统一术语
 
@@ -84,13 +84,13 @@ T-075 首批静态复核已完成：
 1. 首批仍为 5 个 acceptance units，共 20 个 variants、13 个 community test 引用；
 2. `mm_plus_mm` 的 same-K/different-K 保持一个 contract；pad mm/bmm/addmm 保持三个；
    两种 add+mm 顺序共享一个 addmm contract；
-3. 5 个单元仍为 `pending-reference`，冻结分母和正式闭环数均为 0；
+3. GPU 文本证据已复核，5 个单元冻结进入 denominator；NPU comparison 未完成，正式闭环仍为 0/5；
 4. 48 个 `no-test-found` 和 29 个 indirect 单元继续待人工审核，T-074 v1 不覆盖。
 
-T-076 runner 已就绪：13 个原生 community cases 一一覆盖 manifest 的 13 个测试引用，20 个
-variants 中 14 个进入动态执行，3 个 registration-only 和 3 个 NPU-only gate 显式保留为非动态
-处置。下一条执行任务是在 GPU 机器上运行该 direct suite 并回传 artifacts；只有 artifacts 证明
-设备、backend 或采集接口阻塞时，才增加不改变图和预期行为的最小适配。
+T-076 已完成：13 个原生 community cases 全部 direct valid，20 个 variants 中 14 个取得动态
+reference，3 个 registration-only 和 3 个 NPU-only gate 保持显式非动态处置。完整环境、逐 case
+FX signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.md`；下一条任务是从同一
+manifest 生成 NPU runner 和 comparison，不创建 GPU adapter。
 
 ## 执行环境合同
 

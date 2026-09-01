@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-31T18:34:09+08:00",
-  "status": "t075-first-wave-static-mapped-await-gpu-reference",
+  "generated_at": "2026-09-02T02:22:00+08:00",
+  "status": "t076-first-wave-reference-frozen-await-npu-comparison",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -24,10 +24,10 @@
   },
   "reference_contract": {
     "device_class": "GPU",
-    "device_identity": "runtime-discovered-by-t076",
+    "device_identity": "8x-NVIDIA-A100-SXM4-80GB-sm80",
     "backend": "inductor-default",
     "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
-    "runtime_fingerprint": "pending-t076-artifact"
+    "runtime_fingerprint": "8f0b3a0d3291d9c70872444dc3c430e12a7593aeaa1a5e1576a93da62161d7ee"
   },
   "counting_policy": {
     "primary_fact_source": "PyTorch community test plus GPU/reference baseline",
@@ -35,6 +35,7 @@
     "tracking_key": "human-reviewed upstream optimization contract acceptance unit",
     "denominator_rule": "only yes-frozen units with valid reference baseline enter denominator",
     "current_manifest_units": 5,
+    "current_frozen_denominator_units": 5,
     "current_formally_closed_units": 0
   },
   "acceptance_units": [
@@ -42,8 +43,8 @@
       "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
       "contract_name": "两个矩阵乘结果相加的 post-grad 匹配与可选融合合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/post_grad.py",
@@ -78,7 +79,7 @@
           "expected_reference_match": true,
           "expected_behavior": "目标 pattern 命中；same-K 可进入 mm_plus_mm template/extern choice",
           "expected_counter": "community helper total pattern_matcher_count=1,nodes=3",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -87,7 +88,7 @@
           "expected_reference_match": true,
           "expected_behavior": "M/N 相同而 K 不同仍命中目标 pattern；tuned_mm_plus_mm 按源码回退为 two-mm-plus-add",
           "expected_counter": "community helper total pattern_matcher_count=1,nodes=3; runtime path 尚未由 test 直接断言",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -96,7 +97,7 @@
           "expected_reference_match": false,
           "expected_behavior": "目标 mm_plus_mm pattern 不命中；community total counter 的 1/2 来自其他 add-mm pattern，必须用目标 counter/codegen 复核",
           "expected_counter": "suite-global-non-target count=1,nodes=2",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         }
       ],
@@ -125,15 +126,16 @@
         "report/p0_sweep_function_matrix_20260820.md",
         "report/p0_sweep_performance_20260820.md",
         "report/p0_semantic_matrix_20260821.md",
-        "report/t023_mmplus_different_k_integration_20260821.md"
+        "report/t023_mmplus_different_k_integration_20260821.md",
+        "report/t076_gpu_reference_20260901.md"
       ]
     },
     {
       "acceptance_unit_id": "AU-pad-mm-mm",
       "contract_name": "二维 mm 的 shape-padding、slice 与输出合同",
       "stage": "joint_graph",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/pad_mm.py",
@@ -189,7 +191,7 @@
           "expected_reference_match": true,
           "expected_behavior": "未对齐静态 K 被 padding，动态 M 保持；结果与 eager 一致",
           "expected_counter": "generated code FileCheck contains padded K",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -198,7 +200,7 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "同一 contract 由 training 和 inference 两个 generated registrations 承载，不拆成两个 acceptance units",
           "expected_counter": "registration evidence only",
-          "reference_status": "not-run-gpu",
+          "reference_status": "static-registration-evidence-only",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -207,7 +209,7 @@
           "expected_reference_match": true,
           "expected_behavior": "slice 后输出 stride 与 eager 一致",
           "expected_counter": "correctness plus stride equality",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -241,15 +243,16 @@
         "diagnostic_gate_bypass": "separate-non-product-diagnostic-only"
       },
       "historical_evidence": [
-        "report/t025_t026_pad_family_20260821.md"
+        "report/t025_t026_pad_family_20260821.md",
+        "report/t076_gpu_reference_20260901.md"
       ]
     },
     {
       "acceptance_unit_id": "AU-pad-mm-bmm",
       "contract_name": "批量 bmm 的 shape-padding、slice 与 dtype/梯度合同",
       "stage": "joint_graph",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/pad_mm.py",
@@ -300,7 +303,7 @@
           "expected_reference_match": true,
           "expected_behavior": "动态 batch 保持，K padding codegen 命中且结果正确",
           "expected_counter": "generated code FileCheck contains padded K",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -309,7 +312,7 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "training/inference generated registrations 属于同一 bmm contract",
           "expected_counter": "registration evidence only",
-          "reference_status": "not-run-gpu",
+          "reference_status": "static-registration-evidence-only",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -318,7 +321,7 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "bmm dtype 不被错误 autocast，backward gradient 无 NaN",
           "expected_counter": "related regression only; target-specific hit must be captured separately",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -352,15 +355,16 @@
         "diagnostic_gate_bypass": "separate-non-product-diagnostic-only"
       },
       "historical_evidence": [
-        "report/t025_t026_pad_family_20260821.md"
+        "report/t025_t026_pad_family_20260821.md",
+        "report/t076_gpu_reference_20260901.md"
       ]
     },
     {
       "acceptance_unit_id": "AU-pad-mm-addmm",
       "contract_name": "addmm 的 shape-padding、bias broadcast 与 beta/alpha guard 合同",
       "stage": "joint_graph",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/pad_mm.py",
@@ -411,7 +415,7 @@
           "expected_reference_match": true,
           "expected_behavior": "动态 M 保持、K 被 padding，addmm 结果正确",
           "expected_counter": "generated code FileCheck contains padded K",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -420,7 +424,7 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "1D/2D bias broadcast 在 padding/slice 后保持 addmm 语义",
           "expected_counter": "correctness asserted; target match needs explicit capture",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -429,7 +433,7 @@
           "expected_reference_match": false,
           "expected_behavior": "CUDA eager beta=0 特例下非可广播 bias 跳过 padding",
           "expected_counter": "correctness; explicit target no-match to be captured",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-applicable-cuda-specific-negative"
         },
         {
@@ -438,7 +442,7 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "training/inference generated registrations 保持同一 addmm-padding contract",
           "expected_counter": "registration evidence only",
-          "reference_status": "not-run-gpu",
+          "reference_status": "static-registration-evidence-only",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -472,15 +476,16 @@
         "diagnostic_gate_bypass": "separate-non-product-diagnostic-only"
       },
       "historical_evidence": [
-        "report/t025_t026_pad_family_20260821.md"
+        "report/t025_t026_pad_family_20260821.md",
+        "report/t076_gpu_reference_20260901.md"
       ]
     },
     {
       "acceptance_unit_id": "AU-post-grad-addmm",
       "contract_name": "add+mm 与 mm+add 重写为 aten.addmm 的 post-grad 合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/post_grad.py",
@@ -520,7 +525,7 @@
           "expected_reference_match": true,
           "expected_behavior": "add+mm 和 mm+add 两个图均替换为 aten.addmm",
           "expected_counter": "two outputs total pattern_matcher_count=2,nodes=4",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -529,7 +534,7 @@
           "expected_reference_match": true,
           "expected_behavior": "可广播 vector bias 的两种 operand order 均融合",
           "expected_counter": "two outputs total pattern_matcher_count=2,nodes=4",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -538,7 +543,7 @@
           "expected_reference_match": false,
           "expected_behavior": "不能广播到 mm 输出的 bias 或额外 batch rank 不融合",
           "expected_counter": "pattern_matcher_count=0,nodes=0",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         },
         {
@@ -547,7 +552,7 @@
           "expected_reference_match": false,
           "expected_behavior": "Python scalar 和 SymInt scalar 不是 Tensor bias，不融合",
           "expected_counter": "pattern_matcher_count=0; symbolic test dynamic=True",
-          "reference_status": "not-run-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "not-run-current-Pass"
         }
       ],
@@ -573,7 +578,8 @@
         "classification_until_revalidation": "source-candidate-only-no-product-verdict"
       },
       "historical_evidence": [
-        "report/t058_experimental_addmm_gate_20260826.md"
+        "report/t058_experimental_addmm_gate_20260826.md",
+        "report/t076_gpu_reference_20260901.md"
       ]
     }
   ]

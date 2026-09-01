@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-01 18:00 CST（UTC+08:00）
+> 更新时间：2026-09-02 02:22 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -93,8 +93,9 @@ GPU 机器没有 Agent，只做被动批量执行：
 GPU 机器不承担 testcase 设计、交互式归因、backend 修改或自动 Git 决策。runner 必须在单个 case
 失败后继续执行，并保存足够 traceback、图、counter 和环境信息供 NPU 侧离线分析。
 
-T-076 当前 GPU 执行合同为 root 用户、A100/R550、`/data/z50063656` 上的 CUDA 12.6.3、
-`cuda-compat-12-6`、Python 3.12 Conda 和冻结 commit source build。GPU 测试从
+T-076 GPU 执行合同为 `z00824525`/sudo、A100/R550、`/data/z50063656` 上的 CUDA 12.6.3、
+pip venv Python 3.12、cuDNN 9.25.1、Triton 3.8.0 和冻结 commit source build；compat 未启用。
+GPU 测试从
 `/data/z50063656/tmp` 发起；该路径是 NPU `/home/z50063656/tmp` 规则的显式机器级例外。
 
 ### 5.2 NPU 机器
@@ -202,8 +203,9 @@ extracted case 必须重新审查。
 `pass_map.yaml` 保存 registration/pattern/test/acceptance unit 的多对多关系；manifest 只保留已审核
 的 contracts。T-074 candidate CSV 作为 inventory 输入，不直接等价于 manifest。
 
-T-075 已在 `upstream/` 落盘首批 5 个静态审核单元，共 20 个 variants、13 个 community test
-引用。它们均为 `mapped-static-await-gpu-reference`/`pending-reference`，不能计入冻结分母。
+T-075 已在 `upstream/` 落盘首批 5 个审核单元，共 20 个 variants、13 个 community test 引用。
+T-076 的 13 个 GPU direct cases 全部有效后，它们已更新为 `frozen`/`yes-frozen`，构成首版
+denominator=5；NPU comparison 尚未完成，正式闭环为 0/5。
 
 ## 9. 统一 result schema
 
@@ -416,6 +418,6 @@ acceptance units 来自 source/name 归一化和少量显式 semantic group，�
 旧版本作为可追溯输入。
 
 T-075 首批复核没有改变 5 个单元的数量，但修正了 variants 和测试证据角色；T-074 v1 未覆盖。
-T-076 runner/schema/人工说明已静态完成，下一执行项是在 GPU 上运行 13 个 direct cases 并回传
-artifacts。48 个 `no-test-found` 和 29 个 indirect 单元仍待人工审核，可在等待 GPU artifacts 时
-继续推进；reference 缺失前不冻结 denominator。
+T-076 GPU reference 已完成并通过文本 handoff 复核，13 个 direct cases 全部有效，不创建 GPU
+adapter。下一执行项是从同一 manifest 生成 NPU runner/comparison；48 个 `no-test-found` 和 29 个
+indirect 单元仍待人工审核，但不阻塞首批 5 个冻结单元的 NPU 验证。

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-31T20:00:00+08:00",
-  "status": "t076-first-wave-native-community-tests-ready-await-gpu",
+  "generated_at": "2026-09-02T02:22:00+08:00",
+  "status": "t076-first-wave-native-community-tests-valid",
   "manifest": {
     "path": "upstream/manifest.yaml",
     "schema_version": "1.0",

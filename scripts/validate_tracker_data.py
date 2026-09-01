@@ -194,10 +194,10 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
             },
             unit_id,
         )
-        if unit["review_status"] != "mapped-static-await-gpu-reference":
-            raise ValueError(f"{unit_id} review_status 不能提前冻结")
-        if unit["denominator_eligible"] != "pending-reference":
-            raise ValueError(f"{unit_id} denominator 不能提前进入分母")
+        if unit["review_status"] != "frozen":
+            raise ValueError(f"{unit_id} reference 有效后必须 frozen")
+        if unit["denominator_eligible"] != "yes-frozen":
+            raise ValueError(f"{unit_id} reference 有效后必须进入冻结分母")
         if unit["stage"] not in {"pre_grad", "joint_graph", "post_grad"}:
             raise ValueError(f"{unit_id} stage 非法: {unit['stage']}")
         tracking = unit["tracking"]
@@ -284,6 +284,10 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
         if mapping["t074_acceptance_unit"] != candidate["acceptance_unit"]:
             raise ValueError(f"{candidate_id} T-074 unit 与原 CSV 不一致")
         unit = units_by_id[mapping["acceptance_unit_id"]]
+        if mapping.get("review_status") != unit["review_status"]:
+            raise ValueError(
+                f"{mapping['acceptance_unit_id']} manifest/pass_map review_status 不一致"
+            )
         manifest_tests = {test["nodeid"] for test in unit["community_tests"]}
         mapped_tests = {
             test["nodeid"] for test in mapping["community_test_mapping"]
@@ -391,6 +395,7 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
         raise ValueError("reference plan 未一一覆盖 13 个 manifest community tests")
 
     dispositions: set[tuple[str, str]] = set()
+    disposition_status: dict[tuple[str, str], str] = {}
     for item in reference_plan["non_executed_variants"]:
         require_keys(
             item,
@@ -401,6 +406,7 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
         if key in dispositions or key in covered_variants:
             raise ValueError(f"reference variant 重复执行/排除: {key}")
         dispositions.add(key)
+        disposition_status[key] = item["disposition"]
     all_variants = {
         (unit["acceptance_unit_id"], variant["variant_id"])
         for unit in units
@@ -408,6 +414,21 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
     }
     if covered_variants | dispositions != all_variants:
         raise ValueError("reference plan 未完整处置 20 个 variants")
+
+    for unit in units:
+        unit_id = unit["acceptance_unit_id"]
+        for variant in unit["variants"]:
+            key = (unit_id, variant["variant_id"])
+            expected_status = (
+                "valid-reference"
+                if key in covered_variants
+                else disposition_status[key]
+            )
+            if variant["reference_status"] != expected_status:
+                raise ValueError(
+                    f"{unit_id}:{variant['variant_id']} reference_status 应为 "
+                    f"{expected_status}"
+                )
 
     if pytorch_root is not None:
         validate_pytorch_evidence(units, pytorch_root)
@@ -422,7 +443,10 @@ def validate(repo_root: Path, pytorch_root: Path | None) -> None:
     print(f"reference_cases={len(cases)}")
     print(f"reference_executed_variants={len(covered_variants)}")
     print(f"reference_non_executed_variants={len(dispositions)}")
-    print("denominator_frozen=0")
+    denominator_frozen = sum(
+        unit["denominator_eligible"] == "yes-frozen" for unit in units
+    )
+    print(f"denominator_frozen={denominator_frozen}")
     print("torch_imported=0")
 
 

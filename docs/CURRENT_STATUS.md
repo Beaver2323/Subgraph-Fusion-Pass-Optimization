@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-02 02:11 CST（UTC+08:00）
+> 更新时间：2026-09-02 02:22 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076 GPU 13/13 direct valid；等待文本证据复核后启动 NPU comparison。
+> 当前阶段：T-076 GPU 文本证据已复核，首批 denominator=5；启动 NPU runner/comparison。
 
 ## 1. 总结
 
@@ -19,9 +19,9 @@ PyTorch community-native Inductor compatibility。需要修正的不是基础候
 - 历史 default/custom/feature-family 结果保留，但不计入新主线完成率。
 
 在此基础上，T-075 已完成首批 5 个单元的 schema、manifest、pass map 和人工复核：单元数仍为
-5，共 20 个 variants、13 个 community test 引用。所有单元仍等待 GPU/reference，正式冻结分母
-与正式闭环数均为 0。T-076 已把 13 个引用全部落成 direct execution cases，并提供独立结果
-schema、fresh-process runner 和 GPU 人工说明；当前没有 direct artifacts，因此没有 adapter。
+5，共 20 个 variants、13 个 community test 引用。T-076 的 13 个 direct cases 已全部 passed 且
+reference valid，文本 handoff 的环境、FX signature 和关键文件哈希已复核；5 个单元进入冻结
+denominator，没有 adapter。NPU comparison 尚未执行，因此正式闭环仍为 0/5。
 
 ## 2. 工作线吻合性
 
@@ -74,7 +74,8 @@ T-075 首批复核没有重新运行或覆盖 T-074：
 4. 后续审核发现合并、拆分或字段缺口时，再生成 T-074 v2，并保留 v1 作为输入证据。
 
 当前数量因此**没有变化**：207 candidate rows、188 provisional units、158 provisional eligible、
-5 个首批静态审核单元、20 个 variants、13 个 community test 引用、正式闭环 0。未来人工审核
+5 个首批冻结单元、20 个 variants、13 个 community test 引用、冻结 denominator 5、正式闭环
+0/5。未来人工审核
 可以改变 acceptance-unit 数量，这是预期的可审计修正，不是数据回归。
 
 ## 4. 已修正的概念问题
@@ -120,17 +121,19 @@ report/         不可改写的实验事实和 T-074 数据
   NPU-only gate；
 - 环境/commit 严格门禁、单 case 隔离、失败继续、FX before/after、稳定 signature 和结构化 summary；
 - GPU 静态校验、整批/单 case 执行、打包与回传说明。
+- GPU 13/13 direct valid、文本 handoff 与逐 case FX/result/inventory 哈希复核；
+- 首批 5 个 acceptance units 冻结进入 denominator。
 
 仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核、统一运行 result
-schema 的 NPU/comparison 部分、GPU/NPU baseline 和冻结 denominator。它们不能被 runner 静态
-完成状态掩盖。
+schema 的 NPU/comparison 部分、NPU baseline 和 5 个正式 comparison verdict。它们不能被 GPU
+reference 完成状态掩盖。
 
 ## 7. 下一条 Codex 任务
 
 ```text
-在 GPU 机器使用 `scripts/export_reference_text.py` 导出已完成 run
-`reference-20260901T180826+0800` 的文本 handoff。NPU 控制节点复核 13 个 execution、FX signature、
-环境指纹和关键文件哈希；13 个 direct 均 valid，因此不创建 adapter，复核后启动 NPU comparison。
+从冻结 manifest 生成首批 5 个 acceptance units 的 NPU runner 和统一 comparison schema；在当前
+Pass 环境使用 `triton_experimental` fresh process 执行 13 个对应 case，分别记录产品默认 gate、
+correctness、FX、runtime path 和 first divergence。不得把诊断 gate-bypass 冒充产品 baseline。
 ```
 
 ## 8. 当前环境边界

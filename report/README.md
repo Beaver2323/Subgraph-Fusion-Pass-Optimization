@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-08-31 20:00 CST（UTC+08:00）
+> 索引更新时间：2026-09-02 02:22 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -8,6 +8,7 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
+| [t076_gpu_reference_20260901.md](t076_gpu_reference_20260901.md) | 13/13 GPU direct valid、环境、FX signature 与结构化哈希 | reference 已冻结；原始大 artifacts 保留在 GPU |
 | [t076_reference_runner_20260831.md](t076_reference_runner_20260831.md) | 首批 direct GPU/reference plan、runner、schema 与静态验证 | runner ready，本机无 GPU，等待 artifacts |
 | [t075_acceptance_unit_mapping_review_20260831.md](t075_acceptance_unit_mapping_review_20260831.md) | 首批 5 个 acceptance units 的 contract/variant 与证据角色人工复核 | 静态 mapping 完成，仍待 GPU/reference |
 | [t074_upstream_pass_test_index_20260829.md](t074_upstream_pass_test_index_20260829.md) | T-074 registration candidate、community test 和 provisional unit 总结 | 静态 v1，不是冻结分母 |
