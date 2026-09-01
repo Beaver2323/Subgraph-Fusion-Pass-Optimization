@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T05:22:00+08:00",
+  "case_ids": ["REF-addmm-contract-native", "REF-addmm-symbolic-scalar-negative-native"],
+  "acceptance_unit_id": "AU-post-grad-addmm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_addmm", "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_addmm_symbolic_scalar"],
+  "tracking_mode": "adapter",
+  "environment": {"fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "python_version": "3.11.15", "torch_version": "2.14.0a0+git8e86e0a", "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "torch_npu_version": "2.14.0a0+git83cc452", "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc", "triton_version": "3.2.0", "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515", "cann_version": "9.0.1", "driver_version": "26.0.rc1", "device": "Ascend910B2", "backend": "triton_experimental"},
+  "npu_control": {"state": "enabled", "source_control": "disable_addmm_fusion=False；未设置 NPU 产品关闭 gate。", "product_gate_bypassed": false},
+  "paired_control": {"status": "failed", "reason": "GPU 冻结 reference 正例 counter=2/4，NPU 同合同观测为 0/0。"},
+  "direct_execution": {"status": "no-tests", "execution_success": false, "tests_run": 0, "tests_skipped": 0, "reason": "两个原生入口由 GPU-only suite 路由，NPU 未进入 test body。"},
+  "selected_execution": {"status": "failed", "execution_success": false, "tests_run": 2, "tests_skipped": 0, "reason": "五个 addmm 逻辑 case 与 symbolic scalar 均数值正确；matrix/vector 正例的 target counter 从 2/4 降为 0/0。", "duration_seconds": 83.097},
+  "variants": [
+    {
+      "variant_id": "matrix-bias-both-orders-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "regressed",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[16,16],[16,16],[16,16]], "strides": [[16,1],[16,1],[16,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": true, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "pattern_matcher", "note": "两种 operand order 预期 count/nodes=2/4，实际 0/0。"},
+      "fx": {"status": "observed", "evidence": "FX before/after 仍为两路 mm+add。"}, "replacement": {"status": "not-observed", "evidence": "addmm replacement 未发生。"}, "decomposition": {"status": "not-applicable", "evidence": "无 replacement。"}, "lowering": {"status": "observed", "evidence": "output_code 为两个 extern mm 加 pointwise add。"}, "scheduler": {"status": "observed", "evidence": "原图路径完成调度。"}, "codegen": {"status": "observed", "evidence": "未生成 addmm 融合目标。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "两路输出均与 eager 一致。"}, "performance": {"status": "not-run", "reason": "先修复功能命中。"}, "first_divergence": "pattern", "root_cause": "NPU triton_experimental 未命中上游 post-grad addmm replacement，且 disable_addmm_fusion=False。", "recommended_action": "进入 repair queue，对照 NPU pattern registration/lowering。"
+    },
+    {
+      "variant_id": "vector-bias-both-orders-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "regressed",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[8],[16,16],[16,8]], "strides": [[1],[16,1],[8,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": true, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "pattern_matcher", "note": "两种 operand order 预期 count/nodes=2/4，实际 0/0。"},
+      "fx": {"status": "observed", "evidence": "vector bias 两种 operand order 均捕获。"}, "replacement": {"status": "not-observed", "evidence": "addmm replacement 未发生。"}, "decomposition": {"status": "not-applicable", "evidence": "无 replacement。"}, "lowering": {"status": "observed", "evidence": "mm+add 原图路径。"}, "scheduler": {"status": "observed", "evidence": "原图路径完成。"}, "codegen": {"status": "observed", "evidence": "未生成 addmm 融合目标。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "两路输出均与 eager 一致。"}, "performance": {"status": "not-run", "reason": "先修复命中。"}, "first_divergence": "pattern", "root_cause": "vector bias 同样未命中 post-grad addmm replacement。", "recommended_action": "与 matrix bias 合并修复。"
+    },
+    {
+      "variant_id": "non-expandable-or-batched-bias-negative", "kind": "negative", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[16,16],[1,16],[16,16]], "strides": [[16,1],[16,1],[16,1]]}, {"shapes": [[1,16,16],[16,16],[16,16]], "strides": [[256,16,1],[16,1],[16,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "pattern_matcher", "note": "两个负例均为预期 0/0。"},
+      "fx": {"status": "observed", "evidence": "负例图均捕获。"}, "replacement": {"status": "not-observed", "evidence": "guard 正确。"}, "decomposition": {"status": "not-applicable", "evidence": "负例。"}, "lowering": {"status": "observed", "evidence": "原图完成。"}, "scheduler": {"status": "observed", "evidence": "完成。"}, "codegen": {"status": "observed", "evidence": "无 addmm 目标。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "两个负例数值正确。"}, "performance": {"status": "not-applicable", "reason": "负例。"}, "first_divergence": "none", "root_cause": "guard 合同与 GPU 一致。", "recommended_action": "保留负例。"
+    },
+    {
+      "variant_id": "python-or-symbolic-scalar-negative", "kind": "negative", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": true, "cases": [{"shapes": [[],[16,16],[16,16]], "strides": [[],[16,1],[16,1]]}, {"shapes": [[16,16],[16,16]], "strides": [[16,1],[16,1]], "symbolic_bias": "m1.size(0)"}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "pattern_matcher", "note": "Python scalar 与 dynamic symbolic scalar 均为预期 0/0。"},
+      "fx": {"status": "observed", "evidence": "两类 scalar 负例均执行。"}, "replacement": {"status": "not-observed", "evidence": "guard 正确。"}, "decomposition": {"status": "not-applicable", "evidence": "负例。"}, "lowering": {"status": "observed", "evidence": "原图完成。"}, "scheduler": {"status": "observed", "evidence": "完成。"}, "codegen": {"status": "observed", "evidence": "无 addmm 目标。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "Python/symbolic scalar 输出均与 eager 一致。"}, "performance": {"status": "not-applicable", "reason": "负例。"}, "first_divergence": "none", "root_cause": "scalar guard 合同与 GPU 一致。", "recommended_action": "保留负例。"
+    }
+  ],
+  "artifacts": [
+    {"role": "contract-adapter", "path": "issues/REF-addmm-contract-native/npu_adapter.py", "sha256": "728ec1dc6221137006e61fcce620a461ed3826696a7972e4f239bc61a35a4b1a", "availability": "repository"},
+    {"role": "symbolic-adapter", "path": "issues/REF-addmm-symbolic-scalar-negative-native/npu_adapter.py", "sha256": "f74267198529aa65f0c9d30ac557c9a9f86d674e470f462074303048847ef8e8", "availability": "repository"}
+  ]
+}

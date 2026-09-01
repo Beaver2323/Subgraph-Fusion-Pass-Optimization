@@ -6,6 +6,7 @@
   "type": "object",
   "required": [
     "schema_version",
+    "task_id",
     "generated_at",
     "status",
     "manifest",
@@ -15,6 +16,7 @@
   ],
   "properties": {
     "schema_version": {"const": "1.0"},
+    "task_id": {"type": "string", "pattern": "^T-[0-9]{3}$"},
     "generated_at": {"type": "string", "format": "date-time"},
     "status": {"type": "string"},
     "manifest": {
@@ -100,8 +102,17 @@
           "minItems": 1,
           "items": {"enum": ["fx-before", "fx-after"]}
         },
-        "benchmark": {"const": "not-configured-first-reference-wave"},
+        "benchmark": {
+          "enum": [
+            "not-configured-first-reference-wave",
+            "not-configured-functional-reference"
+          ]
+        },
         "timeout_seconds": {"type": "integer", "minimum": 1},
+        "direct_args": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
         "entrypoint": {"type": "string"},
         "direct_blocker": {"$ref": "#/$defs/direct_blocker"}
       },

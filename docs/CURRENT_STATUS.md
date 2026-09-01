@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-02 03:35 CST（UTC+08:00）
+> 更新时间：2026-09-02 05:40 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076 GPU reference 已冻结；统一 comparison 正式闭环 1/5，pad-mm 首个产品基线完成。
+> 当前阶段：T-076 已正式闭环 5/5；T-077 已准备等待 GPU。
 
 ## 1. 总结
 
@@ -21,15 +21,20 @@ PyTorch community-native Inductor compatibility。需要修正的不是基础候
 在此基础上，T-075 已完成首批 5 个单元的 schema、manifest、pass map 和人工复核：单元数仍为
 5，共 20 个 variants、13 个 community test 引用。T-076 的 13 个 direct cases 已全部 passed 且
 reference valid，文本 handoff 的环境、FX signature 和关键文件哈希已复核；5 个单元进入冻结
-denominator，GPU 侧没有 adapter。统一 NPU/comparison schema、首个结果样本和零 torch
-导入交叉校验已落盘，正式闭环为 1/5。
+denominator，GPU 侧没有 adapter。统一 NPU/comparison schema、全部 5 个单元结果和零 torch
+导入交叉校验已落盘，正式闭环为 5/5。
 `AU-post-grad-mm-plus-mm` 已在当前 Pass 环境进入 NPU：原生直接入口因
 upstream `HAS_GPU` 不包含 NPU 而为 `NO_TESTS`，随后 case-specific adapter 按 manifest
 允许范围注入 NPU 设备、`triton_experimental` backend 和目标专属负向断言，
 4/4 输入分支全部有效，unit-level verdict 为 `BEHAVIOR_UNCHANGED`。
-`AU-pad-mm-mm` 的首个 dynamic-M case 也已完成：原生入口 `NO_TESTS`；首次 adapter 因
-GPU-only `TRITON` 候选限制在 lowering 报 `NoValidChoicesError`，最小扩为 `TRITON,ATEN`
-且不绕过 `disable_pad_mm` 后 correctness 通过，产品状态为 `EXPECTED_DISABLED`。
+`AU-pad-mm-mm` 的 dynamic-M、original-aten、stride、exclusion 四个 case 已按原生优先完成。
+adapter 均未绕过 `disable_pad_mm`，原图 correctness 与 stride 合同有效；单元级 verdict 为
+`EXPECTED_PRODUCT_DIVERGENCE`。T-077 第二波 5 个单元已经人工映射为 11 个 direct cases、
+17 个 variants，并通过零设备校验，当前等待 GPU 执行。
+
+`AU-pad-mm-bmm` 与 `AU-pad-mm-addmm` 同样完成产品关闭基线校验，均为
+`EXPECTED_PRODUCT_DIVERGENCE`。`AU-post-grad-addmm` 的 matrix/vector 正例数值正确，但 target
+counter 从 GPU `2/4` 降为 NPU `0/0`，结论为 `NPU_REGRESSION`，已写入 repair queue。
 
 ## 2. 工作线吻合性
 
@@ -39,7 +44,7 @@ GPU-only `TRITON` 候选限制在 lowering 报 `NoValidChoicesError`，最小扩
 | 静态 inventory | 203 主候选 + 4 控制行 | registration 只能辅助查漏 | 保留 207 行，不称为 Pass 数量 |
 | 验收单元 | 188 个、158 provisional | contract 才是基本单位 | 保留当前版本，但必须人工复核后冻结 |
 | 测试事实源 | 已映射 community tests，仍夹杂源码扫描中心表述 | community tests 为主要事实源 | README/TODO/WORKFLOW 全部改为 test-first |
-| 动态测试 | 首批 5 个拟做 NPU 最小迁移 | 先 GPU baseline，再 NPU comparison | GPU 已完成；正式闭环 1/5，pad-mm 首 case 完成 |
+| 动态测试 | 首批 5 个拟做 NPU 最小迁移 | 先 GPU baseline，再 NPU comparison | T-076 GPU/NPU/comparison 已全部完成，正式闭环 5/5 |
 | 双机 | 旧流程主要围绕 NPU | GPU 无 Agent、NPU 有 Agent | 明确固定脚本与 artifacts 交接 |
 | 历史结果 | 保留 old Benchmark/isolated venv | historical/archived evidence | 归档，不删除、不升级 verdict |
 
@@ -83,7 +88,7 @@ T-075 首批复核没有重新运行或覆盖 T-074：
 
 当前数量因此**没有变化**：207 candidate rows、188 provisional units、158 provisional eligible、
 5 个首批冻结单元、20 个 variants、13 个 community test 引用、冻结 denominator 5、正式闭环
-1/5。未来人工审核
+5/5。未来人工审核
 可以改变 acceptance-unit 数量，这是预期的可审计修正，不是数据回归。
 
 ## 4. 已修正的概念问题
@@ -132,17 +137,18 @@ report/         不可改写的实验事实和 T-074 数据
 - GPU 13/13 direct valid、文本 handoff 与逐 case FX/result/inventory 哈希复核；
 - 首批 5 个 acceptance units 冻结进入 denominator。
 - `REF-mm-plus-mm-native` 已落盘统一 NPU/comparison 结果，正式 verdict 为 `BEHAVIOR_UNCHANGED`；
-- `REF-pad-mm-dynamic-m-native` 已完成产品默认 gate baseline，分类为 `EXPECTED_DISABLED`。
+- `AU-pad-mm-mm`、`AU-pad-mm-bmm`、`AU-pad-mm-addmm` 已形成单元级 comparison，均分类为 `EXPECTED_PRODUCT_DIVERGENCE`。
+- `AU-post-grad-addmm` 已分类为 `NPU_REGRESSION`，修复入口已登记。
+- T-077 已准备 5 个 pending-reference 单元、11 个 direct cases 和 17 个 variants。
 
-仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核、其余 4 个单元的
-完整 NPU baseline 和 4 个正式 comparison verdict。它们不能被 GPU reference 或单 case 完成状态掩盖。
+仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核、
+`AU-post-grad-addmm` 的产品修复，以及 T-077 GPU reference。T-077 未运行前不进入第二波 denominator。
 
 ## 7. 下一条 Codex 任务
 
 ```text
-继续 `AU-pad-mm-mm` 的 original-aten、stride、exclusion community cases，保持原生优先和
-fresh process。完成 unit-level NPU 记录与 comparison；诊断 gate-bypass 只能作为独立非产品证据，
-不得覆盖已确认的 `EXPECTED_DISABLED` 产品 baseline。
+在 GPU 机器上按 `docs/T077_REFERENCE_RUNNER_GPU.md` 执行 T-077 完整 direct suite；
+11/11 valid 前不得冻结第二波 denominator。NPU 侧可独立开展 post-grad addmm repair。
 ```
 
 ## 8. 当前环境边界

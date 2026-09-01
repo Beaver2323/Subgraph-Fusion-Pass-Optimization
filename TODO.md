@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-02 03:35 CST（UTC+08:00）
-> 状态：T-076 reference 已冻结；统一 comparison 正式闭环 1/5，pad-mm 首个产品基线完成。
+> 更新时间：2026-09-02 05:38 CST（UTC+08:00）
+> 状态：T-076 已正式闭环 5/5；T-077 已准备并等待 GPU 执行。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -11,7 +11,7 @@
 - acceptance unit 是跟踪、比较和 verdict 的基本单位；
 - 一个 registration 可以展开多个 pattern/variant，也可能与其他 registration 共同服务一个 contract；
 - 只有人工审核并冻结的 acceptance unit 才能进入完成率分母；
-- T-074 当前 188/158 均为 provisional；首批冻结 denominator 的正式闭环数为 1/5。
+- T-074 当前 188/158 均为 provisional；首批冻结 denominator 的正式闭环数为 5/5。
 
 ## P0-A：仓库与文档收束
 
@@ -101,7 +101,7 @@ GPU 机器没有 Agent，runner 必须可由人工一次执行完整批次。
 
 ## P0-E：统一 result schema
 
-T-076 已增加 reference case 子集 schema；首个统一 NPU/comparison 样本已落盘并通过交叉校验。
+T-076 已完成 reference、统一 NPU/comparison schema 和 5/5 单元结果落盘。
 
 - [x] 环境：upstream/torch_npu/Triton/CANN/driver/SoC commit 或版本；
 - [x] 输入：dtype、shape、stride、dynamic、forward/backward；
@@ -116,7 +116,7 @@ T-076 已增加 reference case 子集 schema；首个统一 NPU/comparison 样�
 
 ## P0-F：NPU runner 与 comparison
 
-- [ ] 从同一 manifest 运行 NPU；
+- [x] 从同一 manifest 运行 NPU；
 - [x] reference 缺失或 invalid 时停止 compatibility verdict；
 - [x] 使用 `options={"npu_backend": "triton_experimental"}`；
 - [x] 首批已执行 case 使用 fresh process 隔离 backend 与 pass-on/pass-off；
@@ -134,27 +134,36 @@ T-076 已增加 reference case 子集 schema；首个统一 NPU/comparison 样�
 - [x] 保存 counter、generated code、FX/IR/output_code、trace 和环境选择；
 - [x] 将首个单元的已有 JSON 转入统一 NPU/comparison schema，verdict 升级为 `BEHAVIOR_UNCHANGED`。
 
-pad-mm 首个 case 进展：
+pad-mm 单元进展：
 
 - [x] `REF-pad-mm-dynamic-m-native` 原生入口确认为 `NO_TESTS`；
 - [x] 记录 GPU-only `TRITON` 候选在 NPU gate baseline 下触发的 lowering `NoValidChoicesError`；
 - [x] 最小扩为 `TRITON,ATEN`，不绕过 `disable_pad_mm`，correctness 通过；
 - [x] 记录 `disable_pad_mm=true`、`shape_padding=false`、目标计数 0/0，为 `EXPECTED_DISABLED`；
-- [ ] 继续 original-aten、stride、exclusion cases 后形成 `AU-pad-mm-mm` 的正式 comparison。
+- [x] original-aten、stride、exclusion cases 均按原生优先完成；
+- [x] 形成 `AU-pad-mm-mm` 单元级 NPU/comparison，verdict 为 `EXPECTED_PRODUCT_DIVERGENCE`。
+
+T-077 GPU 准备：
+
+- [x] 人工复核第二波 5 个 acceptance units；
+- [x] 建立 11 个 direct cases、17 个 variants 的独立 manifest/reference plan；
+- [x] 精确展开 decompose bmm/mm 参数化生成名称并排除 CPU-only 方法；
+- [x] 提供 `run_t077_reference_all.sh`、GPU 中文说明和文本回传路径；
+- [ ] 在 GPU 执行完整 T-077 suite，11/11 valid 后才冻结第二波 denominator。
 
 ## P0-G：首批跟踪闭环
 
-- [ ] negative case：从 pad/addmm 显式关闭控制中选择，记录 expected disabled/guarded 行为；
-- [ ] positive case：优先选择 community test 直接、未被 NPU 禁用的简单 contract；
-- [ ] 至少一个 case 输出可复核的 `first_divergence/root_cause`；
-- [ ] 建立 reference baseline 和 NPU baseline；
-- [ ] 生成第一版 compatibility matrix 和 changes；
-- [ ] 将失败 acceptance units 写入 repair queue。
+- [x] negative case：从 pad/addmm 显式关闭控制中选择，记录 expected disabled/guarded 行为；
+- [x] positive case：优先选择 community test 直接、未被 NPU 禁用的简单 contract；
+- [x] 至少一个 case 输出可复核的 `first_divergence/root_cause`；
+- [x] 建立 reference baseline 和 NPU baseline；
+- [x] 生成第一版 compatibility matrix 和 changes；
+- [x] 将失败 acceptance units 写入 repair queue。
 
 ## P1：Repair 与 regression
 
-- [ ] 建立 `regressions/known_issues.yaml` 和 `fixed_issues.yaml`；
-- [ ] 记录原 failure artifacts、root cause、修复层和 fixed commit；
+- [x] 建立 `regressions/known_issues.yaml` 和 `fixed_issues.yaml`；
+- [x] 记录原 failure artifacts、root cause 和修复层；fixed commit 在修复后补录；
 - [ ] 按最早分歧层选择 config/graph/pattern/decomposition/lowering/scheduler/codegen/runtime 修复；
 - [ ] 禁止用 FX workaround 掩盖纯 scheduler/codegen 问题；
 - [ ] 区分 `SUPPORTED_NATIVE`、`SUPPORTED_FALLBACK` 和 `UNSUPPORTED`；
@@ -178,8 +187,8 @@ pad-mm 首个 case 进展：
 3. [x] GPU 上执行 13 个原生 community cases，必要时才进入最小 adapter；
 4. [x] 接收并复核 GPU 文本 artifacts；no-test-found 和 indirect 映射仍继续审核；
 5. [x] reference 有效后冻结首版 denominator，并启动 NPU 单 case 执行；
-6. [ ] 执行 NPU、compare、failure classification（正式闭环 1/5；pad-mm 首个 case 已完成）；
-7. [ ] 创建 repair queue 并逐项闭环。
+6. [x] 执行 NPU、compare、failure classification（正式闭环 5/5）；
+7. [x] 创建 repair queue；`AU-post-grad-addmm` 修复作为后续独立任务。
 
 ## 第一阶段完成标准
 

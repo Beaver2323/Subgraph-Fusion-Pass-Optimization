@@ -3334,3 +3334,48 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   eager/compiled correctness 通过，分类为 `EXPECTED_DISABLED`。
 - 边界：pad-mm 本轮只完成首个 community case，未绕过产品 gate，也未发布 replacement 支持或
   性能结论；original-aten、stride、exclusion cases 和 unit-level comparison 仍待执行。
+
+### E-207：pad-mm 单元闭环与 T-077 第二波准备（2026-09-02）
+
+- 登记时间：2026-09-02 04:47 CST（UTC+08:00）。`AU-pad-mm-mm` 的 original-aten、stride、
+  exclusion 均完成原生优先；直接入口均未进入 test body，按 `NO_TESTS` 记录，不冒充 PASS。
+- 最小适配：三个 case 均保持上游图、shape、dtype、stride/cache 与 correctness；只注入 NPU、
+  `triton_experimental` 和必要的 ATEN 合法 choice。exclusion 前两轮暴露 selector API 签名差异，
+  失败图停在 codegen 前；最终通过先注册官方 NPU Inductor backend 解决，未增加本地 selector shim。
+- 单元结论：dynamic-M、original-aten、stride、exclusion 共 4/4 adapter 通过，产品配置始终为
+  `disable_pad_mm=true`、`shape_padding=false`；目标 padding replacement 不出现，原始 mm 数值和
+  stride 有效。统一 result/comparison 通过校验，verdict 为 `EXPECTED_PRODUCT_DIVERGENCE`，正式
+  闭环升为 2/5，不进入 repair queue。
+- Schema 演进：NPU/comparison schema 升级到 1.1，支持一个 acceptance unit 关联多个 cases、
+  runtime/static/not-applicable evidence、expected-disabled/static-evidence support 状态、nullable
+  target match 与 `EXPECTED_PRODUCT_DIVERGENCE` 正式 verdict；旧 mm-plus-mm 记录同步迁移。
+- T-077 准备：从 T-074 inventory 人工复核 Gumbel-max、B2B GEMM、decompose-bmm/mm/addmm 五个
+  contracts，建立独立 `t077_manifest.yaml` 与 `t077_reference_plan.yaml`。11 个 direct cases
+  覆盖 17 个 variants；新增两个 B2B 负例，精确展开参数化 decompose 方法，排除 CPU-only 分支。
+- Runner 收束：通用 reference runner 支持 `task_id`、可选 manifest/plan 和受前缀校验的
+  `direct_args`；新增 `run_t077_reference_all.sh`。零设备校验为 5/11/17/17/0，
+  `torch_imported=0`、`gpu_executed=0`。
+- 当前边界：T-077 仍是 `pending-reference`，没有 GPU 结果或 adapter。T-076 剩余三个 NPU 单元
+  因共享机 8 张物理卡均被外部 torchbench/pytest/debug 进程占用而暂停；未杀进程、未抢占设备、
+  未把静态准备写成动态完成。
+
+### E-208：T-076 五单元正式闭环与 T-077 GPU 交付（2026-09-02）
+
+- 登记时间：2026-09-02 05:42 CST（UTC+08:00）。NPU 空闲卡出现后，余下 bmm、pad-addmm、
+  post-grad addmm 均按“原生优先→最小 case-specific adapter”完成；每轮启动前确认物理卡无其他进程，
+  使用 fresh cache/debug/trace 且不绕过产品 gate。
+- pad-bmm：dynamic batch 和 static fp16 在 `disable_pad_mm=true` 下不出现 padded marker，数值正确；
+  MaskedMHA autocast forward/backward 完整通过，dtype 一致且梯度无 NaN。单元结论为
+  `EXPECTED_PRODUCT_DIVERGENCE`。
+- pad-addmm：dynamic M 与六种 1D/2D broadcast bias 均 correctness 通过，padding 目标不命中；
+  CUDA-only `beta=0` mismatched-bias 负例原生为 `NO_TESTS`，按 `NOT_APPLICABLE` 保留，不伪造 NPU 语义。
+  单元结论为 `EXPECTED_PRODUCT_DIVERGENCE`。
+- post-grad addmm：五个上游逻辑 case 与 symbolic scalar 数值均正确；负例 target counter 保持
+  `0/0`，但 matrix/vector bias 正例从 GPU `2/4` 变为 NPU `0/0`。失败轮 FX 保留 mm+add，
+  `output_code.py` 为 extern mm + pointwise add；`disable_addmm_fusion=False`，首个分歧层为 pattern。
+  正式结论为 `NPU_REGRESSION`，已登记 `regressions/known_issues.yaml`。
+- 结果管理：统一 schema 允许“数值正确但目标合同失败”的正式回归结论；
+  `manifest.yaml` 正式闭环数更新为 5/5。本轮只修改 tracker adapter、schema、结果和文档，
+  未修改 PyTorch、torch_npu、Triton、环境或 wheel。
+- T-077：5 units / 11 direct cases / 17 variants 的 manifest、plan、runner、中文 GPU 操作文档和文本回传链路
+  已就绪；零设备校验通过。当前仍为 `PREPARED_AWAITING_GPU`，11/11 valid 前不冻结第二波 denominator。

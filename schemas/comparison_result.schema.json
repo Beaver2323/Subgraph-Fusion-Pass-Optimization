@@ -19,7 +19,7 @@
     "repair_status"
   ],
   "properties": {
-    "schema_version": {"const": "1.0"},
+    "schema_version": {"const": "1.1"},
     "generated_at": {"type": "string", "format": "date-time"},
     "acceptance_unit_id": {"type": "string", "minLength": 1},
     "upstream_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
@@ -42,7 +42,7 @@
     "final_verdict": {
       "enum": [
         "UPSTREAM_CHANGED", "NPU_REGRESSION", "NEWLY_SUPPORTED", "PERF_IMPROVED",
-        "PERF_REGRESSED", "BEHAVIOR_UNCHANGED", "INCONCLUSIVE"
+        "PERF_REGRESSED", "BEHAVIOR_UNCHANGED", "EXPECTED_PRODUCT_DIVERGENCE", "INCONCLUSIVE"
       ]
     },
     "repair_status": {"enum": ["not-needed", "queued", "in-progress", "verified", "blocked"]}
@@ -53,8 +53,7 @@
       "additionalProperties": false,
       "required": [
         "run_id", "suite_status", "suite_valid", "environment_fingerprint",
-        "payload_sha256", "case_id", "case_status", "reference_valid",
-        "reference_result_sha256", "artifact_inventory_sha256"
+        "payload_sha256", "cases"
       ],
       "properties": {
         "run_id": {"type": "string", "minLength": 1},
@@ -62,6 +61,21 @@
         "suite_valid": {"const": true},
         "environment_fingerprint": {"$ref": "#/$defs/sha256"},
         "payload_sha256": {"$ref": "#/$defs/sha256"},
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/referenceCase"}
+        }
+      }
+    },
+    "referenceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id", "case_status", "reference_valid",
+        "reference_result_sha256", "artifact_inventory_sha256"
+      ],
+      "properties": {
         "case_id": {"type": "string", "minLength": 1},
         "case_status": {"const": "passed"},
         "reference_valid": {"const": true},
@@ -91,18 +105,21 @@
       "required": [
         "variant_id", "reference_contract_stable", "reference_target_match",
         "npu_target_match", "match_contract_aligned", "runtime_path",
-        "correctness_status", "performance_status", "verdict", "note"
+        "correctness_status", "performance_status", "comparison_basis", "verdict", "note"
       ],
       "properties": {
         "variant_id": {"type": "string", "minLength": 1},
         "reference_contract_stable": {"type": "boolean"},
-        "reference_target_match": {"type": "boolean"},
-        "npu_target_match": {"type": "boolean"},
+        "reference_target_match": {"type": ["boolean", "null"]},
+        "npu_target_match": {"type": ["boolean", "null"]},
         "match_contract_aligned": {"type": "boolean"},
-        "runtime_path": {"enum": ["triton", "extern", "fallback", "mixed", "not-executed"]},
-        "correctness_status": {"enum": ["passed", "failed", "not-run"]},
-        "performance_status": {"enum": ["passed", "failed", "not-configured", "not-applicable"]},
-        "verdict": {"enum": ["BEHAVIOR_UNCHANGED", "NPU_REGRESSION", "INCONCLUSIVE"]},
+        "runtime_path": {"enum": ["triton", "extern", "fallback", "mixed", "unclassified", "not-executed"]},
+        "correctness_status": {"enum": ["passed", "failed", "not-run", "not-applicable"]},
+        "performance_status": {"enum": ["passed", "failed", "not-run", "not-configured", "not-applicable"]},
+        "comparison_basis": {
+          "enum": ["equivalent-contract", "product-control", "static-evidence", "related-regression", "platform-applicability", "not-applicable"]
+        },
+        "verdict": {"enum": ["BEHAVIOR_UNCHANGED", "EXPECTED_PRODUCT_DIVERGENCE", "NPU_REGRESSION", "INCONCLUSIVE"]},
         "note": {"type": "string", "minLength": 1}
       }
     },

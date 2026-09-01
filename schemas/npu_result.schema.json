@@ -7,10 +7,10 @@
   "required": [
     "schema_version",
     "generated_at",
-    "case_id",
+    "case_ids",
     "acceptance_unit_id",
     "upstream_commit",
-    "source_test",
+    "source_tests",
     "tracking_mode",
     "environment",
     "npu_control",
@@ -21,12 +21,22 @@
     "artifacts"
   ],
   "properties": {
-    "schema_version": {"const": "1.0"},
+    "schema_version": {"const": "1.1"},
     "generated_at": {"type": "string", "format": "date-time"},
-    "case_id": {"type": "string", "minLength": 1},
+    "case_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
     "acceptance_unit_id": {"type": "string", "minLength": 1},
     "upstream_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
-    "source_test": {"type": "string", "minLength": 1},
+    "source_tests": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
     "tracking_mode": {"enum": ["direct", "adapter", "extracted"]},
     "environment": {"$ref": "#/$defs/environment"},
     "npu_control": {"$ref": "#/$defs/npuControl"},
@@ -117,8 +127,11 @@
       "required": [
         "variant_id",
         "kind",
+        "evidence_mode",
+        "support_status",
         "input_contract",
-        "match_expectation",
+        "reference_match_expectation",
+        "npu_match_expectation",
         "match",
         "fx",
         "replacement",
@@ -136,17 +149,22 @@
       "properties": {
         "variant_id": {"type": "string", "minLength": 1},
         "kind": {"enum": ["positive", "negative", "guard", "regression"]},
+        "evidence_mode": {"enum": ["runtime", "static", "not-applicable"]},
+        "support_status": {
+          "enum": ["supported", "expected-disabled", "static-evidence", "not-applicable", "regressed"]
+        },
         "input_contract": {"$ref": "#/$defs/inputContract"},
-        "match_expectation": {"type": "boolean"},
+        "reference_match_expectation": {"type": ["boolean", "null"]},
+        "npu_match_expectation": {"type": ["boolean", "null"]},
         "match": {
           "type": "object",
           "additionalProperties": false,
           "required": ["target_matched", "count", "nodes", "scope"],
           "properties": {
-            "target_matched": {"type": "boolean"},
+            "target_matched": {"type": ["boolean", "null"]},
             "count": {"type": "integer", "minimum": 0},
             "nodes": {"type": "integer", "minimum": 0},
-            "scope": {"enum": ["target-pattern", "suite-global"]},
+            "scope": {"enum": ["target-pattern", "suite-global", "not-applicable"]},
             "note": {"type": "string"}
           }
         },
@@ -156,13 +174,13 @@
         "lowering": {"$ref": "#/$defs/stageEvidence"},
         "scheduler": {"$ref": "#/$defs/stageEvidence"},
         "codegen": {"$ref": "#/$defs/stageEvidence"},
-        "runtime_path": {"enum": ["triton", "extern", "fallback", "mixed", "not-executed"]},
+        "runtime_path": {"enum": ["triton", "extern", "fallback", "mixed", "unclassified", "not-executed"]},
         "correctness": {
           "type": "object",
           "additionalProperties": false,
           "required": ["status", "assertion"],
           "properties": {
-            "status": {"enum": ["passed", "failed", "not-run"]},
+            "status": {"enum": ["passed", "failed", "not-run", "not-applicable"]},
             "assertion": {"type": "string", "minLength": 1}
           }
         },
@@ -171,7 +189,7 @@
           "additionalProperties": false,
           "required": ["status", "reason"],
           "properties": {
-            "status": {"enum": ["passed", "failed", "not-configured", "not-applicable"]},
+            "status": {"enum": ["passed", "failed", "not-run", "not-configured", "not-applicable"]},
             "reason": {"type": "string", "minLength": 1}
           }
         },
@@ -196,7 +214,7 @@
         "dynamic": {"type": "boolean"},
         "cases": {
           "type": "array",
-          "minItems": 1,
+          "minItems": 0,
           "items": {
             "type": "object",
             "additionalProperties": false,
@@ -219,7 +237,8 @@
               "dynamic_dimensions": {
                 "type": "array",
                 "items": {"type": "string"}
-              }
+              },
+              "symbolic_bias": {"type": "string", "minLength": 1}
             }
           }
         }

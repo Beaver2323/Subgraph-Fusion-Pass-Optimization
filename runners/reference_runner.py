@@ -120,6 +120,8 @@ def validate_contract(
 ) -> dict[str, int]:
     if plan.get("schema_version") != SCHEMA_VERSION:
         raise ValueError("reference plan schema_version 不符合 runner 合同")
+    if not re.fullmatch(r"T-[0-9]{3}", plan.get("task_id", "")):
+        raise ValueError("reference plan task_id 必须形如 T-077")
     if manifest.get("schema_version") != plan.get("manifest", {}).get(
         "schema_version"
     ):
@@ -177,6 +179,8 @@ def validate_contract(
             required = {"direct_case_id", "artifact_ref", "classification"}
             if required - blocker.keys():
                 raise ValueError(f"{case_id} direct_blocker 字段不完整")
+        if mode != "direct" and case.get("direct_args"):
+            raise ValueError(f"{case_id} 非 direct case 不得设置 direct_args")
         if set(case["required_artifacts"]) != {"fx-before", "fx-after"}:
             raise ValueError(f"{case_id} 必须采集 FX before/after")
         if not case["expected_assertions"]:
@@ -202,6 +206,15 @@ def validate_contract(
         qualnames = qualname_cache.setdefault(test_path, python_qualnames(test_path))
         if qualname not in qualnames:
             raise ValueError(f"community test 方法不存在: {relative}::{qualname}")
+        direct_args = case.get("direct_args", [])
+        if direct_args:
+            if len(direct_args) != len(set(direct_args)):
+                raise ValueError(f"{case_id} direct_args 存在重复生成方法名")
+            expected_prefix = qualname + "_"
+            if any(not value.startswith(expected_prefix) for value in direct_args):
+                raise ValueError(
+                    f"{case_id} direct_args 必须是 {qualname} 的参数化生成方法名"
+                )
 
     if seen_tests != manifest_tests:
         missing = sorted(manifest_tests - seen_tests)
@@ -455,7 +468,7 @@ print(json.dumps({
             "运行时 torch git_version 与 source/manifest commit 不一致；不能建立 baseline"
         )
     if runtime.get("gpu_type") != "cuda" or not runtime.get("cuda_available"):
-        raise RuntimeError("T-076 首批 direct suite 需要可用 CUDA GPU")
+        raise RuntimeError("GPU direct reference suite 需要可用 CUDA GPU")
     if not runtime.get("has_gpu_and_triton"):
         raise RuntimeError("PyTorch 测试环境未检测到 GPU+Triton")
     return result
@@ -587,6 +600,9 @@ def case_command(
     mode = case["tracking_mode"]
     if mode == "direct":
         relative, qualname = split_nodeid(case["source_test"])
+        direct_args = case.get("direct_args")
+        if direct_args:
+            return [sys.executable, str(pytorch_root / relative), "-v", *direct_args]
         return [sys.executable, str(pytorch_root / relative), "-v", qualname]
     entrypoint = (repo_root / case["entrypoint"]).resolve()
     if not entrypoint.is_file() or not is_relative_to(entrypoint, repo_root):
@@ -704,7 +720,7 @@ def run_case(
         "status": "not-configured",
         "functional_gate": "passed" if reference_valid else "not-passed",
         "reason": (
-            "首批仅建立原生 community functional baseline；尚未定义独立 benchmark。"
+            "本轮仅建立原生 community functional baseline；尚未定义独立 benchmark。"
             if reference_valid
             else "reference functional/artifact gate 未通过，禁止运行 benchmark。"
         ),
@@ -876,7 +892,7 @@ def write_summary(
     }
     write_json(run_dir / "reference_summary.json", summary)
     lines = [
-        "# T-076 GPU/reference 执行摘要",
+        f"# {plan['task_id']} GPU/reference 执行摘要",
         "",
         f"> 生成时间：{summary['generated_at']}",
         f"> run_id：`{run_id}`",
@@ -913,7 +929,7 @@ def write_summary(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="运行 T-076 GPU 原生社区 reference suite"
+        description="运行 manifest-driven GPU 原生社区 reference suite"
     )
     parser.add_argument(
         "--repo-root",
@@ -921,6 +937,18 @@ def parse_args() -> argparse.Namespace:
         default=Path(__file__).resolve().parents[1],
     )
     parser.add_argument("--pytorch-root", type=Path, required=True)
+    parser.add_argument(
+        "--manifest-path",
+        type=Path,
+        default=Path("upstream/manifest.yaml"),
+        help="相对 repo-root 或绝对 manifest 路径",
+    )
+    parser.add_argument(
+        "--plan-path",
+        type=Path,
+        default=Path("upstream/reference_plan.yaml"),
+        help="相对 repo-root 或绝对 reference plan 路径",
+    )
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--work-dir", type=Path, default=Path.cwd())
     parser.add_argument("--run-id")
@@ -941,8 +969,14 @@ def main() -> int:
         raise ValueError("测试工作目录不能位于 PyTorch source tree 内")
     if any(part == "torch_npu" for part in work_dir.parts):
         raise ValueError("测试工作目录不能位于 torch_npu source tree 内")
-    manifest = load_json(repo_root / "upstream/manifest.yaml")
-    plan = load_json(repo_root / "upstream/reference_plan.yaml")
+    manifest_path = args.manifest_path
+    if not manifest_path.is_absolute():
+        manifest_path = repo_root / manifest_path
+    plan_path = args.plan_path
+    if not plan_path.is_absolute():
+        plan_path = repo_root / plan_path
+    manifest = load_json(manifest_path.resolve())
+    plan = load_json(plan_path.resolve())
     counts = validate_contract(manifest, plan, pytorch_root)
     print(
         "reference_plan_validation=OK "

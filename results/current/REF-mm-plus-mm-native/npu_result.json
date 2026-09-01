@@ -1,10 +1,10 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "generated_at": "2026-09-02T03:20:00+08:00",
-  "case_id": "REF-mm-plus-mm-native",
+  "case_ids": ["REF-mm-plus-mm-native"],
   "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
   "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
-  "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_mm_plus_mm",
+  "source_tests": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_mm_plus_mm"],
   "tracking_mode": "adapter",
   "environment": {
     "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
@@ -48,6 +48,8 @@
     {
       "variant_id": "same-k-positive",
       "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
       "input_contract": {
         "direction": "forward",
         "dtype": "float32",
@@ -60,7 +62,8 @@
           }
         ]
       },
-      "match_expectation": true,
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
       "match": {
         "target_matched": true,
         "count": 1,
@@ -115,6 +118,8 @@
     {
       "variant_id": "different-k-positive-pattern-fallback",
       "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
       "input_contract": {
         "direction": "forward",
         "dtype": "float32",
@@ -127,7 +132,8 @@
           }
         ]
       },
-      "match_expectation": true,
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
       "match": {
         "target_matched": true,
         "count": 1,
@@ -182,6 +188,8 @@
     {
       "variant_id": "output-shape-mismatch-negative",
       "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
       "input_contract": {
         "direction": "forward",
         "dtype": "float32",
@@ -199,7 +207,8 @@
           }
         ]
       },
-      "match_expectation": false,
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
       "match": {
         "target_matched": false,
         "count": 0,

@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-02 03:35 CST（UTC+08:00）
+> 更新时间：2026-09-02 05:44 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -129,15 +129,23 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
 │   ├── reference_plan.schema.json
 │   └── reference_plan.yaml
 ├── issues/
-│   └── REF-mm-plus-mm-native/
+│   └── REF-*/
 │       ├── npu_adapter.py
 │       └── 复现报告.md
+├── results/current/
+│   └── <acceptance-unit>/
+│       ├── npu_result.json
+│       └── comparison_result.json
+├── regressions/
+│   ├── known_issues.yaml
+│   └── fixed_issues.yaml
 ├── schemas/
 │   └── reference_result.schema.json
 ├── runners/
 │   └── reference_runner.py
 ├── scripts/
 │   ├── run_reference_all.sh
+│   ├── run_t077_reference_all.sh
 │   └── validate_tracker_data.py
 ├── docs/
 │   ├── CURRENT_STATUS.md
@@ -155,7 +163,7 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
     └── upstream_pass_test_index_20260829/
 ```
 
-T-076 已增加首批真实 runner/schema；后续只在有真实产物时增量增加：
+T-076 已增加首批真实 runner/schema/result/repair queue；后续只在有真实产物时增量增加：
 
 ```text
 adapters/{pre_grad,joint_graph,post_grad}/
@@ -163,7 +171,6 @@ runners/npu_runner.py
 scripts/{check_upstream.py,run_npu_all.sh,compare_runs.py}
 baselines/
 results/history/
-regressions/{known_issues.yaml,fixed_issues.yaml}
 ```
 
 不先创建大量空目录；每个目录在首个真实产物进入时创建。
@@ -209,9 +216,9 @@ extracted case 必须重新审查。
 
 T-075 已在 `upstream/` 落盘首批 5 个审核单元，共 20 个 variants、13 个 community test 引用。
 T-076 的 13 个 GPU direct cases 全部有效后，它们已更新为 `frozen`/`yes-frozen`，构成首版
-denominator=5。当前 `AU-post-grad-mm-plus-mm` 已通过 case-specific adapter 和统一
-NPU/comparison 记录完成 `BEHAVIOR_UNCHANGED` 正式闭环，因此正式闭环为 1/5；
-`AU-pad-mm-mm` 的首个 dynamic-M 产品 baseline 已验证为 `EXPECTED_DISABLED`，单元仍待其余 case。
+denominator=5。五个单元均已完成 NPU/comparison：1 个 `BEHAVIOR_UNCHANGED`、3 个
+`EXPECTED_PRODUCT_DIVERGENCE`、1 个 `NPU_REGRESSION`，正式闭环为 5/5。回归单元已进入
+`regressions/known_issues.yaml`。
 
 ## 9. 统一 result schema
 
@@ -240,10 +247,11 @@ repair_status
 ```
 
 结构合同分别位于 `schemas/npu_result.schema.json` 与
-`schemas/comparison_result.schema.json`；当前结果位于 `results/current/<case_id>/`。
+`schemas/comparison_result.schema.json`；当前结果位于 `results/current/<acceptance-unit>/`（首个历史目录
+保留 case ID）。
 `scripts/validate_comparison_data.py` 使用标准库交叉检查 manifest、环境指纹、仓库工件 hash、
-variant 完整性和 formal verdict 门禁，不导入 `torch`。首个正式样本是
-`REF-mm-plus-mm-native`。
+variant 完整性和 formal verdict 门禁，不导入 `torch`。回归结论允许“数值正确，但目标命中合同失败”，
+此时 execution 保留 failed 且 repair status 必须进入修复流程。
 
 禁止只输出笼统 PASS/FAIL。`torch.compile` 成功但走 fallback 时，不得标为完全 native supported。
 

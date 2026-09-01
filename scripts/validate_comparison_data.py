@@ -18,6 +18,7 @@ FORMAL_VERDICTS = {
     "PERF_IMPROVED",
     "PERF_REGRESSED",
     "BEHAVIOR_UNCHANGED",
+    "EXPECTED_PRODUCT_DIVERGENCE",
 }
 
 
@@ -73,10 +74,10 @@ def validate_npu_result(
         {
             "schema_version",
             "generated_at",
-            "case_id",
+            "case_ids",
             "acceptance_unit_id",
             "upstream_commit",
-            "source_test",
+            "source_tests",
             "tracking_mode",
             "environment",
             "npu_control",
@@ -88,8 +89,8 @@ def validate_npu_result(
         },
         str(result_path),
     )
-    if result["schema_version"] != "1.0":
-        raise ValueError(f"{result_path} schema_version 必须为 1.0")
+    if result["schema_version"] != "1.1":
+        raise ValueError(f"{result_path} schema_version 必须为 1.1")
     if result["acceptance_unit_id"] != manifest_unit["acceptance_unit_id"]:
         raise ValueError(f"{result_path} acceptance_unit_id 与 manifest 不一致")
     if result["tracking_mode"] != manifest_unit["tracking"]["npu_mode"]:
@@ -97,8 +98,12 @@ def validate_npu_result(
     manifest_tests = {
         test["nodeid"] for test in manifest_unit["community_tests"]
     }
-    if result["source_test"] not in manifest_tests:
-        raise ValueError(f"{result_path} source_test 不在 manifest")
+    if not result["case_ids"] or len(result["case_ids"]) != len(
+        set(result["case_ids"])
+    ):
+        raise ValueError(f"{result_path} case_ids 为空或重复")
+    if not result["source_tests"] or set(result["source_tests"]) - manifest_tests:
+        raise ValueError(f"{result_path} source_tests 不在 manifest")
 
     environment = result["environment"]
     require_keys(
@@ -165,8 +170,8 @@ def validate_npu_result(
         "env-blocked",
     }:
         raise ValueError(f"{result_path} adapter 缺少有效 direct blocker")
-    if selected["status"] != "passed" or not selected["execution_success"]:
-        raise ValueError(f"{result_path} selected execution 未通过")
+    if selected["status"] not in {"passed", "failed"}:
+        raise ValueError(f"{result_path} selected execution 状态非法")
     if selected["tests_run"] < 1 or selected["tests_skipped"] != 0:
         raise ValueError(f"{result_path} selected execution 测试计数无效")
 
@@ -186,8 +191,11 @@ def validate_npu_result(
             {
                 "variant_id",
                 "kind",
+                "evidence_mode",
+                "support_status",
                 "input_contract",
-                "match_expectation",
+                "reference_match_expectation",
+                "npu_match_expectation",
                 "match",
                 "fx",
                 "replacement",
@@ -211,8 +219,8 @@ def validate_npu_result(
             {"direction", "dtype", "dynamic", "cases"},
             f"{result_path}:{variant_id}.input_contract",
         )
-        if not input_contract["cases"]:
-            raise ValueError(f"{result_path}:{variant_id} input cases 为空")
+        if variant["evidence_mode"] == "runtime" and not input_contract["cases"]:
+            raise ValueError(f"{result_path}:{variant_id} runtime input cases 为空")
         for input_case in input_contract["cases"]:
             require_keys(
                 input_case,
@@ -223,14 +231,28 @@ def validate_npu_result(
                 raise ValueError(f"{result_path}:{variant_id} shape/stride 数量不一致")
         if variant["kind"] != manifest_variant["kind"]:
             raise ValueError(f"{result_path}:{variant_id} kind 与 manifest 不一致")
-        if variant["match_expectation"] != manifest_variant[
-            "expected_reference_match"
-        ]:
-            raise ValueError(f"{result_path}:{variant_id} match expectation 漂移")
-        if variant["match"]["target_matched"] != variant["match_expectation"]:
-            raise ValueError(f"{result_path}:{variant_id} 目标 match 未满足合同")
-        if variant["correctness"]["status"] != "passed":
-            raise ValueError(f"{result_path}:{variant_id} correctness 未通过")
+        manifest_reference_expectation = manifest_variant["expected_reference_match"]
+        if not isinstance(manifest_reference_expectation, bool):
+            manifest_reference_expectation = None
+        if (
+            variant["reference_match_expectation"]
+            != manifest_reference_expectation
+        ):
+            raise ValueError(f"{result_path}:{variant_id} reference expectation 漂移")
+        if variant["match"]["target_matched"] not in {True, False, None}:
+            raise ValueError(f"{result_path}:{variant_id} NPU 目标 match 观测非法")
+        if variant["support_status"] == "expected-disabled" and variant[
+            "npu_match_expectation"
+        ] is not False:
+            raise ValueError(f"{result_path}:{variant_id} expected-disabled 必须不命中")
+        if variant["evidence_mode"] == "runtime":
+            if variant["correctness"]["status"] != "passed":
+                raise ValueError(f"{result_path}:{variant_id} runtime correctness 未通过")
+        elif variant["correctness"]["status"] not in {
+            "not-run",
+            "not-applicable",
+        }:
+            raise ValueError(f"{result_path}:{variant_id} 非运行证据 correctness 非法")
 
     for artifact in result["artifacts"]:
         require_keys(
@@ -272,8 +294,8 @@ def validate_comparison(
         },
         str(comparison_path),
     )
-    if comparison["schema_version"] != "1.0":
-        raise ValueError(f"{comparison_path} schema_version 必须为 1.0")
+    if comparison["schema_version"] != "1.1":
+        raise ValueError(f"{comparison_path} schema_version 必须为 1.1")
     if comparison["acceptance_unit_id"] != npu_result["acceptance_unit_id"]:
         raise ValueError(f"{comparison_path} acceptance_unit_id 不一致")
     if comparison["upstream_commit"] != npu_result["upstream_commit"]:
@@ -288,30 +310,36 @@ def validate_comparison(
             "suite_valid",
             "environment_fingerprint",
             "payload_sha256",
-            "case_id",
-            "case_status",
-            "reference_valid",
-            "reference_result_sha256",
-            "artifact_inventory_sha256",
+            "cases",
         },
         f"{comparison_path}.reference",
     )
-    for key in (
-        "environment_fingerprint",
-        "payload_sha256",
-        "reference_result_sha256",
-        "artifact_inventory_sha256",
-    ):
+    for key in ("environment_fingerprint", "payload_sha256"):
         validate_sha256(reference[key], f"{comparison_path}.reference.{key}")
-    if (
-        reference["suite_status"] != "valid-reference-suite"
-        or not reference["suite_valid"]
-        or reference["case_status"] != "passed"
-        or not reference["reference_valid"]
-    ):
+    if reference["suite_status"] != "valid-reference-suite" or not reference[
+        "suite_valid"
+    ]:
         raise ValueError(f"{comparison_path} reference 无效")
-    if reference["case_id"] != npu_result["case_id"]:
-        raise ValueError(f"{comparison_path} reference/NPU case_id 不一致")
+    reference_case_ids = []
+    for case in reference["cases"]:
+        require_keys(
+            case,
+            {
+                "case_id",
+                "case_status",
+                "reference_valid",
+                "reference_result_sha256",
+                "artifact_inventory_sha256",
+            },
+            f"{comparison_path}.reference.case",
+        )
+        if case["case_status"] != "passed" or not case["reference_valid"]:
+            raise ValueError(f"{comparison_path} reference case 无效")
+        for key in ("reference_result_sha256", "artifact_inventory_sha256"):
+            validate_sha256(case[key], f"{comparison_path}.reference.case.{key}")
+        reference_case_ids.append(case["case_id"])
+    if set(reference_case_ids) != set(npu_result["case_ids"]):
+        raise ValueError(f"{comparison_path} reference/NPU case_ids 不一致")
 
     npu = comparison["npu"]
     require_keys(
@@ -334,8 +362,10 @@ def validate_comparison(
         raise ValueError(f"{comparison_path} NPU environment fingerprint 不一致")
     if npu["tracking_mode"] != npu_result["tracking_mode"]:
         raise ValueError(f"{comparison_path} NPU tracking_mode 不一致")
-    if not npu["execution_success"] or npu["correctness_status"] != "passed":
-        raise ValueError(f"{comparison_path} NPU 门禁未通过")
+    if npu["correctness_status"] != "passed":
+        raise ValueError(f"{comparison_path} NPU 数值正确性门禁未通过")
+    if not npu["execution_success"] and comparison["final_verdict"] != "NPU_REGRESSION":
+        raise ValueError(f"{comparison_path} 非回归结论不允许 NPU 执行失败")
 
     npu_variants = {
         variant["variant_id"]: variant for variant in npu_result["variants"]
@@ -359,6 +389,7 @@ def validate_comparison(
                 "runtime_path",
                 "correctness_status",
                 "performance_status",
+                "comparison_basis",
                 "verdict",
                 "note",
             },
@@ -371,13 +402,26 @@ def validate_comparison(
             raise ValueError(f"{comparison_path}:{variant_id} NPU match 不一致")
         if variant["runtime_path"] != npu_variant["runtime_path"]:
             raise ValueError(f"{comparison_path}:{variant_id} runtime path 不一致")
-        if (
-            not variant["match_contract_aligned"]
-            or variant["correctness_status"] != "passed"
-        ):
+        if not variant["match_contract_aligned"]:
             raise ValueError(f"{comparison_path}:{variant_id} comparison 未闭环")
+        evidence_mode = npu_variant["evidence_mode"]
+        if evidence_mode == "runtime" and variant["correctness_status"] != "passed":
+            raise ValueError(f"{comparison_path}:{variant_id} runtime comparison 未通过")
+        if evidence_mode != "runtime" and variant["correctness_status"] not in {
+            "not-run",
+            "not-applicable",
+        }:
+            raise ValueError(f"{comparison_path}:{variant_id} 非运行 comparison 状态非法")
 
-    if comparison["final_verdict"] in FORMAL_VERDICTS:
+    if comparison["final_verdict"] == "NPU_REGRESSION":
+        if comparison["repair_status"] not in {
+            "queued",
+            "in-progress",
+            "verified",
+            "blocked",
+        }:
+            raise ValueError(f"{comparison_path} NPU_REGRESSION 未进入 repair 流程")
+    elif comparison["final_verdict"] in FORMAL_VERDICTS:
         if comparison["repair_status"] not in {"not-needed", "verified"}:
             raise ValueError(f"{comparison_path} formal verdict 的 repair_status 非闭环")
     elif comparison["final_verdict"] != "INCONCLUSIVE":

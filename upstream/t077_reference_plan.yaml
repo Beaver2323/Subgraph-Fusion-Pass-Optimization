@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-077",
+  "generated_at": "2026-09-02T04:35:00+08:00",
+  "status": "prepared-awaiting-direct-gpu-execution",
+  "manifest": {
+    "path": "upstream/t077_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "TORCH_COMPILE_DEBUG and TORCH_TRACE per case",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600
+  },
+  "cases": [
+    {
+      "case_id": "REF-gumbel-max-trick-native",
+      "acceptance_unit_id": "AU-apply-gumbel-max-trick",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcherLogging.test_gumbel_max_trick",
+      "tracking_mode": "direct",
+      "variant_ids": ["distribution-positive"],
+      "expected_match": true,
+      "expected_assertions": ["百万行十分类输出频率逐类落在理论概率 10% 相对容差内", "inductor.apply_gumbel_max_trick=1"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-b2b-gemm-left-gelu-native",
+      "acceptance_unit_id": "AU-b2b-gemm",
+      "source_test": "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_left_assoc_good_shape",
+      "tracking_mode": "direct",
+      "variant_ids": ["left-gelu-positive"],
+      "expected_match": true,
+      "expected_assertions": ["左结合 GELU 图与 fp32 accumulation 参考在容差内一致", "inductor.b2b_gemm>0"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-b2b-gemm-right-relu-native",
+      "acceptance_unit_id": "AU-b2b-gemm",
+      "source_test": "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_right_assoc_good_shape",
+      "tracking_mode": "direct",
+      "variant_ids": ["right-relu-positive"],
+      "expected_match": true,
+      "expected_assertions": ["右结合 ReLU 图与 fp32 accumulation 参考在容差内一致", "inductor.b2b_gemm>0"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-b2b-gemm-trivial-left-native",
+      "acceptance_unit_id": "AU-b2b-gemm",
+      "source_test": "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_trivial_left_assoc_good_shape",
+      "tracking_mode": "direct",
+      "variant_ids": ["trivial-left-positive"],
+      "expected_match": true,
+      "expected_assertions": ["左结合纯两级 mm 与 fp32 accumulation 参考在容差内一致", "inductor.b2b_gemm>0"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-b2b-gemm-trivial-right-native",
+      "acceptance_unit_id": "AU-b2b-gemm",
+      "source_test": "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_trivial_right_assoc_good_shape",
+      "tracking_mode": "direct",
+      "variant_ids": ["trivial-right-positive"],
+      "expected_match": true,
+      "expected_assertions": ["右结合纯两级 mm 与 fp32 accumulation 参考在容差内一致", "inductor.b2b_gemm>0"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-b2b-gemm-bad-pattern-native",
+      "acceptance_unit_id": "AU-b2b-gemm",
+      "source_test": "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_bad_pattern_good_shape",
+      "tracking_mode": "direct",
+      "variant_ids": ["bad-pattern-negative"],
+      "expected_match": false,
+      "expected_assertions": ["compiled 与 eager 一致", "generated code 不含左右 B2B GEMM entrance marker"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-b2b-gemm-bad-shape-native",
+      "acceptance_unit_id": "AU-b2b-gemm",
+      "source_test": "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_good_pattern_bad_shape",
+      "tracking_mode": "direct",
+      "variant_ids": ["bad-shape-negative"],
+      "expected_match": false,
+      "expected_assertions": ["compiled 与 eager 一致", "100x100 shape 的 generated code 不含左右 B2B GEMM entrance marker"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-decompose-bmm-native",
+      "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-bmm",
+      "source_test": "test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_decompose_bmm",
+      "tracking_mode": "direct",
+      "direct_args": [
+        "TestDecomposeMemMM.test_decompose_bmm_b_10240_m_2_k_2_n_2_should_decompose_True",
+        "TestDecomposeMemMM.test_decompose_bmm_b_10240_m_2_k_32_n_32_should_decompose_False",
+        "TestDecomposeMemMM.test_decompose_bmm_b_2000_m_2_k_2_n_2_should_decompose_False"
+      ],
+      "variant_ids": ["large-batch-small-mnk-positive", "other-dims-threshold-negative", "batch-threshold-negative"],
+      "expected_match": "mixed",
+      "expected_assertions": ["三组 CUDA 参数化测例全部执行，不运行 test_decompose_bmm_cpu", "正例 forward/backward 总 counter=3，两个负例 counter=0", "输出、参数与梯度一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-decompose-mm-fp32-native",
+      "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-mm",
+      "source_test": "test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_decompose_mm",
+      "tracking_mode": "direct",
+      "direct_args": [
+        "TestDecomposeMemMM.test_decompose_mm_m_20480_k_5_n_2_should_decompose_True_has_bias_False",
+        "TestDecomposeMemMM.test_decompose_mm_m_20480_k_5_n_2_should_decompose_True_has_bias_True",
+        "TestDecomposeMemMM.test_decompose_mm_m_20480_k_32_n_2_should_decompose_False_has_bias_False",
+        "TestDecomposeMemMM.test_decompose_mm_m_20480_k_32_n_2_should_decompose_False_has_bias_True",
+        "TestDecomposeMemMM.test_decompose_mm_m_2048_k_2_n_2_should_decompose_False_has_bias_False",
+        "TestDecomposeMemMM.test_decompose_mm_m_2048_k_2_n_2_should_decompose_False_has_bias_True"
+      ],
+      "variant_ids": ["fp32-large-m-small-kn-positive", "fp32-k-threshold-negative", "fp32-m-threshold-negative"],
+      "expected_match": "mixed",
+      "expected_assertions": ["六个生成参数名均精确执行，CPU-only 方法不进入", "每个 shape 的 has_bias True/False 均保留", "正例 forward/backward counter delta=1，负例为 0，输出与梯度一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-decompose-mm-mixed-native",
+      "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-mm",
+      "source_test": "test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_decompose_mm_mixed_precision",
+      "tracking_mode": "direct",
+      "direct_args": [
+        "TestDecomposeMemMM.test_decompose_mm_mixed_precision_m_20480_k_5_n_2_should_decompose_True_has_bias_False",
+        "TestDecomposeMemMM.test_decompose_mm_mixed_precision_m_20480_k_5_n_2_should_decompose_True_has_bias_True",
+        "TestDecomposeMemMM.test_decompose_mm_mixed_precision_m_20480_k_32_n_2_should_decompose_False_has_bias_False",
+        "TestDecomposeMemMM.test_decompose_mm_mixed_precision_m_20480_k_32_n_2_should_decompose_False_has_bias_True",
+        "TestDecomposeMemMM.test_decompose_mm_mixed_precision_m_2048_k_2_n_2_should_decompose_False_has_bias_False",
+        "TestDecomposeMemMM.test_decompose_mm_mixed_precision_m_2048_k_2_n_2_should_decompose_False_has_bias_True"
+      ],
+      "variant_ids": ["mixed-large-m-small-kn-positive", "mixed-k-threshold-negative", "mixed-m-threshold-negative"],
+      "expected_match": "mixed",
+      "expected_assertions": ["bf16 autocast 的六个生成参数名均精确执行", "正例 forward/backward counter delta=1，负例为 0", "混合精度输出与梯度在上游容差内一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-decompose-addmm-dynamic-native",
+      "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-addmm",
+      "source_test": "test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_dynamic_shape_decompose_addmm",
+      "tracking_mode": "direct",
+      "variant_ids": ["dynamic-large-m-small-kn-positive"],
+      "expected_match": true,
+      "expected_assertions": ["保持 M=19494144,K=N=8 与 dynamic=True", "skip_dynamic_shape_dim_check 下 decompose_addmm=1", "compiled 与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference",
+      "timeout_seconds": 7200
+    }
+  ],
+  "non_executed_variants": []
+}

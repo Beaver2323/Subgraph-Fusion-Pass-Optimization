@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-02 03:35 CST（UTC+08:00）
+> 文档更新时间：2026-09-02 05:38 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -21,8 +21,7 @@
 - T-074 的自动规则暂时聚合出 188 个 acceptance unit，其中 158 个仅为
   `yes-provisional`。该聚合仍需按 upstream optimization contract 人工审核，不能作为冻结分母。
 - T-075 已把首批 5 个单元写入 schema/manifest，并完成 contract/variant 人工复核；
-  `AU-post-grad-mm-plus-mm` 已具备 GPU baseline、当前 Pass 环境 NPU 结果和 comparison verdict，
-  新口径正式闭环为 1/5。
+  T-076 已完成全部 5 个单元的 GPU baseline、NPU 结果与 comparison，正式闭环 `5/5`。
 - T-076 的 GPU 环境与精确 source build 已验真，13/13 direct community cases 均 passed 且
   `reference_valid=true`；不存在 adapter case。GPU 禁止 Git/二进制上传，已通过通用文本导出器
   回传并复核环境、summary、逐 case FX signature 和关键文件哈希，当前进入 NPU comparison。
@@ -30,9 +29,15 @@
   不包含 NPU 而为 `NO_TESTS`；case-specific adapter 在 `triton_experimental` 上
   4/4 输入分支有效，统一 NPU/comparison 记录已落盘，正式 verdict 为
   `BEHAVIOR_UNCHANGED`。
-- `AU-pad-mm-mm` 的首个 dynamic-M case 已完成产品 baseline：原生入口为 `NO_TESTS`；
-  adapter 保留 `disable_pad_mm=true`，加入 ATEN choice 后 correctness 通过，目标 pad 计数为
-  0/0，分类为 `EXPECTED_DISABLED`。该单元仍是部分进度，不增加正式闭环数。
+- `AU-pad-mm-mm` 的 dynamic-M、original-aten、stride、exclusion 四个 case 均完成原生优先与
+  case-specific adapter；产品 gate 始终保持 `disable_pad_mm=true`，原图 correctness/stride
+  有效，正式 verdict 为 `EXPECTED_PRODUCT_DIVERGENCE`。
+- `AU-pad-mm-bmm` 和 `AU-pad-mm-addmm` 已在不绕过产品 gate 的前提下闭环，verdict 均为
+  `EXPECTED_PRODUCT_DIVERGENCE`。
+- `AU-post-grad-addmm` 的负向 guard 正确，但 matrix/vector bias 正例 target counter 从 GPU `2/4`
+  变为 NPU `0/0`，verdict 为 `NPU_REGRESSION`，已进入 repair queue。
+- T-077 第二波 5 个待 reference 单元已完成人工映射：11 个 direct cases、17 个 variants，
+  零设备校验通过，等待 GPU 执行；它们尚未进入冻结 denominator。
 
 ## 统一术语
 
@@ -77,7 +82,8 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) | 2026-08-31 校准结论、T-074 边界与下一任务 |
 | [docs/SCOPE_AND_CODE_MAP.md](docs/SCOPE_AND_CODE_MAP.md) | 任务范围、Inductor 调用链和源码入口 |
 | [docs/GUIDE.md](docs/GUIDE.md) | 机制说明与历史案例阅读指南 |
-| [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | GPU 静态校验、整批执行、重跑、二进制/文本回传说明 |
+| [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | T-076 GPU 静态校验、整批执行、重跑、二进制/文本回传说明 |
+| [docs/T077_REFERENCE_RUNNER_GPU.md](docs/T077_REFERENCE_RUNNER_GPU.md) | T-077 第二波 GPU 执行与文本回传说明 |
 | [docs/CHANGE_CONTROL.md](docs/CHANGE_CONTROL.md) | 环境、产品代码、文档和交付变更记录 |
 | [docs/HISTORY.md](docs/HISTORY.md) | 已完成成果、失败与中性尝试索引 |
 | [docs/requirements/20260831_requirement_change.md](docs/requirements/20260831_requirement_change.md) | 8 月 31 日需求合同与决策 |
@@ -92,15 +98,17 @@ T-075 首批静态复核已完成：
 1. 首批仍为 5 个 acceptance units，共 20 个 variants、13 个 community test 引用；
 2. `mm_plus_mm` 的 same-K/different-K 保持一个 contract；pad mm/bmm/addmm 保持三个；
    两种 add+mm 顺序共享一个 addmm contract；
-3. GPU 文本证据已复核，5 个单元冻结进入 denominator；`mm_plus_mm` 已完成统一 comparison，正式闭环为 1/5；
+3. GPU 文本证据已复核，5 个单元冻结进入 denominator；T-076 已完成统一 comparison，正式闭环为 5/5；
 4. 48 个 `no-test-found` 和 29 个 indirect 单元继续待人工审核，T-074 v1 不覆盖。
 
-T-076 已完成：13 个原生 community cases 全部 direct valid，20 个 variants 中 14 个取得动态
+T-076 GPU reference 已完成：13 个原生 community cases 全部 direct valid，20 个 variants 中 14 个取得动态
 reference，3 个 registration-only 和 3 个 NPU-only gate 保持显式非动态处置。完整环境、逐 case
 FX signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.md`。首个 NPU 单元证据见
 `issues/REF-mm-plus-mm-native/复现报告.md` 和
-`results/current/REF-mm-plus-mm-native/`。pad-mm 首个产品基线见
-`issues/REF-pad-mm-dynamic-m-native/复现报告.md`；下一条任务是继续该单元其余 community cases。
+`results/current/REF-mm-plus-mm-native/`。pad-mm 单元级 comparison 见
+`results/current/AU-pad-mm-mm/`。T-076 NPU 闭环汇总见
+`report/t076_npu_completion_20260902.md`；GPU 侧下一步按
+`scripts/run_t077_reference_all.sh` 执行第二波 reference。
 
 ## 执行环境合同
 

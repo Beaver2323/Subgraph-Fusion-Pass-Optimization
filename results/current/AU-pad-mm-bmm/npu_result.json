@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T05:12:00+08:00",
+  "case_ids": ["REF-pad-bmm-dynamic-batch-native", "REF-pad-bmm-static-fp16-native", "REF-pad-bmm-autocast-regression-native"],
+  "acceptance_unit_id": "AU-pad-mm-bmm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": ["test/inductor/test_pad_mm.py::PadMMTest.test_pad_bmm_dyn_b", "test/inductor/test_pad_mm.py::PadMMTest.test_pad_batch", "test/inductor/test_pad_mm.py::PadMMTest.test_no_autocast_in_pad_bmm_joint_graph_pass"],
+  "tracking_mode": "adapter",
+  "environment": {"fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "python_version": "3.11.15", "torch_version": "2.14.0a0+git8e86e0a", "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "torch_npu_version": "2.14.0a0+git83cc452", "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc", "triton_version": "3.2.0", "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515", "cann_version": "9.0.1", "driver_version": "26.0.rc1", "device": "Ascend910B2", "backend": "triton_experimental"},
+  "npu_control": {"state": "disabled", "source_control": "disable_pad_mm=True；backend 加载后 shape_padding=False。", "product_gate_bypassed": false},
+  "paired_control": {"status": "not-required", "reason": "冻结产品默认关闭合同，未绕过 gate。"},
+  "direct_execution": {"status": "no-tests", "execution_success": false, "tests_run": 0, "tests_skipped": 0, "reason": "三个原生入口均由 GPU suite main gate 路由，NPU 未进入 test body。"},
+  "selected_execution": {"status": "passed", "execution_success": true, "tests_run": 3, "tests_skipped": 0, "reason": "dynamic/static 产品关闭基线与完整 autocast backward regression 均通过。", "duration_seconds": 55.366},
+  "variants": [
+    {
+      "variant_id": "dynamic-batch-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "expected-disabled",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": true, "cases": [{"shapes": [[10,128,33],[10,33,40]], "strides": [[4224,33,1],[1320,40,1]], "dynamic_dimensions": ["input0.dim0","input1.dim0"]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false,
+      "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "GPU K=36 marker 在产品 gate 下不存在。"},
+      "fx": {"status": "observed", "evidence": "动态 batch bmm 图被捕获。"}, "replacement": {"status": "not-observed", "evidence": "pad replacement 未发生。"}, "decomposition": {"status": "not-applicable", "evidence": "无 replacement。"}, "lowering": {"status": "observed", "evidence": "原始 bmm 完成 lowering。"}, "scheduler": {"status": "observed", "evidence": "成功轮完成调度。"}, "codegen": {"status": "observed", "evidence": "无 padded-K marker。"},
+      "runtime_path": "unclassified", "correctness": {"status": "passed", "assertion": "eager/compiled 一致。"}, "performance": {"status": "not-applicable", "reason": "产品关闭。"}, "first_divergence": "config", "root_cause": "disable_pad_mm=True。", "recommended_action": "保留关闭基线。"
+    },
+    {
+      "variant_id": "training-inference-registration", "kind": "regression", "evidence_mode": "static", "support_status": "static-evidence",
+      "input_contract": {"direction": "forward", "dtype": "not-applicable", "dynamic": false, "cases": []}, "reference_match_expectation": null, "npu_match_expectation": null,
+      "match": {"target_matched": null, "count": 0, "nodes": 0, "scope": "not-applicable"}, "fx": {"status": "not-applicable", "evidence": "源码 registration 结构。"}, "replacement": {"status": "not-applicable", "evidence": "静态项。"}, "decomposition": {"status": "not-applicable", "evidence": "静态项。"}, "lowering": {"status": "not-applicable", "evidence": "静态项。"}, "scheduler": {"status": "not-applicable", "evidence": "静态项。"}, "codegen": {"status": "not-applicable", "evidence": "静态项。"}, "runtime_path": "not-executed", "correctness": {"status": "not-run", "assertion": "不伪造动态 case。"}, "performance": {"status": "not-applicable", "reason": "静态项。"}, "first_divergence": "none", "root_cause": "双 registration 共同承载。", "recommended_action": "保持静态覆盖。"
+    },
+    {
+      "variant_id": "dtype-gradient-related-regression", "kind": "regression", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "bfloat16-autocast", "dynamic": false, "cases": [{"shapes": [[2,300,4096],[2,249,4096],[2,1,549,549]], "strides": [[1228800,4096,1],[1019904,4096,1],[301401,301401,549,1]], "dynamic_dimensions": []}]},
+      "reference_match_expectation": null, "npu_match_expectation": null, "match": {"target_matched": null, "count": 0, "nodes": 0, "scope": "not-applicable", "note": "related regression 不单独证明 target hit。"},
+      "fx": {"status": "observed", "evidence": "完整 MaskedMHA forward/backward。"}, "replacement": {"status": "not-observed", "evidence": "产品 gate 关闭。"}, "decomposition": {"status": "not-applicable", "evidence": "相关回归。"}, "lowering": {"status": "observed", "evidence": "forward/backward 均完成。"}, "scheduler": {"status": "observed", "evidence": "成功执行。"}, "codegen": {"status": "observed", "evidence": "成功生成 forward/backward code。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "pre/post bmm dtype 一致且两路梯度无 NaN。"}, "performance": {"status": "not-applicable", "reason": "功能回归。"}, "first_divergence": "none", "root_cause": "无 correctness 分歧。", "recommended_action": "保留回归。"
+    },
+    {
+      "variant_id": "disabled-baseline-negative", "kind": "guard", "evidence_mode": "runtime", "support_status": "expected-disabled",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32/float16/bfloat16", "dynamic": true, "cases": [{"shapes": [[10,128,33],[10,33,40]], "strides": [[4224,33,1],[1320,40,1]]},{"shapes": [[3,6,11],[3,11,9]], "strides": [[66,11,1],[99,9,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "三个 case 均捕获。"}, "replacement": {"status": "not-observed", "evidence": "gate 关闭。"}, "decomposition": {"status": "not-applicable", "evidence": "无 replacement。"}, "lowering": {"status": "observed", "evidence": "原图完成 lowering。"}, "scheduler": {"status": "observed", "evidence": "完成。"}, "codegen": {"status": "observed", "evidence": "目标 marker 不存在。"}, "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "三 case 正确。"}, "performance": {"status": "not-applicable", "reason": "关闭 gate。"}, "first_divergence": "config", "root_cause": "产品显式关闭 pad-bmm。", "recommended_action": "保留 gate。"
+    }
+  ],
+  "artifacts": [
+    {"role":"dynamic-adapter","path":"issues/REF-pad-bmm-dynamic-batch-native/npu_adapter.py","sha256":"4f5c6216d7203bb99811485f32aaeefc733e3d7a2227877a0090a855d0a5190e","availability":"repository"},
+    {"role":"static-adapter","path":"issues/REF-pad-bmm-static-fp16-native/npu_adapter.py","sha256":"bb8554d79cd9e1acdb0f7eeda5add5a9a474a2d0eae23dd419d54dcfbdd4745b","availability":"repository"},
+    {"role":"autocast-adapter","path":"issues/REF-pad-bmm-autocast-regression-native/npu_adapter.py","sha256":"4adf26aa2bc9166c1eb9cf47e06cdbed369d6fb496e3685be9c1875258a95520","availability":"repository"}
+  ]
+}

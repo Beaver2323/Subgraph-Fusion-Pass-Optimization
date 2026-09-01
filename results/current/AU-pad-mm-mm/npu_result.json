@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T04:05:00+08:00",
+  "case_ids": [
+    "REF-pad-mm-dynamic-m-native",
+    "REF-pad-mm-original-aten-native",
+    "REF-pad-mm-stride-native",
+    "REF-pad-mm-exclusion-native"
+  ],
+  "acceptance_unit_id": "AU-pad-mm-mm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": [
+    "test/inductor/test_pad_mm.py::PadMMTest.test_pad_mm_dyn_m",
+    "test/inductor/test_pad_mm.py::PadMMTest.test_original_aten_preserved_pad_mm",
+    "test/inductor/test_pad_mm.py::PadMMTest.test_pad_mm_output_strides_preserved",
+    "test/inductor/test_pad_mm.py::PadMMTest.test_exclude_padding"
+  ],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "disabled",
+    "source_control": "torch_npu._inductor.triton_experimental.config.disable_pad_mm=True；后端加载后 torch._inductor.config.shape_padding=False。",
+    "product_gate_bypassed": false
+  },
+  "paired_control": {
+    "status": "not-required",
+    "reason": "本轮冻结的是产品默认关闭合同；四个 adapter 均未修改 disable_pad_mm，GPU reference 提供正向分母。"
+  },
+  "direct_execution": {
+    "status": "no-tests",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 0,
+    "reason": "四个上游入口均由 HAS_GPU_AND_TRITON/is_big_gpu 路由，NPU 原生进程未进入 test body。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 4,
+    "tests_skipped": 0,
+    "reason": "四个 case-specific adapter 保留社区图、shape、dtype、dynamic/stride/cache 与 correctness 合同，只注入 NPU/backend 并映射产品关闭 gate 的预期。",
+    "duration_seconds": 67.093
+  },
+  "variants": [
+    {
+      "variant_id": "dynamic-m-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": true,
+        "cases": [
+          {
+            "shapes": [[40, 581], [49, 30]],
+            "strides": [[581, 1], [1, 49]],
+            "dynamic_dimensions": ["input0.dim0"]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "count": 0,
+        "nodes": 0,
+        "scope": "target-pattern",
+        "note": "GPU padded-K 正向 marker 为 K=52；NPU 产品 gate 下 marker 不存在。"
+      },
+      "fx": {"status": "observed", "evidence": "动态 M 图被 Dynamo 捕获，输入 shape/stride 与社区 case 一致。"},
+      "replacement": {"status": "not-observed", "evidence": "目标 pattern counter 为 0/0。"},
+      "decomposition": {"status": "not-applicable", "evidence": "replacement 未发生。"},
+      "lowering": {"status": "observed", "evidence": "加入 ATEN 合法 choice 后原始 mm 完成 lowering。"},
+      "scheduler": {"status": "observed", "evidence": "成功轮已生成 IR pre/post 工件，按成功 case 规则未展开。"},
+      "codegen": {"status": "observed", "evidence": "生成代码不含 GPU padded-K 正向 marker。"},
+      "runtime_path": "unclassified",
+      "correctness": {"status": "passed", "assertion": "动态 M eager/compiled 数值一致。"},
+      "performance": {"status": "not-applicable", "reason": "产品关闭目标 replacement，不发布性能结论。"},
+      "first_divergence": "config",
+      "root_cause": "NPU 产品默认 disable_pad_mm=True，预期不执行 GPU 正向 replacement。",
+      "recommended_action": "保留产品 gate 负向断言与原图 correctness 回归。"
+    },
+    {
+      "variant_id": "training-inference-registration",
+      "kind": "regression",
+      "evidence_mode": "static",
+      "support_status": "static-evidence",
+      "input_contract": {"direction": "forward", "dtype": "not-applicable", "dynamic": false, "cases": []},
+      "reference_match_expectation": null,
+      "npu_match_expectation": null,
+      "match": {"target_matched": null, "count": 0, "nodes": 0, "scope": "not-applicable", "note": "registration 结构证据，不伪造动态命中。"},
+      "fx": {"status": "not-applicable", "evidence": "该 variant 由源码 registration 结构证明。"},
+      "replacement": {"status": "not-applicable", "evidence": "产品 gate 关闭；本项只记录双 registration 承载关系。"},
+      "decomposition": {"status": "not-applicable", "evidence": "无动态 replacement。"},
+      "lowering": {"status": "not-applicable", "evidence": "静态证据项。"},
+      "scheduler": {"status": "not-applicable", "evidence": "静态证据项。"},
+      "codegen": {"status": "not-applicable", "evidence": "静态证据项。"},
+      "runtime_path": "not-executed",
+      "correctness": {"status": "not-run", "assertion": "不把 registration 结构拆成伪动态 case。"},
+      "performance": {"status": "not-applicable", "reason": "静态证据不适用性能门禁。"},
+      "first_divergence": "none",
+      "root_cause": "training/inference generated registrations 共同承载同一 mm contract。",
+      "recommended_action": "继续作为单一 acceptance unit 的静态覆盖项。"
+    },
+    {
+      "variant_id": "stride-preservation",
+      "kind": "regression",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [{"shapes": [[3, 5], [5, 2]], "strides": [[5, 1], [2, 1]], "dynamic_dimensions": []}]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": false,
+      "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "产品 gate 关闭 replacement；回归合同通过用户可见 stride 验证。"},
+      "fx": {"status": "observed", "evidence": "原始二维 mm 图被捕获。"},
+      "replacement": {"status": "not-observed", "evidence": "shape padding 已由产品 gate 关闭。"},
+      "decomposition": {"status": "not-applicable", "evidence": "无 replacement。"},
+      "lowering": {"status": "observed", "evidence": "原始 mm 完成 NPU lowering。"},
+      "scheduler": {"status": "observed", "evidence": "成功轮生成 debug IR，未展开读取。"},
+      "codegen": {"status": "observed", "evidence": "成功轮生成代码并完成执行。"},
+      "runtime_path": "unclassified",
+      "correctness": {"status": "passed", "assertion": "数值一致，eager/compiled 输出 stride 均为 (2,1)。"},
+      "performance": {"status": "not-applicable", "reason": "stride regression 不发布性能结论。"},
+      "first_divergence": "config",
+      "root_cause": "产品 gate 关闭 replacement，但原始 mm 保持用户可见 stride。",
+      "recommended_action": "保留 stride equality 为产品关闭基线的功能回归。"
+    },
+    {
+      "variant_id": "disabled-baseline-negative",
+      "kind": "guard",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32/float16",
+        "dynamic": true,
+        "cases": [
+          {"shapes": [[40, 581], [49, 30]], "strides": [[581, 1], [1, 49]], "dynamic_dimensions": ["input0.dim0"]},
+          {"shapes": [[16, 255], [255, 16]], "strides": [[255, 1], [16, 1]], "dynamic_dimensions": []},
+          {"shapes": [[61, 61], [61, 61]], "strides": [[61, 1], [61, 1]], "dynamic_dimensions": []}
+        ]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "四个 case 均确认 disable_pad_mm=true、shape_padding=false；目标 marker/template/cache 不出现。"},
+      "fx": {"status": "observed", "evidence": "各原始图均完成捕获。"},
+      "replacement": {"status": "not-observed", "evidence": "产品 gate 负向合同成立。"},
+      "decomposition": {"status": "not-applicable", "evidence": "无 replacement。"},
+      "lowering": {"status": "observed", "evidence": "原始 mm 图均完成可用 lowering。"},
+      "scheduler": {"status": "observed", "evidence": "四个成功轮完成调度与执行。"},
+      "codegen": {"status": "observed", "evidence": "GPU 目标 marker/template 均不存在，exclusion cache 为 0。"},
+      "runtime_path": "unclassified",
+      "correctness": {"status": "passed", "assertion": "动态、原 aten、stride 与两个 exclusion 图均通过 correctness。"},
+      "performance": {"status": "not-applicable", "reason": "关闭 gate 不配置目标优化性能门禁。"},
+      "first_divergence": "config",
+      "root_cause": "NPU triton_experimental 产品默认显式关闭 pad-mm。",
+      "recommended_action": "不得把目标未命中写成未知不支持；持续验证 gate 和原图 correctness。"
+    }
+  ],
+  "artifacts": [
+    {"role": "dynamic-adapter", "path": "issues/REF-pad-mm-dynamic-m-native/npu_adapter.py", "sha256": "7e5a6e5f62d9a29463c15da13bd8a897570eb25f224742e467187608affd1201", "availability": "repository"},
+    {"role": "original-aten-adapter", "path": "issues/REF-pad-mm-original-aten-native/npu_adapter.py", "sha256": "b2fa21a5700cb7aeef9f3083cc0c26e370a95c94961134da31dd01e459789189", "availability": "repository"},
+    {"role": "stride-adapter", "path": "issues/REF-pad-mm-stride-native/npu_adapter.py", "sha256": "63fb93e9c01ea948d526d84920958711a1f819b30b80499736a1a078a1344420", "availability": "repository"},
+    {"role": "exclusion-adapter", "path": "issues/REF-pad-mm-exclusion-native/npu_adapter.py", "sha256": "c069201f762bd185f8e561e208085179cacfd554b3def8eb884fbdf804149a26", "availability": "repository"},
+    {"role": "dynamic-result", "path": "/home/z50063656/tmp/t076-npu-results/REF-pad-mm-dynamic-m-native/adapter-20260902T034500+0800/artifacts/adapter_result.json", "sha256": "498e860d8939fa7a44ec1a075fe95c4755706d6cf03730ef0f4213091a8dc109", "availability": "external-run-root"},
+    {"role": "original-result", "path": "/home/z50063656/tmp/t076-npu-results/REF-pad-mm-original-aten-native/adapter-20260902T035000+0800/artifacts/adapter_result.json", "sha256": "fa716d6b20cedf2e56b5073b9f5612d964388657d55909bf160bd94e3e137459", "availability": "external-run-root"},
+    {"role": "stride-result", "path": "/home/z50063656/tmp/t076-npu-results/REF-pad-mm-stride-native/adapter-20260902T041300+0800/artifacts/adapter_result.json", "sha256": "78cce91bc462822916890351ff30b049856bc14c1190d144e2699db8eae3bac4", "availability": "external-run-root"},
+    {"role": "exclusion-result", "path": "/home/z50063656/tmp/t076-npu-results/REF-pad-mm-exclusion-native/adapter-20260902T041500+0800/artifacts/adapter_result.json", "sha256": "ea3788904e00e6b0be4176bb960c9e5f2546060c3925b308ceaae1943f9c4881", "availability": "external-run-root"}
+  ]
+}

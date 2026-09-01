@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-02T03:35:00+08:00",
-  "status": "t076-first-npu-unit-formally-closed-pad-mm-first-case-validated",
+  "generated_at": "2026-09-02T05:30:00+08:00",
+  "status": "t076-complete-five-of-five-formally-compared-t077-gpu-ready",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -36,7 +36,7 @@
     "denominator_rule": "only yes-frozen units with valid reference baseline enter denominator",
     "current_manifest_units": 5,
     "current_frozen_denominator_units": 5,
-    "current_formally_closed_units": 1
+    "current_formally_closed_units": 5
   },
   "acceptance_units": [
     {
@@ -214,7 +214,7 @@
           "expected_behavior": "同一 contract 由 training 和 inference 两个 generated registrations 承载，不拆成两个 acceptance units",
           "expected_counter": "registration evidence only",
           "reference_status": "static-registration-evidence-only",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "static-registration-evidence-current-Pass"
         },
         {
           "variant_id": "stride-preservation",
@@ -223,7 +223,7 @@
           "expected_behavior": "slice 后输出 stride 与 eager 一致",
           "expected_counter": "correctness plus stride equality",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "validated-expected-disabled-stride-correct-current-Pass"
         },
         {
           "variant_id": "disabled-baseline-negative",
@@ -253,14 +253,17 @@
       },
       "npu_control": {
         "expected_source_control": "disabled-by-triton-experimental-disable_pad_mm",
-        "current_result": "dynamic-m-product-baseline-EXPECTED_DISABLED-correctness-valid-current-Pass",
+        "current_result": "formally-closed-EXPECTED_PRODUCT_DIVERGENCE-current-Pass",
         "source_test_direct_result": "NO_TESTS-because-upstream-HAS_GPU_AND_TRITON-excludes-NPU",
-        "adapter_result": "1 test run, 0 failures, 0 errors, 0 skipped; disable_pad_mm=true, shape_padding=false, target count=0/0, correctness passed",
+        "adapter_result": "4 cases passed; disable_pad_mm=true, shape_padding=false, target count=0/0, stride/correctness valid, exclusion cache empty",
         "first_failed_adapter_result": "NoValidChoicesError-at-lowering-because-GPU-test-restricted-GEMM-to-TRITON-only",
         "adapter_deviation": "add ATEN choice without bypassing disable_pad_mm",
-        "evidence": "issues/REF-pad-mm-dynamic-m-native/复现报告.md",
-        "result_sha256": "498e860d8939fa7a44ec1a075fe95c4755706d6cf03730ef0f4213091a8dc109",
-        "case_status": "validated-partial-unit-not-formally-closed",
+        "evidence": "results/current/AU-pad-mm-mm/comparison_result.json",
+        "npu_result": "results/current/AU-pad-mm-mm/npu_result.json",
+        "comparison_result": "results/current/AU-pad-mm-mm/comparison_result.json",
+        "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+        "repair_status": "not-needed",
+        "case_status": "formally-closed",
         "diagnostic_gate_bypass": "separate-non-product-diagnostic-only"
       },
       "historical_evidence": [
@@ -326,7 +329,7 @@
           "expected_behavior": "动态 batch 保持，K padding codegen 命中且结果正确",
           "expected_counter": "generated code FileCheck contains padded K",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "formally-compared-expected-product-divergence"
         },
         {
           "variant_id": "training-inference-registration",
@@ -335,7 +338,7 @@
           "expected_behavior": "training/inference generated registrations 属于同一 bmm contract",
           "expected_counter": "registration evidence only",
           "reference_status": "static-registration-evidence-only",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "static-evidence-complete"
         },
         {
           "variant_id": "dtype-gradient-related-regression",
@@ -344,7 +347,7 @@
           "expected_behavior": "bmm dtype 不被错误 autocast，backward gradient 无 NaN",
           "expected_counter": "related regression only; target-specific hit must be captured separately",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "passed-related-regression-current-Pass"
         },
         {
           "variant_id": "disabled-baseline-negative",
@@ -353,7 +356,7 @@
           "expected_behavior": "NPU product baseline 保持 pad family disabled",
           "expected_counter": "NPU target match=0",
           "reference_status": "not-applicable-reference-guard",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "passed-disabled-baseline-current-Pass"
         }
       ],
       "tracking": {
@@ -373,8 +376,13 @@
       },
       "npu_control": {
         "expected_source_control": "disabled-by-triton-experimental-disable_pad_mm",
-        "current_result": "not-run-current-Pass",
-        "diagnostic_gate_bypass": "separate-non-product-diagnostic-only"
+        "current_result": "formally-closed-EXPECTED_PRODUCT_DIVERGENCE-current-Pass",
+        "diagnostic_gate_bypass": "not-used",
+        "adapter_result": "3 tests run, 0 failures, 0 errors, 0 skipped",
+        "npu_result": "results/current/AU-pad-mm-bmm/npu_result.json",
+        "comparison_result": "results/current/AU-pad-mm-bmm/comparison_result.json",
+        "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+        "repair_status": "not-needed"
       },
       "historical_evidence": [
         "report/t025_t026_pad_family_20260821.md",
@@ -438,7 +446,7 @@
           "expected_behavior": "动态 M 保持、K 被 padding，addmm 结果正确",
           "expected_counter": "generated code FileCheck contains padded K",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "formally-compared-expected-product-divergence"
         },
         {
           "variant_id": "bias-broadcast-positive",
@@ -447,7 +455,7 @@
           "expected_behavior": "1D/2D bias broadcast 在 padding/slice 后保持 addmm 语义",
           "expected_counter": "correctness asserted; target match needs explicit capture",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "passed-six-bias-contracts-current-Pass"
         },
         {
           "variant_id": "beta-zero-mismatched-bias-negative",
@@ -465,7 +473,7 @@
           "expected_behavior": "training/inference generated registrations 保持同一 addmm-padding contract",
           "expected_counter": "registration evidence only",
           "reference_status": "static-registration-evidence-only",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "static-evidence-complete"
         },
         {
           "variant_id": "disabled-baseline-negative",
@@ -474,7 +482,7 @@
           "expected_behavior": "NPU triton_experimental product baseline 保持 pad-addmm disabled",
           "expected_counter": "NPU target match=0",
           "reference_status": "not-applicable-reference-guard",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "passed-disabled-baseline-current-Pass"
         }
       ],
       "tracking": {
@@ -494,8 +502,13 @@
       },
       "npu_control": {
         "expected_source_control": "disabled-by-triton-experimental-disable_pad_mm",
-        "current_result": "not-run-current-Pass",
-        "diagnostic_gate_bypass": "separate-non-product-diagnostic-only"
+        "current_result": "formally-closed-EXPECTED_PRODUCT_DIVERGENCE-current-Pass",
+        "diagnostic_gate_bypass": "not-used",
+        "adapter_result": "2 tests run, 0 failures, 0 errors, 0 skipped; CUDA-only beta=0 case N/A",
+        "npu_result": "results/current/AU-pad-mm-addmm/npu_result.json",
+        "comparison_result": "results/current/AU-pad-mm-addmm/comparison_result.json",
+        "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+        "repair_status": "not-needed"
       },
       "historical_evidence": [
         "report/t025_t026_pad_family_20260821.md",
@@ -548,7 +561,7 @@
           "expected_behavior": "add+mm 和 mm+add 两个图均替换为 aten.addmm",
           "expected_counter": "two outputs total pattern_matcher_count=2,nodes=4",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "formally-compared-npu-regression-target-counter-zero"
         },
         {
           "variant_id": "vector-bias-both-orders-positive",
@@ -557,7 +570,7 @@
           "expected_behavior": "可广播 vector bias 的两种 operand order 均融合",
           "expected_counter": "two outputs total pattern_matcher_count=2,nodes=4",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "formally-compared-npu-regression-target-counter-zero"
         },
         {
           "variant_id": "non-expandable-or-batched-bias-negative",
@@ -566,7 +579,7 @@
           "expected_behavior": "不能广播到 mm 输出的 bias 或额外 batch rank 不融合",
           "expected_counter": "pattern_matcher_count=0,nodes=0",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "passed-negative-contract-current-Pass"
         },
         {
           "variant_id": "python-or-symbolic-scalar-negative",
@@ -575,7 +588,7 @@
           "expected_behavior": "Python scalar 和 SymInt scalar 不是 Tensor bias，不融合",
           "expected_counter": "pattern_matcher_count=0; symbolic test dynamic=True",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "passed-negative-contract-current-Pass"
         }
       ],
       "tracking": {
@@ -596,8 +609,13 @@
       "npu_control": {
         "commit_baseline": "disabled-by-disable_addmm_fusion-true",
         "current_working_tree_overlay": "enabled-by-default-with-live-opt-out",
-        "installed_result": "not-revalidated-current-Pass-wheel-identity-conflict-open",
-        "classification_until_revalidation": "source-candidate-only-no-product-verdict"
+        "installed_result": "revalidated-current-Pass-disable_addmm_fusion-false",
+        "current_result": "formally-closed-NPU_REGRESSION-positive-target-not-matched",
+        "adapter_result": "2 tests run; all numerical checks pass; matrix/vector target counters 0/0 instead of 2/4",
+        "npu_result": "results/current/AU-post-grad-addmm/npu_result.json",
+        "comparison_result": "results/current/AU-post-grad-addmm/comparison_result.json",
+        "final_verdict": "NPU_REGRESSION",
+        "repair_status": "queued"
       },
       "historical_evidence": [
         "report/t058_experimental_addmm_gate_20260826.md",

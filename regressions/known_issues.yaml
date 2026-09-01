@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-02T05:35:00+08:00",
+  "issues": [
+    {
+      "issue_id": "T076-AU-post-grad-addmm-pattern-not-match",
+      "status": "open",
+      "acceptance_unit_id": "AU-post-grad-addmm",
+      "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+      "first_divergence": "pattern",
+      "expected": "matrix/vector bias 两种 operand order 的 pattern_matcher count/nodes=2/4",
+      "observed": "NPU triton_experimental count/nodes=0/0；数值正确",
+      "root_cause": "disable_addmm_fusion=False，但 post-grad mm+add/add+mm 未命中 addmm replacement",
+      "repair_layer": "pattern",
+      "evidence": [
+        "results/current/AU-post-grad-addmm/comparison_result.json",
+        "issues/REF-addmm-contract-native/复现报告.md"
+      ],
+      "regression_entry": "issues/REF-addmm-contract-native/npu_adapter.py",
+      "next_action": "检查 NPU addmm pattern registration 及 post-grad 后端约束，修复后重跑正负例。"
+    }
+  ]
+}

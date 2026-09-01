@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T05:20:00+08:00",
+  "case_ids": ["REF-pad-addmm-dynamic-m-native", "REF-pad-addmm-bias-native", "REF-pad-addmm-beta-zero-negative-native"],
+  "acceptance_unit_id": "AU-pad-mm-addmm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": ["test/inductor/test_pad_mm.py::PadMMTest.test_pad_addmm_dyn_m", "test/inductor/test_pad_mm.py::PadMMTest.test_pad_addmm_2d_bias", "test/inductor/test_pad_mm.py::PadMMTest.test_addmm_beta_zero_mismatched_bias_skips_padding"],
+  "tracking_mode": "adapter",
+  "environment": {"fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "python_version": "3.11.15", "torch_version": "2.14.0a0+git8e86e0a", "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "torch_npu_version": "2.14.0a0+git83cc452", "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc", "triton_version": "3.2.0", "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515", "cann_version": "9.0.1", "driver_version": "26.0.rc1", "device": "Ascend910B2", "backend": "triton_experimental"},
+  "npu_control": {"state": "disabled", "source_control": "disable_pad_mm=True；backend 加载后 shape_padding=False。", "product_gate_bypassed": false},
+  "paired_control": {"status": "not-required", "reason": "保持产品默认关闭合同，不绕过 gate。"},
+  "direct_execution": {"status": "no-tests", "execution_success": false, "tests_run": 0, "tests_skipped": 0, "reason": "三个上游入口受 GPU/CUDA suite gate 限制，NPU 未进入 test body。"},
+  "selected_execution": {"status": "passed", "execution_success": true, "tests_run": 2, "tests_skipped": 0, "reason": "dynamic-M 与六种 bias broadcast 最小适配通过；beta=0 CUDA 专属合同保留 N/A。", "duration_seconds": 16.936},
+  "variants": [
+    {
+      "variant_id": "dynamic-m-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "expected-disabled",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": true, "cases": [{"shapes": [[128,40],[128,33],[33,40]], "strides": [[40,1],[33,1],[40,1]], "dynamic_dimensions": ["bias.dim0","mat1.dim0"]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "GPU padded-K=36 marker 在 NPU 产品 gate 下不存在。"},
+      "fx": {"status": "observed", "evidence": "dynamic M addmm 图已捕获。"}, "replacement": {"status": "not-observed", "evidence": "pad replacement 未发生。"}, "decomposition": {"status": "not-applicable", "evidence": "无 replacement。"}, "lowering": {"status": "observed", "evidence": "原始 addmm 完成 lowering。"}, "scheduler": {"status": "observed", "evidence": "成功调度。"}, "codegen": {"status": "observed", "evidence": "无 padded-K marker。"},
+      "runtime_path": "unclassified", "correctness": {"status": "passed", "assertion": "eager/compiled 一致。"}, "performance": {"status": "not-applicable", "reason": "产品关闭。"}, "first_divergence": "config", "root_cause": "disable_pad_mm=True。", "recommended_action": "保留关闭基线。"
+    },
+    {
+      "variant_id": "bias-broadcast-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[1,1],[4,11],[11,6]], "strides": [[1,1],[11,1],[6,1]]}, {"shapes": [[1,6],[4,11],[11,6]], "strides": [[6,1],[11,1],[6,1]]}, {"shapes": [[4,1],[4,11],[11,6]], "strides": [[1,1],[11,1],[6,1]]}, {"shapes": [[4,6],[4,11],[11,6]], "strides": [[6,1],[11,1],[6,1]]}, {"shapes": [[1],[4,11],[11,6]], "strides": [[1],[11,1],[6,1]]}, {"shapes": [[6],[4,11],[11,6]], "strides": [[1],[11,1],[6,1]]}]},
+      "reference_match_expectation": null, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "六种 bias shape 均不执行 pad replacement。"},
+      "fx": {"status": "observed", "evidence": "六种 broadcast 图均捕获。"}, "replacement": {"status": "not-observed", "evidence": "产品 gate 关闭。"}, "decomposition": {"status": "not-applicable", "evidence": "无 replacement。"}, "lowering": {"status": "observed", "evidence": "六种输入均完成。"}, "scheduler": {"status": "observed", "evidence": "成功调度。"}, "codegen": {"status": "observed", "evidence": "无 pad marker。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "六种 1D/2D bias 均与 eager 一致。"}, "performance": {"status": "not-applicable", "reason": "功能合同。"}, "first_divergence": "config", "root_cause": "shape padding 在 NPU 产品中关闭。", "recommended_action": "保留六种 bias 回归。"
+    },
+    {
+      "variant_id": "beta-zero-mismatched-bias-negative", "kind": "negative", "evidence_mode": "not-applicable", "support_status": "not-applicable",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": []}, "reference_match_expectation": false, "npu_match_expectation": null, "match": {"target_matched": null, "count": 0, "nodes": 0, "scope": "not-applicable", "note": "上游显式限定 CUDA eager beta=0 语义。"},
+      "fx": {"status": "not-applicable", "evidence": "不伪造 CUDA 专属语义。"}, "replacement": {"status": "not-applicable", "evidence": "N/A。"}, "decomposition": {"status": "not-applicable", "evidence": "N/A。"}, "lowering": {"status": "not-applicable", "evidence": "N/A。"}, "scheduler": {"status": "not-applicable", "evidence": "N/A。"}, "codegen": {"status": "not-applicable", "evidence": "N/A。"},
+      "runtime_path": "not-executed", "correctness": {"status": "not-applicable", "assertion": "原生入口 NO_TESTS，不适配 CUDA-only 语义。"}, "performance": {"status": "not-applicable", "reason": "N/A。"}, "first_divergence": "none", "root_cause": "上游用 GPU_TYPE == cuda 保护。", "recommended_action": "保留 N/A 分类。"
+    },
+    {
+      "variant_id": "training-inference-registration", "kind": "regression", "evidence_mode": "static", "support_status": "static-evidence",
+      "input_contract": {"direction": "forward", "dtype": "not-applicable", "dynamic": false, "cases": []}, "reference_match_expectation": null, "npu_match_expectation": null, "match": {"target_matched": null, "count": 0, "nodes": 0, "scope": "not-applicable"},
+      "fx": {"status": "not-applicable", "evidence": "源码 registration 结构。"}, "replacement": {"status": "not-applicable", "evidence": "静态项。"}, "decomposition": {"status": "not-applicable", "evidence": "静态项。"}, "lowering": {"status": "not-applicable", "evidence": "静态项。"}, "scheduler": {"status": "not-applicable", "evidence": "静态项。"}, "codegen": {"status": "not-applicable", "evidence": "静态项。"},
+      "runtime_path": "not-executed", "correctness": {"status": "not-run", "assertion": "不伪造动态 case。"}, "performance": {"status": "not-applicable", "reason": "静态项。"}, "first_divergence": "none", "root_cause": "双 registration 共同承载。", "recommended_action": "保持静态覆盖。"
+    },
+    {
+      "variant_id": "disabled-baseline-negative", "kind": "guard", "evidence_mode": "runtime", "support_status": "expected-disabled",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": true, "cases": [{"shapes": [[128,40],[128,33],[33,40]], "strides": [[40,1],[33,1],[40,1]]}, {"shapes": [[4,6],[4,11],[11,6]], "strides": [[6,1],[11,1],[6,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "dynamic/bias case 均捕获。"}, "replacement": {"status": "not-observed", "evidence": "gate 关闭。"}, "decomposition": {"status": "not-applicable", "evidence": "无 replacement。"}, "lowering": {"status": "observed", "evidence": "原图完成。"}, "scheduler": {"status": "observed", "evidence": "完成。"}, "codegen": {"status": "observed", "evidence": "目标 marker 不存在。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "运行 case 正确。"}, "performance": {"status": "not-applicable", "reason": "关闭 gate。"}, "first_divergence": "config", "root_cause": "产品显式关闭 pad-addmm。", "recommended_action": "保留 gate。"
+    }
+  ],
+  "artifacts": [
+    {"role": "dynamic-adapter", "path": "issues/REF-pad-addmm-dynamic-m-native/npu_adapter.py", "sha256": "c47345eb34b05f395bb5f566f40f7a1a6a44806de9a43e13eaa5f6b61655c7cd", "availability": "repository"},
+    {"role": "bias-adapter", "path": "issues/REF-pad-addmm-bias-native/npu_adapter.py", "sha256": "f0937ba8c2fbfe4186ea533bb5e797b86844741faed7cffead7527e374facae1", "availability": "repository"}
+  ]
+}

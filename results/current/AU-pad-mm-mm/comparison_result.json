@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T04:08:00+08:00",
+  "acceptance_unit_id": "AU-pad-mm-mm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260901T180826+0800",
+    "suite_status": "valid-reference-suite",
+    "suite_valid": true,
+    "environment_fingerprint": "8f0b3a0d3291d9c70872444dc3c430e12a7593aeaa1a5e1576a93da62161d7ee",
+    "payload_sha256": "7fb9033a765dd632fc3288640ac33803a30a9d63848acddb14f48065b11b6a8d",
+    "cases": [
+      {"case_id": "REF-pad-mm-dynamic-m-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "7662c544b807661fe4aa9a8525acb6f8f591de7911c9a9dec0619ae600015e28", "artifact_inventory_sha256": "e2ff3783dc2d9cd092633c0ccb3e27c64e68f0aa0df908c419826fab85ae1520"},
+      {"case_id": "REF-pad-mm-original-aten-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "b0db7cb67bfc8bd8cc2d3d256f8022c345d0a978c22a8d5938d7bb180ed55a5b", "artifact_inventory_sha256": "190dd7330e89386ce6551a2281cce7b2be2f68996040dfc7c526085c0b5dee7c"},
+      {"case_id": "REF-pad-mm-stride-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "4dbcf21b0832219b3fc4cff5f35213335ef9be8781a8ec065356fbe353452d07", "artifact_inventory_sha256": "76a63886320e9d7e3ed60f665ef4c6dd33530b6cb39d15513bf21e9454437230"},
+      {"case_id": "REF-pad-mm-exclusion-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "c9d918c101818b2d1c9ad401594f29c493509f7aa96143499b90b8f5bf1589c9", "artifact_inventory_sha256": "e512221858bb5f1f14becc072015030b831ff2326293b3e3d2548d7c5404f23a"}
+    ]
+  },
+  "npu": {
+    "result_path": "results/current/AU-pad-mm-mm/npu_result.json",
+    "result_sha256": "8434daff01c9686ae5f1f9442deeaa4c11a4647464548945ed955365a6d20b59",
+    "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "tracking_mode": "adapter",
+    "execution_success": true,
+    "correctness_status": "passed"
+  },
+  "variant_comparisons": [
+    {
+      "variant_id": "dynamic-m-positive",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "unclassified",
+      "correctness_status": "passed",
+      "performance_status": "not-applicable",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "GPU 命中 padded-K；NPU 明示产品 gate 关闭，目标不命中但动态 M 原图 correctness 通过。"
+    },
+    {
+      "variant_id": "training-inference-registration",
+      "reference_contract_stable": true,
+      "reference_target_match": null,
+      "npu_target_match": null,
+      "match_contract_aligned": true,
+      "runtime_path": "not-executed",
+      "correctness_status": "not-run",
+      "performance_status": "not-applicable",
+      "comparison_basis": "static-evidence",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "training/inference 双 registration 是源码结构证据，不伪造独立动态 case。"
+    },
+    {
+      "variant_id": "stride-preservation",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "unclassified",
+      "correctness_status": "passed",
+      "performance_status": "not-applicable",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "NPU 不执行 padding replacement，但数值和输出 stride (2,1) 均与 eager 一致。"
+    },
+    {
+      "variant_id": "disabled-baseline-negative",
+      "reference_contract_stable": true,
+      "reference_target_match": null,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "unclassified",
+      "correctness_status": "passed",
+      "performance_status": "not-applicable",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "该 guard 只适用于 NPU：四个 case 均保持 disable_pad_mm=true，目标 marker/template/cache 不出现。"
+    }
+  ],
+  "first_divergence": "config",
+  "root_cause": "GPU reference 验证了 upstream pad-mm 正向合同；NPU triton_experimental 通过显式产品配置关闭 shape padding，目标未命中属于预期产品分歧，原始图 correctness/stride 均有效。",
+  "recommended_action": "冻结 EXPECTED_PRODUCT_DIVERGENCE 为当前产品基线；不修改产品源码，不进入 repair queue。",
+  "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+  "repair_status": "not-needed"
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T05:25:00+08:00",
+  "acceptance_unit_id": "AU-pad-mm-bmm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260901T180826+0800", "suite_status": "valid-reference-suite", "suite_valid": true,
+    "environment_fingerprint": "8f0b3a0d3291d9c70872444dc3c430e12a7593aeaa1a5e1576a93da62161d7ee", "payload_sha256": "7fb9033a765dd632fc3288640ac33803a30a9d63848acddb14f48065b11b6a8d",
+    "cases": [
+      {"case_id": "REF-pad-bmm-dynamic-batch-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "2f8932baf9dd1f74de5904ed7e565c512e40c72d902a448f49d1452cf1208e3c", "artifact_inventory_sha256": "512b6963a71d89226c7234ad0e06cecaaaca6ca06fe1ac6c86d89f861a7ff353"},
+      {"case_id": "REF-pad-bmm-static-fp16-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "9de1b3a5ff36c5fe0391ae305beb5b3202a62c0ba3719bcd076436f1d800f3dd", "artifact_inventory_sha256": "7a2749149ef6218477372727898c9d00cdea0cf6b0f6d17d4c9d271d5e5b5856"},
+      {"case_id": "REF-pad-bmm-autocast-regression-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "6e8609295ea1fd7268e5617332ad8325af36659d5f0a1f2ab943e1d415da2af5", "artifact_inventory_sha256": "85506689a995beb58ce7b356454c765580452c13c5a88fe5ddf6afcb16f301d4"}
+    ]
+  },
+  "npu": {"result_path": "results/current/AU-pad-mm-bmm/npu_result.json", "result_sha256": "0998e5bc430523f57c976916dc3afdf34c2736ae78a2ab4360e9605297d110c6", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": true, "correctness_status": "passed"},
+  "variant_comparisons": [
+    {"variant_id": "dynamic-batch-positive", "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "unclassified", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "GPU 命中 padded-K；NPU 产品 gate 关闭，动态 batch 原图 correctness 通过。"},
+    {"variant_id": "training-inference-registration", "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "not-executed", "correctness_status": "not-run", "performance_status": "not-applicable", "comparison_basis": "static-evidence", "verdict": "BEHAVIOR_UNCHANGED", "note": "training/inference registration 是静态结构证据。"},
+    {"variant_id": "dtype-gradient-related-regression", "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "related-regression", "verdict": "BEHAVIOR_UNCHANGED", "note": "完整 MaskedMHA autocast forward/backward 通过，pre/post bmm dtype 一致，两路梯度无 NaN。"},
+    {"variant_id": "disabled-baseline-negative", "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "NPU 保持 disable_pad_mm=true，dynamic/static marker 均不出现。"}
+  ],
+  "first_divergence": "config",
+  "root_cause": "GPU reference 验证上游 pad-bmm 合同；NPU triton_experimental 显式关闭 shape padding，目标未命中属于预期产品分歧，相关 autocast 梯度回归通过。",
+  "recommended_action": "冻结 EXPECTED_PRODUCT_DIVERGENCE 基线，保留三个 case-specific adapter，不修改产品源码。",
+  "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE", "repair_status": "not-needed"
+}
