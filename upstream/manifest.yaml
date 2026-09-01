@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-02T02:22:00+08:00",
-  "status": "t076-first-wave-reference-frozen-await-npu-comparison",
+  "generated_at": "2026-09-02T03:00:00+08:00",
+  "status": "t076-reference-frozen-first-npu-unit-validated-await-unified-comparison",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -80,7 +80,7 @@
           "expected_behavior": "目标 pattern 命中；same-K 可进入 mm_plus_mm template/extern choice",
           "expected_counter": "community helper total pattern_matcher_count=1,nodes=3",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "validated-target-match-current-Pass"
         },
         {
           "variant_id": "different-k-positive-pattern-fallback",
@@ -89,7 +89,7 @@
           "expected_behavior": "M/N 相同而 K 不同仍命中目标 pattern；tuned_mm_plus_mm 按源码回退为 two-mm-plus-add",
           "expected_counter": "community helper total pattern_matcher_count=1,nodes=3; runtime path 尚未由 test 直接断言",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "validated-pattern-match-fallback-current-Pass"
         },
         {
           "variant_id": "output-shape-mismatch-negative",
@@ -98,7 +98,7 @@
           "expected_behavior": "目标 mm_plus_mm pattern 不命中；community total counter 的 1/2 来自其他 add-mm pattern，必须用目标 counter/codegen 复核",
           "expected_counter": "suite-global-non-target count=1,nodes=2",
           "reference_status": "valid-reference",
-          "npu_status": "not-run-current-Pass"
+          "npu_status": "validated-target-negative-current-Pass"
         }
       ],
       "tracking": {
@@ -118,8 +118,14 @@
       },
       "npu_control": {
         "expected_source_control": "inherited-upstream-no-explicit-disable",
-        "current_result": "not-run-current-Pass",
-        "caveat": "历史 same-K 完整证据和 different-K 条件性候选均需与当前 installed baseline 重新关联"
+        "current_result": "adapter-valid-current-Pass-await-unified-comparison-record",
+        "source_test_direct_result": "NO_TESTS-because-upstream-HAS_GPU-excludes-NPU",
+        "adapter_result": "1 test run, 0 failures, 0 errors, 0 skipped; four target-contract variants valid",
+        "backend": "triton_experimental",
+        "runtime_path": "same-K extern _mm_plus_mm; different-K two-mm-plus-NPU-Triton-add fallback; negatives two-mm-plus-NPU-Triton-add",
+        "evidence": "issues/REF-mm-plus-mm-native/复现报告.md",
+        "result_sha256": "c5b75ec79fef3a72b0961698bf469a1d3982e2bc44e27e9e1b8dda2b028c7cd6",
+        "caveat": "GPU 负例的 suite-global 1/2 来自非目标 add-mm pattern；NPU 依 manifest 用目标 codegen 未出现判定负向 gate。未进入统一 comparison schema 前不升级正式闭环数。"
       },
       "historical_evidence": [
         "report/p0_gate_first_run_20260820.md",
@@ -127,7 +133,8 @@
         "report/p0_sweep_performance_20260820.md",
         "report/p0_semantic_matrix_20260821.md",
         "report/t023_mmplus_different_k_integration_20260821.md",
-        "report/t076_gpu_reference_20260901.md"
+        "report/t076_gpu_reference_20260901.md",
+        "issues/REF-mm-plus-mm-native/复现报告.md"
       ]
     },
     {

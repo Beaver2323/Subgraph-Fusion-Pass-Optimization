@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-02 02:22 CST（UTC+08:00）
+> 更新时间：2026-09-02 03:00 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -128,6 +128,10 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
 │   ├── pass_map.yaml
 │   ├── reference_plan.schema.json
 │   └── reference_plan.yaml
+├── issues/
+│   └── REF-mm-plus-mm-native/
+│       ├── npu_adapter.py
+│       └── 复现报告.md
 ├── schemas/
 │   └── reference_result.schema.json
 ├── runners/
@@ -205,7 +209,9 @@ extracted case 必须重新审查。
 
 T-075 已在 `upstream/` 落盘首批 5 个审核单元，共 20 个 variants、13 个 community test 引用。
 T-076 的 13 个 GPU direct cases 全部有效后，它们已更新为 `frozen`/`yes-frozen`，构成首版
-denominator=5；NPU comparison 尚未完成，正式闭环为 0/5。
+denominator=5。当前 `AU-post-grad-mm-plus-mm` 已通过 case-specific adapter 完成
+NPU 目标合同验证，因此 NPU 执行进度为 1/5；统一 NPU/comparison schema 与
+compatibility matrix 尚未完成，正式闭环为 0/5。
 
 ## 9. 统一 result schema
 

@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-02 02:22 CST（UTC+08:00）
+> 日志校准时间：2026-09-02 03:00 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3283,3 +3283,29 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   13 个 case 均 commit 一致、return code 0、tests ran 1/skip 0、before/after FX captured。
 - 决策：13 个 direct 没有 blocker，不创建 adapter；5 个 acceptance units 冻结为首版 denominator，
   正式闭环仍为 0/5。下一步启动 NPU runner/comparison；GPU 原始 run 继续保留。
+
+### E-205：首个 NPU acceptance unit 目标合同验证（2026-09-02）
+
+- 登记时间：2026-09-02 03:00 CST（UTC+08:00）。范围仅为
+  `AU-post-grad-mm-plus-mm` / `REF-mm-plus-mm-native`，不修改 PyTorch、torch_npu、
+  Triton、Conda 环境或 wheel。
+- 原生优先：先直接执行上游 `TestPatternMatcher.test_mm_plus_mm`。进程退出码
+  为 0，但 `GPU_TYPE=cuda` 且 `HAS_GPU_AND_TRITON=False`，文件主入口未调用
+  `run_tests()`，因此按 `NO_TESTS` 而非 PASS 处理。
+- Adapter 边界：继承上游方法的四组 shape 与数值断言，仅注入
+  `device=npu`、`options={"npu_backend":"triton_experimental"}`、counter/生成代码采集和
+  manifest 已允许的目标专属负向断言。没有修改社区图、shape、dtype 或产品 gate。
+- 结果：在启动前无进程的物理 NPU 4 上，1 个 unittest 实例耗时
+  76.694 s，0 failure/0 error/0 skip；真实加载 `triton_experimental`。same-K 和
+  different-K 正例均为 `1/3` 且目标出现，两个 output-shape mismatch 负例均为
+  NPU suite-global `0/0` 且目标不出现，4/4 数值均与 eager 一致。
+- 差异解释：GPU 负例的全局 counter `1/2` 来自非目标 add-mm pattern；NPU 为
+  `0/0` 不影响“目标 `mm_plus_mm` 不得命中”的负向合同。
+- 中性尝试：通用 `transfer_to_npu` bootstrap 一次因 capability 设置顺序在导入期失败，
+  修正顺序后又因其改写 `get_gpu_type` 而与 backend loader 的 `cache_clear()` 合同不兼容。
+  两轮均未进入编译，已撤回该额外迁移层，不归类为产品失败。
+- 证据：`issues/REF-mm-plus-mm-native/复现报告.md`和 `npu_adapter.py`；最终
+  `adapter_result.json` SHA256 为
+  `c5b75ec79fef3a72b0961698bf469a1d3982e2bc44e27e9e1b8dda2b028c7cd6`。
+- 口径：NPU 目标合同已验证 1/5；统一 result/comparison schema 与 compatibility matrix
+  未完成，因此正式闭环仍为 0/5。
