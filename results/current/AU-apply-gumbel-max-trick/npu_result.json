@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T21:22:00+08:00",
+  "case_ids": ["REF-gumbel-max-trick-native"],
+  "acceptance_unit_id": "AU-apply-gumbel-max-trick",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": ["test/inductor/test_pattern_matcher.py::TestPatternMatcherLogging.test_gumbel_max_trick"],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "enabled",
+    "source_control": "apply_gumbel_max_trick 默认开启，handler 无 CUDA/XPU device guard。",
+    "product_gate_bypassed": false
+  },
+  "paired_control": {"status": "not-required", "reason": "NPU 直接命中同一上游合同，无产品 gate。"},
+  "direct_execution": {"status": "no-tests", "execution_success": false, "tests_run": 0, "tests_skipped": 0, "reason": "原生测试由 GPU_TYPE 路由，NPU 未进入 test body。"},
+  "selected_execution": {"status": "passed", "execution_success": true, "tests_run": 1, "tests_skipped": 0, "reason": "保持 1000000x10、10% 分布容差的 case-specific adapter 通过。"},
+  "variants": [
+    {
+      "variant_id": "distribution-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[1000000,10]], "strides": [[10,1]]}]},
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
+      "match": {"target_matched": true, "count": 1, "nodes": 1, "scope": "target-pattern", "note": "inductor.apply_gumbel_max_trick=1。"},
+      "fx": {"status": "observed", "evidence": "softmax/div/exponential_/argmax 图被捕获。"},
+      "replacement": {"status": "observed", "evidence": "改写为 logits + (-log(exponential sample)) 后 argmax。"},
+      "decomposition": {"status": "not-applicable", "evidence": "pre-grad graph rewrite。"},
+      "lowering": {"status": "observed", "evidence": "NPU triton_experimental 完成 lowering。"},
+      "scheduler": {"status": "observed", "evidence": "百万样本图调度成功。"},
+      "codegen": {"status": "observed", "evidence": "generated_code.py 已捕获。"},
+      "runtime_path": "triton",
+      "correctness": {"status": "passed", "assertion": "十类频率/期望比为 0.9913~1.0044，均在 10% 容差内。"},
+      "performance": {"status": "not-applicable", "reason": "本单元只冻结功能与分布合同。"},
+      "first_divergence": "none",
+      "root_cause": "无 GPU/NPU 合同分歧。",
+      "recommended_action": "保留现有上游实现与 NPU 回归适配器。"
+    }
+  ],
+  "artifacts": [{"role": "npu-adapter", "path": "issues/REF-gumbel-max-trick-native/npu_adapter.py", "sha256": "2a3e409836e254f7c2b6abbf4586ef00123b0b638359fcc26f4fb7b485a5ced9", "availability": "repository"}]
+}

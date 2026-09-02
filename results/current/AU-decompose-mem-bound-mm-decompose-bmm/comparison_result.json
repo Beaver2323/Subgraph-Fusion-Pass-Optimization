@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-02T22:54:00+08:00",
+  "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-bmm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {"run_id": "reference-20260902T125636+0800", "suite_status": "valid-reference-suite", "suite_valid": true, "environment_fingerprint": "744891fb4f6678126e652b20d7e1e0635d568c7c2dafc2b749474a5902e941ef", "payload_sha256": "97a1ef8315c9d1332dcee4542c928aedc600ebc984b2ac3e4e5ab27e0079b518", "cases": [{"case_id": "REF-decompose-bmm-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "06e6514c4519d3b51299fcb425e618648adb6dd38597eda8b48626b5e47cf702", "artifact_inventory_sha256": "78d103ab6802d54d9901b722bc3228cd26a5f18cef7b89b66ccb52b0530feb77"}]},
+  "npu": {"result_path": "results/current/AU-decompose-mem-bound-mm-decompose-bmm/npu_result.json", "result_sha256": "0f918fe0a5f6935bd7d33f84b832930fe38d5269615e34a362eb263f63097086", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": true, "correctness_status": "passed"},
+  "variant_comparisons": [
+    {
+      "variant_id": "large-batch-small-mnk-positive", "intent": "当 batch 极大而 M/K/N 很小时，把 bmm 分解为 broadcast multiply+sum，利用 pointwise/reduction 路径处理 memory-bound 小矩阵。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 61, "symbol": "should_decompose_bmm"}, {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 228, "symbol": "decompose_bmm"}],
+      "gpu_behavior": "A100 在 B=10240、M=K=N=2 时对 forward/backward 执行分解，合同与梯度通过。", "npu_behavior": "NPU device guard 不接受 npu，counter 为 0，保留 bmm；forward 与两路梯度正确。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "device-guard", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "NPU 未进入 CUDA/XPU 阈值分支。"
+    },
+    {
+      "variant_id": "other-dims-threshold-negative", "intent": "要求 M/N/K 至少两个维度严格小于 32；K=N=32 时避免把并不小的矩阵错误拆成 pointwise。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 61, "symbol": "should_decompose_bmm"}],
+      "gpu_behavior": "A100 对 M=2、K=N=32 返回 false，保持 bmm。", "npu_behavior": "NPU 同样保持 bmm，forward/backward 正确。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "negative-threshold", "verdict": "BEHAVIOR_UNCHANGED", "note": "最终负向行为一致。"
+    },
+    {
+      "variant_id": "batch-threshold-negative", "intent": "batch 小于 10240 时保持 bmm，防止分解开销超过收益。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 61, "symbol": "should_decompose_bmm"}],
+      "gpu_behavior": "A100 对 B=2000 返回 false，保持 bmm。", "npu_behavior": "NPU 同样保持 bmm，forward/backward 正确。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "negative-threshold", "verdict": "BEHAVIOR_UNCHANGED", "note": "最终负向行为一致。"
+    }
+  ],
+  "first_divergence": "device-guard",
+  "root_cause": "should_decompose_bmm 的 accelerator 分支仅接受 cuda/xpu，NPU 在 shape threshold 判断前返回 false。",
+  "recommended_action": "冻结正例的 EXPECTED_PRODUCT_DIVERGENCE 与两个负例的 BEHAVIOR_UNCHANGED；若未来开放 NPU 分解，需独立评估 pointwise 与 extern bmm 的收益。",
+  "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+  "repair_status": "not-needed"
+}

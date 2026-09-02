@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-02T21:23:00+08:00",
+  "acceptance_unit_id": "AU-b2b-gemm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260902T125636+0800", "suite_status": "valid-reference-suite", "suite_valid": true,
+    "environment_fingerprint": "744891fb4f6678126e652b20d7e1e0635d568c7c2dafc2b749474a5902e941ef", "payload_sha256": "97a1ef8315c9d1332dcee4542c928aedc600ebc984b2ac3e4e5ab27e0079b518",
+    "cases": [
+      {"case_id": "REF-b2b-gemm-left-gelu-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "a947f92855adfc1f0a13ea02a29867410356ae8641f6928971202122f21d1c32", "artifact_inventory_sha256": "4c2ea2657a94350fa43099686a65549f9807b1b52c33cd7910f88f59acfe293d"},
+      {"case_id": "REF-b2b-gemm-right-relu-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "8514152bf9320fe35c88d7ca7f10b71a679eebc2861f7cec97df9da309bdb65a", "artifact_inventory_sha256": "44f1e80afe81734f8a77ebf22ba618a9723de072005cc647c1505d248824fca7"},
+      {"case_id": "REF-b2b-gemm-trivial-left-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "376a431d64d27070be0df2f451b5ac37ff2473c9bb1dd5cb495eb9fa0153df68", "artifact_inventory_sha256": "f2dbfdd8b073eb5824e55dd048a6da0421e1b97654cda37d659fa08a0662f480"},
+      {"case_id": "REF-b2b-gemm-trivial-right-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "865c235e579da8c5c4c2f594696d8a5062ce73a7f3d16acae9dd44d8ae515880", "artifact_inventory_sha256": "63871e79b658b0730aa9c5390150b6b3f5d3909f6fe4591a7e9ed0278aa71c69"},
+      {"case_id": "REF-b2b-gemm-bad-pattern-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "3330c38bfbf1f965c468607eca903ee489d24d1a4569d9c276a2d8cdcd18685f", "artifact_inventory_sha256": "29d195e24ef662cc1c7b0d86019cbffcc121efca3bd6dfa24d01ea823d569fa6"},
+      {"case_id": "REF-b2b-gemm-bad-shape-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "544844b019b11b5d43e6e6b26fd2eb039681a21c63d0e0ab742e3f53c88ae14c", "artifact_inventory_sha256": "a68f8deddf8101bd79d35d871e26a53e4bd4995364895317785866ea4f61eb25"}
+    ]
+  },
+  "npu": {"result_path": "results/current/AU-b2b-gemm/npu_result.json", "result_sha256": "6821c331c99e475d21303a3b0163ed9dd7857970ad153ed0c895af14cb7a60d0", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": true, "correctness_status": "passed"},
+  "variant_comparisons": [
+    {
+      "variant_id": "left-gelu-positive", "intent": "识别 (A@B)→GELU→@C 的左结合两级 GEMM，把中间 pointwise 与两次矩阵乘作为一个可 autotune 的 B2B 候选。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 361, "symbol": "is_b2b_gemm_good_on"}, {"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 605, "symbol": "b2b_gemm_handler"}],
+      "gpu_behavior": "A100 命中左结合 B2B GEMM，GELU 子图和 fp32 accumulation 参考正确。", "npu_behavior": "NPU device guard 返回 false，保留两级 mm+GELU；数值正确且无左右 entrance marker。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "device-guard", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "首个分歧是 is_cuda/is_xpu 白名单。"
+    },
+    {
+      "variant_id": "right-relu-positive", "intent": "识别 A@(ReLU(B@C)) 的右结合两级 GEMM，并把中间 ReLU 纳入 B2B 模板。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 361, "symbol": "is_b2b_gemm_good_on"}, {"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 605, "symbol": "b2b_gemm_handler"}],
+      "gpu_behavior": "A100 命中右结合 B2B GEMM，ReLU 合同正确。", "npu_behavior": "NPU 因设备白名单保留原图，ReLU 与两次 mm 数值正确。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "device-guard", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "正例结构成立，但 NPU 不进入 profitability check。"
+    },
+    {
+      "variant_id": "trivial-left-positive", "intent": "覆盖不含 pointwise 的 (A@B)@C 左结合纯两级 GEMM，证明 handler 不依赖激活函数。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 361, "symbol": "is_b2b_gemm_good_on"}, {"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 605, "symbol": "b2b_gemm_handler"}],
+      "gpu_behavior": "A100 命中左结合纯 B2B GEMM。", "npu_behavior": "NPU 保留两个 extern mm，数值通过，B2B marker 为 0。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "device-guard", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "NPU 未启用 B2B template。"
+    },
+    {
+      "variant_id": "trivial-right-positive", "intent": "覆盖 A@(B@C) 右结合纯两级 GEMM。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 361, "symbol": "is_b2b_gemm_good_on"}, {"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 605, "symbol": "b2b_gemm_handler"}],
+      "gpu_behavior": "A100 命中右结合纯 B2B GEMM。", "npu_behavior": "NPU 保留两个 extern mm，数值通过，B2B marker 为 0。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "device-guard", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "NPU 未启用 B2B template。"
+    },
+    {
+      "variant_id": "bad-pattern-negative", "intent": "证明 inner mm 存在额外/非唯一数据流时不能错误吞并为 B2B GEMM。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 605, "symbol": "b2b_gemm_handler"}],
+      "gpu_behavior": "A100 对 shape 合适但数据流不唯一的图不生成 B2B entrance marker。", "npu_behavior": "NPU 同样不命中并保持原图数值正确。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "negative-guard", "verdict": "BEHAVIOR_UNCHANGED", "note": "负向数据流合同一致。"
+    },
+    {
+      "variant_id": "bad-shape-negative", "intent": "证明 100x100 这类平均 load ratio 不盈利的 shape 不应选择 B2B 模板。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/b2b_gemm.py", "line": 361, "symbol": "is_b2b_gemm_good_on"}],
+      "gpu_behavior": "A100 profitability check 拒绝 100x100，入口 marker 不出现。", "npu_behavior": "NPU 也保持两个 mm，数值正确且入口 marker 不出现。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "negative-guard", "verdict": "BEHAVIOR_UNCHANGED", "note": "最终行为一致；NPU 更早在 device guard 返回。"
+    }
+  ],
+  "first_divergence": "device-guard",
+  "root_cause": "is_b2b_gemm_good_on 在 shape/profitability 判断前只接受全部 is_cuda 或全部 is_xpu 的 FakeTensor。",
+  "recommended_action": "冻结四个正例的 EXPECTED_PRODUCT_DIVERGENCE 与两个负例的一致基线；若启用 NPU，需新增设备支持与独立性能门禁。",
+  "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+  "repair_status": "not-needed"
+}

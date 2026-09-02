@@ -1,6 +1,6 @@
 # T-076 GPU/reference Runner 人工操作说明
 
-> 更新时间：2026-09-02 02:22 CST（UTC+08:00）
+> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
 > 状态：GPU 环境与文本 handoff 已复核；13/13 direct cases 均 passed 且 `reference_valid=true`。
 > 核心规则：先取得 direct 结果；没有 direct blocker 证据，不创建或运行 adapter。
 
@@ -120,6 +120,14 @@ git -C /data/z50063656/src/pytorch status --short
 
 HEAD 必须为 `8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`，`status --short` 必须无输出。
 
+日常复跑推荐使用统一入口；它会自动激活环境、校验、运行、导出文本并维护 `latest`：
+
+```bash
+bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-076 --gpu 2
+```
+
+完整说明见 `docs/GPU_TASK_RUNNER.md`。下文底层命令保留用于排障。
+
 ## 4. 先做零设备静态校验
 
 ```bash
@@ -177,23 +185,21 @@ bash "${TRACKER_ROOT}/scripts/run_reference_all.sh" \
 
 ```bash
 cd /data/z50063656/tmp/t076-reference-results
-tar -czf reference-<timestamp>.tar.gz reference-<timestamp>
-sha256sum reference-<timestamp>.tar.gz > reference-<timestamp>.tar.gz.sha256
+export RUN_DIR="$(readlink -f latest)"
+tar -czf reference-latest.tar.gz -C "$(dirname "${RUN_DIR}")" "$(basename "${RUN_DIR}")"
+sha256sum reference-latest.tar.gz > reference-latest.tar.gz.sha256
 ```
 
 退出码非零也要回传完整 run 目录，不先删除失败 case 或大日志。runner 不自动提交 artifacts。
 
-若机器禁止 Git/二进制文件上传，使用通用文本导出器。输出必须位于原始 run 目录外：
+若机器禁止 Git/二进制文件上传，统一入口已经自动调用通用文本导出器。直接使用稳定入口：
 
 ```bash
-export RUN_DIR=/data/z50063656/tmp/t076-reference-results/reference-<timestamp>
-export TEXT_HANDOFF=/data/z50063656/tmp/t076-reference-results/reference-<timestamp>-text-handoff.json
+export RESULT_ROOT=/data/z50063656/tmp/t076-reference-results
+export RUN_DIR="$(readlink -f "${RESULT_ROOT}/latest")"
+export TEXT_HANDOFF="$(readlink -f "${RESULT_ROOT}/latest-text-handoff.json")"
 
 cd /data/z50063656/tmp
-python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
-  --run-dir "${RUN_DIR}" \
-  --output "${TEXT_HANDOFF}"
-
 python -m json.tool "${TEXT_HANDOFF}" >/dev/null
 sha256sum "${TEXT_HANDOFF}"
 wc -c "${TEXT_HANDOFF}"

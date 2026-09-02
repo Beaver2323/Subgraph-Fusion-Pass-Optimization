@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T22:54:00+08:00",
+  "case_ids": ["REF-decompose-bmm-native"],
+  "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-bmm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": ["test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_decompose_bmm"],
+  "tracking_mode": "adapter",
+  "environment": {"fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "python_version": "3.11.15", "torch_version": "2.14.0a0+git8e86e0a", "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "torch_npu_version": "2.14.0a0+git83cc452", "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc", "triton_version": "3.2.0", "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515", "cann_version": "9.0.1", "driver_version": "26.0.rc1", "device": "Ascend910B2", "backend": "triton_experimental"},
+  "npu_control": {"state": "guarded", "source_control": "should_decompose_bmm 的 accelerator 分支仅调用 check_device(..., cuda/xpu)。", "product_gate_bypassed": false},
+  "paired_control": {"status": "not-required", "reason": "GPU reference 已冻结阈值合同；NPU 保持上游设备边界。"},
+  "direct_execution": {"status": "skipped", "execution_success": false, "tests_run": 0, "tests_skipped": 37, "reason": "原生 decompose test 文件在 NPU 入口全部由 GPU/CPU 条件跳过。"},
+  "selected_execution": {"status": "passed", "execution_success": true, "tests_run": 3, "tests_skipped": 0, "reason": "在执行前明确显示 No running processes found in NPU 0 的干净卡上重跑；正例及两个阈值负例均完成 forward/backward，数值与梯度通过。"},
+  "variants": [
+    {
+      "variant_id": "large-batch-small-mnk-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "platform-guarded",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[10240,2,2],[10240,2,2]], "strides": [[4,2,1],[4,2,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "forward/total decompose_bmm counter 均为 0。"},
+      "fx": {"status": "observed", "evidence": "B=10240,M=K=N=2 的 forward/backward 图被捕获。"}, "replacement": {"status": "not-observed", "evidence": "NPU device guard 拒绝。"}, "decomposition": {"status": "not-observed", "evidence": "bmm 未展开为 broadcast multiply+sum。"}, "lowering": {"status": "observed", "evidence": "原始 bmm forward/backward 完成 lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "generated code 保留 bmm 路径。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "forward 与两路梯度均和 eager 一致。"}, "performance": {"status": "not-applicable", "reason": "NPU 未启用分解。"}, "first_divergence": "device-guard", "root_cause": "check_device 未接受 npu。", "recommended_action": "保持平台分歧；启用前做 pointwise 与 bmm 性能比较。"
+    },
+    {
+      "variant_id": "other-dims-threshold-negative", "kind": "negative", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[10240,2,32],[10240,32,32]], "strides": [[64,32,1],[1024,32,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "K=N=32 阈值负例被捕获。"}, "replacement": {"status": "not-observed", "evidence": "未发生 replacement。"}, "decomposition": {"status": "not-observed", "evidence": "保持 bmm。"}, "lowering": {"status": "observed", "evidence": "forward/backward 正常 lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "无 decompose marker。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "forward/gradient 均通过。"}, "performance": {"status": "not-applicable", "reason": "负例。"}, "first_divergence": "none", "root_cause": "GPU/NPU 最终都保持 bmm。", "recommended_action": "保留阈值负例。"
+    },
+    {
+      "variant_id": "batch-threshold-negative", "kind": "negative", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[2000,2,2],[2000,2,2]], "strides": [[4,2,1],[4,2,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "B=2000 阈值负例被捕获。"}, "replacement": {"status": "not-observed", "evidence": "未发生 replacement。"}, "decomposition": {"status": "not-observed", "evidence": "保持 bmm。"}, "lowering": {"status": "observed", "evidence": "forward/backward 正常 lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "无 decompose marker。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "forward/gradient 均通过。"}, "performance": {"status": "not-applicable", "reason": "负例。"}, "first_divergence": "none", "root_cause": "GPU/NPU 最终都保持 bmm。", "recommended_action": "保留 batch 阈值负例。"
+    }
+  ],
+  "artifacts": [
+    {"role": "npu-adapter", "path": "issues/REF-decompose-bmm-native/npu_adapter.py", "sha256": "55c636351a3f3f88ad04b522a6d4c9fc6373b87bff3f0180d1649128db7bb09b", "availability": "repository"},
+    {"role": "clean-run-result", "path": "/home/z50063656/tmp/t077-npu-results/decompose-bmm-clean-final3/adapter_result.json", "sha256": "8497a4b39d590ed54ca521248e13ae9635af47181e9f7035d2bc3e68ad567bf0", "availability": "control-node"}
+  ],
+  "clean_execution": {"physical_device": 0, "preflight": "No running processes found in NPU 0", "artifact_root": "/home/z50063656/tmp/t077-npu-results/decompose-bmm-clean-final3"}
+}

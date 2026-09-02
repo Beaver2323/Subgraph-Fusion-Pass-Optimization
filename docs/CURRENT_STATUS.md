@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
+> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076 已正式闭环 5/5；T-077 已准备等待 GPU。
+> 当前阶段：T-076 与 T-077 均正式闭环 5/5；T-077 MM lowering 修复已验证、尚未合入。
 
 ## 1. 总结
 
@@ -30,7 +30,11 @@ upstream `HAS_GPU` 不包含 NPU 而为 `NO_TESTS`，随后 case-specific adapte
 `AU-pad-mm-mm` 的 dynamic-M、original-aten、stride、exclusion 四个 case 已按原生优先完成。
 adapter 均未绕过 `disable_pad_mm`，原图 correctness 与 stride 合同有效；单元级 verdict 为
 `EXPECTED_PRODUCT_DIVERGENCE`。T-077 第二波 5 个单元已经人工映射为 11 个 direct cases、
-17 个 variants，并通过零设备校验，当前等待 GPU 执行。
+17 个 variants；GPU 11/11 direct cases 与 17/17 variants 均有效，5 个单元已经冻结。NPU 5/5
+单元已全部形成正式 comparison：Gumbel 命中一致；B2B、decompose-BMM、dynamic addmm 的正例因
+upstream CUDA/XPU device guard 形成预期产品分歧；decompose-MM 在目标 pass 未命中的负例路径发现
+small-mm pointwise 反向 lowering correctness 回归。本地候选 `dfbcc25` 仅对 NPU 禁用该启发式，
+定向单测 2/2、MM 六合同 6/6 通过，当前状态是 verified-not-merged。
 
 `AU-pad-mm-bmm` 与 `AU-pad-mm-addmm` 同样完成产品关闭基线校验，均为
 `EXPECTED_PRODUCT_DIVERGENCE`。`AU-post-grad-addmm` 已完成运行态纠偏：测试实际加载的 Pass
@@ -141,23 +145,25 @@ report/         不可改写的实验事实和 T-074 数据
 - `REF-mm-plus-mm-native` 已落盘统一 NPU/comparison 结果，正式 verdict 为 `BEHAVIOR_UNCHANGED`；
 - `AU-pad-mm-mm`、`AU-pad-mm-bmm`、`AU-pad-mm-addmm` 已形成单元级 comparison，均分类为 `EXPECTED_PRODUCT_DIVERGENCE`。
 - `AU-post-grad-addmm` 已纠偏为 `EXPECTED_PRODUCT_DIVERGENCE`；P-018 default-enable/live-opt-out 候选已完成精确上游合同复验。
-- T-077 已准备 5 个 pending-reference 单元、11 个 direct cases 和 17 个 variants。
+- T-077 的 5 个单元、11 个 direct cases 和 17 个 variants 已完成 GPU/NPU 对照；MM 回归进入
+  known issues，修复候选已验证。
 
-仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核，以及 T-077 GPU
-reference。P-018 是否并入正式产品属于候选变更评审，不再作为 T-076 未闭环回归。T-077 未运行前
-不进入第二波 denominator。
+仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核，以及 T-077 MM 候选修复的
+产品代码评审/合入。P-018 是否并入正式产品属于候选变更评审，不再作为 T-076 未闭环回归。
 
 ## 7. 下一条 Codex 任务
 
 ```text
-在 GPU 机器上按 `docs/T077_REFERENCE_RUNNER_GPU.md` 执行 T-077 完整 direct suite；
-11/11 valid 前不得冻结第二波 denominator。GPU 回传后按 compare 结论决定是否进入条件 repair；
-P-018 仅保留为已验证候选，不与 T-077 reference 执行混合。
+复核 T-077 MM 候选 `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`，经授权后推送/合入
+torch_npu；合入后把 `T077-decompose-mm-small-pointwise-backward` 从 known issues 移入
+fixed issues，并用同一六变体合同做一次安装态回归。随后继续审核 T-074 的 no-test-found/indirect 单元。
 ```
 
 ## 8. 当前环境边界
 
 - NPU 新测试从 `/home/z50063656/tmp` 发起；GPU T-076 从 `/data/z50063656/tmp` 发起；
+- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077 --gpu ID`，脚本自动进入
+  工作目录、激活环境、校验、运行、导出文本并维护 `latest`，不再人工查找 timestamp；
 - NPU 控制节点动态任务使用 `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`；GPU
   reference 使用 `z00824525`/sudo、A100/R550、CUDA 12.6.3、pip venv Python 3.12 和与冻结
   PyTorch commit 一致的 `/data/z50063656/envs/PassGPURef`；compat 当前未启用；

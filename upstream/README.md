@@ -1,7 +1,7 @@
 # Upstream Contract 与 Acceptance Unit 数据
 
-> 更新时间：2026-09-02 05:42 CST（UTC+08:00）
-> 状态：T-076 首批已正式闭环 5/5；T-077 第二波已完成静态准备，等待 GPU direct 执行。
+> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
+> 状态：T-076 与 T-077 均正式闭环 5/5；T-077 MM 修复已验证、尚未合入。
 
 本目录保存 tracker 的活动数据入口：
 
@@ -11,7 +11,7 @@
   多对多证据；
 - `reference_plan.schema.json`：GPU/reference 执行计划合同；
 - `reference_plan.yaml`：13 个原生 community cases、variant 覆盖和非动态处置；
-- `t077_manifest.yaml`：第二波 5 个待 reference 单元与 17 个 variants；
+- `t077_manifest.yaml`：第二波 5 个已冻结并完成 NPU comparison 的单元与 17 个 variants；
 - `t077_reference_plan.yaml`：T-077 的 11 个 direct cases 与精确参数化入口；
 - `../scripts/validate_tracker_data.py`：零第三方依赖的一致性检查。
 - `../schemas/npu_result.schema.json`、`../schemas/comparison_result.schema.json`：统一
@@ -34,7 +34,8 @@ Python 标准库 `json` 解析，避免 GPU 机器额外安装 PyYAML。
 - 当前 GPU adapter/extracted case 数为 0；13 个 direct 均 valid，不再设计 GPU adapter；
 - 188/158 的 T-074 heuristic 统计没有被覆盖或重写；
 - 后续单元只能在 community contract 人工审核后增量进入 manifest。
-- T-077 的 5 个单元当前全部为 `pending-reference`，GPU suite 完整有效前不并入首批冻结分母。
+- T-077 的 5 个单元已由 11/11 direct GPU cases 冻结，并全部形成正式 NPU/comparison；
+  decompose-MM 的 lowering 回归保留在 known issues，候选修复已通过同合同回归。
 
 ## 验证
 

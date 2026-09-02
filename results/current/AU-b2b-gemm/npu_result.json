@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T21:23:00+08:00",
+  "case_ids": ["REF-b2b-gemm-left-gelu-native", "REF-b2b-gemm-right-relu-native", "REF-b2b-gemm-trivial-left-native", "REF-b2b-gemm-trivial-right-native", "REF-b2b-gemm-bad-pattern-native", "REF-b2b-gemm-bad-shape-native"],
+  "acceptance_unit_id": "AU-b2b-gemm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": ["test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_left_assoc_good_shape", "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_right_assoc_good_shape", "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_trivial_left_assoc_good_shape", "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_trivial_right_assoc_good_shape", "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_bad_pattern_good_shape", "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_good_pattern_bad_shape"],
+  "tracking_mode": "adapter",
+  "environment": {"fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "python_version": "3.11.15", "torch_version": "2.14.0a0+git8e86e0a", "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "torch_npu_version": "2.14.0a0+git83cc452", "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc", "triton_version": "3.2.0", "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515", "cann_version": "9.0.1", "driver_version": "26.0.rc1", "device": "Ascend910B2", "backend": "triton_experimental"},
+  "npu_control": {"state": "guarded", "source_control": "is_b2b_gemm_good_on 要求三个 FakeTensor 全部 is_cuda 或全部 is_xpu。", "product_gate_bypassed": false},
+  "paired_control": {"status": "not-required", "reason": "GPU reference 已证明启用合同；NPU 保留上游 device guard。"},
+  "direct_execution": {"status": "no-tests", "execution_success": false, "tests_run": 0, "tests_skipped": 0, "reason": "原生 B2BGEMMTest 由 GPU suite 路由，NPU 未进入 test body。"},
+  "selected_execution": {"status": "passed", "execution_success": true, "tests_run": 6, "tests_skipped": 0, "reason": "四个正向结构和两个负向 guard 均按原 shape/dtype 执行且数值正确。"},
+  "variants": [
+    {
+      "variant_id": "left-gelu-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "platform-guarded",
+      "input_contract": {"direction": "forward", "dtype": "float16", "dynamic": false, "cases": [{"shapes": [[256,32],[32,256],[256,32]], "strides": [[32,1],[256,1],[32,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false,
+      "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "左右 B2B entrance marker 均不存在。"},
+      "fx": {"status": "observed", "evidence": "左结合 mm→GELU→mm 图被捕获。"}, "replacement": {"status": "not-observed", "evidence": "NPU device guard 拒绝。"}, "decomposition": {"status": "not-applicable", "evidence": "无 B2B replacement。"}, "lowering": {"status": "observed", "evidence": "原始两级 mm 与 GELU 完成 lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "generated code 无 B2B entrance marker。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "fp16 compiled 与 fp32 accumulation reference 一致。"}, "performance": {"status": "not-applicable", "reason": "目标模板未启用。"}, "first_divergence": "device-guard", "root_cause": "is_b2b_gemm_good_on 不接受 npu。", "recommended_action": "冻结平台分歧；若启用需单独做 NPU 模板性能评审。"
+    },
+    {
+      "variant_id": "right-relu-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "platform-guarded",
+      "input_contract": {"direction": "forward", "dtype": "float16", "dynamic": false, "cases": [{"shapes": [[32,256],[256,32],[32,256]], "strides": [[256,1],[32,1],[256,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "右结合 mm→ReLU→mm 图被捕获。"}, "replacement": {"status": "not-observed", "evidence": "NPU device guard 拒绝。"}, "decomposition": {"status": "not-applicable", "evidence": "无 B2B replacement。"}, "lowering": {"status": "observed", "evidence": "原始图完成 lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "无 B2B marker。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "compiled/reference 一致。"}, "performance": {"status": "not-applicable", "reason": "目标模板未启用。"}, "first_divergence": "device-guard", "root_cause": "is_b2b_gemm_good_on 不接受 npu。", "recommended_action": "保持 guard。"
+    },
+    {
+      "variant_id": "trivial-left-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "platform-guarded",
+      "input_contract": {"direction": "forward", "dtype": "float16", "dynamic": false, "cases": [{"shapes": [[256,32],[32,256],[256,32]], "strides": [[32,1],[256,1],[32,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "左结合纯两级 mm 图被捕获。"}, "replacement": {"status": "not-observed", "evidence": "device guard 拒绝。"}, "decomposition": {"status": "not-applicable", "evidence": "无 B2B replacement。"}, "lowering": {"status": "observed", "evidence": "原始 mm 完成 lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "无 B2B marker。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "compiled/reference 一致。"}, "performance": {"status": "not-applicable", "reason": "目标模板未启用。"}, "first_divergence": "device-guard", "root_cause": "is_b2b_gemm_good_on 不接受 npu。", "recommended_action": "保持 guard。"
+    },
+    {
+      "variant_id": "trivial-right-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "platform-guarded",
+      "input_contract": {"direction": "forward", "dtype": "float16", "dynamic": false, "cases": [{"shapes": [[32,256],[256,32],[32,256]], "strides": [[256,1],[32,1],[256,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "右结合纯两级 mm 图被捕获。"}, "replacement": {"status": "not-observed", "evidence": "device guard 拒绝。"}, "decomposition": {"status": "not-applicable", "evidence": "无 B2B replacement。"}, "lowering": {"status": "observed", "evidence": "原始 mm 完成 lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "无 B2B marker。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "compiled/reference 一致。"}, "performance": {"status": "not-applicable", "reason": "目标模板未启用。"}, "first_divergence": "device-guard", "root_cause": "is_b2b_gemm_good_on 不接受 npu。", "recommended_action": "保持 guard。"
+    },
+    {
+      "variant_id": "bad-pattern-negative", "kind": "negative", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward", "dtype": "float16", "dynamic": false, "cases": [{"shapes": [[256,32],[32,256],[256,32]], "strides": [[32,1],[256,1],[32,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "非唯一数据流被捕获。"}, "replacement": {"status": "not-observed", "evidence": "目标 pattern 未发生。"}, "decomposition": {"status": "not-applicable", "evidence": "负向 guard。"}, "lowering": {"status": "observed", "evidence": "原图正确 lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "左右 marker 均不存在。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "原图数值正确。"}, "performance": {"status": "not-applicable", "reason": "负例。"}, "first_divergence": "none", "root_cause": "GPU/NPU 均拒绝非唯一 B2B 数据流。", "recommended_action": "保留负向回归。"
+    },
+    {
+      "variant_id": "bad-shape-negative", "kind": "negative", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward", "dtype": "float16", "dynamic": false, "cases": [{"shapes": [[100,100],[100,100],[100,100]], "strides": [[100,1],[100,1],[100,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "100x100 两级 mm 图被捕获。"}, "replacement": {"status": "not-observed", "evidence": "目标 pattern 未发生。"}, "decomposition": {"status": "not-applicable", "evidence": "负向 shape guard。"}, "lowering": {"status": "observed", "evidence": "原图正确 lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "左右 marker 均不存在。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "原图数值正确。"}, "performance": {"status": "not-applicable", "reason": "负例。"}, "first_divergence": "none", "root_cause": "GPU/NPU 均不选择该非盈利 shape。", "recommended_action": "保留负向回归。"
+    }
+  ],
+  "artifacts": [{"role": "npu-adapter", "path": "issues/REF-b2b-gemm-native/npu_adapter.py", "sha256": "c029c347b1c7bbaeafc8bec847cf61b3e12ecaf394f2191e702aad696d6140f6", "availability": "repository"}]
+}

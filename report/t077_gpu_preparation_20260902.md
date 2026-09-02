@@ -1,7 +1,7 @@
 # T-077 第二波 GPU/reference 准备报告
 
-> 更新时间：2026-09-02 04:40 CST（UTC+08:00）
-> 状态：`PREPARED_AWAITING_GPU`
+> 更新时间：2026-09-02 21:33 CST（UTC+08:00）
+> 状态：`SUPERSEDED_BY_VALID_REFERENCE`（准备阶段记录保留）
 > PyTorch 基线：`release/2.14@8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 
 ## 1. 结论
@@ -17,8 +17,8 @@ reference_plan_validation=OK acceptance_units=5 cases=11 community_tests=11 vari
 torch_imported=0 gpu_executed=0
 ```
 
-当前没有 GPU 动态结果，5 个单元均为 `pending-reference`，不得计入冻结 denominator，也没有预建
-GPU adapter。
+后续 GPU 运行已完成：11/11 direct cases 与 17/17 variants 有效，5 个单元已冻结；没有创建 GPU
+adapter。正式动态结果见 `t077_gpu_reference_20260902.md`，本报告保留运行前设计与风险边界。
 
 ## 2. 选择与收束理由
 

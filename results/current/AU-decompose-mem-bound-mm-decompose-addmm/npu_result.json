@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T22:56:00+08:00",
+  "case_ids": ["REF-decompose-addmm-dynamic-native"],
+  "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-addmm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": ["test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_dynamic_shape_decompose_addmm"],
+  "tracking_mode": "adapter",
+  "environment": {"fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "python_version": "3.11.15", "torch_version": "2.14.0a0+git8e86e0a", "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "torch_npu_version": "2.14.0a0+git83cc452", "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc", "triton_version": "3.2.0", "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515", "cann_version": "9.0.1", "driver_version": "26.0.rc1", "device": "Ascend910B2", "backend": "triton_experimental"},
+  "npu_control": {"state": "guarded", "source_control": "decompose_addmm 复用 should_decompose_mm；dynamic 分支仍只接受 cuda/xpu 或 cpu。", "product_gate_bypassed": false},
+  "paired_control": {"status": "not-required", "reason": "GPU reference 已冻结 dynamic 命中合同；NPU 明确保持原始 addmm。"},
+  "direct_execution": {"status": "skipped", "execution_success": false, "tests_run": 0, "tests_skipped": 1, "reason": "原生入口由 GPU_TYPE 路由；NPU 在 direct blocker 后仅注入 device/backend/artifact capture。"},
+  "selected_execution": {"status": "passed", "execution_success": true, "tests_run": 1, "tests_skipped": 0, "reason": "保持原始 M=19494144、K=N=8 和 dynamic=True，数值正确且 target counter=0。"},
+  "variants": [
+    {
+      "variant_id": "dynamic-large-m-small-kn-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "platform-guarded",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": true, "cases": [{"shapes": [[8],[19494144,8],[8,8]], "strides": [[1],[8,1],[8,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "decompose_addmm counter=0。"},
+      "fx": {"status": "observed", "evidence": "dynamic addmm 图和 symbolic M 已捕获。"}, "replacement": {"status": "not-observed", "evidence": "NPU device guard 拒绝 multiply+sum+bias replacement。"}, "decomposition": {"status": "not-observed", "evidence": "保持 aten.addmm。"}, "lowering": {"status": "observed", "evidence": "dynamic addmm 进入 extern lowering。"}, "scheduler": {"status": "observed", "evidence": "超大 M 动态图调度成功。"}, "codegen": {"status": "observed", "evidence": "generated code 调用 extern_kernels.addmm。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "原始 19,494,144 行 workload 与 eager 一致。"}, "performance": {"status": "not-applicable", "reason": "NPU 未启用目标分解。"}, "first_divergence": "device-guard", "root_cause": "should_decompose_mm 的 dynamic accelerator 分支不接受 npu。", "recommended_action": "冻结平台分歧；不得缩小 M 或关闭 dynamic 来伪造命中。"
+    }
+  ],
+  "artifacts": [
+    {"role": "npu-adapter", "path": "issues/REF-decompose-addmm-dynamic-native/npu_adapter.py", "sha256": "ab99fc87f71ec82542c1bfb6a1590f00b402aefa08f4f1b9bcd1f650673f7b9f", "availability": "repository"},
+    {"role": "clean-run-result", "path": "/home/z50063656/tmp/t077-npu-results/decompose-addmm-clean0/adapter_result.json", "sha256": "f233d0fbac55aa4cfed6f453559f58d913346c4b7bcf1ee51a2fb18bef0fa526", "availability": "control-node"}
+  ]
+}

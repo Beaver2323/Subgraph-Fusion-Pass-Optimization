@@ -469,10 +469,20 @@ def validate_comparison(
 
 
 def validate(repo_root: Path) -> None:
-    manifest = load_object(repo_root / "upstream/manifest.yaml")
-    units = {
-        unit["acceptance_unit_id"]: unit for unit in manifest["acceptance_units"]
-    }
+    manifest_paths = (
+        repo_root / "upstream/manifest.yaml",
+        repo_root / "upstream/t077_manifest.yaml",
+    )
+    manifests = [load_object(path) for path in manifest_paths]
+    units: dict[str, dict[str, Any]] = {}
+    for manifest_path, manifest in zip(manifest_paths, manifests):
+        for unit in manifest["acceptance_units"]:
+            unit_id = unit["acceptance_unit_id"]
+            if unit_id in units:
+                raise ValueError(
+                    f"acceptance unit 跨 manifest 重复: {unit_id} ({manifest_path})"
+                )
+            units[unit_id] = unit
     for schema_name in (
         "schemas/npu_result.schema.json",
         "schemas/comparison_result.schema.json",
@@ -509,7 +519,10 @@ def validate(repo_root: Path) -> None:
         variant_count += len(comparison["variant_comparisons"])
         formally_closed += comparison["final_verdict"] in FORMAL_VERDICTS
 
-    expected_closed = manifest["counting_policy"]["current_formally_closed_units"]
+    expected_closed = sum(
+        manifest["counting_policy"]["current_formally_closed_units"]
+        for manifest in manifests
+    )
     if expected_closed != formally_closed:
         raise ValueError(
             "manifest current_formally_closed_units 与 comparison 结果数不一致: "

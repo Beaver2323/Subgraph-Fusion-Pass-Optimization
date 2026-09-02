@@ -1,7 +1,7 @@
 # T-077 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
-> 状态：第二波 5 个 acceptance units、11 个 direct cases、17 个 variants 已完成静态映射与零设备校验，等待 GPU 执行。
+> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
+> 状态：GPU 11/11 direct cases、17/17 variants 已完成；本文保留合同，并提供统一一键复跑入口。
 > 执行原则：先运行冻结 PyTorch commit 中的原生社区测例；direct 无效时只回传证据，不在 GPU 机器临时改图或写 adapter。
 
 ## 1. 本轮范围
@@ -80,6 +80,14 @@ reference_plan_validation=OK acceptance_units=5 cases=11 community_tests=11 vari
 torch_imported=0 gpu_executed=0
 ```
 
+推荐直接使用统一入口，它会完成环境激活、静态校验、空闲 GPU 检查、运行和文本导出：
+
+```bash
+bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-077 --gpu 2
+```
+
+下文的底层 runner 命令保留给排障和精确重跑；日常执行见 `docs/GPU_TASK_RUNNER.md`。
+
 ## 4. 执行完整 GPU reference
 
 先用 `nvidia-smi` 选择无其他用户进程的空闲物理卡，然后只限制当前 shell：
@@ -112,20 +120,16 @@ bash "${TRACKER_ROOT}/scripts/run_t077_reference_all.sh" \
 
 ## 5. 文本回传
 
-GPU 机器禁止 Git 或二进制上传时，继续使用通用文本导出器：
+统一入口会自动生成文本 handoff，并将本轮真实时间戳映射到稳定入口，不需要人工查找目录：
 
 ```bash
-export RUN_DIR="${RESULT_ROOT}/reference-<timestamp>"
-export TEXT_HANDOFF="${RESULT_ROOT}/reference-<timestamp>-text-handoff.json"
+export RESULT_ROOT=/data/z50063656/tmp/t077-reference-results
+export RUN_DIR="$(readlink -f "${RESULT_ROOT}/latest")"
+export TEXT_HANDOFF="$(readlink -f "${RESULT_ROOT}/latest-text-handoff.json")"
 
-cd /data/z50063656/tmp
-python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
-  --run-dir "${RUN_DIR}" \
-  --output "${TEXT_HANDOFF}"
-
-python -m json.tool "${TEXT_HANDOFF}" >/dev/null
-sha256sum "${TEXT_HANDOFF}"
-wc -c "${TEXT_HANDOFF}"
+python -m json.tool "${RESULT_ROOT}/latest-text-handoff.json" >/dev/null
+sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
+wc -c "${RESULT_ROOT}/latest-text-handoff.json"
 ```
 
 请复制完整 JSON 文本。失败时也保留并导出整轮目录；不要删除失败 case，不要把 skip 记作 PASS。

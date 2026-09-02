@@ -1,7 +1,34 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-02T17:42:00+08:00",
-  "issues": [],
+  "generated_at": "2026-09-02T22:54:00+08:00",
+  "issues": [
+    {
+      "issue_id": "T077-decompose-mm-small-pointwise-backward",
+      "status": "repair-verified-not-merged",
+      "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-mm",
+      "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_baseline": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+      "failure_class": "CORRECTNESS_FAIL",
+      "first_divergence": "lowering",
+      "affected_contract": "fp32 M=2048,K=N=2 的 decompose_mm 阈值负例反向左梯度",
+      "symptom": "forward 最大绝对误差 4.768e-7、右梯度误差 0，但左梯度最大绝对误差 29.026336669921875，4085/4096 元素不一致。",
+      "root_cause": "目标 decompose_mm pass 未命中后，upstream _use_small_mm_pointwise 的 CUDA-oriented heuristic 在 NPU AOTAutograd backward 上把 mm 展开为两个错误的 Triton pointwise kernel。",
+      "repair": {
+        "layer": "lowering-guard",
+        "strategy": "在 triton_experimental overrides 中仅对 NPU 禁用 _use_small_mm_pointwise，其他设备保持上游行为；重复应用幂等。",
+        "candidate_commit": "dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6",
+        "candidate_state": "local-detached-not-pushed-not-merged",
+        "patch": "issues/REF-decompose-mm-native/backend_fix_dfbcc25.patch",
+        "verification": "目标单测 2/2；T-077 MM 六变体 6/6，前向及两侧梯度误差全部为 0。"
+      },
+      "artifacts": {
+        "original_failure": "/home/z50063656/tmp/t077-npu-results/decompose-mm-isolate0/fp32-m-threshold-negative-diagnostic.json",
+        "fixed_suite": "/home/z50063656/tmp/t077-npu-results/decompose-mm-fixed-suite0/adapter_result.json",
+        "comparison": "results/current/AU-decompose-mem-bound-mm-decompose-mm/comparison_result.json"
+      },
+      "next_action": "经产品代码评审后将候选提交推送/合入 torch_npu；合入前不得移动到 fixed_issues。"
+    }
+  ],
   "reclassified": [
     {
       "issue_id": "T076-AU-post-grad-addmm-pattern-not-match",

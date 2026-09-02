@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-02T21:22:00+08:00",
+  "acceptance_unit_id": "AU-apply-gumbel-max-trick",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260902T125636+0800",
+    "suite_status": "valid-reference-suite",
+    "suite_valid": true,
+    "environment_fingerprint": "744891fb4f6678126e652b20d7e1e0635d568c7c2dafc2b749474a5902e941ef",
+    "payload_sha256": "97a1ef8315c9d1332dcee4542c928aedc600ebc984b2ac3e4e5ab27e0079b518",
+    "cases": [{"case_id": "REF-gumbel-max-trick-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "95a53400b6d387a235b817d00dfeedfbee37edb228dc122232177311b9179e5a", "artifact_inventory_sha256": "3eb75fe02095522a83a37908d636dc68bdf8bdfe0ebf4f95bab661957a7f75cf"}]
+  },
+  "npu": {"result_path": "results/current/AU-apply-gumbel-max-trick/npu_result.json", "result_sha256": "610b5898acb1f3cfcf9d6e74817bd59d3ff90b242130096109c294393306922d", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": true, "correctness_status": "passed"},
+  "variant_comparisons": [
+    {
+      "variant_id": "distribution-positive",
+      "intent": "把 softmax(logits)/Exp(1) 后 argmax 的采样图改写为 logits 加 Gumbel noise 后 argmax，消除不必要 softmax 且保持分类分布。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/apply_gumbel_max_trick.py", "line": 10, "symbol": "apply_gumbel_max_trick"}, {"path": "torch/_inductor/fx_passes/pre_grad.py", "line": 418, "symbol": "apply_gumbel_max_trick_pass"}],
+      "gpu_behavior": "A100 原生 reference 命中 1 次，百万样本十分类分布在 10% 相对容差内。",
+      "npu_behavior": "Ascend910B2 同样命中 1 次；十类实际/期望比为 0.9913~1.0044，数值与分布合同通过。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "not-applicable",
+      "comparison_basis": "same-upstream-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "handler 无设备白名单，GPU/NPU 都执行等价 Gumbel-max 重写。"
+    }
+  ],
+  "first_divergence": "none",
+  "root_cause": "该 pre-grad rewrite 只检查图结构、唯一用户和 exponential rate，不限制 CUDA/XPU。",
+  "recommended_action": "冻结 BEHAVIOR_UNCHANGED 基线并保留统计回归。",
+  "final_verdict": "BEHAVIOR_UNCHANGED",
+  "repair_status": "not-needed"
+}

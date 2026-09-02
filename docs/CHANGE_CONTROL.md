@@ -3402,3 +3402,62 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   `intent/source_locations/gpu_behavior/npu_behavior`，
   validator 要求 source 必须已登记在 manifest。新增中文学习报告
   `report/t076_pattern_gpu_npu_guide_20260902.md`，覆盖首批 20/20 variants，并为 T-077 沿用该模板。
+
+### E-210：T-077 GPU reference 接收与 NPU 执行启动（2026-09-02）
+
+- 登记时间：2026-09-02 21:03 CST（UTC+08:00）。收到 GPU 文本 handoff：run
+  `reference-20260902T125636+0800`，11/11 direct cases passed、11/11 `reference_valid=true`，
+  17/17 variants 均为 `valid-reference`，没有 adapter、skip、timeout、no-tests 或未执行 variant。
+- GPU 身份：PyTorch commit 为 `8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`，源码树 clean；
+  environment fingerprint 为 `744891fb4f6678126e652b20d7e1e0635d568c7c2dafc2b749474a5902e941ef`，
+  canonical handoff SHA256 为 `97a1ef8315c9d1332dcee4542c928aedc600ebc984b2ac3e4e5ab27e0079b518`。
+- NPU 原生入口：Gumbel 与 B2B 文件未生成可执行 NPU test body；decompose 文件 37/37 skipped。
+  这是 GPU_TYPE/`requires_gpu` 路由阻断，不记 PASS。后续仅在 tracker 中增加 case-specific NPU
+  adapter，不修改 PyTorch、torch_npu、Triton、已安装 wheel 或共享源码树。
+- 设备边界：执行前逐次用 `npu-smi info` 核验；共享卡状态持续变化，不固定物理卡。已占用设备不抢占、
+  不终止他人进程。所有测试从 `/home/z50063656/tmp` 发起并加载 Pass site-packages torch_npu。
+
+### E-211：T-077 reference 冻结与 NPU 2/5 阶段闭环（2026-09-02）
+
+- 登记时间：2026-09-02 21:33 CST（UTC+08:00）。GPU 文本 handoff 已复核并写入
+  `report/t077_gpu_reference_20260902.md`；5 个 acceptance units、17 个 variants 全部冻结。
+- Gumbel-max：NPU 目标 counter=1，保持百万行十分类与 10% 容差；实际/期望频率比范围
+  `0.9913~1.0044`，正式 verdict 为 `BEHAVIOR_UNCHANGED`。
+- B2B GEMM：六个原 shape/dtype case 数值通过；四个 GPU 正例在 NPU 目标 counter/entrance marker
+  均为 0，首个分歧为 `is_cuda/is_xpu` device guard；两个负例保持不命中。单元 verdict 为
+  `EXPECTED_PRODUCT_DIVERGENCE`。
+- decompose-BMM：临时运行三组 forward/backward 与梯度通过，但目标卡启动时已有外部进程，按共享机
+  合同不计正式闭环；comparison 保留为 `INCONCLUSIVE`，等待无进程卡重跑。
+- 结果与讲解：新增三个单元的 schema 1.1/1.2 NPU/comparison JSON；统一 validator 支持
+  `manifest.yaml` 与 `t077_manifest.yaml` 并通过 8 units/30 variants/7 formal closed 校验。新增
+  `report/t077_pattern_gpu_npu_guide_20260902.md`，已闭环项给出源码块与 GPU/NPU 对照。
+- 共享机边界：decompose-BMM clean rerun、decompose-MM 与 dynamic addmm 启动前多轮发现 8/8 卡均有其他进程；硬门禁已改为
+  `set -euo pipefail` 且目标卡必须出现 `No running processes`，否则立即退出。未杀、未抢占其他进程；
+  两个未运行单元在 guide/manifest 中保持 pending，不由静态源码推造动态 verdict。
+
+### E-212：T-077 五单元闭环与 MM lowering 修复验证（2026-09-02）
+
+- 登记时间：2026-09-02 22:54 CST（UTC+08:00）。decompose-BMM 在执行前显示
+  `No running processes found in NPU 0` 的干净卡上重跑，3/3 forward/backward 与梯度通过；正例因
+  CUDA/XPU device guard 不分解，两个阈值负例与 GPU 行为一致。
+- decompose-MM：六变体动态运行中，fp32 `M=2048,K=N=2` 阈值负例稳定复现左梯度错误：最大绝对
+  误差 `29.026336669921875`，`4085/4096` 元素不一致；前向仅 `4.768e-7`、右梯度误差为 0。
+  transformed FX 仍为 `aten.mm`，首个分歧定位到后续 `_use_small_mm_pointwise` lowering。
+- 修复候选：在独立 detached torch_npu worktree 中加入 NPU-only、幂等 small-mm guard，候选提交
+  `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`。定向单测 2/2、同一 MM 六变体 6/6 通过，所有
+  forward/left-grad/right-grad 误差为 0；候选未推送、未合入，登记在 known issues 而非 fixed issues。
+- dynamic addmm：保留上游原始 `M=19494144,K=N=8`、`dynamic=True`，干净卡运行数值通过；目标
+  counter=0，生成代码保留 `extern_kernels.addmm`，结论为 `EXPECTED_PRODUCT_DIVERGENCE`。
+- 数据收束：T-077 manifest 正式闭环数更新为 5/5；三个 decompose 单元的 NPU/comparison JSON、
+  完成报告和逐 pattern 中文导读已落盘。T-077 任务本身完成，剩余是候选修复的产品评审与合入。
+
+### E-213：GPU 指定任务一键入口与 timestamp 自动收束（2026-09-02）
+
+- 登记时间：2026-09-02 23:32 CST（UTC+08:00）。新增
+  `scripts/run_gpu_reference_task.sh`，GPU 侧 pull 后可通过 `--task T-076|T-077 --gpu ID` 选择任务。
+- 入口自动设置当前 `/data/z50063656` GPU 环境、进入 `/data/z50063656/tmp`、先做静态校验、检查
+  指定物理 GPU 无计算进程，再调用对应任务 runner；支持 `--validate-only` 和 `--case`。
+- runner 输出的真实 artifacts 路径由脚本自动解析，随后自动生成文本 handoff；结果根目录维护
+  `latest` 与 `latest-text-handoff.json` 两个软链接，因此无需人工查找或复制 `<timestamp>`。
+- 旧的带时间戳结果保持不变，latest 只更新指针；脚本保留原 runner 退出码，失败、skip、no-tests
+  不会被包装为 PASS。中文使用说明见 `docs/GPU_TASK_RUNNER.md`。

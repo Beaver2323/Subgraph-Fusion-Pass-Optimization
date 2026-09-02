@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-02 17:42 CST（UTC+08:00）
+> 文档更新时间：2026-09-02 23:32 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -24,7 +24,7 @@
   T-076 已完成全部 5 个单元的 GPU baseline、NPU 结果与 comparison，正式闭环 `5/5`。
 - T-076 的 GPU 环境与精确 source build 已验真，13/13 direct community cases 均 passed 且
   `reference_valid=true`；不存在 adapter case。GPU 禁止 Git/二进制上传，已通过通用文本导出器
-  回传并复核环境、summary、逐 case FX signature 和关键文件哈希，当前进入 NPU comparison。
+  回传并复核环境、summary、逐 case FX signature 和关键文件哈希；对应 NPU comparison 已完成。
 - `AU-post-grad-mm-plus-mm` 已按原生优先执行：直接入口因上游 `HAS_GPU`
   不包含 NPU 而为 `NO_TESTS`；case-specific adapter 在 `triton_experimental` 上
   4/4 输入分支有效，统一 NPU/comparison 记录已落盘，正式 verdict 为
@@ -37,8 +37,10 @@
 - `AU-post-grad-addmm` 已完成运行态纠偏：当前 Pass 安装态明确
   `disable_addmm_fusion=True`，因此 GPU `2/4` 与安装态 NPU `0/0` 是
   `EXPECTED_PRODUCT_DIVERGENCE`；P-018 独立候选已恢复正例 `2/4` 并保留全部负例 `0/0`。
-- T-077 第二波 5 个待 reference 单元已完成人工映射：11 个 direct cases、17 个 variants，
-  零设备校验通过，等待 GPU 执行；它们尚未进入冻结 denominator。
+- T-077 第二波 GPU reference 11/11 direct cases、17/17 variants 有效，NPU 5/5 单元正式闭环。
+  Gumbel 为 `BEHAVIOR_UNCHANGED`；B2B GEMM、decompose-BMM、dynamic addmm 为
+  `EXPECTED_PRODUCT_DIVERGENCE`；decompose-MM 发现 small-mm pointwise 反向 lowering 回归，
+  本地候选 `dfbcc25` 已通过 2/2 定向单测和 6/6 合同回归，尚未推送/合入。
 
 ## 统一术语
 
@@ -85,7 +87,10 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/GUIDE.md](docs/GUIDE.md) | 机制说明与历史案例阅读指南 |
 | [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | T-076 GPU 静态校验、整批执行、重跑、二进制/文本回传说明 |
 | [docs/T077_REFERENCE_RUNNER_GPU.md](docs/T077_REFERENCE_RUNNER_GPU.md) | T-077 第二波 GPU 执行与文本回传说明 |
+| [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU pull 后按 T-076/T-077 指定任务一键运行；自动导出并维护 latest 入口 |
 | [report/t076_pattern_gpu_npu_guide_20260902.md](report/t076_pattern_gpu_npu_guide_20260902.md) | T-076 20 个 variants 的源码意图、GPU/NPU 行为与 P-018 候选导读 |
+| [report/t077_npu_completion_20260902.md](report/t077_npu_completion_20260902.md) | T-077 五单元闭环、MM 回归定位与修复验证摘要 |
+| [report/t077_pattern_gpu_npu_guide_20260902.md](report/t077_pattern_gpu_npu_guide_20260902.md) | T-077 每个 pattern/variant 的源码意图、GPU/NPU 行为和修复代码导读 |
 | [docs/CHANGE_CONTROL.md](docs/CHANGE_CONTROL.md) | 环境、产品代码、文档和交付变更记录 |
 | [docs/HISTORY.md](docs/HISTORY.md) | 已完成成果、失败与中性尝试索引 |
 | [docs/requirements/20260831_requirement_change.md](docs/requirements/20260831_requirement_change.md) | 8 月 31 日需求合同与决策 |
@@ -109,8 +114,8 @@ FX signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.m
 `issues/REF-mm-plus-mm-native/复现报告.md` 和
 `results/current/REF-mm-plus-mm-native/`。pad-mm 单元级 comparison 见
 `results/current/AU-pad-mm-mm/`。T-076 NPU 闭环汇总见
-`report/t076_npu_completion_20260902.md`；GPU 侧下一步按
-`scripts/run_t077_reference_all.sh` 执行第二波 reference。
+`report/t076_npu_completion_20260902.md`。T-077 第二波 reference 和 NPU 5/5 comparison 也已完成；
+GPU 后续复跑统一使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077 --gpu ID`。
 
 ## 执行环境合同
 

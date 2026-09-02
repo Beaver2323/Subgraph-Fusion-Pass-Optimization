@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-02T22:55:00+08:00",
+  "case_ids": ["REF-decompose-mm-fp32-native", "REF-decompose-mm-mixed-native"],
+  "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-mm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": [
+    "test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_decompose_mm",
+    "test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_decompose_mm_mixed_precision"
+  ],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "patched",
+    "source_control": "目标 decompose_mm pass 仍由 upstream device guard 排除 NPU；修复候选 dfbcc25 额外禁止 NPU 进入 CUDA-oriented small-mm pointwise lowering。",
+    "product_gate_bypassed": false
+  },
+  "paired_control": {
+    "status": "passed",
+    "reason": "同一 fp32 M=2048,K=N=2 合同中，原安装态左梯度 4085/4096 不一致；应用 dfbcc25 guard 后完整六变体前向和两侧梯度均通过。"
+  },
+  "direct_execution": {
+    "status": "skipped",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 12,
+    "reason": "原生参数化入口按 GPU_TYPE 生成 CUDA case；NPU 先保留 direct blocker，再使用 case-specific adapter。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 6,
+    "tests_skipped": 0,
+    "reason": "修复候选下 fp32/bf16-autocast 的两个正例和四个阈值负例均完成 forward/backward，全部误差为 0。"
+  },
+  "variants": [
+    {
+      "variant_id": "fp32-large-m-small-kn-positive", "kind": "positive", "evidence_mode": "runtime", "support_status": "platform-guarded",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[20480,5],[5,2]], "strides": [[5,1],[2,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "decompose_mm forward/total counter 均为 0。"},
+      "fx": {"status": "observed", "evidence": "原始 mm 的 forward/backward 图已捕获。"}, "replacement": {"status": "not-observed", "evidence": "NPU device guard 拒绝目标 replacement。"}, "decomposition": {"status": "not-observed", "evidence": "未展开为 broadcast multiply+sum。"}, "lowering": {"status": "observed", "evidence": "mm 进入可靠 extern lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "generated code 使用 extern_kernels.mm。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "forward 与两侧梯度误差均为 0。"}, "performance": {"status": "not-applicable", "reason": "NPU 未启用目标分解。"}, "first_divergence": "device-guard", "root_cause": "should_decompose_mm 只接受 cuda/xpu 或 cpu。", "recommended_action": "保持平台 guard；启用前先证明 NPU pointwise 分解的正确性与收益。"
+    },
+    {
+      "variant_id": "fp32-k-threshold-negative", "kind": "negative", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[20480,32],[32,2]], "strides": [[32,1],[2,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "K=32 阈值负例图已捕获。"}, "replacement": {"status": "not-observed", "evidence": "目标 replacement 未发生。"}, "decomposition": {"status": "not-observed", "evidence": "保持 mm。"}, "lowering": {"status": "observed", "evidence": "extern mm lowering。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "generated code 使用 extern_kernels.mm。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "forward 与两侧梯度误差均为 0。"}, "performance": {"status": "not-applicable", "reason": "阈值负例。"}, "first_divergence": "none", "root_cause": "GPU/NPU 最终均保持 mm。", "recommended_action": "保留 K 阈值回归。"
+    },
+    {
+      "variant_id": "fp32-m-threshold-negative", "kind": "negative", "evidence_mode": "runtime", "support_status": "fixed-by-lowering-guard",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[2048,2],[2,2]], "strides": [[2,1],[2,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "目标 pass 未命中；原失败来自后续 small-mm lowering。"},
+      "fx": {"status": "observed", "evidence": "FX transformed 仍为 aten.mm.default。"}, "replacement": {"status": "not-observed", "evidence": "目标 decompose_mm replacement 未发生。"}, "decomposition": {"status": "not-observed", "evidence": "目标 pass 保持 mm。"}, "lowering": {"status": "repaired", "evidence": "原路径把反向 mm_2 展开为 pointwise；dfbcc25 对 NPU 返回 false，恢复 extern mm。"}, "scheduler": {"status": "observed", "evidence": "修复前后均可调度。"}, "codegen": {"status": "repaired", "evidence": "修复后不再生成错误的 triton_unk_fused_mm_0/1。"},
+      "runtime_path": "extern", "correctness": {"status": "passed", "assertion": "原路径左梯度 max_abs=29.0263、4085/4096 不一致；修复后 forward/left/right error 均为 0。"}, "performance": {"status": "not-applicable", "reason": "correctness 修复优先；extern 路径暂未做性能宣称。"}, "first_divergence": "lowering", "root_cause": "upstream _use_small_mm_pointwise 的 CUDA-oriented heuristic 未排除 NPU，而 NPU experimental codegen 对该 AOTAutograd backward IR 生成错误结果。", "recommended_action": "合入 dfbcc25，并长期保留同一 M=2048,K=N=2 梯度回归。"
+    },
+    {
+      "variant_id": "mixed-large-m-small-kn-positive", "kind": "regression", "evidence_mode": "runtime", "support_status": "platform-guarded",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32-with-bfloat16-autocast", "dynamic": false, "cases": [{"shapes": [[20480,5],[5,2]], "strides": [[5,1],[2,1]]}]},
+      "reference_match_expectation": true, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "autocast mm 图已捕获。"}, "replacement": {"status": "not-observed", "evidence": "device guard 拒绝目标 replacement。"}, "decomposition": {"status": "not-observed", "evidence": "保持 mm。"}, "lowering": {"status": "observed", "evidence": "dtype cast 为 Triton pointwise，矩阵乘为 extern mm。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "mixed Triton casts + extern mm。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "forward 与两侧梯度误差均为 0。"}, "performance": {"status": "not-applicable", "reason": "目标分解未启用。"}, "first_divergence": "device-guard", "root_cause": "should_decompose_mm 不接受 npu。", "recommended_action": "保持 mixed precision 回归。"
+    },
+    {
+      "variant_id": "mixed-k-threshold-negative", "kind": "regression", "evidence_mode": "runtime", "support_status": "supported",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32-with-bfloat16-autocast", "dynamic": false, "cases": [{"shapes": [[20480,32],[32,2]], "strides": [[32,1],[2,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "mixed K=32 图已捕获。"}, "replacement": {"status": "not-observed", "evidence": "目标 replacement 未发生。"}, "decomposition": {"status": "not-observed", "evidence": "保持 mm。"}, "lowering": {"status": "observed", "evidence": "casts + extern mm。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "mixed runtime path。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "forward 与两侧梯度误差均为 0。"}, "performance": {"status": "not-applicable", "reason": "阈值回归。"}, "first_divergence": "none", "root_cause": "GPU/NPU 最终均保持 mm。", "recommended_action": "保留 mixed K 阈值回归。"
+    },
+    {
+      "variant_id": "mixed-m-threshold-negative", "kind": "regression", "evidence_mode": "runtime", "support_status": "protected-by-lowering-guard",
+      "input_contract": {"direction": "forward-and-backward", "dtype": "float32-with-bfloat16-autocast", "dynamic": false, "cases": [{"shapes": [[2048,2],[2,2]], "strides": [[2,1],[2,1]]}]},
+      "reference_match_expectation": false, "npu_match_expectation": false, "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern"},
+      "fx": {"status": "observed", "evidence": "mixed M=2048 图已捕获。"}, "replacement": {"status": "not-observed", "evidence": "目标 replacement 未发生。"}, "decomposition": {"status": "not-observed", "evidence": "保持 mm。"}, "lowering": {"status": "repaired", "evidence": "dfbcc25 同时保护 autocast 后的 tiny mm，矩阵乘使用 extern。"}, "scheduler": {"status": "observed", "evidence": "调度成功。"}, "codegen": {"status": "observed", "evidence": "casts 为 Triton，mm 为 extern。"},
+      "runtime_path": "mixed", "correctness": {"status": "passed", "assertion": "forward 与两侧梯度误差均为 0。"}, "performance": {"status": "not-applicable", "reason": "correctness guard。"}, "first_divergence": "lowering", "root_cause": "与 fp32 tiny-mm 共用不安全 small-mm heuristic；修复候选统一排除 NPU。", "recommended_action": "随 dfbcc25 纳入回归。"
+    }
+  ],
+  "artifacts": [
+    {"role": "npu-adapter", "path": "issues/REF-decompose-mm-native/npu_adapter.py", "sha256": "7bd480e773492133d30c5c7dbd69cd98210b28118bc7cb47443e4c6c1916c0ec", "availability": "repository"},
+    {"role": "backend-fix-patch", "path": "issues/REF-decompose-mm-native/backend_fix_dfbcc25.patch", "sha256": "c2250a7e07802c4e22dc1d2926ec09278a6ed71b21927123c996161d1f7a5305", "availability": "repository"},
+    {"role": "original-failure-diagnostic", "path": "/home/z50063656/tmp/t077-npu-results/decompose-mm-isolate0/fp32-m-threshold-negative-diagnostic.json", "sha256": "d3cb85205178c4f0e208cd0c00d89269e393d107de90e9c696d7098df7ca2be1", "availability": "control-node"},
+    {"role": "fixed-suite-result", "path": "/home/z50063656/tmp/t077-npu-results/decompose-mm-fixed-suite0/adapter_result.json", "sha256": "0805c62ea79bdf7934fb678d0677788830a968a3a0e968b92b26db3e52c32724", "availability": "control-node"}
+  ],
+  "repair": {"status": "verified", "layer": "lowering-guard", "candidate_commit": "dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6", "worktree": "/home/z50063656/Pass/worktrees/torch_npu_t077_small_mm_guard", "unit_tests": "2/2 passed", "tracked_variants": "6/6 passed"}
+}

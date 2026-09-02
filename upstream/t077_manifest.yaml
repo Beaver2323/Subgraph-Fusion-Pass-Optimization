@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-02T04:35:00+08:00",
-  "status": "t077-second-wave-human-reviewed-awaiting-gpu-reference",
+  "generated_at": "2026-09-02T22:54:00+08:00",
+  "status": "t077-complete-with-verified-repair",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -22,27 +22,33 @@
   },
   "reference_contract": {
     "device_class": "GPU",
-    "device_identity": "8x-NVIDIA-A100-SXM4-80GB-sm80",
+    "device_identity": "NVIDIA-A100-SXM4-80GB-sm80-one-visible-of-eight",
     "backend": "inductor-default",
     "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
-    "runtime_fingerprint": "pending-t077-gpu-execution"
+    "runtime_fingerprint": "744891fb4f6678126e652b20d7e1e0635d568c7c2dafc2b749474a5902e941ef",
+    "run_id": "reference-20260902T125636+0800",
+    "payload_sha256": "97a1ef8315c9d1332dcee4542c928aedc600ebc984b2ac3e4e5ab27e0079b518",
+    "suite_status": "valid-reference-suite",
+    "case_count": 11,
+    "valid_case_count": 11,
+    "variant_count": 17
   },
   "counting_policy": {
     "primary_fact_source": "PyTorch community test plus GPU/reference baseline",
     "inventory_role": "registration candidate only for discovery and coverage",
     "tracking_key": "human-reviewed upstream optimization contract acceptance unit",
-    "denominator_rule": "T077 units remain pending-reference until the complete direct GPU suite is valid",
+    "denominator_rule": "T077 complete direct GPU suite is valid; all five reviewed units are frozen",
     "current_manifest_units": 5,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0
+    "current_frozen_denominator_units": 5,
+    "current_formally_closed_units": 5
   },
   "acceptance_units": [
     {
       "acceptance_unit_id": "AU-apply-gumbel-max-trick",
       "contract_name": "softmax-div-exponential-argmax 到 Gumbel-max 等价采样的 pre-grad 重写合同",
       "stage": "pre_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen-reference-valid",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/apply_gumbel_max_trick.py",
@@ -71,8 +77,8 @@
           "expected_reference_match": true,
           "expected_behavior": "等价 Gumbel-max 重写命中，采样频率与 logits 对应分类概率一致",
           "expected_counter": "inductor.apply_gumbel_max_trick=1",
-          "reference_status": "awaiting-direct-gpu",
-          "npu_status": "not-started"
+          "reference_status": "valid-reference",
+          "npu_status": "behavior-unchanged"
         }
       ],
       "tracking": {
@@ -82,15 +88,15 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["缩小 M 或放宽统计容差", "改变采样图", "预先假设 NPU 命中"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后再执行 NPU"},
+      "npu_control": {"status": "completed", "result": "BEHAVIOR_UNCHANGED"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-b2b-gemm",
       "contract_name": "两级矩阵乘及中间 pointwise 子图的 B2B GEMM 选择合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen-reference-valid",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/b2b_gemm.py",
@@ -114,12 +120,12 @@
         {"nodeid": "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_good_pattern_bad_shape", "role": "primary-negative", "evidence_scope": "pattern 合适但 shape 不盈利，入口 marker 不出现"}
       ],
       "variants": [
-        {"variant_id": "left-gelu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "左结合 GELU B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "right-relu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "右结合 ReLU B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "trivial-left-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "左结合纯 mm B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "trivial-right-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "右结合纯 mm B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "bad-pattern-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "非唯一数据流不得进入左右 B2B Triton 入口", "expected_counter": "generated code has no B2B entrance marker", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "bad-shape-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "100x100 非盈利 shape 不得进入左右 B2B Triton 入口", "expected_counter": "generated code has no B2B entrance marker", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "left-gelu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "左结合 GELU B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"},
+        {"variant_id": "right-relu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "右结合 ReLU B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"},
+        {"variant_id": "trivial-left-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "左结合纯 mm B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"},
+        {"variant_id": "trivial-right-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "右结合纯 mm B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"},
+        {"variant_id": "bad-pattern-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "非唯一数据流不得进入左右 B2B Triton 入口", "expected_counter": "generated code has no B2B entrance marker", "reference_status": "valid-reference", "npu_status": "behavior-unchanged"},
+        {"variant_id": "bad-shape-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "100x100 非盈利 shape 不得进入左右 B2B Triton 入口", "expected_counter": "generated code has no B2B entrance marker", "reference_status": "valid-reference", "npu_status": "behavior-unchanged"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -128,15 +134,15 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 shape/dtype/结合方向", "删除正负例", "用 correctness 推断 target hit"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后再执行 NPU"},
+      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-bmm",
       "contract_name": "大 batch 小矩阵 BMM 的 memory-bound pointwise 分解合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen-reference-valid",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 61, "symbol": "should_decompose_bmm", "role": "device-and-shape-guard"},
         {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 228, "symbol": "decompose_bmm", "role": "registered-decomposition-handler"}
@@ -145,9 +151,9 @@
         {"nodeid": "test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_decompose_bmm", "role": "primary-positive", "evidence_scope": "CUDA 三组阈值参数，正例 forward/backward 总 counter=3，两个负例为 0；CPU 专用方法不进入本 GPU 单元"}
       ],
       "variants": [
-        {"variant_id": "large-batch-small-mnk-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "B=10240 且 M=K=N=2 时 forward/backward 分解并正确", "expected_counter": "decompose_bmm=3", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "other-dims-threshold-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "M=2,K=N=32 不满足至少两个维度小于阈值，保持 bmm", "expected_counter": "decompose_bmm=0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "batch-threshold-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "B=2000 小于阈值，保持 bmm", "expected_counter": "decompose_bmm=0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "large-batch-small-mnk-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "B=10240 且 M=K=N=2 时 forward/backward 分解并正确", "expected_counter": "decompose_bmm=3", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"},
+        {"variant_id": "other-dims-threshold-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "M=2,K=N=32 不满足至少两个维度小于阈值，保持 bmm", "expected_counter": "decompose_bmm=0", "reference_status": "valid-reference", "npu_status": "behavior-unchanged"},
+        {"variant_id": "batch-threshold-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "B=2000 小于阈值，保持 bmm", "expected_counter": "decompose_bmm=0", "reference_status": "valid-reference", "npu_status": "behavior-unchanged"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -156,15 +162,15 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["修改阈值", "删除 backward", "混入 CPU-only contract"]
       },
-      "npu_control": {"status": "not-started", "known_static_risk": "check_device 当前不识别 npu"},
+      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE", "clean_card_evidence": "NPU 0 preflight: No running processes found; 3/3 forward/backward passed", "known_static_risk": "check_device 当前不识别 npu"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-mm",
       "contract_name": "大 M 小 K/N 矩阵乘的 memory-bound pointwise 分解合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen-reference-valid",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 93, "symbol": "should_decompose_mm", "role": "device-shape-and-dynamic-guard"},
         {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 271, "symbol": "decompose_mm", "role": "registered-decomposition-handler"}
@@ -174,12 +180,12 @@
         {"nodeid": "test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_decompose_mm_mixed_precision", "role": "related-regression", "evidence_scope": "bf16 autocast 下同一阈值矩阵、forward/backward correctness 与 counter"}
       ],
       "variants": [
-        {"variant_id": "fp32-large-m-small-kn-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "fp32 M=20480,K=5,N=2 分解", "expected_counter": "decompose_mm forward/backward deltas each 1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "fp32-k-threshold-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "fp32 K=32 达到排除阈值，不分解", "expected_counter": "decompose_mm delta=0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "fp32-m-threshold-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "fp32 M=2048 小于阈值，不分解", "expected_counter": "decompose_mm delta=0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "mixed-large-m-small-kn-positive", "kind": "regression", "expected_reference_match": true, "expected_behavior": "bf16 autocast 下正例仍分解并保持梯度正确", "expected_counter": "decompose_mm forward/backward deltas each 1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "mixed-k-threshold-negative", "kind": "regression", "expected_reference_match": false, "expected_behavior": "bf16 autocast K=32 仍受负向阈值保护", "expected_counter": "decompose_mm delta=0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "mixed-m-threshold-negative", "kind": "regression", "expected_reference_match": false, "expected_behavior": "bf16 autocast M=2048 仍受负向阈值保护", "expected_counter": "decompose_mm delta=0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "fp32-large-m-small-kn-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "fp32 M=20480,K=5,N=2 分解", "expected_counter": "decompose_mm forward/backward deltas each 1", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"},
+        {"variant_id": "fp32-k-threshold-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "fp32 K=32 达到排除阈值，不分解", "expected_counter": "decompose_mm delta=0", "reference_status": "valid-reference", "npu_status": "behavior-unchanged"},
+        {"variant_id": "fp32-m-threshold-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "fp32 M=2048 小于阈值，不分解", "expected_counter": "decompose_mm delta=0", "reference_status": "valid-reference", "npu_status": "npu-regression-fixed"},
+        {"variant_id": "mixed-large-m-small-kn-positive", "kind": "regression", "expected_reference_match": true, "expected_behavior": "bf16 autocast 下正例仍分解并保持梯度正确", "expected_counter": "decompose_mm forward/backward deltas each 1", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"},
+        {"variant_id": "mixed-k-threshold-negative", "kind": "regression", "expected_reference_match": false, "expected_behavior": "bf16 autocast K=32 仍受负向阈值保护", "expected_counter": "decompose_mm delta=0", "reference_status": "valid-reference", "npu_status": "behavior-unchanged"},
+        {"variant_id": "mixed-m-threshold-negative", "kind": "regression", "expected_reference_match": false, "expected_behavior": "bf16 autocast M=2048 仍受负向阈值保护", "expected_counter": "decompose_mm delta=0", "reference_status": "valid-reference", "npu_status": "npu-regression-fixed"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -188,15 +194,15 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["修改阈值", "删除混合精度或 backward", "把 has_bias 参数误计为独立 contract"]
       },
-      "npu_control": {"status": "not-started", "known_static_risk": "check_device 当前不识别 npu"},
+      "npu_control": {"status": "completed", "result": "NPU_REGRESSION", "repair_status": "verified-not-merged", "candidate_commit": "dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6", "root_cause": "目标 pass 未命中后，upstream small-mm pointwise lowering 在 NPU 反向图生成错误左梯度", "known_static_risk": "check_device 当前不识别 npu"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-addmm",
       "contract_name": "动态大 M、小 K/N addmm 的 memory-bound pointwise 分解合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen-reference-valid",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 93, "symbol": "should_decompose_mm", "role": "shared-device-shape-and-dynamic-guard"},
         {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 247, "symbol": "decompose_addmm", "role": "registered-decomposition-handler"}
@@ -205,7 +211,7 @@
         {"nodeid": "test/inductor/test_decompose_mem_bound_mm.py::TestDecomposeMemMM.test_dynamic_shape_decompose_addmm", "role": "primary-positive", "evidence_scope": "M=19494144,K=N=8、dynamic=True、skip_dynamic_shape_dim_check、counter=1 与 correctness"}
       ],
       "variants": [
-        {"variant_id": "dynamic-large-m-small-kn-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "动态大 M addmm 分解并与 eager 一致", "expected_counter": "decompose_addmm=1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "dynamic-large-m-small-kn-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "动态大 M addmm 分解并与 eager 一致", "expected_counter": "decompose_addmm=1", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -214,7 +220,7 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["缩小 19494144 的 M", "关闭 dynamic", "修改 skip_dynamic_shape_dim_check"]
       },
-      "npu_control": {"status": "not-started", "known_static_risk": "check_device 当前不识别 npu"},
+      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE", "clean_card_evidence": "保留 M=19494144、K=N=8、dynamic=True；counter=0 且 correctness passed", "known_static_risk": "check_device 当前不识别 npu"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     }
   ]

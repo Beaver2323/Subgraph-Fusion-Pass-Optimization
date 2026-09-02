@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-02T22:56:00+08:00",
+  "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-addmm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {"run_id": "reference-20260902T125636+0800", "suite_status": "valid-reference-suite", "suite_valid": true, "environment_fingerprint": "744891fb4f6678126e652b20d7e1e0635d568c7c2dafc2b749474a5902e941ef", "payload_sha256": "97a1ef8315c9d1332dcee4542c928aedc600ebc984b2ac3e4e5ab27e0079b518", "cases": [{"case_id": "REF-decompose-addmm-dynamic-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "e8e1f96379e07b23f675ff61f13f28e64685a982ef5ddea78794cc80a5e99100", "artifact_inventory_sha256": "e2c2101f640e64cd68f849a139714a27425d7f3955c0af8d2003534a25c39782"}]},
+  "npu": {"result_path": "results/current/AU-decompose-mem-bound-mm-decompose-addmm/npu_result.json", "result_sha256": "28de0d85bac18eb90b9a9aba942ff8cf6efc35dc81ab2ad55364b9374cf2100a", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": true, "correctness_status": "passed"},
+  "variant_comparisons": [
+    {
+      "variant_id": "dynamic-large-m-small-kn-positive", "intent": "对超大动态 M、小 K/N 的 addmm 先把矩阵乘展开为 broadcast multiply+sum，再加 bias，以验证 dynamic shape 下的 memory-bound 优化。", "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 93, "symbol": "should_decompose_mm"}, {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 247, "symbol": "decompose_addmm"}],
+      "gpu_behavior": "A100 在 M=19494144、K=N=8、dynamic=True 且 skip_dynamic_shape_dim_check=True 时命中 1 次并正确。", "npu_behavior": "Ascend910B2 在同一原始尺寸和 dynamic 配置下由 device guard 保持 addmm，counter=0；extern_kernels.addmm 数值正确。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "device-guard", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "没有缩小 M，也没有关闭 dynamic。"
+    }
+  ],
+  "first_divergence": "device-guard",
+  "root_cause": "decompose_addmm 共享的 should_decompose_mm dynamic 分支只识别 cuda/xpu 或 cpu，NPU 在 replacement 前返回 false。",
+  "recommended_action": "冻结 EXPECTED_PRODUCT_DIVERGENCE；若未来启用 NPU，须用原始超大 M 做 correctness 和收益评审。",
+  "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+  "repair_status": "not-needed"
+}

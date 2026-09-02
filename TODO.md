@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
-> 状态：T-076 已正式闭环 5/5；T-077 已准备并等待 GPU 执行。
+> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
+> 状态：T-076 与 T-077 均正式闭环 5/5；T-077 MM lowering 修复已验证、尚未推送/合入；GPU 指定任务一键入口已完成。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -149,7 +149,13 @@ T-077 GPU 准备：
 - [x] 建立 11 个 direct cases、17 个 variants 的独立 manifest/reference plan；
 - [x] 精确展开 decompose bmm/mm 参数化生成名称并排除 CPU-only 方法；
 - [x] 提供 `run_t077_reference_all.sh`、GPU 中文说明和文本回传路径；
-- [ ] 在 GPU 执行完整 T-077 suite，11/11 valid 后才冻结第二波 denominator。
+- [x] 在 GPU 执行完整 T-077 suite，11/11 valid 后冻结第二波 denominator；
+- [x] 完成 Gumbel、B2B GEMM 的 NPU/comparison 与 pattern 导读；
+- [x] 在空闲 NPU 上清洁重跑 decompose-BMM，并完成 decompose-MM 六个合同和 dynamic addmm 原始大 M 合同；
+- [x] 定位 decompose-MM 阈值负例的 small-mm pointwise 反向 lowering 回归；
+- [x] 在独立 torch_npu worktree 实现 NPU-only 幂等 guard，定向单测 2/2、完整 MM 合同 6/6 通过；
+- [x] 提供 GPU pull 后按 `T-076`/`T-077` 一键运行、自动识别 timestamp、自动文本导出与 `latest` 入口；
+- [ ] 评审并决定是否推送/合入本地候选 `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`。
 
 ## P0-G：首批跟踪闭环
 
@@ -164,10 +170,10 @@ T-077 GPU 准备：
 
 - [x] 建立 `regressions/known_issues.yaml` 和 `fixed_issues.yaml`；
 - [x] 记录原 failure artifacts、root cause 和修复层；fixed commit 在修复后补录；
-- [ ] 按最早分歧层选择 config/graph/pattern/decomposition/lowering/scheduler/codegen/runtime 修复；
-- [ ] 禁止用 FX workaround 掩盖纯 scheduler/codegen 问题；
+- [x] 按最早分歧层选择 config/graph/pattern/decomposition/lowering/scheduler/codegen/runtime 修复；T-077 MM 已在 lowering guard 修复；
+- [x] 禁止用 FX workaround 掩盖纯 scheduler/codegen 问题；T-077 保留原 FX/contract，仅修复 lowering 选择；
 - [ ] 区分 `SUPPORTED_NATIVE`、`SUPPORTED_FALLBACK` 和 `UNSUPPORTED`；
-- [ ] 修复后使用同一 tracked community contract 回归；
+- [x] 修复后使用同一 tracked community contract 回归；T-077 MM 六变体 6/6 通过；
 - [ ] 保存历史 compatibility 到 `results/history/`；
 - [ ] PyTorch/torch_npu 升级后自动检查 fixed issue 是否重新失败。
 

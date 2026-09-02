@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-02T22:55:00+08:00",
+  "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-mm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260902T125636+0800", "suite_status": "valid-reference-suite", "suite_valid": true,
+    "environment_fingerprint": "744891fb4f6678126e652b20d7e1e0635d568c7c2dafc2b749474a5902e941ef", "payload_sha256": "97a1ef8315c9d1332dcee4542c928aedc600ebc984b2ac3e4e5ab27e0079b518",
+    "cases": [
+      {"case_id": "REF-decompose-mm-fp32-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "140d6d193c62046d5f24692a8f2900981c03c466665c7918d0fc21ad6b5c2893", "artifact_inventory_sha256": "261fa06f1bec40a4048ef92e19b203fa2054fb6dbeaed87afb4ae39935eb14b2"},
+      {"case_id": "REF-decompose-mm-mixed-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "618c10f8469a5fdd68829ab6f1fb13c3c9effd58f3252b8246fe6753d31d707b", "artifact_inventory_sha256": "724d49785398d3de87df862cea500b805806a2a0c84e1705feab9c8e900b67b7"}
+    ]
+  },
+  "npu": {"result_path": "results/current/AU-decompose-mem-bound-mm-decompose-mm/npu_result.json", "result_sha256": "a7cdd26c7394c1ac4341f511dba068506d4d98d8bd95a4405faa72337bb01d4c", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": true, "correctness_status": "passed"},
+  "variant_comparisons": [
+    {
+      "variant_id": "fp32-large-m-small-kn-positive", "intent": "在 M 很大而 K/N 很小时，把 memory-bound mm 展开为 broadcast multiply+sum。", "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 93, "symbol": "should_decompose_mm"}, {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 271, "symbol": "decompose_mm"}],
+      "gpu_behavior": "A100 对 20480x5 @ 5x2 的 forward/backward 命中分解并正确。", "npu_behavior": "NPU device guard 不接受 npu，counter 0/0，保留 extern mm；修复候选下前向和梯度误差均为 0。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "device-guard", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "目标分解的平台分歧明确。"
+    },
+    {
+      "variant_id": "fp32-k-threshold-negative", "intent": "K=32 达到排除阈值时保持 mm，避免不盈利的 pointwise 分解。", "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 93, "symbol": "should_decompose_mm"}],
+      "gpu_behavior": "A100 不命中目标分解并保持 mm。", "npu_behavior": "NPU 同样保持 extern mm，前向和两侧梯度误差均为 0。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "negative-threshold", "verdict": "BEHAVIOR_UNCHANGED", "note": "最终负向合同一致。"
+    },
+    {
+      "variant_id": "fp32-m-threshold-negative", "intent": "M=2048 小于目标 pass 的大 M 阈值时保持 mm，并验证该保留路径的 forward/backward 正确性。", "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 93, "symbol": "should_decompose_mm"}],
+      "gpu_behavior": "A100 不命中目标 pass；forward/backward 全部正确。", "npu_behavior": "目标 pass 同样不命中，但安装态在后续 small-mm pointwise lowering 中产生错误左梯度；dfbcc25 禁止 NPU 进入该 CUDA-oriented heuristic 后 6/6 合同通过。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "extern", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "original-failure-plus-fixed-rerun", "verdict": "NPU_REGRESSION", "note": "原始左梯度 max_abs=29.0263、4085/4096 不一致；修复后误差为 0。"
+    },
+    {
+      "variant_id": "mixed-large-m-small-kn-positive", "intent": "验证 bf16 autocast 不改变大 M、小 K/N 正例的目标分解合同和梯度语义。", "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 93, "symbol": "should_decompose_mm"}, {"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 271, "symbol": "decompose_mm"}],
+      "gpu_behavior": "A100 在 bf16 autocast 下命中分解且梯度正确。", "npu_behavior": "NPU guard 拒绝目标分解；casts 走 Triton、mm 走 extern，修复候选下数值和梯度误差均为 0。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "device-guard", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "目标 pass 不命中，但 fallback product path 正确。"
+    },
+    {
+      "variant_id": "mixed-k-threshold-negative", "intent": "bf16 autocast 下 K=32 仍须受阈值保护，不得分解。", "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 93, "symbol": "should_decompose_mm"}],
+      "gpu_behavior": "A100 不命中分解并保持 mixed mm。", "npu_behavior": "NPU 不命中；casts+extern mm 的 mixed 路径前向和梯度正确。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "negative-threshold", "verdict": "BEHAVIOR_UNCHANGED", "note": "mixed K 阈值合同一致。"
+    },
+    {
+      "variant_id": "mixed-m-threshold-negative", "intent": "bf16 autocast 下 M=2048 仍保持 mm，并覆盖 tiny-mm lowering 的混合精度回归边界。", "source_locations": [{"path": "torch/_inductor/fx_passes/decompose_mem_bound_mm.py", "line": 93, "symbol": "should_decompose_mm"}],
+      "gpu_behavior": "A100 不命中目标分解且 forward/backward 正确。", "npu_behavior": "dfbcc25 同时保护 mixed tiny-mm 路径；casts+extern mm 的前向和两侧梯度误差均为 0。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "fixed-regression-coverage", "verdict": "NPU_REGRESSION", "note": "与 fp32 共享修复 guard，作为后续防回归合同。"
+    }
+  ],
+  "first_divergence": "lowering",
+  "root_cause": "目标 decompose_mm 未在 NPU 命中；其负例继续进入 upstream _use_small_mm_pointwise，CUDA-oriented small-K/N heuristic 在 NPU AOTAutograd backward 上生成错误 pointwise kernel。",
+  "recommended_action": "合入本地 torch_npu 修复 dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6，并把六变体 adapter 作为 fixed regression 持续运行。",
+  "final_verdict": "NPU_REGRESSION",
+  "repair_status": "verified"
+}
