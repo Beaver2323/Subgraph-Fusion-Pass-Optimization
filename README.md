@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-02 05:38 CST（UTC+08:00）
+> 文档更新时间：2026-09-02 17:42 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -34,8 +34,9 @@
   有效，正式 verdict 为 `EXPECTED_PRODUCT_DIVERGENCE`。
 - `AU-pad-mm-bmm` 和 `AU-pad-mm-addmm` 已在不绕过产品 gate 的前提下闭环，verdict 均为
   `EXPECTED_PRODUCT_DIVERGENCE`。
-- `AU-post-grad-addmm` 的负向 guard 正确，但 matrix/vector bias 正例 target counter 从 GPU `2/4`
-  变为 NPU `0/0`，verdict 为 `NPU_REGRESSION`，已进入 repair queue。
+- `AU-post-grad-addmm` 已完成运行态纠偏：当前 Pass 安装态明确
+  `disable_addmm_fusion=True`，因此 GPU `2/4` 与安装态 NPU `0/0` 是
+  `EXPECTED_PRODUCT_DIVERGENCE`；P-018 独立候选已恢复正例 `2/4` 并保留全部负例 `0/0`。
 - T-077 第二波 5 个待 reference 单元已完成人工映射：11 个 direct cases、17 个 variants，
   零设备校验通过，等待 GPU 执行；它们尚未进入冻结 denominator。
 
@@ -84,6 +85,7 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/GUIDE.md](docs/GUIDE.md) | 机制说明与历史案例阅读指南 |
 | [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | T-076 GPU 静态校验、整批执行、重跑、二进制/文本回传说明 |
 | [docs/T077_REFERENCE_RUNNER_GPU.md](docs/T077_REFERENCE_RUNNER_GPU.md) | T-077 第二波 GPU 执行与文本回传说明 |
+| [report/t076_pattern_gpu_npu_guide_20260902.md](report/t076_pattern_gpu_npu_guide_20260902.md) | T-076 20 个 variants 的源码意图、GPU/NPU 行为与 P-018 候选导读 |
 | [docs/CHANGE_CONTROL.md](docs/CHANGE_CONTROL.md) | 环境、产品代码、文档和交付变更记录 |
 | [docs/HISTORY.md](docs/HISTORY.md) | 已完成成果、失败与中性尝试索引 |
 | [docs/requirements/20260831_requirement_change.md](docs/requirements/20260831_requirement_change.md) | 8 月 31 日需求合同与决策 |

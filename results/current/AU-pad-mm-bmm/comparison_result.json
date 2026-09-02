@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.1",
-  "generated_at": "2026-09-02T05:25:00+08:00",
+  "schema_version": "1.2",
+  "generated_at": "2026-09-02T17:40:00+08:00",
   "acceptance_unit_id": "AU-pad-mm-bmm",
   "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
   "reference": {
@@ -14,10 +14,38 @@
   },
   "npu": {"result_path": "results/current/AU-pad-mm-bmm/npu_result.json", "result_sha256": "0998e5bc430523f57c976916dc3afdf34c2736ae78a2ab4360e9605297d110c6", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": true, "correctness_status": "passed"},
   "variant_comparisons": [
-    {"variant_id": "dynamic-batch-positive", "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "unclassified", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "GPU 命中 padded-K；NPU 产品 gate 关闭，动态 batch 原图 correctness 通过。"},
-    {"variant_id": "training-inference-registration", "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "not-executed", "correctness_status": "not-run", "performance_status": "not-applicable", "comparison_basis": "static-evidence", "verdict": "BEHAVIOR_UNCHANGED", "note": "training/inference registration 是静态结构证据。"},
-    {"variant_id": "dtype-gradient-related-regression", "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "related-regression", "verdict": "BEHAVIOR_UNCHANGED", "note": "完整 MaskedMHA autocast forward/backward 通过，pre/post bmm dtype 一致，两路梯度无 NaN。"},
-    {"variant_id": "disabled-baseline-negative", "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "NPU 保持 disable_pad_mm=true，dynamic/static marker 均不出现。"}
+    {
+      "variant_id": "dynamic-batch-positive",
+      "intent": "保持 batch 为动态维，同时补齐 bmm 的 M/K/N 对齐维度并在计算后 slice 回原形状。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 889, "symbol": "should_pad_bmm"}, {"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 925, "symbol": "bmm_replace"}],
+      "gpu_behavior": "A100 reference 命中 padded-K，动态 batch 正确回放且结果与 eager 一致。",
+      "npu_behavior": "NPU 产品 gate 关闭 pad-bmm，保留原始 bmm；动态 batch 数值正确。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "unclassified", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "GPU 命中 padded-K；NPU 产品 gate 关闭，动态 batch 原图 correctness 通过。"
+    },
+    {
+      "variant_id": "training-inference-registration",
+      "intent": "让 bmm padding 在 joint forward/backward 与 inference 两条图管线共享同一语义合同。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 999, "symbol": "gen_register_replacement"}],
+      "gpu_behavior": "GPU 侧按源码确认 training/inference 双 registration；不单独构造重复动态 case。",
+      "npu_behavior": "NPU 侧保留相同静态注册证据，产品 gate 对两条 registration 统一生效。",
+      "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "not-executed", "correctness_status": "not-run", "performance_status": "not-applicable", "comparison_basis": "static-evidence", "verdict": "BEHAVIOR_UNCHANGED", "note": "training/inference registration 是静态结构证据。"
+    },
+    {
+      "variant_id": "dtype-gradient-related-regression",
+      "intent": "防止 joint-graph 的 bmm padding 或相邻变换引入错误 autocast，进而污染 backward dtype 或产生 NaN 梯度。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 889, "symbol": "should_pad_bmm"}, {"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 999, "symbol": "gen_register_replacement"}],
+      "gpu_behavior": "A100 reference 的 autocast regression 测例通过；它是关联回归，不单独证明目标 bmm padding 命中。",
+      "npu_behavior": "NPU 完整 MaskedMHA autocast forward/backward 通过，pre/post bmm dtype 一致且梯度无 NaN。",
+      "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "related-regression", "verdict": "BEHAVIOR_UNCHANGED", "note": "完整 MaskedMHA autocast forward/backward 通过，pre/post bmm dtype 一致，两路梯度无 NaN。"
+    },
+    {
+      "variant_id": "disabled-baseline-negative",
+      "intent": "验证 NPU 基线统一关闭 mm/bmm/addmm padding，避免用未启用的优化衡量产品支持度。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 889, "symbol": "should_pad_bmm"}],
+      "gpu_behavior": "GPU 不适用 NPU 专属关闭 gate，reference 展示启用态 bmm padding 合同。",
+      "npu_behavior": "disable_pad_mm=true，dynamic/static bmm 都不出现 padding marker，原始路径正确。",
+      "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "NPU 保持 disable_pad_mm=true，dynamic/static marker 均不出现。"
+    }
   ],
   "first_divergence": "config",
   "root_cause": "GPU reference 验证上游 pad-bmm 合同；NPU triton_experimental 显式关闭 shape padding，目标未命中属于预期产品分歧，相关 autocast 梯度回归通过。",

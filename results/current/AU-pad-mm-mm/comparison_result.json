@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.1",
-  "generated_at": "2026-09-02T04:08:00+08:00",
+  "schema_version": "1.2",
+  "generated_at": "2026-09-02T17:40:00+08:00",
   "acceptance_unit_id": "AU-pad-mm-mm",
   "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
   "reference": {
@@ -27,6 +27,13 @@
   "variant_comparisons": [
     {
       "variant_id": "dynamic-m-positive",
+      "intent": "在 M 为动态维时只补齐可判定的未对齐矩阵维度，执行 mm 后再 slice 回用户可见形状。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 816, "symbol": "should_pad_mm"},
+        {"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 872, "symbol": "mm_replace"}
+      ],
+      "gpu_behavior": "A100 reference 生成 padded-K 代码，动态 M 保持，输出与 eager 一致。",
+      "npu_behavior": "Ascend 产品基线显式关闭 pad family，因此不改写；原始 mm 在动态 M 下数值正确。",
       "reference_contract_stable": true,
       "reference_target_match": true,
       "npu_target_match": false,
@@ -40,6 +47,12 @@
     },
     {
       "variant_id": "training-inference-registration",
+      "intent": "为同一个 pad-mm 合同分别生成 training 和 inference registration，而不是把两者重复计为两个 pattern。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 999, "symbol": "gen_register_replacement"}
+      ],
+      "gpu_behavior": "该分支是注册结构证据；GPU 动态结果由同一 mm contract 的直接测例承载。",
+      "npu_behavior": "NPU 同样只记录双 registration 静态证据，不伪造独立运行 case。",
       "reference_contract_stable": true,
       "reference_target_match": null,
       "npu_target_match": null,
@@ -53,6 +66,12 @@
     },
     {
       "variant_id": "stride-preservation",
+      "intent": "确保 padding 后的 slice 不改变用户可观察的输出 stride 合同。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 872, "symbol": "mm_replace"}
+      ],
+      "gpu_behavior": "A100 执行 padding/slice 后，输出 stride 与 eager 一致。",
+      "npu_behavior": "NPU 未执行 padding replacement，但原图输出数值和 stride (2,1) 均与 eager 一致。",
       "reference_contract_stable": true,
       "reference_target_match": true,
       "npu_target_match": false,
@@ -66,6 +85,12 @@
     },
     {
       "variant_id": "disabled-baseline-negative",
+      "intent": "确认 NPU triton_experimental 的产品控制确实关闭整个 shape-padding family，防止把预期未命中误报成能力回归。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 816, "symbol": "should_pad_mm"}
+      ],
+      "gpu_behavior": "GPU 不适用该 NPU 专属 gate；reference 只提供 pad-mm 启用态的预期行为。",
+      "npu_behavior": "disable_pad_mm=true 使 shape_padding=false；四个 case 均无目标 marker/template/cache，原图正确。",
       "reference_contract_stable": true,
       "reference_target_match": null,
       "npu_target_match": false,

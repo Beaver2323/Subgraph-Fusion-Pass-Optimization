@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-02T17:42:00+08:00",
+  "acceptance_unit_id": "AU-post-grad-addmm",
+  "proposal_id": "P-018",
+  "status": "verified-candidate-enable-default-with-live-opt-out",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+  "wheel": {
+    "path": "/home/z50063656/Pass/worktrees/torch_npu_p018_addmm_gate/dist/torch_npu-2.14.0a0+git83cc452-cp311-cp311-linux_aarch64.whl",
+    "sha256": "cd301382d60afed1163d50384f2fc5e37325898bb75977124eda5f103d9f3452",
+    "installed_venv": "/home/z50063656/Pass/venvs/p018-installed"
+  },
+  "product_files": [
+    {
+      "path": "torch_npu/_inductor/triton_experimental/config.py",
+      "installed_sha256": "1e9e62ec64711a4b6a89a9b5ad5540f3a498dedf2f8dc245ea7ec12659c06b33",
+      "effect": "disable_addmm_fusion=False，默认允许上游 addmm validity check 决定是否融合。"
+    },
+    {
+      "path": "torch_npu/_inductor/triton_experimental/fx_passes.py",
+      "installed_sha256": "b3c150b4a506a725b9c0ab68d683e7b1596d15c74e68131e854d9eed679a0d5b",
+      "effect": "始终幂等安装 live gate；显式 True 关闭，恢复 False 后继续委托原上游 extra_check。"
+    }
+  ],
+  "contract_results": {
+    "exact_upstream_addmm": {
+      "successful": true,
+      "logical_cases": 5,
+      "counter_observations": [
+        {"case": "matrix-bias/add+mm", "actual_count": 2, "actual_nodes": 4, "expected_count": 2, "expected_nodes": 4},
+        {"case": "vector-bias/add+mm", "actual_count": 2, "actual_nodes": 4, "expected_count": 2, "expected_nodes": 4},
+        {"case": "non-expandable-bias", "actual_count": 0, "actual_nodes": 0, "expected_count": 0, "expected_nodes": 0},
+        {"case": "batched-bias", "actual_count": 0, "actual_nodes": 0, "expected_count": 0, "expected_nodes": 0},
+        {"case": "python-scalar", "actual_count": 0, "actual_nodes": 0, "expected_count": 0, "expected_nodes": 0}
+      ],
+      "generated_code": "matrix/vector 正例各生成两个 extern_kernels.addmm；负例保留 extern mm 加 NPU Triton pointwise add。",
+      "adapter_result_sha256": "4b4b83802de4972339de7f8acc7a0db860937f05d70b6b506547e56a0afadd99",
+      "run_log_sha256": "9b60a1efe9333a5f84cb839b388d9aa49d69ac023fbb5fcabd4ca2653a559d9f"
+    },
+    "exact_upstream_symbolic_scalar": {
+      "successful": true,
+      "dynamic": true,
+      "target_count": 0,
+      "generated_code": "保留两路 extern mm 加 dynamic NPU Triton add，没有 aten.addmm replacement。",
+      "adapter_result_sha256": "5fe799629f7d274511fb1ecc3c160372d15f434e4bf397e1728dd2a0332f4d89",
+      "run_log_sha256": "033560d956d285ecf537eaa697429de2174ea11291068ae00c3ddf8ec739ce57"
+    }
+  },
+  "environment_limit": "未修改产品源码的 T-022 audit-only launcher wrapper 只解决 editable PyTorch headers、C++20 与 CANN 声明的宿主编译合同；它不改变 FX pattern、extra_check、lowering 或 NPU 数值路径。",
+  "external_artifact_root": "/home/z50063656/tmp/t076-p018-recheck",
+  "conclusion": "P-018 已在 T-076 冻结 PyTorch commit 上恢复 GPU 正向合同并保留全部负向 guard；不需要新增 addmm lowering 或手写 Triton kernel。"
+}

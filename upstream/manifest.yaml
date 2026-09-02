@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-02T05:30:00+08:00",
+  "generated_at": "2026-09-02T17:42:00+08:00",
   "status": "t076-complete-five-of-five-formally-compared-t077-gpu-ready",
   "source_baselines": {
     "pytorch": {
@@ -130,7 +130,7 @@
         "repair_status": "not-needed",
         "result_sha256": "c5b75ec79fef3a72b0961698bf469a1d3982e2bc44e27e9e1b8dda2b028c7cd6",
         "npu_record_sha256": "c4ef27ff67a4f174611f70935b09c87680fb0fb066e0ca0ea6418cdf07117e84",
-        "comparison_sha256": "d189d6fb0220435f7473c2db737c297eb480930d6bbe4b893784d1172f55c7ff",
+        "comparison_sha256": "6faed729b8fbbd038b35f0017436f6c8d46a96a9c2bd4626a5d9013fb6430615",
         "caveat": "GPU 负例的 suite-global 1/2 来自非目标 add-mm pattern；正式 comparison 依目标 FX/codegen 未出现判定负向 gate，不把非目标 counter 差异误判为 NPU regression。"
       },
       "historical_evidence": [
@@ -561,7 +561,7 @@
           "expected_behavior": "add+mm 和 mm+add 两个图均替换为 aten.addmm",
           "expected_counter": "two outputs total pattern_matcher_count=2,nodes=4",
           "reference_status": "valid-reference",
-          "npu_status": "formally-compared-npu-regression-target-counter-zero"
+          "npu_status": "expected-disabled-installed-baseline-p018-candidate-verified"
         },
         {
           "variant_id": "vector-bias-both-orders-positive",
@@ -570,7 +570,7 @@
           "expected_behavior": "可广播 vector bias 的两种 operand order 均融合",
           "expected_counter": "two outputs total pattern_matcher_count=2,nodes=4",
           "reference_status": "valid-reference",
-          "npu_status": "formally-compared-npu-regression-target-counter-zero"
+          "npu_status": "expected-disabled-installed-baseline-p018-candidate-verified"
         },
         {
           "variant_id": "non-expandable-or-batched-bias-negative",
@@ -609,13 +609,17 @@
       "npu_control": {
         "commit_baseline": "disabled-by-disable_addmm_fusion-true",
         "current_working_tree_overlay": "enabled-by-default-with-live-opt-out",
-        "installed_result": "revalidated-current-Pass-disable_addmm_fusion-false",
-        "current_result": "formally-closed-NPU_REGRESSION-positive-target-not-matched",
-        "adapter_result": "2 tests run; all numerical checks pass; matrix/vector target counters 0/0 instead of 2/4",
+        "installed_result": "revalidated-current-Pass-disable_addmm_fusion-true",
+        "current_result": "formally-closed-EXPECTED_PRODUCT_DIVERGENCE-explicit-installed-gate",
+        "adapter_result": "2 tests run; all numerical checks pass; installed gate makes matrix/vector target counters 0/0 and all negative counters remain 0/0",
+        "candidate_result": "P-018 exact upstream addmm 5/5 logical cases plus symbolic-scalar negative passed; positives 2/4, negatives 0/0",
+        "candidate_result_path": "results/current/AU-post-grad-addmm/p018_candidate_result.json",
+        "candidate_result_sha256": "1dc0346627ec8f37aa8cb8a4b564afb87630d096244c5d44cc814a5fb6137632",
         "npu_result": "results/current/AU-post-grad-addmm/npu_result.json",
         "comparison_result": "results/current/AU-post-grad-addmm/comparison_result.json",
-        "final_verdict": "NPU_REGRESSION",
-        "repair_status": "queued"
+        "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+        "repair_status": "not-needed",
+        "candidate_enablement": "verified-P018-default-enabled-live-optout"
       },
       "historical_evidence": [
         "report/t058_experimental_addmm_gate_20260826.md",

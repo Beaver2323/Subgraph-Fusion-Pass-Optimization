@@ -1,6 +1,6 @@
 # T-077 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-02 05:45 CST（UTC+08:00）
+> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
 > 状态：第二波 5 个 acceptance units、11 个 direct cases、17 个 variants 已完成静态映射与零设备校验，等待 GPU 执行。
 > 执行原则：先运行冻结 PyTorch commit 中的原生社区测例；direct 无效时只回传证据，不在 GPU 机器临时改图或写 adapter。
 
@@ -136,3 +136,24 @@ wc -c "${TEXT_HANDOFF}"
 - 测试失败、skip、no-tests、缺失 FX：原样回传日志与 artifacts；
 - 只有明确属于 device 常量、backend 注入或 artifact 采集阻塞时，NPU 控制节点才设计最小 adapter；
 - 不得更改 graph、shape、dtype、dynamic、forward/backward、统计容差或正负例来制造通过。
+
+## 7. GPU 回传后的 NPU、对比与条件修复
+
+GPU 服务器只负责生成 11/11 reference，不在该机器修改 NPU 产品代码。完整 T-077 流程继续由
+NPU 控制节点完成：
+
+```text
+11/11 GPU reference valid
+→ 冻结第二波 denominator
+→ NPU 原生入口优先
+→ 必要时最小 case-specific adapter
+→ GPU/NPU comparison
+→ first divergence 分类
+→ 仅 NPU_REGRESSION 进入 repair
+→ 使用同一 community contract 回归
+```
+
+`EXPECTED_PRODUCT_DIVERGENCE`、`BEHAVIOR_UNCHANGED` 或平台 N/A 不强行修复。每个最终 variant
+必须在 comparison result 中填写 `intent`、`source_locations`、`gpu_behavior`、`npu_behavior`；中文
+报告还必须给出带文件位置的关键源码块。格式参考
+`report/t076_pattern_gpu_npu_guide_20260902.md`。

@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-02 03:00 CST（UTC+08:00）
+> 日志校准时间：2026-09-02 17:42 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3379,3 +3379,26 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   未修改 PyTorch、torch_npu、Triton、环境或 wheel。
 - T-077：5 units / 11 direct cases / 17 variants 的 manifest、plan、runner、中文 GPU 操作文档和文本回传链路
   已就绪；零设备校验通过。当前仍为 `PREPARED_AWAITING_GPU`，11/11 valid 前不冻结第二波 denominator。
+
+### E-209：T-076 addmm 运行态纠偏、P-018 复验与结果学习字段（2026-09-02）
+
+- 登记时间：2026-09-02 17:42 CST（UTC+08:00）。本条取代 E-208 对
+  `AU-post-grad-addmm` 根因和 verdict 的描述；E-208 原文保留为可审计的错误分类历史。
+- 运行态纠偏：T-076 进程的 `sys.path` 解析到 Pass site-packages，不是 dirty torch_npu source
+  overlay。安装态 `config.py` SHA256 为 `68ae6164...f763b`，实际
+  `disable_addmm_fusion=True`；安装态 `fx_passes.py` 在 backend 激活时把两个 addmm entry 的
+  `extra_check` 置 False。因此正例 `0/0` 是显式产品 gate，不是未知 pattern 回归。
+- 分类修正：`AU-post-grad-addmm` 从 `NPU_REGRESSION` 改为
+  `EXPECTED_PRODUCT_DIVERGENCE`；open known issues 归零，原条目移入 `reclassified`。T-076 最终为
+  1 个 `BEHAVIOR_UNCHANGED`、4 个 `EXPECTED_PRODUCT_DIVERGENCE`，正式闭环仍为 5/5。
+- P-018 候选：使用独立 wheel `cd301382...3f3452` 与专属 venv，在冻结 PyTorch commit 上直接复用
+  上游 `test_addmm` 和 `test_addmm_symbolic_scalar`。matrix/vector 正例均为 `2/4`；
+  non-expandable、batched、Python scalar、dynamic symbolic scalar 均为 `0/0`。正例 transformed FX
+  为两个 `aten.addmm` 且生成两个 extern addmm；负例保留 extern mm + NPU Triton add。
+- 环境中性项：首次负例 fresh launcher 因 editable PyTorch 缺 `ATen/ATen.h` 阻断；新 cache 使用已
+  登记的 T-022 audit-only compiler/header wrapper 后通过。wrapper 不修改产品源码、FX、gate、
+  lowering 或数值，不声明正式 no-shim 环境闭环。
+- 结果合同：comparison schema 升级为 1.2，variant 新增强制字段
+  `intent/source_locations/gpu_behavior/npu_behavior`，
+  validator 要求 source 必须已登记在 manifest。新增中文学习报告
+  `report/t076_pattern_gpu_npu_guide_20260902.md`，覆盖首批 20/20 variants，并为 T-077 沿用该模板。

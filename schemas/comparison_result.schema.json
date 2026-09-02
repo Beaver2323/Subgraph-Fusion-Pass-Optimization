@@ -19,7 +19,7 @@
     "repair_status"
   ],
   "properties": {
-    "schema_version": {"const": "1.1"},
+    "schema_version": {"const": "1.2"},
     "generated_at": {"type": "string", "format": "date-time"},
     "acceptance_unit_id": {"type": "string", "minLength": 1},
     "upstream_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
@@ -103,12 +103,21 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "variant_id", "reference_contract_stable", "reference_target_match",
+        "variant_id", "intent", "source_locations", "gpu_behavior", "npu_behavior",
+        "reference_contract_stable", "reference_target_match",
         "npu_target_match", "match_contract_aligned", "runtime_path",
         "correctness_status", "performance_status", "comparison_basis", "verdict", "note"
       ],
       "properties": {
         "variant_id": {"type": "string", "minLength": 1},
+        "intent": {"type": "string", "minLength": 1},
+        "source_locations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/sourceLocation"}
+        },
+        "gpu_behavior": {"type": "string", "minLength": 1},
+        "npu_behavior": {"type": "string", "minLength": 1},
         "reference_contract_stable": {"type": "boolean"},
         "reference_target_match": {"type": ["boolean", "null"]},
         "npu_target_match": {"type": ["boolean", "null"]},
@@ -121,6 +130,16 @@
         },
         "verdict": {"enum": ["BEHAVIOR_UNCHANGED", "EXPECTED_PRODUCT_DIVERGENCE", "NPU_REGRESSION", "INCONCLUSIVE"]},
         "note": {"type": "string", "minLength": 1}
+      }
+    },
+    "sourceLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "line", "symbol"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "line": {"type": "integer", "minimum": 1},
+        "symbol": {"type": "string", "minLength": 1}
       }
     },
     "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}

@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.1",
-  "generated_at": "2026-09-02T03:22:00+08:00",
+  "schema_version": "1.2",
+  "generated_at": "2026-09-02T17:40:00+08:00",
   "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
   "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
   "reference": {
@@ -30,6 +30,13 @@
   "variant_comparisons": [
     {
       "variant_id": "same-k-positive",
+      "intent": "识别两个输出形状一致且各自 K 合法的矩阵乘结果相加，并把它交给可融合的 mm_plus_mm lowering。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 979, "symbol": "is_valid_mm_plus_mm"},
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1016, "symbol": "mm_plus_mm"}
+      ],
+      "gpu_behavior": "A100 reference 命中目标 pattern，community helper 记录 count/nodes=1/3。",
+      "npu_behavior": "Ascend NPU 同样命中；生成代码使用 extern _mm_plus_mm，数值正确。",
       "reference_contract_stable": true,
       "reference_target_match": true,
       "npu_target_match": true,
@@ -43,6 +50,13 @@
     },
     {
       "variant_id": "different-k-positive-pattern-fallback",
+      "intent": "允许两路矩阵乘拥有不同的归约 K，但要求两路输出 M/N 一致；pattern 命中后由 lowering 决定是否退回两次 mm 加 add。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 979, "symbol": "is_valid_mm_plus_mm"},
+        {"path": "torch/_inductor/kernel/mm_plus_mm.py", "line": 128, "symbol": "tuned_mm_plus_mm"}
+      ],
+      "gpu_behavior": "A100 reference 命中目标 pattern；当前 lowering 对不同 K 使用 two-mm-plus-add fallback。",
+      "npu_behavior": "Ascend NPU 命中同一 pattern，并走两个 extern mm 加 NPU Triton add 的 mixed fallback，数值正确。",
       "reference_contract_stable": true,
       "reference_target_match": true,
       "npu_target_match": true,
@@ -56,6 +70,12 @@
     },
     {
       "variant_id": "output-shape-mismatch-negative",
+      "intent": "当两路矩阵乘输出 M/N 不一致时拒绝 mm_plus_mm 融合，避免改变广播或形状语义。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 979, "symbol": "is_valid_mm_plus_mm"}
+      ],
+      "gpu_behavior": "A100 上目标 mm_plus_mm 不命中；suite 全局 1/2 来自另一条 add-mm pattern，不属于本目标。",
+      "npu_behavior": "Ascend NPU 上目标同样不命中，保留 two-mm-plus-add mixed 路径且数值正确。",
       "reference_contract_stable": true,
       "reference_target_match": false,
       "npu_target_match": false,

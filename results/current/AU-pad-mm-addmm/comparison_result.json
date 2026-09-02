@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1", "generated_at": "2026-09-02T05:25:00+08:00", "acceptance_unit_id": "AU-pad-mm-addmm", "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "schema_version": "1.2", "generated_at": "2026-09-02T17:40:00+08:00", "acceptance_unit_id": "AU-pad-mm-addmm", "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
   "reference": {"run_id": "reference-20260901T180826+0800", "suite_status": "valid-reference-suite", "suite_valid": true, "environment_fingerprint": "8f0b3a0d3291d9c70872444dc3c430e12a7593aeaa1a5e1576a93da62161d7ee", "payload_sha256": "7fb9033a765dd632fc3288640ac33803a30a9d63848acddb14f48065b11b6a8d", "cases": [
     {"case_id": "REF-pad-addmm-dynamic-m-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "3939e1ee8d3ce951358f002f2974a1dda9b12fc9b48224b04249a84bbb906a74", "artifact_inventory_sha256": "2e469df4f864ed5547e235e425f811be7195011b03e6c99dbb1eb2295ce760fd"},
     {"case_id": "REF-pad-addmm-bias-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "1fd45e566cb68114e1a5096ed3393592c98fd17066763d84cc268629823c5096", "artifact_inventory_sha256": "af2d425a985998487e1855abb3b8bec9780a236b0d20fd0edae6a03d65de0227"},
@@ -7,11 +7,46 @@
   ]},
   "npu": {"result_path": "results/current/AU-pad-mm-addmm/npu_result.json", "result_sha256": "40fe80200413ac59d361f225eb9d5074f7450441ea0c2e473a1e9226e13dd6fd", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": true, "correctness_status": "passed"},
   "variant_comparisons": [
-    {"variant_id": "dynamic-m-positive", "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "unclassified", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "GPU padded-K 命中；NPU gate 关闭且 dynamic M 数值正确。"},
-    {"variant_id": "bias-broadcast-positive", "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "六种 1D/2D bias broadcast 均正确，不执行 pad replacement。"},
-    {"variant_id": "beta-zero-mismatched-bias-negative", "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "not-executed", "correctness_status": "not-applicable", "performance_status": "not-applicable", "comparison_basis": "platform-applicability", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "该负例明确依赖 CUDA eager beta=0 语义，NPU 不伪造对应 adapter。"},
-    {"variant_id": "training-inference-registration", "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "not-executed", "correctness_status": "not-run", "performance_status": "not-applicable", "comparison_basis": "static-evidence", "verdict": "BEHAVIOR_UNCHANGED", "note": "registration 结构以静态证据覆盖。"},
-    {"variant_id": "disabled-baseline-negative", "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "NPU 默认关闭 pad-addmm，运行 case 均正确。"}
+    {
+      "variant_id": "dynamic-m-positive",
+      "intent": "保持动态 M，同时对 addmm 的静态未对齐维度和可广播 bias 做 padding，计算后 slice 回原形状。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 212, "symbol": "should_pad_addmm"}, {"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 268, "symbol": "addmm_replace"}],
+      "gpu_behavior": "A100 reference 命中 padded-K，动态 M 与 addmm 数值合同通过。",
+      "npu_behavior": "NPU 产品 gate 关闭 pad-addmm，保留原始 addmm；动态 M 数值正确。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "unclassified", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "GPU padded-K 命中；NPU gate 关闭且 dynamic M 数值正确。"
+    },
+    {
+      "variant_id": "bias-broadcast-positive",
+      "intent": "在 padding M/N 时同步处理 1D/2D bias 的广播维，确保 addmm 的 beta/alpha 与广播语义不变。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 197, "symbol": "addmm_pattern"}, {"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 268, "symbol": "addmm_replace"}],
+      "gpu_behavior": "A100 reference 的 1D/2D bias 组合全部正确；目标命中由 codegen/correctness 共同证明。",
+      "npu_behavior": "NPU 不执行 padding replacement，但六种 1D/2D bias broadcast 均与 eager 一致。",
+      "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "六种 1D/2D bias broadcast 均正确，不执行 pad replacement。"
+    },
+    {
+      "variant_id": "beta-zero-mismatched-bias-negative",
+      "intent": "在 CUDA 的 beta=0 特例中，若 bias 不能广播到 mm 输出，则拒绝 padding，避免 padded addmm 重新读取本应被忽略的 bias。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 212, "symbol": "should_pad_addmm"}],
+      "gpu_behavior": "A100 reference 明确验证 beta=0 且 bias shape 不匹配时不做 padding。",
+      "npu_behavior": "该 guard 源码限定 input.is_cuda，NPU 侧标记 N/A，不伪造不等价 adapter。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "not-executed", "correctness_status": "not-applicable", "performance_status": "not-applicable", "comparison_basis": "platform-applicability", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "该负例明确依赖 CUDA eager beta=0 语义，NPU 不伪造对应 adapter。"
+    },
+    {
+      "variant_id": "training-inference-registration",
+      "intent": "让 addmm padding 在 training 和 inference 图上共享搜索、替换和 guard 合同。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 999, "symbol": "gen_register_replacement"}],
+      "gpu_behavior": "GPU 侧以源码静态证据确认双 registration，不重复统计动态 pattern。",
+      "npu_behavior": "NPU 侧保留相同静态证据；统一的 pad gate 同时关闭两条 registration。",
+      "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": null, "match_contract_aligned": true, "runtime_path": "not-executed", "correctness_status": "not-run", "performance_status": "not-applicable", "comparison_basis": "static-evidence", "verdict": "BEHAVIOR_UNCHANGED", "note": "registration 结构以静态证据覆盖。"
+    },
+    {
+      "variant_id": "disabled-baseline-negative",
+      "intent": "确认 NPU triton_experimental 基线关闭 pad-addmm，未命中应归类为产品控制而非实现缺失。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/pad_mm.py", "line": 212, "symbol": "should_pad_addmm"}],
+      "gpu_behavior": "GPU 不适用 NPU 关闭 gate，reference 提供启用态 pad-addmm 合同。",
+      "npu_behavior": "disable_pad_mm=true，所有运行 case 保持原始 addmm/mixed 路径且数值正确。",
+      "reference_contract_stable": true, "reference_target_match": null, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "NPU 默认关闭 pad-addmm，运行 case 均正确。"
+    }
   ],
   "first_divergence": "config", "root_cause": "NPU triton_experimental 显式关闭 shape padding；dynamic/bias 合同数值正确，CUDA-only beta=0 负例按 N/A 保留。", "recommended_action": "冻结预期产品分歧，保留两个最小 adapter 与一个 N/A 路由证据。", "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE", "repair_status": "not-needed"
 }

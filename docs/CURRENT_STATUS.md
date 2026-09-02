@@ -1,6 +1,6 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-02 05:40 CST（UTC+08:00）
+> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
 > 当前阶段：T-076 已正式闭环 5/5；T-077 已准备等待 GPU。
@@ -33,8 +33,10 @@ adapter 均未绕过 `disable_pad_mm`，原图 correctness 与 stride 合同有�
 17 个 variants，并通过零设备校验，当前等待 GPU 执行。
 
 `AU-pad-mm-bmm` 与 `AU-pad-mm-addmm` 同样完成产品关闭基线校验，均为
-`EXPECTED_PRODUCT_DIVERGENCE`。`AU-post-grad-addmm` 的 matrix/vector 正例数值正确，但 target
-counter 从 GPU `2/4` 降为 NPU `0/0`，结论为 `NPU_REGRESSION`，已写入 repair queue。
+`EXPECTED_PRODUCT_DIVERGENCE`。`AU-post-grad-addmm` 已完成运行态纠偏：测试实际加载的 Pass
+site-packages 中 `disable_addmm_fusion=True`，所以 matrix/vector 从 GPU `2/4` 到安装态 NPU
+`0/0` 是显式产品 gate，结论修正为 `EXPECTED_PRODUCT_DIVERGENCE`。P-018 独立 wheel 已在冻结
+commit 上恢复正例 `2/4`，并保持四类负例 `0/0`，作为已验证候选单列。
 
 ## 2. 工作线吻合性
 
@@ -138,17 +140,19 @@ report/         不可改写的实验事实和 T-074 数据
 - 首批 5 个 acceptance units 冻结进入 denominator。
 - `REF-mm-plus-mm-native` 已落盘统一 NPU/comparison 结果，正式 verdict 为 `BEHAVIOR_UNCHANGED`；
 - `AU-pad-mm-mm`、`AU-pad-mm-bmm`、`AU-pad-mm-addmm` 已形成单元级 comparison，均分类为 `EXPECTED_PRODUCT_DIVERGENCE`。
-- `AU-post-grad-addmm` 已分类为 `NPU_REGRESSION`，修复入口已登记。
+- `AU-post-grad-addmm` 已纠偏为 `EXPECTED_PRODUCT_DIVERGENCE`；P-018 default-enable/live-opt-out 候选已完成精确上游合同复验。
 - T-077 已准备 5 个 pending-reference 单元、11 个 direct cases 和 17 个 variants。
 
-仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核、
-`AU-post-grad-addmm` 的产品修复，以及 T-077 GPU reference。T-077 未运行前不进入第二波 denominator。
+仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核，以及 T-077 GPU
+reference。P-018 是否并入正式产品属于候选变更评审，不再作为 T-076 未闭环回归。T-077 未运行前
+不进入第二波 denominator。
 
 ## 7. 下一条 Codex 任务
 
 ```text
 在 GPU 机器上按 `docs/T077_REFERENCE_RUNNER_GPU.md` 执行 T-077 完整 direct suite；
-11/11 valid 前不得冻结第二波 denominator。NPU 侧可独立开展 post-grad addmm repair。
+11/11 valid 前不得冻结第二波 denominator。GPU 回传后按 compare 结论决定是否进入条件 repair；
+P-018 仅保留为已验证候选，不与 T-077 reference 执行混合。
 ```
 
 ## 8. 当前环境边界

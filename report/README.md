@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-02 05:42 CST（UTC+08:00）
+> 索引更新时间：2026-09-02 17:42 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -8,7 +8,8 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
-| [t076_npu_completion_20260902.md](t076_npu_completion_20260902.md) | T-076 五个单元的 NPU/comparison 闭环、回归与 repair 分类 | 正式闭环 5/5；1 个 `NPU_REGRESSION` 已入队 |
+| [t076_npu_completion_20260902.md](t076_npu_completion_20260902.md) | T-076 五个单元的 NPU/comparison 闭环及 addmm 运行态纠偏 | 正式闭环 5/5；1 个行为一致、4 个预期产品分歧 |
+| [t076_pattern_gpu_npu_guide_20260902.md](t076_pattern_gpu_npu_guide_20260902.md) | T-076 每个 pattern/variant 的源码意图与 GPU/NPU 行为导读 | 20/20 variant 学习说明；P-018 候选单列 |
 | [t077_gpu_preparation_20260902.md](t077_gpu_preparation_20260902.md) | 第二波 5 units / 11 direct cases / 17 variants 的人工映射、参数化入口与 GPU 交付 | `PREPARED_AWAITING_GPU`，尚未冻结 denominator |
 | [REF-mm-plus-mm-native NPU 复现报告](../issues/REF-mm-plus-mm-native/复现报告.md) | 原生直接 `NO_TESTS`、最小 adapter、4/4 NPU 目标合同和 graph-mode 证据 | 统一 comparison 已落盘；`BEHAVIOR_UNCHANGED` |
 | [REF-pad-mm-dynamic-m-native NPU 复现报告](../issues/REF-pad-mm-dynamic-m-native/复现报告.md) | 原生 `NO_TESTS`、TRITON-only lowering 阻断、产品 gate baseline | 归属单元已正式闭环 |

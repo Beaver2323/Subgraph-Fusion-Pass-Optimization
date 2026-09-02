@@ -294,8 +294,8 @@ def validate_comparison(
         },
         str(comparison_path),
     )
-    if comparison["schema_version"] != "1.1":
-        raise ValueError(f"{comparison_path} schema_version 必须为 1.1")
+    if comparison["schema_version"] != "1.2":
+        raise ValueError(f"{comparison_path} schema_version 必须为 1.2")
     if comparison["acceptance_unit_id"] != npu_result["acceptance_unit_id"]:
         raise ValueError(f"{comparison_path} acceptance_unit_id 不一致")
     if comparison["upstream_commit"] != npu_result["upstream_commit"]:
@@ -364,8 +364,13 @@ def validate_comparison(
         raise ValueError(f"{comparison_path} NPU tracking_mode 不一致")
     if npu["correctness_status"] != "passed":
         raise ValueError(f"{comparison_path} NPU 数值正确性门禁未通过")
-    if not npu["execution_success"] and comparison["final_verdict"] != "NPU_REGRESSION":
-        raise ValueError(f"{comparison_path} 非回归结论不允许 NPU 执行失败")
+    if not npu["execution_success"] and comparison["final_verdict"] not in {
+        "NPU_REGRESSION",
+        "EXPECTED_PRODUCT_DIVERGENCE",
+    }:
+        raise ValueError(
+            f"{comparison_path} 仅回归或经产品 gate 证明的预期分歧允许目标合同执行失败"
+        )
 
     npu_variants = {
         variant["variant_id"]: variant for variant in npu_result["variants"]
@@ -382,6 +387,10 @@ def validate_comparison(
             variant,
             {
                 "variant_id",
+                "intent",
+                "source_locations",
+                "gpu_behavior",
+                "npu_behavior",
                 "reference_contract_stable",
                 "reference_target_match",
                 "npu_target_match",
@@ -396,6 +405,31 @@ def validate_comparison(
             f"{comparison_path}:{variant_id}",
         )
         npu_variant = npu_variants[variant_id]
+        for field in ("intent", "gpu_behavior", "npu_behavior"):
+            if not isinstance(variant[field], str) or not variant[field].strip():
+                raise ValueError(
+                    f"{comparison_path}:{variant_id}.{field} 不得为空"
+                )
+        source_locations = variant["source_locations"]
+        if not isinstance(source_locations, list) or not source_locations:
+            raise ValueError(
+                f"{comparison_path}:{variant_id}.source_locations 不得为空"
+            )
+        manifest_sources = {
+            (source["path"], source["symbol"])
+            for source in manifest_unit["upstream_sources"]
+        }
+        for source in source_locations:
+            require_keys(
+                source,
+                {"path", "line", "symbol"},
+                f"{comparison_path}:{variant_id}.source_location",
+            )
+            if (source["path"], source["symbol"]) not in manifest_sources:
+                raise ValueError(
+                    f"{comparison_path}:{variant_id} 源码位置未登记在 manifest: "
+                    f"{source['path']}::{source['symbol']}"
+                )
         if not variant["reference_contract_stable"]:
             raise ValueError(f"{comparison_path}:{variant_id} reference 不稳定")
         if variant["npu_target_match"] != npu_variant["match"]["target_matched"]:

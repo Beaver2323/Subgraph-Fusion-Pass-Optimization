@@ -1,6 +1,6 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-02 05:38 CST（UTC+08:00）
+> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
 > 状态：T-076 已正式闭环 5/5；T-077 已准备并等待 GPU 执行。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
@@ -158,7 +158,7 @@ T-077 GPU 准备：
 - [x] 至少一个 case 输出可复核的 `first_divergence/root_cause`；
 - [x] 建立 reference baseline 和 NPU baseline；
 - [x] 生成第一版 compatibility matrix 和 changes；
-- [x] 将失败 acceptance units 写入 repair queue。
+- [x] 将失败 acceptance units 写入 repair queue；T-076 addmm 后续因安装态 gate 证据完成纠偏并移出 open queue。
 
 ## P1：Repair 与 regression
 
@@ -188,7 +188,7 @@ T-077 GPU 准备：
 4. [x] 接收并复核 GPU 文本 artifacts；no-test-found 和 indirect 映射仍继续审核；
 5. [x] reference 有效后冻结首版 denominator，并启动 NPU 单 case 执行；
 6. [x] 执行 NPU、compare、failure classification（正式闭环 5/5）；
-7. [x] 创建 repair queue；`AU-post-grad-addmm` 修复作为后续独立任务。
+7. [x] 复核 repair queue；`AU-post-grad-addmm` 纠偏为预期产品分歧，P-018 候选完成精确上游合同验证。
 
 ## 第一阶段完成标准
 

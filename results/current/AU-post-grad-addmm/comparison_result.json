@@ -1,15 +1,43 @@
 {
-  "schema_version": "1.1", "generated_at": "2026-09-02T05:25:00+08:00", "acceptance_unit_id": "AU-post-grad-addmm", "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "schema_version": "1.2", "generated_at": "2026-09-02T17:42:00+08:00", "acceptance_unit_id": "AU-post-grad-addmm", "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
   "reference": {"run_id": "reference-20260901T180826+0800", "suite_status": "valid-reference-suite", "suite_valid": true, "environment_fingerprint": "8f0b3a0d3291d9c70872444dc3c430e12a7593aeaa1a5e1576a93da62161d7ee", "payload_sha256": "7fb9033a765dd632fc3288640ac33803a30a9d63848acddb14f48065b11b6a8d", "cases": [
     {"case_id": "REF-addmm-contract-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "eb1dd1e312082e385ebf418031662a6db4d3b8723f66e4cf7e74df40383b7b41", "artifact_inventory_sha256": "38e21d1bc5c0387f8322afaa7358f4007b917d49144c25abe21ffdb1e8744336"},
     {"case_id": "REF-addmm-symbolic-scalar-negative-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "c2b53ab05a577ff5f506ceacf99c8ebf1a8a712edee0d1480cddf0619a1bb35b", "artifact_inventory_sha256": "7851f299e40e53a4d6ff5711ed4dbd69403c6ea99db67feb21d73c9c0ac4b698"}
   ]},
-  "npu": {"result_path": "results/current/AU-post-grad-addmm/npu_result.json", "result_sha256": "1fb43526f3ce26017613204cbe7c47dcb09225ddb3b6f82d994e9acca36124db", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": false, "correctness_status": "passed"},
+  "npu": {"result_path": "results/current/AU-post-grad-addmm/npu_result.json", "result_sha256": "ec624004b13c19521bfd41f8265c5fe216f33014a22514b663f26c66ecaec0d4", "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80", "tracking_mode": "adapter", "execution_success": false, "correctness_status": "passed"},
   "variant_comparisons": [
-    {"variant_id": "matrix-bias-both-orders-positive", "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-run", "comparison_basis": "equivalent-contract", "verdict": "NPU_REGRESSION", "note": "数值正确，但两种 operand order 的 counter 从 GPU 2/4 变为 NPU 0/0。"},
-    {"variant_id": "vector-bias-both-orders-positive", "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-run", "comparison_basis": "equivalent-contract", "verdict": "NPU_REGRESSION", "note": "vector bias 两种 operand order 同样未命中，counter 0/0。"},
-    {"variant_id": "non-expandable-or-batched-bias-negative", "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "equivalent-contract", "verdict": "BEHAVIOR_UNCHANGED", "note": "non-expandable/batched bias 两个负例与 GPU 同为 0/0。"},
-    {"variant_id": "python-or-symbolic-scalar-negative", "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "equivalent-contract", "verdict": "BEHAVIOR_UNCHANGED", "note": "Python scalar 与 dynamic symbolic scalar 负例均为 0/0，数值正确。"}
+    {
+      "variant_id": "matrix-bias-both-orders-positive",
+      "intent": "把可广播 Tensor bias 与 mm 的两种 operand order 统一重写为 aten.addmm，减少独立 pointwise add。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1983, "symbol": "is_valid_addmm_fusion"}, {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2033, "symbol": "addmm"}],
+      "gpu_behavior": "A100 reference 的 add+mm 与 mm+add 均融合，目标 count/nodes=2/4。",
+      "npu_behavior": "当前 Pass 安装包的显式 disable_addmm_fusion=True gate 使基线保持 0/0 和 mm+add；P-018 候选恢复 2/4 并生成两个 extern addmm。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "安装态 0/0 由显式产品 gate 解释；P-018 候选已按同一冻结合同验证 2/4。"
+    },
+    {
+      "variant_id": "vector-bias-both-orders-positive",
+      "intent": "允许能广播到 mm 输出的 vector bias 进入同一 addmm replacement，同时保留 dtype 与形状 guard。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1983, "symbol": "is_valid_addmm_fusion"}, {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2033, "symbol": "addmm"}],
+      "gpu_behavior": "A100 reference 的 vector bias 两种 operand order 均命中 2/4。",
+      "npu_behavior": "安装态 gate 下为 0/0；P-018 候选委托原 validity check 后恢复 2/4，生成两个 extern addmm。",
+      "reference_contract_stable": true, "reference_target_match": true, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "product-control", "verdict": "EXPECTED_PRODUCT_DIVERGENCE", "note": "安装态未命中是预期 gate；P-018 候选已验证广播正例。"
+    },
+    {
+      "variant_id": "non-expandable-or-batched-bias-negative",
+      "intent": "拒绝不能广播到二维 mm 输出的 bias，以及带额外 batch rank 的 bias，避免错误构造 aten.addmm。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1983, "symbol": "is_valid_addmm_fusion"}],
+      "gpu_behavior": "A100 reference 两类负例均保持 count/nodes=0/0。",
+      "npu_behavior": "安装态基线与 P-018 候选均保持 0/0；候选生成代码保留 extern mm 加 pointwise add。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "equivalent-contract", "verdict": "BEHAVIOR_UNCHANGED", "note": "non-expandable/batched bias 在 GPU、安装态 NPU 和 P-018 候选上都不融合。"
+    },
+    {
+      "variant_id": "python-or-symbolic-scalar-negative",
+      "intent": "只接受带 Tensor meta 的 bias；Python scalar 与 dynamic SymInt scalar 不得被改写成 addmm bias。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1983, "symbol": "is_valid_addmm_fusion"}],
+      "gpu_behavior": "A100 reference 的 Python scalar 与 dynamic symbolic scalar 均为 0/0，数值正确。",
+      "npu_behavior": "安装态基线与 P-018 候选均为 0/0；symbolic 候选图保留两路 extern mm 加 dynamic Triton add。",
+      "reference_contract_stable": true, "reference_target_match": false, "npu_target_match": false, "match_contract_aligned": true, "runtime_path": "mixed", "correctness_status": "passed", "performance_status": "not-applicable", "comparison_basis": "equivalent-contract", "verdict": "BEHAVIOR_UNCHANGED", "note": "Python/symbolic scalar 负例在 GPU、安装态 NPU 与 P-018 候选上都保持不融合。"
+    }
   ],
-  "first_divergence": "pattern", "root_cause": "disable_addmm_fusion=False，但 NPU triton_experimental 在 post-grad pattern matcher 阶段未将正向 mm+add/add+mm 替换为 addmm；output_code 保留两个 extern mm 和 pointwise add。", "recommended_action": "将正例命中缺失登记到 repair queue，修复时保留四类负例 guard，修复后重跑 GPU/NPU 对比。", "final_verdict": "NPU_REGRESSION", "repair_status": "queued"
+  "first_divergence": "config", "root_cause": "原 NPU 结果把 dirty source overlay 的 disable_addmm_fusion=False 错当成运行配置；实际 sys.path 解析到 Pass site-packages，安装态配置为 True，并在 backend 激活时显式关闭两个 addmm entry。", "recommended_action": "当前安装态冻结为 EXPECTED_PRODUCT_DIVERGENCE；P-018 默认启用且保留 live opt-out 的候选已通过精确上游正负合同，见 p018_candidate_result.json。", "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE", "repair_status": "not-needed"
 }

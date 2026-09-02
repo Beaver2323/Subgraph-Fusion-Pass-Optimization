@@ -1,6 +1,6 @@
 # PyTorch Feature 设计与实现分析
 
-> 更新时间：2026-08-31 17:50 CST（UTC+08:00）
+> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
 > 定位：机制与历史案例指南。当前 tracker 主线、术语和执行顺序以仓库根目录
 > `README.md`、`TODO.md`、`WORKFLOW.md` 及 [CURRENT_STATUS.md](CURRENT_STATUS.md) 为准。
 
@@ -592,13 +592,20 @@ T-025/T-026 已实际完成这组比较。positive 图和 aligned negative 的�
 
 ### P0 源码案例三：addmm fusion
 
-上游 gate：<code>torch/_inductor/fx_passes/post_grad.py::should_prefer_unfused_addmm()</code> 位于 1850 行附近，检查 device、dtype、bias 形状和用户结构。
+上游 gate：<code>torch/_inductor/fx_passes/post_grad.py::is_valid_addmm_fusion():1983</code>
+检查 bias 是否为 Tensor、是否可广播到 mm 输出以及 dtype；最后调用
+<code>should_prefer_unfused_addmm()</code> 做后端偏好判断。
 
 NPU lowering：<code>torch_npu/_inductor/kernel/mm.py::_register_npu_inductor_addmm():126</code> 注册 <code>aten.addmm</code> lowering，根据静态性、非零 shape、连续性和 CATLASS 能力选择实现；条件不满足时使用 fallback handler。
 
-experimental 控制：<code>torch_npu/_inductor/triton_experimental/fx_passes.py::_disable_addmm_fusion_pass():534</code> 将已注册 addmm pattern 的 extra_check 置 false。
+experimental 控制：当前 Pass 安装态的
+<code>torch_npu/_inductor/triton_experimental/fx_passes.py::_disable_addmm_fusion_pass():534</code>
+在 <code>disable_addmm_fusion=True</code> 时将已注册 addmm pattern 的 extra_check 置 false。
+P-018 候选改为默认 False，并始终安装读取 live config 的幂等 wrapper，保留显式 opt-out。
 
-因此本候选不是“缺少 addmm 算子”，而是要验证 fusion gate 与现有 NPU lowering 的组合是否在不同输入上正确且有收益。
+因此本候选不是“缺少 addmm 算子”。T-076 已证明安装态 0/0 是显式 gate；P-018 也已在冻结
+上游合同上证明正例恢复 2/4、四类负例保持 0/0，并复用现有 extern addmm lowering。逐分支说明见
+[T-076 pattern 导读](../report/t076_pattern_gpu_npu_guide_20260902.md)。
 
 ### 完整调用链总结
 

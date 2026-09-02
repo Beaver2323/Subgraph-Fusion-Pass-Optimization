@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-02 05:44 CST（UTC+08:00）
+> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -216,13 +216,19 @@ extracted case 必须重新审查。
 
 T-075 已在 `upstream/` 落盘首批 5 个审核单元，共 20 个 variants、13 个 community test 引用。
 T-076 的 13 个 GPU direct cases 全部有效后，它们已更新为 `frozen`/`yes-frozen`，构成首版
-denominator=5。五个单元均已完成 NPU/comparison：1 个 `BEHAVIOR_UNCHANGED`、3 个
-`EXPECTED_PRODUCT_DIVERGENCE`、1 个 `NPU_REGRESSION`，正式闭环为 5/5。回归单元已进入
-`regressions/known_issues.yaml`。
+denominator=5。五个单元均已完成 NPU/comparison：1 个 `BEHAVIOR_UNCHANGED`、4 个
+`EXPECTED_PRODUCT_DIVERGENCE`，正式闭环为 5/5。原 addmm 回归记录已因运行态安装包纠偏移出
+open issues；P-018 default-enable/live-opt-out 候选另行验证通过。
 
 ## 9. 统一 result schema
 
 每个运行结果至少包含：
+
+- `intent`：说明 pattern 要解决的问题及关键 guard 的意图；
+- `source_locations`：至少一个已在 manifest 登记的源码路径、行号和符号；
+- `gpu_behavior`：reference 命中、生成路径和正确性；
+- `npu_behavior`：NPU 命中、产品 gate、runtime path 和正确性；
+- 中文学习报告必须给出带源码位置注释的关键代码块，不能只写函数名或 PASS/FAIL。
 
 ```text
 schema_version / generated_at
