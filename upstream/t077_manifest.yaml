@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-02T22:54:00+08:00",
-  "status": "t077-complete-with-verified-repair",
+  "generated_at": "2026-09-03T07:30:00+08:00",
+  "status": "t077-functional-comparison-and-performance-disposition-complete-with-verified-repair",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -40,7 +40,12 @@
     "denominator_rule": "T077 complete direct GPU suite is valid; all five reviewed units are frozen",
     "current_manifest_units": 5,
     "current_frozen_denominator_units": 5,
-    "current_formally_closed_units": 5
+    "current_formally_closed_units": 5,
+    "current_performance_closed_units": 5,
+    "current_measured_performance_units": 4,
+    "current_performance_capability_assessed_units": 1,
+    "current_performance_pending_capability_units": 0,
+    "current_performance_exempt_explicitly_disabled_units": 0
   },
   "acceptance_units": [
     {
@@ -88,7 +93,7 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["缩小 M 或放宽统计容差", "改变采样图", "预先假设 NPU 命中"]
       },
-      "npu_control": {"status": "completed", "result": "BEHAVIOR_UNCHANGED"},
+      "npu_control": {"status": "completed", "result": "PERF_IMPROVED", "performance_result": "results/current/T-077/performance_summary.json"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
@@ -119,6 +124,16 @@
         {"nodeid": "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_bad_pattern_good_shape", "role": "primary-negative", "evidence_scope": "shape 合适但数据流不满足唯一 B2B pattern，入口 marker 不出现"},
         {"nodeid": "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_b2b_gemm_good_pattern_bad_shape", "role": "primary-negative", "evidence_scope": "pattern 合适但 shape 不盈利，入口 marker 不出现"}
       ],
+      "community_performance_tests": {
+        "execution_status": "capability-grid-sampled-no-template-selected",
+        "reason": "测试态最小适配后功能 6/6 正确；12 个社区网格代表/边界点中 8 matcher hit、4 heuristic reject、0 template selected，最佳 Triton 候选慢 30.23%~116.30%。",
+        "method": "DO_PERF_TEST=1；FP16；M=[128,256,300,400,512]、N=[16,20,32,40,50,64]；OFF/ON warmup=100、rep=500；输出逐 shape speedup 与几何平均；收益断言因 flaky 被注释。",
+        "nodeids": [
+          "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_plain_b2b_gemm_performance",
+          "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_gelu_b2b_gemm_performance",
+          "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_gelu_mlp_b2b_gemm_performance"
+        ]
+      },
       "variants": [
         {"variant_id": "left-gelu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "左结合 GELU B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"},
         {"variant_id": "right-relu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "右结合 ReLU B2B GEMM 命中并正确", "expected_counter": "b2b_gemm>0", "reference_status": "valid-reference", "npu_status": "expected-product-divergence"},
@@ -134,7 +149,7 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 shape/dtype/结合方向", "删除正负例", "用 correctness 推断 target hit"]
       },
-      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE"},
+      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE", "performance_result": "CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE", "performance_evidence": "results/current/T-077/b2b_capability_assessment.json"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
@@ -162,7 +177,7 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["修改阈值", "删除 backward", "混入 CPU-only contract"]
       },
-      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE", "clean_card_evidence": "NPU 0 preflight: No running processes found; 3/3 forward/backward passed", "known_static_risk": "check_device 当前不识别 npu"},
+      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE", "clean_card_evidence": "NPU 0 preflight: No running processes found; 3/3 forward/backward passed", "known_static_risk": "check_device 当前不识别 npu", "performance_result": "PERF_REGRESSED", "performance_evidence": "results/current/T-077/decompose_bmm_performance_summary.json"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
@@ -194,7 +209,7 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["修改阈值", "删除混合精度或 backward", "把 has_bias 参数误计为独立 contract"]
       },
-      "npu_control": {"status": "completed", "result": "NPU_REGRESSION", "repair_status": "verified-not-merged", "candidate_commit": "dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6", "root_cause": "目标 pass 未命中后，upstream small-mm pointwise lowering 在 NPU 反向图生成错误左梯度", "known_static_risk": "check_device 当前不识别 npu"},
+      "npu_control": {"status": "completed", "result": "NPU_REGRESSION", "repair_status": "verified-not-merged", "candidate_commit": "dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6", "root_cause": "目标 pass 未命中后，upstream small-mm pointwise lowering 在 NPU 反向图生成错误左梯度", "known_static_risk": "check_device 当前不识别 npu", "performance_result": "PERF_REGRESSED", "performance_evidence": "results/current/T-077/decompose_mm_performance_summary.json"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
@@ -220,7 +235,7 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["缩小 19494144 的 M", "关闭 dynamic", "修改 skip_dynamic_shape_dim_check"]
       },
-      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE", "clean_card_evidence": "保留 M=19494144、K=N=8、dynamic=True；counter=0 且 correctness passed", "known_static_risk": "check_device 当前不识别 npu"},
+      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE", "clean_card_evidence": "保留 M=19494144、K=N=8、dynamic=True；counter=0 且 correctness passed", "known_static_risk": "check_device 当前不识别 npu", "performance_result": "PERF_REGRESSED", "performance_evidence": "results/current/T-077/decompose_addmm_performance_summary.json"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     }
   ]

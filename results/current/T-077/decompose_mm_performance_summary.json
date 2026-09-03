@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-03T07:24:33+08:00",
+  "task_id": "T-077",
+  "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-mm",
+  "backend": "triton_experimental",
+  "status": "measured-candidate-rejected",
+  "verdict": "PERF_REGRESSED",
+  "source": "community functional positive M=20480,K=5,N=2 fp32；社区无独立 performance test",
+  "method": "OFF/ON 各 3 个 fresh process，交错执行，warmup=10、runs=100；两臂均应用 dfbcc25 等价 correctness guard，ON 另复用 CUDA shape policy。",
+  "off_median": {"host_p50_ms": 0.366255, "host_p99_ms": 0.4831885, "device_p50_ms": 0.25770001, "device_p99_ms": 0.3059228, "max_allocated_bytes": 22531584},
+  "on_median": {"host_p50_ms": 0.392755, "host_p99_ms": 0.4732272, "device_p50_ms": 0.28703, "device_p99_ms": 0.31089199, "max_allocated_bytes": 2624512},
+  "improvement_percent": {"host_p50": -7.23540, "host_p99": 2.06158, "device_p50": -11.38145, "device_p99": -1.62433},
+  "raw_artifacts": {"root": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm", "summary_sha256": "1a4b5f6b50edfaba1ae7bb8ab8b58dc0f61d7dfb240a1642078a8da44362cc87"},
+  "decision": "正确性通过但时延回退；保留 NPU device guard。dfbcc25 仍是独立的 correctness 修复，不因本性能结论撤销。"
+}

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-02T17:42:00+08:00",
-  "status": "t076-complete-five-of-five-formally-compared-t077-gpu-ready",
+  "generated_at": "2026-09-03T01:07:00+08:00",
+  "status": "t076-functional-comparison-and-performance-disposition-complete",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -36,7 +36,10 @@
     "denominator_rule": "only yes-frozen units with valid reference baseline enter denominator",
     "current_manifest_units": 5,
     "current_frozen_denominator_units": 5,
-    "current_formally_closed_units": 5
+    "current_formally_closed_units": 5,
+    "current_performance_disposition_units": 5,
+    "current_measured_performance_units": 2,
+    "current_performance_exempt_explicitly_disabled_units": 3
   },
   "acceptance_units": [
     {

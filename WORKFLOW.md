@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
+> 更新时间：2026-09-03 08:05 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -244,13 +244,25 @@ replacement / decomposition
 lowering / scheduler / codegen
 runtime_path: triton | extern | fallback | mixed
 correctness
-performance（通过门禁后）
+performance（目标优化可启用且通过门禁后；明确关闭则免测）
 first_divergence
 root_cause
 recommended_action
 final_verdict
 repair_status
 ```
+
+功能链路必须拆成三个状态记录，不能统一写成“生效”：
+
+1. `PATTERN_MATCHED`：matcher 找到目标图并进入 handler；counter/marker 可作为证据，但不能证明最终
+   generated code 采用了候选；
+2. `REWRITE_APPLIED`：FX replacement/decomposition 已把原子图替换为等价新图。这里的
+   decomposition 是 rewrite 的一种，发生在 lowering 和 autotune 之前；
+3. `TEMPLATE_SELECTED`：存在多个 lowering/template/fallback choices 时，目标融合模板最终被
+   autotune 选中并进入 generated code。B2B 之类的模板型优化即使命中 matcher，若最终选择
+   fallback，也只能记录为候选已评估，不能记录为融合改写生效。
+
+正确性回答被执行路径是否语义等价，性能回答该路径是否有优化价值；二者均不能由 counter 单独推断。
 
 结构合同分别位于 `schemas/npu_result.schema.json` 与
 `schemas/comparison_result.schema.json`；当前结果位于 `results/current/<acceptance-unit>/`（首个历史目录
@@ -331,7 +343,25 @@ NPU 对同一 manifest 运行，并按顺序采集：
 8. Triton experimental codegen/compile；
 9. runtime path；
 10. correctness；
-11. performance。
+11. performance：仅对目标优化可启用且通过功能门禁的单元执行；存在明确产品/backend disable
+    配置或决策的单元登记关闭依据并标记 `not-required-explicitly-disabled`，不为性能测试临时解除
+    disable。通用 upstream device guard 未列出 NPU 不等于显式关闭，应先标记 capability pending；
+    评审最小 NPU 适配、完成正确性，再执行性能。若模板 autotune 始终选择 fallback，登记
+    `CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE`；若合法 ON 路径性能回退，登记 `PERF_REGRESSED`
+    并保留 guard。两者都属于已完成处置，不是免测，也不继续留作 pending。
+
+性能测例来源按以下优先级选择并写入结果：
+
+1. 社区已有同一 pattern 的性能测例时，优先复用其计算图、输入矩阵、dtype、shape 网格与 OFF/ON
+   定义；可以增加 fresh-process 隔离、同步计时、统计量、显存和正确性门禁，但不得悄悄改小 workload；
+2. 社区只有功能测例时，以该功能测例的函数、输入和正确性合同为唯一 workload 来源，只增加
+   pass OFF/ON 和测量外壳；
+3. 社区没有可复用测例时，才允许设计最小 benchmark，并明确标记为 local-derived；
+4. 社区性能测例即使因产品明确关闭而不执行，也要登记 nodeid、原方法和未执行原因。
+
+性能结果必须区分测量层级：单 pattern/subgraph 的 compiled callable 全路径时延、设备 Event 时延、
+compile+first-run，以及完整模型/应用端到端。前两者不能写成完整模型端到端；没有对应模型 benchmark
+时必须明确记录缺口。
 
 所有测试从 `/home/z50063656/tmp` 启动，source `Pass/activate_pass.sh`，并使用 fresh process
 隔离 experimental backend 和 pass-on/pass-off。

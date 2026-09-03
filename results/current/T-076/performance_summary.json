@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-03T01:07:00+08:00",
+  "task_id": "T-076",
+  "status": "performance-disposition-complete",
+  "backend": "triton_experimental",
+  "completion": {"acceptance_units": 5, "measured": 2, "exempt_explicitly_disabled": 3},
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
+      "performance_status": "measured",
+      "verdict": "representative-beneficial-with-neutral-layouts",
+      "backend_reuse_check": "passed",
+      "evidence": "report/p0_sweep_performance_20260820.md",
+      "result": "FP16/BF16/FP32 static contiguous 的 p50 分别改善 12.5%/16.5%/11.0%；transposed 6.4%、dynamic 高样本 8.74%，后两者为 neutral。"
+    },
+    {
+      "acceptance_unit_id": "AU-pad-mm-mm",
+      "performance_status": "not-required-explicitly-disabled",
+      "verdict": "product-disabled-performance-exempt",
+      "reason": "experimental backend 同时保留 upstream NPU device gate 与 disable_pad_mm；目标优化明确关闭，性能免测且不临时解除 gate。",
+      "excluded_history": "default backend 测试态 bypass 的 -72.65% 不计入本任务 experimental 结论。"
+    },
+    {
+      "acceptance_unit_id": "AU-pad-mm-bmm",
+      "performance_status": "not-required-explicitly-disabled",
+      "verdict": "product-disabled-performance-exempt",
+      "reason": "experimental backend 同时保留 upstream NPU device gate 与 disable_pad_mm；目标优化明确关闭，性能免测且不临时解除 gate。",
+      "excluded_history": "default backend 测试态 bypass 的 -65.31% 不计入本任务 experimental 结论。"
+    },
+    {
+      "acceptance_unit_id": "AU-pad-mm-addmm",
+      "performance_status": "not-required-explicitly-disabled",
+      "verdict": "product-disabled-performance-exempt",
+      "reason": "experimental backend 同时保留 upstream NPU device gate 与 disable_pad_mm；目标优化明确关闭，性能免测且不临时解除 gate。",
+      "excluded_history": "default backend 测试态 bypass 的 -120.63% 不计入本任务 experimental 结论。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-addmm",
+      "performance_status": "measured",
+      "verdict": "beneficial-with-host-tail-monitor",
+      "backend_reuse_check": "passed",
+      "evidence": "report/t058_experimental_addmm_gate_20260826.md；installed 复核见 docs/CHANGE_CONTROL.md::E-167",
+      "result": "experimental OFF/ON 三轮代表 cohort 的 p50/p99 中位数改善 22.17%/14.05%，allocated 不增；P-018 installed 复核保留 unaligned host p99 长尾。"
+    }
+  ]
+}

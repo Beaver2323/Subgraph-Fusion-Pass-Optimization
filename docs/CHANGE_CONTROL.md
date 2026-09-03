@@ -3461,3 +3461,69 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   `latest` 与 `latest-text-handoff.json` 两个软链接，因此无需人工查找或复制 `<timestamp>`。
 - 旧的带时间戳结果保持不变，latest 只更新指针；脚本保留原 runner 退出码，失败、skip、no-tests
   不会被包装为 PASS。中文使用说明见 `docs/GPU_TASK_RUNNER.md`。
+
+### E-214：T-076/T-077 性能阶段与 backend 复用门禁（2026-09-03）
+
+- 登记时间：2026-09-03 00:18 CST（UTC+08:00）。任务口径修正为每个 T-xxx 承载一批
+  acceptance units 的 reference、NPU、comparison、repair 和 performance；T-078 保留给下一批，
+  不再作为 T-076/T-077 的性能补测任务名。
+- 历史复用硬门槛增加 backend 与 gate 生命周期。`mm_plus_mm` 和 P-018 addmm 的历史性能均为
+  `triton_experimental`，可计入 T-076；pad family 的 -72.65%/-65.31%/-120.63% 来自 default
+  backend 的测试态 bypass，只保留为不计入诊断，不迁移为 experimental verdict。
+- T-076 性能处置 5/5：2 个同后端实测、3 个无同后端安全 ON 路径并记录精确原因。
+- T-077 Gumbel 使用 experimental 同 backend 三轮 fresh-process OFF/ON，六轮百万样本统计合同与
+  counter 全通过。host p50/p99 改善 45.79%/45.75%，NPU Event p50/p99 改善
+  46.69%/46.50%；最终 verdict 为 `PERF_IMPROVED`。其余四个单元均无合法同后端 ON candidate，
+  记录为 `not-evaluable`。
+- 新增 `scripts/run_npu_performance_task.sh`、Gumbel worker/aggregator、两批 performance plan、
+  task-level structured results 和中文报告。首次沙箱 driver 不可见失败保留为环境尝试；正式结果在
+  执行前后均为空闲的物理 NPU 1 上完成。
+
+### E-215：明确关闭的优化免测性能（2026-09-03）
+
+> 注：本条对 T-077 四项的分类已被 E-217 纠正；T-076 pad 结论继续有效。
+
+- 登记时间：2026-09-03 01:07 CST（UTC+08:00）。性能规则校准为：只有目标优化在 NPU 上可启用
+  且通过功能门禁时才执行同 backend OFF/ON；产品、设备或 backend 明确关闭的路径直接登记
+  `not-required-explicitly-disabled`，不为性能测试临时解除 gate。
+- T-076 三类 pad 从“不可测”更正为“明确关闭、性能免测”；T-077 除 Gumbel 外的四个目标路径
+  同步按明确 device/product gate 免测。该调整不改变功能/comparison 结论和 denominator。
+
+### E-216：性能测例优先复用社区来源（2026-09-03）
+
+- 登记时间：2026-09-03 01:28 CST（UTC+08:00）。性能 workload 来源优先级写入工作流：社区性能
+  测例优先；若社区只有功能测例，则完整复用其图、输入与正确性合同，只增加 OFF/ON 和测量外壳；
+  仅在两者都不存在时设计并标记 local-derived benchmark。
+- T-077 Gumbel 没有社区性能测例，本轮实测完整派生自
+  `TestPatternMatcherLogging.test_gumbel_max_trick` 的百万行功能合同。B2B GEMM 有三条
+  `DO_PERF_TEST=1` 社区性能测例，已补录 nodeid 和原始 warmup/rep/shape 方法。decompose-BMM/MM/
+  addmm 没有社区专用性能测例。
+
+### E-217：区分 NPU 显式关闭与 upstream device guard（2026-09-03）
+
+- 登记时间：2026-09-03 01:51 CST（UTC+08:00）。纠正 E-215 对 T-077 四项的过度归类：源码条件
+  未包含 NPU 只说明当前 capability 路径不成立，不等于产品/backend 显式 `disable`。
+- T-076 三类 pad 有 `triton_experimental.config.disable_pad_mm=True`，继续按显式关闭免测。T-077
+  B2B 是 upstream `b2b_gemm_pass=False` opt-in 配置加 CUDA/XPU profitability guard；decompose
+  BMM/MM/addmm 是空的默认 fusion options 加 CUDA/XPU/CPU device guard。torch_npu 均无对应 NPU
+  专属 disable，因此改为 `pending-capability-assessment-device-guarded`。
+- T-077 功能/comparison 仍为 5/5；性能改为 1/5 实测、4/5 待 capability，不能称为 5/5 性能完成。
+- Gumbel 性能是社区功能合同派生的 Pass/subgraph benchmark：host 覆盖已编译 callable 的调用、
+  launch 与同步，Event 覆盖设备区间；当前没有完整模型或应用级 full-model E2E benchmark。
+
+### E-218：T-077 capability 与性能处置 5/5 收束（2026-09-03）
+
+- 登记时间：2026-09-03 07:30 CST（UTC+08:00）。所有测试从 `/home/z50063656/tmp` 发起，导入前
+  固定 `TORCHINDUCTOR_NPU_BACKEND=triton_experimental`，使用空闲物理 NPU 0；未修改产品源码。
+- B2B：测试态补 NPU profitability capability view 与 upstream benchmarker NPU dispatch。社区
+  功能合同 4 正例/2 负例正确；12 个社区性能网格代表/边界点中 8 个 matcher 命中、4 个 heuristic
+  拒绝、融合模板获选 0 个。8 个点的最佳 Triton 候选比 fallback 慢 30.23%～116.30%，登记
+  `CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE`，不开放产品 guard。
+- decompose-BMM/MM/dynamic-addmm：社区无专用性能测例，严格复用功能正例 shape/dtype/容差，只增加
+  OFF/ON fresh-process 测量外壳。三项最小 ON 路径均命中且正确，但 Event p50 分别回退
+  15.07%、11.38%、758.05%，全部登记 `PERF_REGRESSED` 并保留 NPU guard。dynamic addmm 峰值
+  allocated 另增加 `3,119,066,624` bytes。
+- MM 两臂都应用 `dfbcc25` 等价 correctness guard，因此性能回退只归因于目标 decomposition；
+  `dfbcc25` 作为独立 lowering correctness 修复继续等待产品评审/合入。
+- T-077 性能最终为 measured=4、capability-assessed=1、pending=0。新增 B2B/decompose runner、聚合器、
+  结构化结果和一键复跑入口；T-078 可以进入下一批 acceptance units。

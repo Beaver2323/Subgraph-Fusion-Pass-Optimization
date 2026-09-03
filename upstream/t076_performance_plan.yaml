@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-03T01:07:00+08:00",
+  "task_id": "T-076",
+  "status": "performance-evidence-backfill-complete-with-backend-boundaries",
+  "policy": "目标优化可启用且通过功能门禁后才测性能；产品、设备或 backend 明确关闭时登记关闭依据并免测，不临时解除 gate。历史证据只有在冻结源码、输入合同、backend 与 gate 生命周期均一致时才能复用。",
+  "acceptance_units": [
+    {"acceptance_unit_id": "AU-post-grad-mm-plus-mm", "backend": "triton_experimental", "performance_status": "measured", "verdict": "representative-beneficial-with-neutral-layouts", "evidence": "report/p0_sweep_performance_20260820.md", "reuse_check": "backend/target entry/input family/fresh-process method aligned", "summary": "static contiguous 代表网格 6/8 的 p50 改善超过 10%；transposed 6.4%、dynamic 高样本 8.74%，均为 neutral 而非回退。"},
+    {"acceptance_unit_id": "AU-pad-mm-mm", "backend": "triton_experimental", "performance_status": "not-required-explicitly-disabled", "verdict": "product-disabled-performance-exempt", "reason": "T-076 当前 backend 同时保留 upstream NPU device gate 与 experimental disable_pad_mm；目标优化明确关闭，性能免测且不临时解除 gate。", "non_counting_historical_evidence": "report/t025_t026_pad_family_20260821.md", "non_counting_reason": "该 -72.65% 数据来自 default backend 的测试态 device-gate bypass，不得迁移成 experimental 结论。"},
+    {"acceptance_unit_id": "AU-pad-mm-bmm", "backend": "triton_experimental", "performance_status": "not-required-explicitly-disabled", "verdict": "product-disabled-performance-exempt", "reason": "T-076 当前 backend 同时保留 upstream NPU device gate 与 experimental disable_pad_mm；目标优化明确关闭，性能免测且不临时解除 gate。", "non_counting_historical_evidence": "report/t025_t026_pad_family_20260821.md", "non_counting_reason": "该 -65.31% 数据来自 default backend 的测试态 device-gate bypass，不得迁移成 experimental 结论。"},
+    {"acceptance_unit_id": "AU-pad-mm-addmm", "backend": "triton_experimental", "performance_status": "not-required-explicitly-disabled", "verdict": "product-disabled-performance-exempt", "reason": "T-076 当前 backend 同时保留 upstream NPU device gate 与 experimental disable_pad_mm；目标优化明确关闭，性能免测且不临时解除 gate。", "non_counting_historical_evidence": "report/t025_t026_pad_family_20260821.md", "non_counting_reason": "该 -120.63% 数据来自 default backend 的测试态 device-gate bypass，不得迁移成 experimental 结论。"},
+    {"acceptance_unit_id": "AU-post-grad-addmm", "backend": "triton_experimental", "performance_status": "measured", "verdict": "beneficial-with-host-tail-monitor", "evidence": "report/t058_experimental_addmm_gate_20260826.md", "installed_evidence": "docs/CHANGE_CONTROL.md::E-167", "reuse_check": "experimental backend/disable_addmm_fusion live gate/fresh-process method aligned; P-018 installed wheel separately revalidated", "summary": "三轮代表 cohort p50 中位数改善 22.17%、p99 改善 14.05%、allocated 不增；P-018 installed 复核仍保留 unaligned host p99 长尾。"}
+  ]
+}

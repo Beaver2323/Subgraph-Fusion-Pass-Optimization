@@ -1,6 +1,6 @@
 # T-077 NPU/comparison 闭环与修复验证报告
 
-> 更新时间：2026-09-02 22:54 CST（UTC+08:00）
+> 更新时间：2026-09-03 01:51 CST（UTC+08:00；校准性能 capability 口径）
 > PyTorch：`release/2.14@8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > torch_npu 基线：`master@83cc452480c3546fd5cccf853bfe3a360ce9dbfc`
 > NPU：Ascend910B2，backend=`triton_experimental`
@@ -13,7 +13,7 @@ T-077 已完成 5/5 acceptance units 的 GPU/reference → NPU → comparison �
 
 | acceptance unit | GPU reference | NPU 结果 | 单元结论 | 修复 |
 | --- | --- | --- | --- | --- |
-| `AU-apply-gumbel-max-trick` | 分布正例命中 1 次 | 同样命中 1 次，统计合同通过 | `BEHAVIOR_UNCHANGED` | 不需要 |
+| `AU-apply-gumbel-max-trick` | 分布正例命中 1 次 | 同样命中 1 次，统计合同通过 | 功能 `BEHAVIOR_UNCHANGED`；性能 `PERF_IMPROVED` | 不需要 |
 | `AU-b2b-gemm` | 4 正例命中、2 负例不命中 | 正例由 CUDA/XPU guard 拒绝，6/6 数值正确 | `EXPECTED_PRODUCT_DIVERGENCE` | 不需要 |
 | `AU-decompose-mem-bound-mm-decompose-bmm` | 正例分解、2 负例保持 bmm | 干净卡 3/3 正确；正例 guard 拒绝 | `EXPECTED_PRODUCT_DIVERGENCE` | 不需要 |
 | `AU-decompose-mem-bound-mm-decompose-mm` | 2 正例分解、4 阈值负例保持 mm | 目标 pass 均按产品边界处理；tiny-mm 负例暴露错误左梯度 | `NPU_REGRESSION` | 本地候选已验证 |
@@ -67,6 +67,18 @@ fix(inductor): guard NPU small-mm pointwise lowering
 
 ## 后续边界
 
-T-077 验证任务本身已完成。剩余动作是产品代码变更评审：获得授权后推送/合入候选，重新构建或安装
-正式 torch_npu 产物，并用同一六变体合同回归；只有正式合入后，才将该记录从
-`regressions/known_issues.yaml` 移入 `regressions/fixed_issues.yaml`。
+T-077 的功能/reference/comparison 与性能处置均已完成，性能 pending=0。修复支线的
+剩余动作是产品代码变更评审：获得授权后推送/合入候选，重新构建或安装正式 torch_npu 产物，并用
+同一六变体合同回归；只有正式合入后，才将该记录从 `regressions/known_issues.yaml` 移入
+`regressions/fixed_issues.yaml`。
+
+## 2026-09-03 性能补充
+
+性能阶段归入 T-077 本身。Gumbel 在同一 `triton_experimental` backend 下完成 OFF/ON 各三轮
+fresh process，host p50/p99 改善 45.79%/45.75%，NPU Event p50/p99 改善 46.69%/46.50%；
+六轮百万样本统计与 target counter 均通过。其他四个目标优化没有按显式关闭免测：B2B 最小适配
+功能 6/6 正确，但 12 个社区网格代表/边界点的融合模板获选为 0；decompose-BMM/MM/dynamic-addmm
+均形成合法 ON 路径并完成三轮 OFF/ON，结果全部 `PERF_REGRESSED`，故保留 NPU guard。
+decompose-MM 的负例 lowering correctness 修复仍独立跟踪，不因性能候选被拒绝而撤销。
+当前性能处置为 measured=4、capability-assessed=1、pending=0，功能/comparison 闭环仍为 5/5。
+完整方法与数据见 [`t076_t077_performance_20260903.md`](t076_t077_performance_20260903.md)。

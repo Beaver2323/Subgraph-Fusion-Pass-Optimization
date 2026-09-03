@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-03T07:08:02+08:00",
+  "task_id": "T-077",
+  "acceptance_unit_id": "AU-b2b-gemm",
+  "backend": "triton_experimental",
+  "status": "capability-assessed-no-effective-template",
+  "verdict": "CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE",
+  "product_source_modified": false,
+  "candidate_scope": [
+    "仅在探针中让 NPU FakeTensor 复用 upstream CUDA profitability heuristic",
+    "为 upstream TritonTemplate benchmarker 注册 NPU device-event dispatch",
+    "保留 upstream 12 个 Triton choices 与 unoptimized fallback 的原始 autotune 竞争"
+  ],
+  "functional_gate": {
+    "community_variants": 6,
+    "positive_matcher_passed": 4,
+    "negative_remained_unmatched": 2,
+    "template_selected": 0,
+    "correctness": "passed"
+  },
+  "community_performance_grid": {
+    "source_nodeids": [
+      "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_plain_b2b_gemm_performance",
+      "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_gelu_b2b_gemm_performance",
+      "test/inductor/test_b2b_gemm.py::B2BGEMMTest.test_gelu_mlp_b2b_gemm_performance"
+    ],
+    "full_grid_points": 90,
+    "upstream_heuristic_accepted_points": 26,
+    "upstream_heuristic_rejected_points": 64,
+    "executed_probe_points": 12,
+    "executed_accepted_points": 8,
+    "executed_rejected_points": 4,
+    "selected_template_points": 0,
+    "accepted_coverage": {
+      "plain": "3/12，覆盖 (128,16)、(256,32)、(512,16)",
+      "gelu": "3/12，覆盖 (128,16)、(256,32)、(512,16)",
+      "gelu_mlp": "2/2，覆盖全部可命中点 (128,16)、(128,64)"
+    }
+  },
+  "autotune_observations": [
+    {"workload": "plain", "m": 128, "n": 16, "fallback_ms": 0.00378, "best_triton_ms": 0.00584, "triton_slower_percent": 54.50},
+    {"workload": "plain", "m": 256, "n": 32, "fallback_ms": 0.00686, "best_triton_ms": 0.00904, "triton_slower_percent": 31.78},
+    {"workload": "plain", "m": 512, "n": 16, "fallback_ms": 0.00616, "best_triton_ms": 0.01068, "triton_slower_percent": 73.38},
+    {"workload": "gelu", "m": 128, "n": 16, "fallback_ms": 0.00580, "best_triton_ms": 0.01028, "triton_slower_percent": 77.24},
+    {"workload": "gelu", "m": 256, "n": 32, "fallback_ms": 0.00948, "best_triton_ms": 0.01382, "triton_slower_percent": 45.78},
+    {"workload": "gelu", "m": 512, "n": 16, "fallback_ms": 0.01006, "best_triton_ms": 0.02176, "triton_slower_percent": 116.30},
+    {"workload": "gelu_mlp", "m": 128, "n": 16, "fallback_ms": 0.00516, "best_triton_ms": 0.00672, "triton_slower_percent": 30.23},
+    {"workload": "gelu_mlp", "m": 128, "n": 64, "fallback_ms": 0.00566, "best_triton_ms": 0.00822, "triton_slower_percent": 45.23}
+  ],
+  "raw_artifacts": {
+    "root": "/home/z50063656/tmp/t077-b2b-community-grid-probe",
+    "availability": "control-node",
+    "note": "逐点 capability_result.json、generated_code.py、stdout/stderr 与 autotune stats"
+  },
+  "decision": "不形成放开 NPU device guard 的产品修复；当前已验证网格中融合模板均未获选，强制启用会造成 30.23%~116.30% 的候选内核回退。"
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "generated_at": "2026-09-02T21:22:00+08:00",
+  "generated_at": "2026-09-03T00:18:28+08:00",
   "acceptance_unit_id": "AU-apply-gumbel-max-trick",
   "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
   "reference": {
@@ -25,15 +25,15 @@
       "match_contract_aligned": true,
       "runtime_path": "triton",
       "correctness_status": "passed",
-      "performance_status": "not-applicable",
+      "performance_status": "passed",
       "comparison_basis": "same-upstream-contract",
       "verdict": "BEHAVIOR_UNCHANGED",
-      "note": "handler 无设备白名单，GPU/NPU 都执行等价 Gumbel-max 重写。"
+      "note": "handler 无设备白名单，GPU/NPU 都执行等价 Gumbel-max 重写；NPU experimental 同 backend 三轮 OFF/ON 的 host p50/p99 改善 45.79%/45.75%，详见 results/current/T-077/performance_summary.json。"
     }
   ],
-  "first_divergence": "none",
-  "root_cause": "该 pre-grad rewrite 只检查图结构、唯一用户和 exponential rate，不限制 CUDA/XPU。",
-  "recommended_action": "冻结 BEHAVIOR_UNCHANGED 基线并保留统计回归。",
-  "final_verdict": "BEHAVIOR_UNCHANGED",
+  "first_divergence": "performance",
+  "root_cause": "该 pre-grad rewrite 不限制 CUDA/XPU；命中后消除 softmax/isfinite/any 与概率除法链，generated wrapper 的主要 dispatch call 从 8 降为 6。",
+  "recommended_action": "冻结 PERF_IMPROVED 基线并保留百万样本统计正确性、OFF/ON counter 与 host/device 尾延迟回归。",
+  "final_verdict": "PERF_IMPROVED",
   "repair_status": "not-needed"
 }

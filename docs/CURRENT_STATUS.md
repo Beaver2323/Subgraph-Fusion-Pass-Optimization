@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
+> 更新时间：2026-09-03 07:30 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076 与 T-077 均正式闭环 5/5；T-077 MM lowering 修复已验证、尚未合入。
+> 当前阶段：T-076 已完成；T-077 功能/comparison 与性能处置均 5/5、pending=0；MM lowering 修复已验证、尚未合入。
 
 ## 1. 总结
 
@@ -41,6 +41,16 @@ small-mm pointwise 反向 lowering correctness 回归。本地候选 `dfbcc25` �
 site-packages 中 `disable_addmm_fusion=True`，所以 matrix/vector 从 GPU `2/4` 到安装态 NPU
 `0/0` 是显式产品 gate，结论修正为 `EXPECTED_PRODUCT_DIVERGENCE`。P-018 独立 wheel 已在冻结
 commit 上恢复正例 `2/4`，并保持四类负例 `0/0`，作为已验证候选单列。
+
+性能阶段已按任务内收束，不另立 T-078 补债。T-076 的 experimental 同后端证据为
+`mm_plus_mm` 与 P-018 addmm；三类 pad 由 `disable_pad_mm=True` 显式关闭，性能免测；旧 default
+backend 强制性能只作不计入诊断。T-077 Gumbel 已在 experimental 下完成 OFF/ON 各三轮，
+host p50/p99 改善 45.79%/45.75%，NPU Event p50/p99 改善 46.69%/46.50%，升级为
+`PERF_IMPROVED`。其余四项没有按“显式关闭免测”处理，而是完成测试态最小 capability：B2B 的
+4 正例 matcher 与 2 负例合同正确，但 12 个社区网格代表/边界点中融合模板获选为 0，正式记为
+`CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE`；decompose-BMM/MM/dynamic-addmm 均能命中并正确运行，
+但三轮 OFF/ON 分别形成 `PERF_REGRESSED`，因此保留现有 NPU guard。T-078 仅用于下一批新
+acceptance units。
 
 ## 2. 工作线吻合性
 
@@ -147,6 +157,8 @@ report/         不可改写的实验事实和 T-074 数据
 - `AU-post-grad-addmm` 已纠偏为 `EXPECTED_PRODUCT_DIVERGENCE`；P-018 default-enable/live-opt-out 候选已完成精确上游合同复验。
 - T-077 的 5 个单元、11 个 direct cases 和 17 个 variants 已完成 GPU/NPU 对照；MM 回归进入
   known issues，修复候选已验证。
+- T-076、T-077 性能处置均完成；T-077 为 measured=4、capability-assessed=1、pending=0。机器可读结果位于
+  `results/current/T-076/performance_summary.json` 与 `results/current/T-077/performance_summary.json`。
 
 仍未完成：48 个 `no-test-found` 和 29 个 indirect 单元的规模化人工审核，以及 T-077 MM 候选修复的
 产品代码评审/合入。P-018 是否并入正式产品属于候选变更评审，不再作为 T-076 未闭环回归。
@@ -154,9 +166,12 @@ report/         不可改写的实验事实和 T-074 数据
 ## 7. 下一条 Codex 任务
 
 ```text
-复核 T-077 MM 候选 `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`，经授权后推送/合入
-torch_npu；合入后把 `T077-decompose-mm-small-pointwise-backward` 从 known issues 移入
-fixed issues，并用同一六变体合同做一次安装态回归。随后继续审核 T-074 的 no-test-found/indirect 单元。
+T-077 修复支线：复核候选 `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`，经授权后推送/合入
+torch_npu，并用同一六变体合同做安装态回归。
+
+T-078 新批次：从 T-074 的 no-test-found/indirect inventory 反向审核并冻结下一批若干
+acceptance units；T-078 必须完整包含 reference、NPU、compare、条件 repair 与 performance，
+不得再用来承接 T-076/T-077 的遗留补测。
 ```
 
 ## 8. 当前环境边界

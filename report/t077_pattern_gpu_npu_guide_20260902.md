@@ -1,6 +1,6 @@
 # T-077 pattern 源码、意图与 GPU/NPU 行为对照
 
-> 更新时间：2026-09-02 22:54 CST（UTC+08:00）
+> 更新时间：2026-09-03 08:05 CST（UTC+08:00；补充命中、rewrite 与模板获选口径）
 > PyTorch：`release/2.14@8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > GPU reference：A100，11/11 direct cases valid，17/17 variants valid
 > NPU：Ascend910B2，`triton_experimental`；5/5 单元正式闭环；MM 发现 1 个 lowering 回归并已验证本地修复
@@ -34,10 +34,16 @@ def apply_gumbel_max_trick(match, softmax, rand_exp):
 
 | variant | GPU 行为 | NPU 行为 | 结论 |
 | --- | --- | --- | --- |
-| `distribution-positive` | 命中 1 次；`1000000x10` 采样频率满足 10% 相对容差 | 命中 1 次；实际/期望比 `0.9913~1.0044` | `BEHAVIOR_UNCHANGED` |
+| `distribution-positive` | 命中 1 次；`1000000x10` 采样频率满足 10% 相对容差 | 命中 1 次；实际/期望比 `0.9913~1.0044` | 功能 `BEHAVIOR_UNCHANGED`；性能 `PERF_IMPROVED` |
 
 该 handler 没有设备白名单，因此 NPU 能直接复用上游 rewrite；这里验证的是统计分布合同，不是逐元素
 随机结果相等。
+
+NPU 性能使用同一 `triton_experimental` backend、同一百万行输入，OFF/ON 各三个 fresh process，
+每轮 warmup 10、runs 100。ON 相对 OFF 的 host p50/p99 改善 45.79%/45.75%，NPU Event p50/p99
+改善 46.69%/46.50%。生成 wrapper 的主要 dispatch call 从 8 降为 6，符合删除
+softmax/isfinite/any 链的源码意图。完整 mean±stdev、峰值内存和原始哈希见
+[`t076_t077_performance_20260903.md`](t076_t077_performance_20260903.md)。
 
 ## 2. B2B GEMM
 
@@ -76,7 +82,14 @@ def b2b_gemm_handler(match, mat1, mat2):
 | `bad-shape-negative` | 100x100 非盈利 shape 不选 B2B | 不命中 | 不命中，原图正确 | `BEHAVIOR_UNCHANGED` |
 
 正例差异不能仅靠“数值正确”掩盖：NPU 的目标 counter 和左右 entrance marker 都是 0，首个分歧明确位于
-device guard。要支持 NPU 不只是把 `is_npu` 加进条件，还要证明 Ascend 模板及 autotune 收益。
+device guard。这里的 CUDA/XPU guard 是 capability 条件，不是 NPU 专属 `disable`。最小探针已让
+NPU 复用同一 profitability heuristic，并补齐 upstream `TritonTemplate` 的 NPU benchmark dispatch。
+功能 4 正例/2 负例全部正确，但正例都由 autotune 选择 unoptimized fallback。
+
+社区三条性能测例共 90 个 FP16 网格点；静态复算显示 heuristic 只接受 26 点。实际执行 12 个
+代表/边界点，8 点进入 autotune、4 点被 heuristic 拒绝、融合模板获选为 0。8 个可比点的最佳 Triton
+候选比 fallback 慢 30.23%～116.30%，所以正式性能处置是
+`CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE`，不形成放开 NPU guard 的产品修复。
 
 ## 3. memory-bound BMM decomposition
 
@@ -107,6 +120,8 @@ def decompose_bmm(match, mat1, mat2):
 
 NPU 的 3/3 合同是在执行前显示 `No running processes found in NPU 0` 的卡上完成，因而此前占用卡上的
 临时结果已被替代。正例的差异发生在 `should_decompose_bmm` device guard，而不是 lowering 或数值层。
+测试态最小适配可让正例 counter=1 且正确运行，但三轮 OFF/ON 的 host p50 回退 11.44%，NPU Event
+p50/p99 回退 15.07%/6.02%，性能 verdict 为 `PERF_REGRESSED`，因此保留 guard。
 
 ## 4. memory-bound MM decomposition
 
@@ -182,6 +197,10 @@ def _disable_small_mm_pointwise_on_npu():
 2/2 通过，且同一 MM 六变体 6/6 的 forward、left-grad、right-grad 误差全部为 0。补丁副本位于
 `issues/REF-decompose-mm-native/backend_fix_dfbcc25.patch`。
 
+在两臂均应用该 correctness guard 后，正例 `M=20480,K=5,N=2` 完成三轮 OFF/ON：host p50 回退
+7.24%，NPU Event p50/p99 回退 11.38%/1.62%。这说明目标 decomposition 本身在当前 NPU 上不盈利，
+应保留其 device guard；但它不否定 `dfbcc25` 对独立 lowering correctness 回归的修复价值。
+
 ## 5. dynamic addmm decomposition
 
 addmm 复用 `should_decompose_mm(mat1, mat2)`，replacement 在 multiply+sum 结果上加 bias。动态测例通过
@@ -204,14 +223,21 @@ def decompose_addmm(match, bias, mat1, mat2):
 
 这一项没有缩小 `M`，也没有关闭 dynamic。GPU 证明“该 optimization contract 应命中”，NPU 则证明
 “当前产品因 device guard 明确不命中，但 fallback 路径能够承载原始超大 workload”。
+测试态最小适配后 ON counter=1 且数值正确，但三轮数据表明 host p50/p99 回退
+691.73%/500.61%，NPU Event p50/p99 回退 758.05%/737.26%，峰值 allocated 增加约 3.12 GB。
+性能 verdict 为 `PERF_REGRESSED`，必须保留 dynamic NPU guard。
 
 ## 6. 阅读结论的方法
 
+- `PATTERN_MATCHED` 只表示 matcher/handler 被触发；`REWRITE_APPLIED` 表示 replacement 或
+  decomposition 已在 lowering/autotune 前改变 FX 图；`TEMPLATE_SELECTED` 才表示 autotune 最终
+  采用了目标融合模板。decompose 三项属于 rewrite 已生效但性能回退，B2B 属于 matcher 命中、候选
+  进入 autotune，但最终 fallback 获选，因此融合模板未生效。
 - `BEHAVIOR_UNCHANGED` 表示同一正向 rewrite 或负向 guard 在两端合同一致。
 - `EXPECTED_PRODUCT_DIVERGENCE` 表示有明确源码设备边界；它不是 correctness 失败，也不能自动变成
   “应删除 guard”的修复任务。
 - counter/marker 回答“目标 pattern 是否发生”，数值与梯度回答“实际路径是否正确”，两者不能互相替代。
-- T-077 五个单元均已正式闭环：Gumbel-max 命中一致；B2B、BMM、MM 正例和 dynamic addmm 在
-  NPU device guard 处分叉；相关负例通常保持一致。
+- T-077 五个单元均已正式闭环且性能处置 5/5：Gumbel-max 有益；B2B 无有效获选模板；BMM、MM、
+  dynamic addmm 的测试态 ON 路径均性能回退，因此四项都保留现有 NPU guard。
 - MM 的 `M=2048,K=N=2` 负例额外暴露了与目标 pattern 独立的 NPU lowering correctness 回归；
   修复已用同一 community contract 验证，但候选尚未推送/合入，因此仍保留在 known issues。

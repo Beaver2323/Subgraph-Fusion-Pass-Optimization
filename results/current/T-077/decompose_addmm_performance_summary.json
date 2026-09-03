@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-03T07:28:35+08:00",
+  "task_id": "T-077",
+  "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-addmm",
+  "backend": "triton_experimental",
+  "status": "measured-candidate-rejected",
+  "verdict": "PERF_REGRESSED",
+  "source": "community functional positive M=19494144,K=N=8 dynamic；社区无独立 performance test",
+  "method": "OFF/ON 各 3 个 fresh process，交错执行，warmup=5、runs=30；ON 仅测试态复用 CUDA dynamic shape policy。",
+  "off_median": {"host_p50_ms": 1.351065, "host_p99_ms": 1.8756313, "device_p50_ms": 1.23253, "device_p99_ms": 1.27090683, "max_allocated_bytes": 2495253504, "max_reserved_bytes": 2659188736},
+  "on_median": {"host_p50_ms": 10.69677, "host_p99_ms": 11.2652229, "device_p50_ms": 10.57574987, "device_p99_ms": 10.64079303, "max_allocated_bytes": 5614320128, "max_reserved_bytes": 5626658816},
+  "improvement_percent": {"host_p50": -691.72875, "host_p99": -500.60967, "device_p50": -758.05213, "device_p99": -737.25988},
+  "memory_delta_bytes": {"allocated": 3119066624, "reserved": 2967470080},
+  "raw_artifacts": {"root": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm", "summary_sha256": "9c910fe08beceaac394254e3a6186da9436fba1b5da827e22a0beae2984ed2a3"},
+  "decision": "正确性通过但时延与显存均显著回退，拒绝直接把 upstream CUDA dynamic shape policy 扩展到 NPU。"
+}

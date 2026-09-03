@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
-> 状态：T-076 与 T-077 均正式闭环 5/5；T-077 MM lowering 修复已验证、尚未推送/合入；GPU 指定任务一键入口已完成。
+> 更新时间：2026-09-03 08:05 CST（UTC+08:00）
+> 状态：T-076 已完成；T-077 功能/comparison 与性能处置均 5/5、pending=0；MM lowering 修复已验证、尚未推送/合入；T-078 可进入下一批新单元。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -85,7 +85,7 @@ GPU 机器没有 Agent，runner 必须可由人工一次执行完整批次。
 - [x] 保存 execution、预期 match/counter/FileCheck 断言及其社区测试内验证状态；
 - [x] 保存 FX before/after、artifact inventory 与归一化稳定 signature；
 - [x] 保存 correctness、runner error、stdout/stderr 和 structured trace；
-- [x] 功能与 artifact 门禁通过后才允许 benchmark；首批 benchmark 未配置；
+- [x] 目标优化可启用且功能/artifact 门禁通过后才允许 benchmark；明确关闭的单元直接免测；T-076 为 2 个同 backend 实测和 3 个关闭免测；
 - [x] 单个 case 失败、skip 或超时不终止整个 suite；
 - [x] 生成结构化 `reference_summary.json/.md`；
 - [x] 提供 GPU 人工操作说明：`git pull`、静态校验、整批/单 case、打包/回传；
@@ -121,7 +121,7 @@ T-076 已完成 reference、统一 NPU/comparison schema 和 5/5 单元结果落
 - [x] 使用 `options={"npu_backend": "triton_experimental"}`；
 - [x] 首批已执行 case 使用 fresh process 隔离 backend 与 pass-on/pass-off；
 - [x] 首个正式 comparison 采集 trigger/counter、FX、IR、generated code、fallback/graph-break；
-- [x] correctness 通过后才 benchmark；首轮未配置 benchmark 并显式记录；
+- [x] correctness 通过后才 benchmark；T-077 B2B 先做模板选模门禁，decompose 三项先通过正确性再执行 OFF/ON；
 - [ ] 实现 reference previous/current、NPU previous/current、reference/NPU 三组比较；
 - [x] schema 支持输出 `UPSTREAM_CHANGED`、`NPU_REGRESSION`、`NEWLY_SUPPORTED`、
   `PERF_IMPROVED`、`PERF_REGRESSED`、`BEHAVIOR_UNCHANGED`。
@@ -155,7 +155,19 @@ T-077 GPU 准备：
 - [x] 定位 decompose-MM 阈值负例的 small-mm pointwise 反向 lowering 回归；
 - [x] 在独立 torch_npu worktree 实现 NPU-only 幂等 guard，定向单测 2/2、完整 MM 合同 6/6 通过；
 - [x] 提供 GPU pull 后按 `T-076`/`T-077` 一键运行、自动识别 timestamp、自动文本导出与 `latest` 入口；
+- [x] T-077 Gumbel 在同一 `triton_experimental` backend 完成三轮 fresh-process OFF/ON；host p50/p99 改善 45.79%/45.75%；
+- [x] T-077 B2B/decompose 四项完成最小 capability 评估：B2B 0 个模板获选，decompose 三项均正确但性能回退，统一保留 NPU guard；
 - [ ] 评审并决定是否推送/合入本地候选 `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`。
+
+## P0-H：T-076/T-077 性能阶段
+
+- [x] T-xxx 任务定义为一批 acceptance units 的完整流程，不另建 T-078 承担前两批性能债；
+- [x] 历史性能复用必须同时匹配源码、输入、backend、gate 生命周期与测量方法；
+- [x] T-076 `mm_plus_mm` 与 P-018 addmm 复用 experimental 同后端实测；
+- [x] 三类 pad 的 default bypass 历史数据降为不计入诊断，不迁移成 experimental 结论；
+- [x] T-077 Gumbel 六个 fresh worker 正确性、counter、host/device timing 与峰值内存完整；
+- [x] 新增 `run_npu_performance_task.sh --task T-076|T-077`；
+- [x] T-077 性能处置 5/5：measured=4、capability-assessed=1、pending=0；未把 device guard 冒充显式关闭免测。
 
 ## P0-G：首批跟踪闭环
 
@@ -179,7 +191,8 @@ T-077 GPU 准备：
 
 ## P2：规模化与持续看护
 
-- [ ] 第一批扩展到 5～10 个已冻结 acceptance units，而不是“5～10 个 registration”；
+- [ ] T-078 从 no-test-found/indirect inventory 反向审核并冻结下一批若干 acceptance units；
+- [ ] T-078 内完整执行 reference → NPU → compare → 条件 repair → performance；
 - [ ] 建立 upstream source/test/mapping drift 检测；
 - [ ] 支持一条命令运行 NPU suite；
 - [ ] 支持一条命令生成 comparison report；
@@ -195,6 +208,7 @@ T-077 GPU 准备：
 5. [x] reference 有效后冻结首版 denominator，并启动 NPU 单 case 执行；
 6. [x] 执行 NPU、compare、failure classification（正式闭环 5/5）；
 7. [x] 复核 repair queue；`AU-post-grad-addmm` 纠偏为预期产品分歧，P-018 候选完成精确上游合同验证。
+8. [x] T-076、T-077 性能均已完成处置；T-078 留给下一批。
 
 ## 第一阶段完成标准
 

@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-02 23:32 CST（UTC+08:00）
+> 文档更新时间：2026-09-03 07:30 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -38,9 +38,13 @@
   `disable_addmm_fusion=True`，因此 GPU `2/4` 与安装态 NPU `0/0` 是
   `EXPECTED_PRODUCT_DIVERGENCE`；P-018 独立候选已恢复正例 `2/4` 并保留全部负例 `0/0`。
 - T-077 第二波 GPU reference 11/11 direct cases、17/17 variants 有效，NPU 5/5 单元正式闭环。
-  Gumbel 为 `BEHAVIOR_UNCHANGED`；B2B GEMM、decompose-BMM、dynamic addmm 为
+  Gumbel 功能为 `BEHAVIOR_UNCHANGED`，同 backend 性能最终为 `PERF_IMPROVED`；B2B GEMM、decompose-BMM、dynamic addmm 为
   `EXPECTED_PRODUCT_DIVERGENCE`；decompose-MM 发现 small-mm pointwise 反向 lowering 回归，
   本地候选 `dfbcc25` 已通过 2/2 定向单测和 6/6 合同回归，尚未推送/合入。
+- T-076 性能处置为 2 个 experimental 实测和 3 个显式关闭免测。T-077 性能处置也已 5/5：
+  Gumbel 为 `PERF_IMPROVED`，B2B 为 `CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE`，三个
+  decompose 最小候选均为 `PERF_REGRESSED` 并保留 NPU guard。default backend 历史结果不得迁移为
+  experimental verdict；T-078 可以进入下一批新 acceptance units。
 
 ## 统一术语
 
@@ -88,6 +92,7 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | T-076 GPU 静态校验、整批执行、重跑、二进制/文本回传说明 |
 | [docs/T077_REFERENCE_RUNNER_GPU.md](docs/T077_REFERENCE_RUNNER_GPU.md) | T-077 第二波 GPU 执行与文本回传说明 |
 | [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU pull 后按 T-076/T-077 指定任务一键运行；自动导出并维护 latest 入口 |
+| [report/t076_t077_performance_20260903.md](report/t076_t077_performance_20260903.md) | 两批性能处置、backend 门禁、B2B capability 与 T-077 四项 OFF/ON 实测 |
 | [report/t076_pattern_gpu_npu_guide_20260902.md](report/t076_pattern_gpu_npu_guide_20260902.md) | T-076 20 个 variants 的源码意图、GPU/NPU 行为与 P-018 候选导读 |
 | [report/t077_npu_completion_20260902.md](report/t077_npu_completion_20260902.md) | T-077 五单元闭环、MM 回归定位与修复验证摘要 |
 | [report/t077_pattern_gpu_npu_guide_20260902.md](report/t077_pattern_gpu_npu_guide_20260902.md) | T-077 每个 pattern/variant 的源码意图、GPU/NPU 行为和修复代码导读 |
@@ -115,7 +120,9 @@ FX signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.m
 `results/current/REF-mm-plus-mm-native/`。pad-mm 单元级 comparison 见
 `results/current/AU-pad-mm-mm/`。T-076 NPU 闭环汇总见
 `report/t076_npu_completion_20260902.md`。T-077 第二波 reference 和 NPU 5/5 comparison 也已完成；
-GPU 后续复跑统一使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077 --gpu ID`。
+GPU 后续复跑统一使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077 --gpu ID`。T-077 性能
+5/5 已处置、pending=0；下一步是评审并决定是否合入独立 correctness 修复 `dfbcc25`，随后启动
+T-078 下一批 acceptance units。
 
 ## 执行环境合同
 

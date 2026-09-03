@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-03T07:20:18+08:00",
+  "task_id": "T-077",
+  "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-bmm",
+  "backend": "triton_experimental",
+  "status": "measured-candidate-rejected",
+  "verdict": "PERF_REGRESSED",
+  "source": "community functional positive B=10240,M=K=N=2；社区无独立 performance test",
+  "method": "OFF/ON 各 3 个 fresh process，交错执行，warmup=10、runs=100；ON 仅测试态复用 CUDA shape policy。",
+  "off_median": {"host_p50_ms": 0.362585, "host_p99_ms": 0.4824616, "device_p50_ms": 0.25728999, "device_p99_ms": 0.29580621, "max_allocated_bytes": 21794304},
+  "on_median": {"host_p50_ms": 0.40405, "host_p99_ms": 0.4655443, "device_p50_ms": 0.29606, "device_p99_ms": 0.31361921, "max_allocated_bytes": 1642496},
+  "improvement_percent": {"host_p50": -11.43594, "host_p99": 3.50646, "device_p50": -15.06860, "device_p99": -6.02185},
+  "raw_artifacts": {"root": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm", "summary_sha256": "54f8087d1c8ff1417e82e8491a84f44b14587dd6ebe2b02cba70145c78514b33"},
+  "decision": "正确性通过但时延回退，拒绝直接把 upstream CUDA device policy 扩展到 NPU。"
+}
