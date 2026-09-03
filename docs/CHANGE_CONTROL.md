@@ -3527,3 +3527,17 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   `dfbcc25` 作为独立 lowering correctness 修复继续等待产品评审/合入。
 - T-077 性能最终为 measured=4、capability-assessed=1、pending=0。新增 B2B/decompose runner、聚合器、
   结构化结果和一键复跑入口；T-078 可以进入下一批 acceptance units。
+
+### E-219：T-078 第三批映射审核与 GPU 入口（2026-09-03）
+
+- 登记时间：2026-09-03 08:05 CST（UTC+08:00）。从 T-074 `no-test-found`/indirect inventory
+  反向复核冻结 PyTorch 源码和 community tests，选择 addcdiv→FMA、partial reduction reuse、
+  addmm bias unfuse、baddbmm bias unfuse 四个独立 acceptance units。
+- `_fuse_addcdiv_to_fma` 从 `no-test-found` 纠正为两条 direct CUDA/Triton tests；旧索引把
+  `pointless_view` 错误映射到 `pointless_view_pair`，该项保持 needs-review，不进入 T-078；addmm 与
+  baddbmm 测试不再交叉充数。
+- 新增 `t078_manifest.yaml`、`t078_reference_plan.yaml`、中文映射报告和 GPU 操作说明；计划为
+  4 units、12 direct cases、20 variants，静态校验 `torch_imported=0/gpu_executed=0`。
+- reference runner 静态识别 `copy_tests(Source, Target, device)` 生成的社区 GPU 测试类；不导入 torch。
+  统一 GPU 一键入口扩展为 `--task T-078`，继续自动维护 `latest` 和
+  `latest-text-handoff.json`，无需人工寻找 timestamp。

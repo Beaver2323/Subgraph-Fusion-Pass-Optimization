@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-078",
+  "generated_at": "2026-09-03T08:05:00+08:00",
+  "status": "prepared-awaiting-direct-gpu-execution",
+  "manifest": {
+    "path": "upstream/t078_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "TORCH_COMPILE_DEBUG and TORCH_TRACE per case",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600
+  },
+  "cases": [
+    {
+      "case_id": "REF-addcdiv-fma-bitwise-native",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal",
+      "tracking_mode": "direct",
+      "variant_ids": ["value-one-bitwise-positive", "scaled-value-bitwise-positive"],
+      "expected_match": true,
+      "expected_assertions": ["value=1 与 value=2 均执行原生 addcdiv 重融合路径", "compiled 与 eager bitwise equal"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-addcdiv-fma-codegen-native",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn",
+      "tracking_mode": "direct",
+      "variant_ids": ["fma-div-rn-codegen-positive"],
+      "expected_match": true,
+      "expected_assertions": ["in-process 编译时 addcdiv_fma_fused=1", "generated code 包含 tl.fma", "generated code 包含 triton.language.div_rn"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-partial-reuse-positive-native",
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_successful_partial_reuse",
+      "tracking_mode": "direct",
+      "direct_args": [
+        "TestPatternMatcher.test_successful_partial_reuse_case0",
+        "TestPatternMatcher.test_successful_partial_reuse_case1",
+        "TestPatternMatcher.test_successful_partial_reuse_case2"
+      ],
+      "variant_ids": ["amax-amax-large-positive", "amin-min-large-positive", "amax-max-large-positive"],
+      "expected_match": true,
+      "expected_assertions": ["三个参数化大输入均执行", "每个参数化分支 partial_reduction_reuse=1", "compiled partial/full 输出与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-partial-reuse-negative-native",
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unsuccessful_partial_reuse",
+      "tracking_mode": "direct",
+      "direct_args": [
+        "TestPatternMatcher.test_unsuccessful_partial_reuse_case0",
+        "TestPatternMatcher.test_unsuccessful_partial_reuse_case1"
+      ],
+      "variant_ids": ["small-numel-negative", "dynamic-input-negative"],
+      "expected_match": false,
+      "expected_assertions": ["4x8 静态分支与 2048x64 dynamic 分支均执行", "两个分支 partial_reduction_reuse=0", "compiled partial/full 输出与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-unfuse-addmm-core-native",
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_bias_addmm",
+      "tracking_mode": "direct",
+      "variant_ids": ["gelu-consumer-positive", "view-gelu-consumer-positive", "no-pointwise-consumer-negative"],
+      "expected_match": "mixed",
+      "expected_assertions": ["无 pointwise consumer 时 generated code 保留 extern addmm", "GELU 与 view+GELU 两条路径 generated code 不含 extern addmm", "社区测试内完成编译与执行"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-unfuse-addmm-accumulator-negative-native",
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_preserve_accumulator_addmm_with_pointwise",
+      "tracking_mode": "direct",
+      "variant_ids": ["computed-accumulator-negative"],
+      "expected_match": false,
+      "expected_assertions": ["sin 计算得到的 accumulator 不被当作 bias-like leaf", "generated code 保留 extern addmm", "compiled 与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-unfuse-addmm-leaf-native",
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_same_shape_leaf_bias_addmm",
+      "tracking_mode": "direct",
+      "variant_ids": ["same-shape-leaf-positive"],
+      "expected_match": true,
+      "expected_assertions": ["同 shape Parameter leaf bias 允许拆分", "generated code 不含 extern addmm", "compiled 与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-unfuse-addmm-expanded-native",
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_expanded_bias_addmm",
+      "tracking_mode": "direct",
+      "variant_ids": ["expanded-bias-positive"],
+      "expected_match": true,
+      "expected_assertions": ["stride-0 expanded bias 允许拆分", "generated code 不含 extern addmm", "compiled 与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-unfuse-addmm-half-preserve-native",
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_bias_addmm_half_dtypes",
+      "tracking_mode": "direct",
+      "direct_args": [
+        "TestPatternMatcher.test_unfuse_bias_addmm_half_dtypes_bfloat16",
+        "TestPatternMatcher.test_unfuse_bias_addmm_half_dtypes_float16"
+      ],
+      "variant_ids": ["half-dtype-preserve-negative"],
+      "expected_match": false,
+      "expected_assertions": ["bf16 与 fp16 两个参数化分支均执行", "keep_addmm_fused_for_half_dtypes=true", "generated code 保留 extern addmm"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-unfuse-addmm-half-enabled-native",
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_bias_addmm_half_dtypes_when_flag_disabled",
+      "tracking_mode": "direct",
+      "direct_args": [
+        "TestPatternMatcher.test_unfuse_bias_addmm_half_dtypes_when_flag_disabled_bfloat16",
+        "TestPatternMatcher.test_unfuse_bias_addmm_half_dtypes_when_flag_disabled_float16"
+      ],
+      "variant_ids": ["half-dtype-gate-disabled-positive"],
+      "expected_match": true,
+      "expected_assertions": ["bf16 与 fp16 两个参数化分支均执行", "keep_addmm_fused_for_half_dtypes=false", "generated code 不含 extern addmm"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-unfuse-baddbmm-core-native",
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_broadcast_bias_baddbmm",
+      "tracking_mode": "direct",
+      "variant_ids": ["broadcast-gelu-positive", "expanded-bias-relu-positive", "no-pointwise-consumer-negative"],
+      "expected_match": "mixed",
+      "expected_assertions": ["无 pointwise consumer 时保留 extern baddbmm", "GELU 与 expanded-bias ReLU 路径不含 extern baddbmm", "拆分正例保留 extern bmm 且数值正确"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-unfuse-baddbmm-alpha-beta-native",
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_broadcast_bias_baddbmm_alpha_beta",
+      "tracking_mode": "direct",
+      "variant_ids": ["alpha-beta-positive"],
+      "expected_match": true,
+      "expected_assertions": ["alpha=0.8 与 beta=0.2 语义保持", "generated code 不含 extern baddbmm", "generated code 包含 extern bmm 且 compiled/eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    }
+  ],
+  "non_executed_variants": []
+}

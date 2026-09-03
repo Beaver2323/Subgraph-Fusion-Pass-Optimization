@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-03 07:30 CST（UTC+08:00）
+> 文档更新时间：2026-09-03 08:05 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -44,7 +44,10 @@
 - T-076 性能处置为 2 个 experimental 实测和 3 个显式关闭免测。T-077 性能处置也已 5/5：
   Gumbel 为 `PERF_IMPROVED`，B2B 为 `CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE`，三个
   decompose 最小候选均为 `PERF_REGRESSED` 并保留 NPU guard。default backend 历史结果不得迁移为
-  experimental verdict；T-078 可以进入下一批新 acceptance units。
+  experimental verdict。
+- T-078 已从 no-test-found/indirect inventory 人工复核出 4 个新 acceptance units：addcdiv→FMA、
+  partial reduction reuse、addmm bias unfuse、baddbmm bias unfuse；12 个 direct community cases、
+  20 个 variants 和 GPU 一键入口均已准备，当前等待 GPU reference，不计入冻结 denominator。
 
 ## 统一术语
 
@@ -91,11 +94,13 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/GUIDE.md](docs/GUIDE.md) | 机制说明与历史案例阅读指南 |
 | [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | T-076 GPU 静态校验、整批执行、重跑、二进制/文本回传说明 |
 | [docs/T077_REFERENCE_RUNNER_GPU.md](docs/T077_REFERENCE_RUNNER_GPU.md) | T-077 第二波 GPU 执行与文本回传说明 |
-| [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU pull 后按 T-076/T-077 指定任务一键运行；自动导出并维护 latest 入口 |
+| [docs/T078_REFERENCE_RUNNER_GPU.md](docs/T078_REFERENCE_RUNNER_GPU.md) | T-078 第三批 GPU 执行、case 列表与文本回传说明 |
+| [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU pull 后按 T-076/T-077/T-078 指定任务一键运行；自动导出并维护 latest 入口 |
 | [report/t076_t077_performance_20260903.md](report/t076_t077_performance_20260903.md) | 两批性能处置、backend 门禁、B2B capability 与 T-077 四项 OFF/ON 实测 |
 | [report/t076_pattern_gpu_npu_guide_20260902.md](report/t076_pattern_gpu_npu_guide_20260902.md) | T-076 20 个 variants 的源码意图、GPU/NPU 行为与 P-018 候选导读 |
 | [report/t077_npu_completion_20260902.md](report/t077_npu_completion_20260902.md) | T-077 五单元闭环、MM 回归定位与修复验证摘要 |
 | [report/t077_pattern_gpu_npu_guide_20260902.md](report/t077_pattern_gpu_npu_guide_20260902.md) | T-077 每个 pattern/variant 的源码意图、GPU/NPU 行为和修复代码导读 |
+| [report/t078_mapping_review_20260903.md](report/t078_mapping_review_20260903.md) | T-078 四单元映射修正、源码意图、12 cases/20 variants 与 GPU 前置合同 |
 | [docs/CHANGE_CONTROL.md](docs/CHANGE_CONTROL.md) | 环境、产品代码、文档和交付变更记录 |
 | [docs/HISTORY.md](docs/HISTORY.md) | 已完成成果、失败与中性尝试索引 |
 | [docs/requirements/20260831_requirement_change.md](docs/requirements/20260831_requirement_change.md) | 8 月 31 日需求合同与决策 |
@@ -120,9 +125,9 @@ FX signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.m
 `results/current/REF-mm-plus-mm-native/`。pad-mm 单元级 comparison 见
 `results/current/AU-pad-mm-mm/`。T-076 NPU 闭环汇总见
 `report/t076_npu_completion_20260902.md`。T-077 第二波 reference 和 NPU 5/5 comparison 也已完成；
-GPU 后续复跑统一使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077 --gpu ID`。T-077 性能
-5/5 已处置、pending=0；下一步是评审并决定是否合入独立 correctness 修复 `dfbcc25`，随后启动
-T-078 下一批 acceptance units。
+GPU 后续统一使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077|T-078 --gpu ID`。T-077 性能
+5/5 已处置、pending=0；T-078 已完成静态准备，下一步是在 GPU 执行 12 个原生 community cases。
+独立 correctness 修复 `dfbcc25` 继续等待产品代码评审授权，不与 T-078 reference 混合。
 
 ## 执行环境合同
 

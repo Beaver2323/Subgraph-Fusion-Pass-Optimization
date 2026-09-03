@@ -1,8 +1,8 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
+> 更新时间：2026-09-03 08:05 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
-> 当前任务：`T-076`、`T-077`
+> 当前任务：`T-076`、`T-077`、`T-078`
 
 ## 1. pull 后一键运行
 
@@ -13,7 +13,7 @@ export TRACKER_ROOT=/data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization
 git -C "${TRACKER_ROOT}" pull --ff-only origin main
 
 bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
-  --task T-077 \
+  --task T-078 \
   --gpu 2
 ```
 
@@ -32,10 +32,10 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 
 ## 2. 不再手工寻找 timestamp
 
-T-077 完成后固定使用：
+T-078 完成后固定使用：
 
 ```bash
-export RESULT_ROOT=/data/z50063656/tmp/t077-reference-results
+export RESULT_ROOT=/data/z50063656/tmp/t078-reference-results
 
 ls -l "${RESULT_ROOT}/latest"
 ls -l "${RESULT_ROOT}/latest-text-handoff.json"
@@ -50,7 +50,7 @@ sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
 - 控制台仍打印真实 `run_dir=` 和 `text_handoff=`，便于审计；
 - 新一轮执行会原子更新软链接，不删除旧的带时间戳结果。
 
-T-076 对应目录为 `/data/z50063656/tmp/t076-reference-results`，规则相同。
+T-076/T-077 分别对应 `t076-reference-results`、`t077-reference-results`，规则相同。
 
 ## 3. 任务选择
 
@@ -59,13 +59,14 @@ T-076 对应目录为 `/data/z50063656/tmp/t076-reference-results`，规则相�
 ```bash
 bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-076 --gpu 2
 bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-077 --gpu 2
+bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 ```
 
 只做静态校验，不需要 GPU 编号：
 
 ```bash
 bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
-  --task T-077 \
+  --task T-078 \
   --validate-only
 ```
 
@@ -84,6 +85,7 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 | --- | --- | --- |
 | `T-076` | `scripts/run_reference_all.sh` | `/data/z50063656/tmp/t076-reference-results` |
 | `T-077` | `scripts/run_t077_reference_all.sh` | `/data/z50063656/tmp/t077-reference-results` |
+| `T-078` | `scripts/run_t078_reference_all.sh` | `/data/z50063656/tmp/t078-reference-results` |
 
 ## 4. 路径覆盖
 

@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
 > 更新时间：2026-09-03 08:05 CST（UTC+08:00）
-> 状态：T-076 已完成；T-077 功能/comparison 与性能处置均 5/5、pending=0；MM lowering 修复已验证、尚未推送/合入；T-078 可进入下一批新单元。
+> 状态：T-076/T-077 已完成；T-078 已审核 4 个新单元并准备 12 cases/20 variants，等待 GPU reference；MM lowering 修复已验证、尚未推送/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -191,7 +191,9 @@ T-077 GPU 准备：
 
 ## P2：规模化与持续看护
 
-- [ ] T-078 从 no-test-found/indirect inventory 反向审核并冻结下一批若干 acceptance units；
+- [x] T-078 从 no-test-found/indirect inventory 反向审核 4 个 acceptance units，修正 addcdiv no-test 与 addmm/baddbmm 混映射；
+- [x] T-078 建立 12 个 direct community cases、20 个 variants、独立 manifest/reference plan 与 GPU 一键入口；
+- [ ] GPU 执行 T-078 12/12 direct cases；全部 reference valid 后冻结 4 个单元；
 - [ ] T-078 内完整执行 reference → NPU → compare → 条件 repair → performance；
 - [ ] 建立 upstream source/test/mapping drift 检测；
 - [ ] 支持一条命令运行 NPU suite；
@@ -209,6 +211,7 @@ T-077 GPU 准备：
 6. [x] 执行 NPU、compare、failure classification（正式闭环 5/5）；
 7. [x] 复核 repair queue；`AU-post-grad-addmm` 纠偏为预期产品分歧，P-018 候选完成精确上游合同验证。
 8. [x] T-076、T-077 性能均已完成处置；T-078 留给下一批。
+9. [x] T-078 静态映射与 GPU runner 准备完成；等待 GPU 人工执行并回传 latest 文本 handoff。
 
 ## 第一阶段完成标准
 

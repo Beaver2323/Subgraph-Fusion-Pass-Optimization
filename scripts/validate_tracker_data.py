@@ -53,6 +53,25 @@ def python_qualnames(path: Path) -> set[str]:
             self._visit_function(node)
 
     Visitor().visit(tree)
+
+    # PyTorch 的部分社区测试通过 copy_tests(Source, Target, device) 将模板类
+    # 动态复制为可执行 GPU 类；静态验证在不导入 torch 的前提下展开这些名称。
+    for node in ast.walk(tree):
+        if not (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "copy_tests"
+            and len(node.args) >= 2
+            and isinstance(node.args[0], ast.Name)
+            and isinstance(node.args[1], ast.Name)
+        ):
+            continue
+        source = node.args[0].id
+        target = node.args[1].id
+        source_prefix = f"{source}."
+        for qualname in list(result):
+            if qualname.startswith(source_prefix):
+                result.add(f"{target}.{qualname.removeprefix(source_prefix)}")
     return result
 
 
