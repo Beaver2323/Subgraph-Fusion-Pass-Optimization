@@ -1,6 +1,6 @@
 # T-078 第三批 acceptance-unit 映射审核
 
-> 更新时间：2026-09-03 08:05 CST（UTC+08:00）
+> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
 > PyTorch：`release/2.14@8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > 状态：4 个单元、12 个 direct community cases、20 个 variants 已静态冻结映射，等待 GPU reference
 
@@ -25,12 +25,13 @@ T-078 从 T-074 的 `no-test-found` 与 `indirect-regression-test` 集合反向�
 
 旧静态索引没有找到 `_fuse_addcdiv_to_fma` 的测试。冻结 commit 实际已经包含：
 
-- `GPUTests.test_addcdiv_fma_bitwise_equal`：验证 `value=1/2` 两分支 bitwise equal；
-- `GPUTests.test_addcdiv_fma_uses_fma_and_div_rn`：验证 counter、`tl.fma` 和
+- `GPUTests.test_addcdiv_fma_bitwise_equal_cuda`：验证 `value=1/2` 两分支 bitwise equal；
+- `GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda`：验证 counter、`tl.fma` 和
   `triton.language.div_rn`。
 
 这些测试由 `copy_tests(CommonTemplate, GPUTests, GPU_TYPE)` 动态生成。reference runner 的静态
-qualname 检查已支持这种社区写法，无需导入 torch，也不把模板类误当可执行类。
+qualname 检查按社区 `copy_tests` 语义追加 `_cuda` 后缀，无需导入 torch，也不把模板类或不存在的
+无后缀方法误当可执行入口。
 
 ### 2.2 addmm 与 baddbmm 必须拆开
 

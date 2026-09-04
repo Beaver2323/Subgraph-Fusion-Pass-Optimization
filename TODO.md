@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-03 08:05 CST（UTC+08:00）
-> 状态：T-076/T-077 已完成；T-078 已审核 4 个新单元并准备 12 cases/20 variants，等待 GPU reference；MM lowering 修复已验证、尚未推送/合入。
+> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
+> 状态：T-076/T-077 已完成；T-078～T-080 共准备 11 个新单元、29 cases、47 variants，等待 GPU reference；MM lowering 修复已验证、尚未推送/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -193,8 +193,14 @@ T-077 GPU 准备：
 
 - [x] T-078 从 no-test-found/indirect inventory 反向审核 4 个 acceptance units，修正 addcdiv no-test 与 addmm/baddbmm 混映射；
 - [x] T-078 建立 12 个 direct community cases、20 个 variants、独立 manifest/reference plan 与 GPU 一键入口；
+- [x] 修正 `copy_tests` 静态展开：真实 GPU 方法追加 `_cuda`，并纠正 T-078 两个 addcdiv nodeid；
+- [x] T-079 建立 4 个单元、4 个 direct cases、14 个 variants，覆盖 bmm→mm 与三类 cat/split 合同；
+- [x] T-080 建立 3 个单元、13 个 direct cases、13 个 variants，覆盖 const-scatter、prepare-softmax 与 constructor mover；
 - [ ] GPU 执行 T-078 12/12 direct cases；全部 reference valid 后冻结 4 个单元；
+- [ ] GPU 执行 T-079 4/4 direct cases；全部 reference valid 后冻结 4 个单元；
+- [ ] GPU 执行 T-080 13/13 direct cases；全部 reference valid 后冻结 3 个单元；
 - [ ] T-078 内完整执行 reference → NPU → compare → 条件 repair → performance；
+- [ ] T-079/T-080 分别完成 reference → NPU → compare → 条件 repair → performance；
 - [ ] 建立 upstream source/test/mapping drift 检测；
 - [ ] 支持一条命令运行 NPU suite；
 - [ ] 支持一条命令生成 comparison report；
@@ -212,6 +218,7 @@ T-077 GPU 准备：
 7. [x] 复核 repair queue；`AU-post-grad-addmm` 纠偏为预期产品分歧，P-018 候选完成精确上游合同验证。
 8. [x] T-076、T-077 性能均已完成处置；T-078 留给下一批。
 9. [x] T-078 静态映射与 GPU runner 准备完成；等待 GPU 人工执行并回传 latest 文本 handoff。
+10. [x] T-079/T-080 静态映射、独立 runner 与一键任务入口准备完成；GPU 按 T-078→T-079→T-080 顺序执行即可。
 
 ## 第一阶段完成标准
 

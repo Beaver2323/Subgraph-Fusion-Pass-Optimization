@@ -1,7 +1,7 @@
 # Upstream Contract 与 Acceptance Unit 数据
 
-> 更新时间：2026-09-03 08:05 CST（UTC+08:00）
-> 状态：T-076/T-077 已完成；T-078 的 4 units/12 cases/20 variants 已静态准备，等待 GPU reference。
+> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
+> 状态：T-076/T-077 已完成；T-078～T-080 共 11 units/29 cases/47 variants 已静态准备，等待 GPU reference。
 
 本目录保存 tracker 的活动数据入口：
 
@@ -15,6 +15,8 @@
 - `t077_reference_plan.yaml`：T-077 的 11 个 direct cases 与精确参数化入口；
 - `t078_manifest.yaml`：第三批 4 个已人工审核、等待 reference 的 acceptance units；
 - `t078_reference_plan.yaml`：T-078 的 12 个 direct cases 与 20 个 variants；
+- `t079_manifest.yaml`、`t079_reference_plan.yaml`：T-079 的 4 个矩阵/cat-split 单元、4 cases 与 14 variants；
+- `t080_manifest.yaml`、`t080_reference_plan.yaml`：T-080 的 3 个访存/softmax/constructor 单元、13 cases 与 13 variants；
 - `t076_performance_plan.yaml`、`t077_performance_plan.yaml`：同 backend 性能实测、显式关闭免测、
   capability 评估与候选拒绝依据；
 - `../scripts/validate_tracker_data.py`：零第三方依赖的一致性检查。
@@ -42,6 +44,8 @@ Python 标准库 `json` 解析，避免 GPU 机器额外安装 PyYAML。
   decompose-MM 的 lowering 回归保留在 known issues，候选修复已通过同合同回归。
 - T-078 的 4 个单元仍为 `pending-reference`，不计入冻结 denominator；旧索引中 addcdiv
   `no-test-found` 已纠正，pointless_view/pair 错误映射未进入本批。
+- T-079/T-080 的 7 个单元同样为 `pending-reference`；T-080 又纠正 const-scatter 与 constructor
+  mover 两个 `no-test-found`，并登记社区 CrossEntropy/softmax 性能方法供功能门禁后复用。
 - 性能处置不改变 denominator：T-076 为 2 measured + 3 exempt-explicitly-disabled；T-077 为
   4 measured + 1 capability-assessed-no-effective-template，pending=0。device guard 未包含 NPU
   没有被直接当成显式 disable，而是完成最小适配与收益评估；
@@ -66,3 +70,6 @@ T-077 使用独立入口 `scripts/run_t077_reference_all.sh`，人工说明见
 [`T077_REFERENCE_RUNNER_GPU.md`](../docs/T077_REFERENCE_RUNNER_GPU.md)。
 T-078 使用 `scripts/run_t078_reference_all.sh`，人工说明见
 [`T078_REFERENCE_RUNNER_GPU.md`](../docs/T078_REFERENCE_RUNNER_GPU.md)。
+T-079/T-080 使用同名独立 runner，人工说明见
+[`T079_REFERENCE_RUNNER_GPU.md`](../docs/T079_REFERENCE_RUNNER_GPU.md) 与
+[`T080_REFERENCE_RUNNER_GPU.md`](../docs/T080_REFERENCE_RUNNER_GPU.md)。

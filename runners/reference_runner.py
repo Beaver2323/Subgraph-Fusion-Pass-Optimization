@@ -112,24 +112,35 @@ def python_qualnames(path: Path) -> set[str]:
     Visitor().visit(tree)
 
     # Some PyTorch community suites define reusable tests on a template class and
-    # materialize the runnable GPU class with copy_tests(Source, Target, device).
-    # Expand those names statically so validation still avoids importing torch.
+    # materialize the runnable GPU class with copy_tests(Source, Target, suffix).
+    # copy_tests appends the suffix to every method name.  Resolve the CUDA name
+    # statically so validation still avoids importing torch.
     for node in ast.walk(tree):
         if not (
             isinstance(node, ast.Call)
             and isinstance(node.func, ast.Name)
             and node.func.id == "copy_tests"
-            and len(node.args) >= 2
+            and len(node.args) >= 3
             and isinstance(node.args[0], ast.Name)
             and isinstance(node.args[1], ast.Name)
         ):
             continue
         source = node.args[0].id
         target = node.args[1].id
+        suffix_arg = node.args[2]
+        if isinstance(suffix_arg, ast.Constant) and isinstance(
+            suffix_arg.value, str
+        ):
+            suffix = suffix_arg.value
+        elif isinstance(suffix_arg, ast.Name) and suffix_arg.id == "GPU_TYPE":
+            suffix = "cuda"
+        else:
+            continue
         source_prefix = f"{source}."
         for qualname in list(result):
             if qualname.startswith(source_prefix):
-                result.add(f"{target}.{qualname.removeprefix(source_prefix)}")
+                method = qualname.removeprefix(source_prefix)
+                result.add(f"{target}.{method}_{suffix}")
     return result
 
 

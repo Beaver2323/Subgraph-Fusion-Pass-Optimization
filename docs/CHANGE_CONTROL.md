@@ -3541,3 +3541,20 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - reference runner 静态识别 `copy_tests(Source, Target, device)` 生成的社区 GPU 测试类；不导入 torch。
   统一 GPU 一键入口扩展为 `--task T-078`，继续自动维护 `latest` 和
   `latest-text-handoff.json`，无需人工寻找 timestamp。
+
+### E-220：修正 copy_tests 入口并准备 T-079/T-080（2026-09-04）
+
+- 登记时间：2026-09-04 08:55 CST（UTC+08:00）。复核 PyTorch `copy_tests` 实现后确认动态复制的
+  方法名会追加 suffix；原静态解析错误地接受了 T-078 两个不存在的无后缀 addcdiv 方法。
+- reference runner 与 tracker validator 改为静态解析第三个 suffix 参数；`GPU_TYPE` 在 CUDA
+  reference 合同下展开为 `_cuda`。T-078 manifest/plan 已纠正两个 nodeid，避免 GPU 运行得到
+  `NO_TESTS`。
+- T-079 人工审核 4 个合同：batch=1 bmm→mm、cat-slice-cat、split→cat 消除和 cat→split 消除；
+  建立 4 个 direct cases、14 个 variants。
+- T-080 人工审核 3 个合同：const-scatter pointwise 改写、prepare-softmax online primitive、CPU
+  constructor 安全迁移；建立 13 个 direct cases、13 个 variants。const-scatter 的 CrossEntropy
+  E2E 和 prepare-softmax 的 `DO_PERF_TEST` 方法登记为后续社区性能来源。
+- prepare-softmax 的 cuda/xpu device guard 仅登记为 `capability-pending`，不是 NPU 产品显式
+  disable；NPU 动态、修复验证与性能仍要求在导入前选择 `triton_experimental` 并使用 fresh process。
+- GPU 一键入口扩展为 `T-076`～`T-080`，各任务继续维护独立 `latest` 与
+  `latest-text-handoff.json`。本轮仅完成零设备静态验证，未在控制节点运行 GPU/NPU。

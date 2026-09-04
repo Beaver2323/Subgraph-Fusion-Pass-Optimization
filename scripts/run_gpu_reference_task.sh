@@ -13,11 +13,13 @@ usage() {
     cat <<'EOF'
 用法：
   bash scripts/run_gpu_reference_task.sh --task T-078 --gpu 2
+  bash scripts/run_gpu_reference_task.sh --task T-079 --gpu 2
+  bash scripts/run_gpu_reference_task.sh --task T-080 --gpu 2
   bash scripts/run_gpu_reference_task.sh --task T-076 --gpu 2 --case REF-mm-plus-mm-native
   bash scripts/run_gpu_reference_task.sh --task T-078 --validate-only
 
 参数：
-  --task T-076|T-077|T-078   必填，选择已登记的 GPU reference 任务
+  --task T-076|T-077|T-078|T-079|T-080   必填，选择已登记的 GPU reference 任务
   --gpu ID             实际运行时使用的物理 GPU 编号；也可预先设置 CUDA_VISIBLE_DEVICES
   --case CASE_ID       可选，只运行指定 case
   --validate-only      只做零设备静态校验
@@ -75,8 +77,18 @@ case "${task_id}" in
         task_runner="${tracker_root}/scripts/run_t078_reference_all.sh"
         result_root="${data_root}/tmp/t078-reference-results"
         ;;
+    T-079|T079)
+        task_id="T-079"
+        task_runner="${tracker_root}/scripts/run_t079_reference_all.sh"
+        result_root="${data_root}/tmp/t079-reference-results"
+        ;;
+    T-080|T080)
+        task_id="T-080"
+        task_runner="${tracker_root}/scripts/run_t080_reference_all.sh"
+        result_root="${data_root}/tmp/t080-reference-results"
+        ;;
     *)
-        echo "错误：--task 必须是 T-076、T-077 或 T-078。" >&2
+        echo "错误：--task 必须是 T-076、T-077、T-078、T-079 或 T-080。" >&2
         usage >&2
         exit 2
         ;;

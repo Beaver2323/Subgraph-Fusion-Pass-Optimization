@@ -1,8 +1,11 @@
 # T-078 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-03 08:05 CST（UTC+08:00）
+> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
 > 状态：4 个 acceptance units、12 个 direct cases、20 个 variants 已准备，等待 GPU 执行
 > 原则：先运行冻结 PyTorch commit 中的原生社区测例；direct 失败只回传证据，不在 GPU 机器临时写 adapter
+
+2026-09-04 已按 PyTorch `copy_tests` 的真实命名规则，将两个 addcdiv 执行入口纠正为带
+`_cuda` 后缀的方法；请先 pull 包含该修正的版本再运行。
 
 ## 1. 一键执行
 

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-03T08:05:00+08:00",
+  "generated_at": "2026-09-04T08:55:00+08:00",
   "status": "t078-third-wave-human-reviewed-awaiting-gpu-reference",
   "source_baselines": {
     "pytorch": {
@@ -66,8 +66,8 @@
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2078, "symbol": "_fuse_addcdiv_to_fma", "role": "registered-rewrite-handler"}
       ],
       "community_tests": [
-        {"nodeid": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal", "role": "primary-positive", "evidence_scope": "value=1 与 value=2 两分支 compiled/eager bitwise equal"},
-        {"nodeid": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn", "role": "primary-positive", "evidence_scope": "counter=1，generated code 同时包含 tl.fma 与 triton.language.div_rn"}
+        {"nodeid": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda", "role": "primary-positive", "evidence_scope": "value=1 与 value=2 两分支 compiled/eager bitwise equal"},
+        {"nodeid": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda", "role": "primary-positive", "evidence_scope": "counter=1，generated code 同时包含 tl.fma 与 triton.language.div_rn"}
       ],
       "variants": [
         {"variant_id": "value-one-bitwise-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "value=1 的 addcdiv 重融合且与 eager bitwise 一致", "expected_counter": "covered by bitwise community test", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},

@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-079",
+  "generated_at": "2026-09-04T08:55:00+08:00",
+  "status": "prepared-awaiting-direct-gpu-execution",
+  "manifest": {
+    "path": "upstream/t079_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "TORCH_COMPILE_DEBUG and TORCH_TRACE per case",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600
+  },
+  "cases": [
+    {
+      "case_id": "REF-bmm-to-mm-native",
+      "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_bmm_to_mm",
+      "tracking_mode": "direct",
+      "variant_ids": ["batch-one-positive", "multi-batch-negative"],
+      "expected_match": "mixed",
+      "expected_assertions": ["batch=1 generated code 包含 extern mm 且不含 extern bmm", "batch=3 generated code 保留 extern bmm", "两种 batch 均与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-cat-slice-cat-native",
+      "acceptance_unit_id": "AU-post-grad-cat-slice-cat",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_cat_slice_cat_cuda",
+      "tracking_mode": "direct",
+      "variant_ids": ["slice-within-first-input-positive", "slice-end-exceeds-first-input-fallback", "negative-slice-end-fallback"],
+      "expected_match": "mixed",
+      "expected_assertions": ["三个分支均执行并保持 eager 数值", "合法 end 完成单 cat 折叠", "越界或负 end 只允许结构匹配后 fallback，不记为 rewrite applied"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-splitwithsizes-cat-native",
+      "acceptance_unit_id": "AU-post-grad-splitwithsizes-cat-replace",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_splitwithsizes_cat",
+      "tracking_mode": "direct",
+      "variant_ids": ["complete-same-order-positive", "missing-getitem-negative", "different-cat-dim-negative", "reordered-getitems-negative"],
+      "expected_match": "mixed",
+      "expected_assertions": ["完整同序分支 pattern count=1/nodes=4", "缺片、异维、重排三个分支 count=0", "所有分支与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-cat-splitwithsizes-native",
+      "acceptance_unit_id": "AU-post-grad-cat-splitwithsizes-replace",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_cat_splitwithsizes",
+      "tracking_mode": "direct",
+      "variant_ids": ["same-boundaries-positive", "cat-multi-user-negative", "different-split-dim-negative", "different-split-count-negative", "different-boundaries-negative"],
+      "expected_match": "mixed",
+      "expected_assertions": ["同维同边界单用户分支 count=1/nodes=2", "多用户、异维、异数量、异边界四个分支 count=0", "所有分支与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    }
+  ],
+  "non_executed_variants": []
+}

@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-03 08:05 CST（UTC+08:00）
+> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076/T-077 已完成；T-078 已静态审核 4 个新单元并准备 GPU runner；MM lowering 修复已验证、尚未合入。
+> 当前阶段：T-076/T-077 已完成；T-078～T-080 共静态审核 11 个新单元并准备 GPU runner；MM lowering 修复已验证、尚未合入。
 
 ## 1. 总结
 
@@ -161,7 +161,8 @@ report/         不可改写的实验事实和 T-074 数据
   `results/current/T-076/performance_summary.json` 与 `results/current/T-077/performance_summary.json`。
 
 T-078 已从上述集合审核 1 个 `no-test-found` 与 3 个 indirect 单元，建立 12 个 direct cases 和
-20 个 variants；其余 47 个 `no-test-found` 和 26 个 indirect 单元继续待审。仍未完成 T-077 MM 候选修复的
+20 个 variants；T-080 又纠正 2 个 `no-test-found`，其余 45 个 `no-test-found` 和 26 个 indirect
+单元继续待审。仍未完成 T-077 MM 候选修复的
 产品代码评审/合入。P-018 是否并入正式产品属于候选变更评审，不再作为 T-076 未闭环回归。
 
 ## 7. 下一条 Codex 任务
@@ -173,12 +174,16 @@ torch_npu，并用同一六变体合同做安装态回归。
 T-078 新批次：4 个单元的 manifest/reference plan 已完成；下一步由 GPU 执行 12 个原生 community
 cases，20/20 variants 有效后冻结 denominator，再进入 NPU `triton_experimental` comparison、
 条件 repair 与 performance。
+
+T-079/T-080 后续批次：7 个单元的 manifest/reference plan 已完成；GPU 分别执行 4 cases/14
+variants 与 13 cases/13 variants。T-080 已明确保存 const-scatter CrossEntropy 和 prepare-softmax
+的社区 benchmark 设计，只有 NPU `triton_experimental` 功能与命中门禁通过后才进入 OFF/ON 性能。
 ```
 
 ## 8. 当前环境边界
 
 - NPU 新测试从 `/home/z50063656/tmp` 发起；GPU T-076 从 `/data/z50063656/tmp` 发起；
-- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077|T-078 --gpu ID`，脚本自动进入
+- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077|T-078|T-079|T-080 --gpu ID`，脚本自动进入
   工作目录、激活环境、校验、运行、导出文本并维护 `latest`，不再人工查找 timestamp；
 - NPU 控制节点动态任务使用 `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`；GPU
   reference 使用 `z00824525`/sudo、A100/R550、CUDA 12.6.3、pip venv Python 3.12 和与冻结

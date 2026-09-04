@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-078",
-  "generated_at": "2026-09-03T08:05:00+08:00",
+  "generated_at": "2026-09-04T08:55:00+08:00",
   "status": "prepared-awaiting-direct-gpu-execution",
   "manifest": {
     "path": "upstream/t078_manifest.yaml",
@@ -20,7 +20,7 @@
     {
       "case_id": "REF-addcdiv-fma-bitwise-native",
       "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
-      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal",
+      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda",
       "tracking_mode": "direct",
       "variant_ids": ["value-one-bitwise-positive", "scaled-value-bitwise-positive"],
       "expected_match": true,
@@ -31,7 +31,7 @@
     {
       "case_id": "REF-addcdiv-fma-codegen-native",
       "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
-      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn",
+      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda",
       "tracking_mode": "direct",
       "variant_ids": ["fma-div-rn-codegen-positive"],
       "expected_match": true,

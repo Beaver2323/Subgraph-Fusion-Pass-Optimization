@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-080",
+  "generated_at": "2026-09-04T08:55:00+08:00",
+  "status": "prepared-awaiting-direct-gpu-execution",
+  "manifest": {
+    "path": "upstream/t080_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "TORCH_COMPILE_DEBUG and TORCH_TRACE per case",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600
+  },
+  "cases": [
+    {
+      "case_id": "REF-scatter-const-3d-native",
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_3d_tensor",
+      "tracking_mode": "direct",
+      "variant_ids": ["three-dimensional-last-dim-positive"],
+      "expected_match": true,
+      "expected_assertions": ["compiled 与 eager 一致", "访存量等于输出加 selector 最小读取", "target metric 由专属 suite 校验"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "community-functional-default"
+    },
+    {
+      "case_id": "REF-scatter-const-non-last-dim-native",
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_non_last_dim",
+      "tracking_mode": "direct",
+      "variant_ids": ["non-last-dim-positive"],
+      "expected_match": true,
+      "expected_assertions": ["dim=0 selector broadcast 正确", "compiled 与 eager 一致", "访存量为 pointwise 路径预期"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "community-functional-default"
+    },
+    {
+      "case_id": "REF-scatter-const-negative-dim-native",
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_neg_scatter_dim",
+      "tracking_mode": "direct",
+      "variant_ids": ["negative-dim-positive"],
+      "expected_match": true,
+      "expected_assertions": ["dim=-1 正确归一化", "compiled 与 eager 一致", "访存量为 pointwise 路径预期"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "community-functional-default"
+    },
+    {
+      "case_id": "REF-scatter-const-short-index-negative-native",
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_shorter_index_tensor",
+      "tracking_mode": "direct",
+      "variant_ids": ["shorter-index-negative"],
+      "expected_match": false,
+      "expected_assertions": ["非 scatter 维 selector 更短", "pattern_matcher_count=0", "compiled 与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-negative-guard"
+    },
+    {
+      "case_id": "REF-scatter-const-dense-negative-native",
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_can_not_optimize_due_to_dense",
+      "tracking_mode": "direct",
+      "variant_ids": ["dense-selector-negative"],
+      "expected_match": false,
+      "expected_assertions": ["selector 在 scatter 维非稀疏", "不应用 target rewrite", "compiled 与 eager 一致且访存下界保持"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-negative-guard"
+    },
+    {
+      "case_id": "REF-scatter-const-nonconst-negative-native",
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_can_not_optimize_due_to_non_const",
+      "tracking_mode": "direct",
+      "variant_ids": ["non-constant-base-negative"],
+      "expected_match": false,
+      "expected_assertions": ["底张量为输入而非 aten.full", "不应用 target rewrite", "compiled 与 eager 一致且 mutation/copy 访存合同保持"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-negative-guard"
+    },
+    {
+      "case_id": "REF-scatter-const-dtype-regression-native",
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_dtype_preserved",
+      "tracking_mode": "direct",
+      "variant_ids": ["low-precision-dtype-regression"],
+      "expected_match": true,
+      "expected_assertions": ["fp16 与 bf16 两分支均执行", "输出 dtype 不提升为 fp32", "每个 dtype target metric=1 且数值正确"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-regression"
+    },
+    {
+      "case_id": "REF-scatter-const-cross-entropy-e2e-native",
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_cross_entropy_loss",
+      "tracking_mode": "direct",
+      "variant_ids": ["cross-entropy-backward-e2e-positive"],
+      "expected_match": true,
+      "expected_assertions": ["CrossEntropy backward target metric=1", "compiled/eager weight gradient allclose", "默认 reference 使用社区 CI 小 shape；性能阶段保留 DO_PERF_TEST 原 shape"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "community-e2e-benchmark-source-functional-default"
+    },
+    {
+      "case_id": "REF-prepare-softmax-fast-math-native",
+      "acceptance_unit_id": "AU-post-grad-prepare-softmax",
+      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_prepare_softmax_with_fast_math_cuda",
+      "tracking_mode": "direct",
+      "variant_ids": ["fast-math-prepare-positive"],
+      "expected_match": true,
+      "expected_assertions": ["bf16 fast-math 小 shape compiled/eager correctness", "原生 community GPU/Triton 入口真实执行", "性能阶段可复用 DO_PERF_TEST A100 shape"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "community-benchmark-source-functional-default"
+    },
+    {
+      "case_id": "REF-prepare-softmax-signed-zero-native",
+      "acceptance_unit_id": "AU-post-grad-prepare-softmax",
+      "source_test": "test/inductor/test_online_softmax.py::TestOnlineSoftmax.test_prepare_softmax_signed_zero",
+      "tracking_mode": "direct",
+      "variant_ids": ["strict-signed-zero-regression"],
+      "expected_match": true,
+      "expected_assertions": ["generated code 包含 online_softmax_reduce", "amax 正负零位模式与 reference 一致", "sum 输出与 eager 一致"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-regression"
+    },
+    {
+      "case_id": "REF-prepare-softmax-community-perf-native",
+      "acceptance_unit_id": "AU-post-grad-prepare-softmax",
+      "source_test": "test/inductor/test_online_softmax.py::TestOnlineSoftmax.test_prepare_softmax_perf",
+      "tracking_mode": "direct",
+      "variant_ids": ["community-benchmark-contract"],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": ["默认小 shape correctness 通过", "community method 内保留 DO_PERF_TEST eager/compiled do_bench 设计", "本轮不提前运行性能"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "community-benchmark-source-functional-default"
+    },
+    {
+      "case_id": "REF-move-constructors-arange-native",
+      "acceptance_unit_id": "AU-post-grad-move-constructors-to-gpu",
+      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_move_arange_cuda",
+      "tracking_mode": "direct",
+      "variant_ids": ["movable-arange-positive"],
+      "expected_match": true,
+      "expected_assertions": ["CPU arange.to(device)+x 与 eager 一致", "generated_kernel_count=1", "不存在独立 host-device copy kernel"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-move-constructors-index-put-negative-native",
+      "acceptance_unit_id": "AU-post-grad-move-constructors-to-gpu",
+      "source_test": "test/inductor/test_torchinductor.py::TritonCodeGenTests.test_ctr_not_moved_to_cuda_when_used_in_index_put",
+      "tracking_mode": "direct",
+      "variant_ids": ["index-put-scalar-constructor-negative"],
+      "expected_match": false,
+      "expected_assertions": ["index_put_ 编译执行成功", "generated Triton wrapper 不含 empty_strided_cuda(())", "CPU scalar constructor dependency 未被错误移动"],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "not-configured-negative-guard"
+    }
+  ],
+  "non_executed_variants": []
+}
