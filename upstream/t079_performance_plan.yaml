@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-04T09:08:48+08:00",
+  "task_id": "T-079",
+  "status": "prepared-gated-awaiting-gpu-reference-and-npu-functional-validation",
+  "policy": "T-079 的四项社区测试均是功能测试，没有独立社区 benchmark。性能测例从对应正例合同原样派生，图消除类必须同时报告端到端耗时、kernel/task 数和中间量证据。",
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "fresh worker 导入 torch/torch_npu 前选择 backend",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": ["OFF1", "ON1", "ON2", "OFF2", "OFF3", "ON3"],
+    "forbidden": ["复用其他 backend 结论", "同进程切换", "全局关闭 post-grad 或 pattern matcher", "未证明 rewrite 生效就计性能"]
+  },
+  "measurement_contract": {
+    "correctness_gate": "每个正例先通过 eager/compiled、目标 counter/FX/generated-code；负例必须证明 guard 未误改写",
+    "warmup": 10,
+    "runs": 100,
+    "timing": ["host p50/p99/mean/stdev", "NPU Event p50/p99/mean/stdev", "首次编译耗时单列"],
+    "memory": ["max_memory_allocated", "max_memory_reserved", "中间张量/拷贝证据"],
+    "verdict_thresholds": {"improved": "Event p50 >=10% 且 p99/内存不回退", "neutral": "改善不足 10% 且无稳定回退", "regressed": "Event 或资源指标稳定回退"}
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
+      "performance_status": "planned-gated-capability-pending",
+      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_bmm_to_mm"], "community_benchmark": "absent", "derivation": "先原样使用 batch=1 的 [1,16,8]@[1,8,32]；代表性放大只改变 M/N/K，不改变 batch=1 合同，并单列为 sensitivity。"},
+      "functional_gate": ["GPU batch=1 命中 mm、batch=3 保留 bmm", "NPU device helper 最小适配经评审", "ON generated code/FX 确认 squeeze-mm-unsqueeze", "数值正确"],
+      "workloads": [
+        {"workload_id": "bmm-to-mm-community-shape", "role": "community-shape-primary", "shape_contract": "float32 [1,16,8] @ [1,8,32]", "measurement_scope": "compiled end-to-end；记录 mm/bmm 路径与 kernel/task 数"},
+        {"workload_id": "bmm-to-mm-representative", "role": "tracker-sensitivity-not-community", "shape_contract": "batch 固定 1；M/N/K 取经功能门禁后的代表网格", "measurement_scope": "每个 shape 单列，不与社区 shape 合并形成单一结论"}
+      ],
+      "off_on_control": {"OFF": "仅抑制 bmm_to_mm 目标注册项", "ON": "启用经功能确认的 bmm_to_mm", "isolation_check": "OFF=bmm、ON=mm；其他 joint-graph patterns 一致"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json", "kernel_task_counts.json"],
+      "negative_cases": "batch=3 仅验证 guard，不测性能收益"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-cat-slice-cat",
+      "performance_status": "planned-gated",
+      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_cat_slice_cat_cuda"], "community_benchmark": "absent", "derivation": "复用社区 [2,32]、[2,16] 和合法 slice end；越界/负 end 只验证 fallback。"},
+      "functional_gate": ["GPU 三分支有效", "NPU 正例确认真正折叠而非仅进入 handler", "fallback 分支保持原两次 cat 语义", "输出正确"],
+      "workloads": [{"workload_id": "cat-slice-cat-community-shape", "role": "community-shape-primary", "shape_contract": "first=[2,32]、rest=[2,16]，slice end 位于 first 边界内", "measurement_scope": "compiled end-to-end；记录 cat 数、kernel/task 数和中间写入"}],
+      "off_on_control": {"OFF": "仅抑制 cat_slice_cat 目标 lowering pattern", "ON": "启用 cat_slice_cat 且 extra check 返回优化分支", "isolation_check": "FX/IR 证明 ON 是单次 cat 结构，不能只依赖 matcher counter"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json", "kernel_task_counts.json"],
+      "negative_cases": "slice end 越界或为负时走 fallback，只做功能验证"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-splitwithsizes-cat-replace",
+      "performance_status": "planned-gated",
+      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_splitwithsizes_cat"], "community_benchmark": "absent", "derivation": "复用输入 [2,32]、sizes=[8,24] 的完整同序拼回合同。"},
+      "functional_gate": ["GPU 正例和三类负例有效", "NPU ON 直接返回原输入", "缺片/异维/重排均不消除", "输出与 alias/stride 合同正确"],
+      "workloads": [{"workload_id": "split-cat-community-shape", "role": "community-shape-primary", "shape_contract": "float32[2,32]，split sizes=[8,24]，按原顺序同维 cat", "measurement_scope": "compiled end-to-end；记录 split/cat 是否消失及 kernel/task 数"}],
+      "off_on_control": {"OFF": "仅抑制 splitwithsizes_cat_replace 目标注册项", "ON": "启用目标替换", "isolation_check": "ON 图直接使用 input；OFF 保留等价 split/cat 路径"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json", "kernel_task_counts.json"],
+      "negative_cases": "missing getitem、different dim、reordered getitems 仅做功能 guard"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-cat-splitwithsizes-replace",
+      "performance_status": "planned-gated",
+      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_cat_splitwithsizes"], "community_benchmark": "absent", "derivation": "复用宽度 2/3/5 的输入、同边界 split 和所有输出消费合同。"},
+      "functional_gate": ["GPU 正例和四类负例有效", "NPU ON 返回原始输入 tuple", "cat 多用户/异维/数量或边界不符均不消除", "输出与 alias/stride 合同正确"],
+      "workloads": [{"workload_id": "cat-split-community-shape", "role": "community-shape-primary", "shape_contract": "三个 float32 输入宽度 2/3/5，同维 cat 后按 [2,3,5] split", "measurement_scope": "compiled end-to-end；记录 cat/split 是否消失及 kernel/task 数"}],
+      "off_on_control": {"OFF": "仅抑制 cat_splitwithsizes_replace 目标注册项", "ON": "启用目标替换", "isolation_check": "ON 图直接复用三个原输入；OFF 保留等价 cat/split"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json", "kernel_task_counts.json"],
+      "negative_cases": "cat multi-user、different dim/count/boundaries 仅做功能 guard"
+    }
+  ]
+}

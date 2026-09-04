@@ -1,7 +1,7 @@
 # T-078 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
-> 状态：4 个 acceptance units、12 个 direct cases、20 个 variants 已准备，等待 GPU 执行
+> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
+> 状态：4 个 acceptance units、12 个 direct cases、20 个 variants 及逐单元性能计划已准备，等待 GPU 执行
 > 原则：先运行冻结 PyTorch commit 中的原生社区测例；direct 失败只回传证据，不在 GPU 机器临时写 adapter
 
 2026-09-04 已按 PyTorch `copy_tests` 的真实命名规则，将两个 addcdiv 执行入口纠正为带
@@ -37,10 +37,15 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 预期：
 
 ```text
+prepared_task_validation=OK task=T-078 units=4 cases=12 variants=20 performance_units=4 guide=valid
 reference_plan_validation=OK acceptance_units=4 cases=12 community_tests=12 variants=20 executed_variants=20 non_executed_variants=0
 torch_imported=0 gpu_executed=0
 gpu_task_validation=OK task=T-078
 ```
+
+静态校验会同时检查 `upstream/t078_performance_plan.yaml` 与中文
+`docs/T078_FUNCTION_PERFORMANCE_GUIDE.md`，但不会运行性能。后者解释每个功能/性能测例的来源、
+输入和判据。
 
 ## 3. 单 case 重跑
 

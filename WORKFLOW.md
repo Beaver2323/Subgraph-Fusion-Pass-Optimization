@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-03 08:05 CST（UTC+08:00）
+> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -127,7 +127,9 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
 │   ├── manifest.yaml
 │   ├── pass_map.yaml
 │   ├── reference_plan.schema.json
-│   └── reference_plan.yaml
+│   ├── reference_plan.yaml
+│   ├── performance_plan.schema.json
+│   └── t0xx_performance_plan.yaml
 ├── issues/
 │   └── REF-*/
 │       ├── npu_adapter.py
@@ -146,7 +148,8 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
 ├── scripts/
 │   ├── run_reference_all.sh
 │   ├── run_t077_reference_all.sh
-│   └── validate_tracker_data.py
+│   ├── validate_tracker_data.py
+│   └── validate_prepared_tasks.py
 ├── docs/
 │   ├── CURRENT_STATUS.md
 │   ├── SCOPE_AND_CODE_MAP.md
@@ -174,6 +177,10 @@ results/history/
 ```
 
 不先创建大量空目录；每个目录在首个真实产物进入时创建。
+
+T-078～T-080 的 reference wrapper 在执行设备测试前先运行 `validate_prepared_tasks.py`，交叉检查
+manifest/reference/performance unit 集合、固定 backend、OFF/ON 隔离、workload 来源和中文 case
+guide。校验成功只说明“准备完整”，不能替代 GPU/NPU 动态结果。
 
 ## 7. Tracking mode
 

@@ -1,7 +1,7 @@
 # T-079 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
-> 状态：4 个 acceptance units、4 个 direct cases、14 个 variants 已准备，等待 GPU 执行
+> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
+> 状态：4 个 acceptance units、4 个 direct cases、14 个 variants 及逐单元性能计划已准备，等待 GPU 执行
 > 原则：只运行冻结 PyTorch commit 的原生社区方法；失败原样回传，不在 GPU 机器临时修改测试
 
 ## 一键执行
@@ -27,10 +27,14 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 ```
 
 ```text
+prepared_task_validation=OK task=T-079 units=4 cases=4 variants=14 performance_units=4 guide=valid
 reference_plan_validation=OK acceptance_units=4 cases=4 community_tests=4 variants=14 executed_variants=14 non_executed_variants=0
 torch_imported=0 gpu_executed=0
 gpu_task_validation=OK task=T-079
 ```
+
+功能测例及其派生性能测例讲解见 `docs/T079_FUNCTION_PERFORMANCE_GUIDE.md`；T-079 没有社区独立
+benchmark，不能把 tracker 派生 workload 标成社区性能测例。
 
 ## Case 列表
 

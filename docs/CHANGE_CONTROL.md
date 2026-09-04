@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-02 17:42 CST（UTC+08:00）
+> 日志校准时间：2026-09-04 09:08 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3558,3 +3558,16 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   disable；NPU 动态、修复验证与性能仍要求在导入前选择 `triton_experimental` 并使用 fresh process。
 - GPU 一键入口扩展为 `T-076`～`T-080`，各任务继续维护独立 `latest` 与
   `latest-text-handoff.json`。本轮仅完成零设备静态验证，未在控制节点运行 GPU/NPU。
+
+### E-221：T-078～T-080 性能合同与测例讲解准备（2026-09-04）
+
+- 登记时间：2026-09-04 09:08 CST（UTC+08:00）。为 11 个单元逐项补齐性能 plan，并冻结
+  `triton_experimental`、导入前选 backend、fresh-process OFF/ON、交错三轮、Event/host、峰值
+  allocated/reserved、功能门禁和负例免测边界。
+- 性能来源不混称：T-080 const-scatter/prepare-softmax 复用社区 `DO_PERF_TEST` 图与全量 shape；
+  constructor mover 及 T-078/T-079 标为从社区功能 case 派生。社区 shape 与 tracker sensitivity
+  结果必须分栏。
+- 新增三份中文功能/性能 guide，以带文件位置的代码块解释 pattern 意图、正负例、性能测法和判据；
+  新增 `performance_plan.schema.json` 与 `validate_prepared_tasks.py`，并接入三个 GPU reference wrapper。
+- `run_npu_performance_task.sh` 支持 T-078～T-080 `--validate-only`。在 GPU reference 与 NPU 功能/
+  命中门禁前，实际性能入口明确返回锁定，不提前制造合法 ON 路径或性能结论。

@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-04T09:08:48+08:00",
+  "task_id": "T-078",
+  "status": "prepared-gated-awaiting-gpu-reference-and-npu-functional-validation",
+  "policy": "先完成 GPU reference，再在 triton_experimental 上证明 NPU 正例正确且目标改写真实生效；之后才允许性能 OFF/ON。generic device guard 只能触发最小适配评审，不能直接算显式关闭或绕过后测性能。",
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "在 fresh worker 导入 torch/torch_npu 之前设置 TORCHINDUCTOR_NPU_BACKEND=triton_experimental",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": ["OFF1", "ON1", "ON2", "OFF2", "OFF3", "ON3"],
+    "forbidden": ["复用 default/DVM/MLIR 性能结论", "同进程切换 OFF/ON", "关闭全部 pattern_matcher 充当目标 OFF", "绕过显式产品 disable"]
+  },
+  "measurement_contract": {
+    "correctness_gate": "每个 worker 先验证 eager/compiled 数值、目标 counter/FX/generated-code 以及 OFF/ON 唯一差异",
+    "warmup": 10,
+    "runs": 100,
+    "timing": ["host wall-clock p50/p99/mean/stdev", "NPU Event p50/p99/mean/stdev", "首次编译耗时单列且不混入 steady-state"],
+    "memory": ["max_memory_allocated", "max_memory_reserved"],
+    "verdict_thresholds": {"improved": "Event p50 改善 >=10%，p99 不回退且正确性成立", "neutral": "绝对改善小于 10% 且无显著回退", "regressed": "Event p50 或 p99 稳定回退，或显存显著增加"}
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "performance_status": "planned-gated-capability-pending",
+      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda", "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda"], "community_benchmark": "absent", "derivation": "原样复用 float32[64,64]、value=1/2 和 bitwise/codegen 合同，只添加计时、显存和 OFF/ON。"},
+      "functional_gate": ["GPU 两条原生测例有效", "NPU 最小适配经评审且 addcdiv_fma_fused=1", "NPU generated code 提供 FMA/精确除法的等价证据", "value=1/2 正确性均通过"],
+      "workloads": [{"workload_id": "addcdiv-fma-community-shape", "role": "community-shape-primary", "shape_contract": "inp/t1/t2=float32[64,64]，value 分别为 1 与 2", "measurement_scope": "compiled end-to-end；两种 value 分开报告，不混合样本"}],
+      "off_on_control": {"OFF": "仅抑制 _fuse_addcdiv_to_fma 目标注册项", "ON": "启用经功能阶段确认合法的同一目标注册项", "isolation_check": "除目标 handler 与 cache 目录外环境、源码、输入完全一致；若无法证明目标级隔离则不得测量"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json"],
+      "negative_cases": "bitwise/codegen 功能负向或 gate 失败只做功能记录，不进入性能统计"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "performance_status": "planned-gated",
+      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_successful_partial_reuse", "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unsuccessful_partial_reuse"], "community_benchmark": "absent", "derivation": "保持社区三组大输入正例，逐 shape 独立测量；小输入和 dynamic 只验证 guard。"},
+      "functional_gate": ["GPU 正负例全部有效", "NPU 三个大 shape 的 partial_reduction_reuse=1", "小输入和 dynamic counter=0", "partial/full 两个输出均与 eager 一致"],
+      "workloads": [
+        {"workload_id": "partial-amax-amax-2048", "role": "community-shape-primary", "shape_contract": "float32[2048,2048]，partial amax 后 full amax", "measurement_scope": "compiled end-to-end，partial/full 输出共同消费"},
+        {"workload_id": "partial-amin-min-1024", "role": "community-shape-primary", "shape_contract": "float32[1024,1024]，partial amin 后 full min", "measurement_scope": "compiled end-to-end，单独报告"},
+        {"workload_id": "partial-amax-max-4096x512", "role": "community-shape-primary", "shape_contract": "float32[4096,512]，partial amax 后 full max", "measurement_scope": "compiled end-to-end，单独报告"}
+      ],
+      "off_on_control": {"OFF": "仅抑制 reuse_partial 目标注册项", "ON": "启用 reuse_partial", "isolation_check": "确认 OFF counter=0、ON counter=1，其他 post-grad patterns 保持一致"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json"],
+      "negative_cases": "4x8 与 dynamic 2048x64 为 guard-only，不做性能收益计算"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "performance_status": "planned-gated-capability-pending",
+      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_bias_addmm", "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_same_shape_leaf_bias_addmm", "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_expanded_bias_addmm", "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_bias_addmm_half_dtypes_when_flag_disabled"], "community_benchmark": "absent", "derivation": "复用 10x15 @ 15x20、bias/GELU/ReLU/view/expanded 合同；half gate 单独成组。"},
+      "functional_gate": ["GPU 六个 addmm cases 有效", "NPU generic device guard 的最小适配单独评审", "ON 正例不含 extern addmm 且保留 mm+pointwise 语义", "computed accumulator/no consumer/half 默认 gate 负例不误改写"],
+      "workloads": [
+        {"workload_id": "addmm-unfuse-fp32-gelu", "role": "community-shape-primary", "shape_contract": "x1=float32[10,15]，x2=float32[15,20]，bias=[20]，GELU consumer", "measurement_scope": "compiled end-to-end；记录 task/kernel 数及 pointwise fusion"},
+        {"workload_id": "addmm-unfuse-half-gated", "role": "community-gate-primary", "shape_contract": "相同矩阵合同，dtype 分别 fp16/bf16", "measurement_scope": "keep_addmm_fused_for_half_dtypes=true 与 false 的同后端对照；两 dtype 分开报告"}
+      ],
+      "off_on_control": {"OFF": "fp32 使用目标 handler 抑制；half 使用 keep_addmm_fused_for_half_dtypes=true", "ON": "fp32 启用目标 handler；half 使用 keep_addmm_fused_for_half_dtypes=false", "isolation_check": "generated code 证明 OFF 保留 addmm、ON 拆为 mm+可融合 pointwise；不得用全局 pattern_matcher=false"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json", "kernel_task_counts.json"],
+      "negative_cases": "无 pointwise consumer、computed accumulator 和默认 half preserve 只做功能 guard，不计为性能失败"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+      "performance_status": "planned-gated-capability-pending",
+      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_broadcast_bias_baddbmm", "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_broadcast_bias_baddbmm_alpha_beta"], "community_benchmark": "absent", "derivation": "复用 batch=4、6x5 @ 5x8、broadcast/expanded bias、GELU/ReLU 和 alpha=0.8 beta=0.2。"},
+      "functional_gate": ["GPU 两个 baddbmm cases 有效", "NPU generic device guard 的最小适配单独评审", "正例拆为 bmm+pointwise 且标量语义正确", "无 pointwise consumer 负例保留 baddbmm"],
+      "workloads": [
+        {"workload_id": "baddbmm-unfuse-broadcast-gelu", "role": "community-shape-primary", "shape_contract": "batch=4，x1=[4,6,5]，x2=[4,5,8]，bias=[4,1,8]，GELU", "measurement_scope": "compiled end-to-end；记录 task/kernel 数与 pointwise fusion"},
+        {"workload_id": "baddbmm-unfuse-alpha-beta", "role": "community-scalar-contract", "shape_contract": "同矩阵 shape，alpha=0.8，beta=0.2", "measurement_scope": "compiled end-to-end；与默认 scalar 分开报告"}
+      ],
+      "off_on_control": {"OFF": "仅抑制 unfuse_bias_baddbmm_to_pointwise 目标 handler", "ON": "启用经功能门禁确认的目标 handler", "isolation_check": "OFF 保留 baddbmm、ON 保留 bmm 且 bias/activation 融合；其他 patterns 不变"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json", "kernel_task_counts.json"],
+      "negative_cases": "无 pointwise consumer 仅验证不改写，不做性能测试"
+    }
+  ]
+}

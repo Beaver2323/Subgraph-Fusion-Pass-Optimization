@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-04 08:55 CST（UTC+08:00）
+> 文档更新时间：2026-09-04 09:08 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -50,7 +50,9 @@
   20 个 variants 和 GPU 一键入口均已准备，当前等待 GPU reference，不计入冻结 denominator。
 - T-079/T-080 又准备 7 个 acceptance units、17 个 direct cases、27 个 variants：T-079 覆盖
   bmm→mm 与三类 cat/split lowering；T-080 覆盖 const-scatter、prepare-softmax 和 constructor
-  mover。两个批次均只完成静态映射，等待 GPU reference，不计入冻结 denominator。
+  mover。连同 T-078，11 个单元均已补齐性能计划和中文功能/性能测例讲解；计划区分社区 benchmark
+  直接复用与社区功能例派生，并冻结 `triton_experimental`、fresh-process、目标级 OFF/ON 和门禁。
+  三批仍等待 GPU reference，不计入冻结 denominator，也尚无性能结论。
 - T-078 的 `copy_tests` 入口已纠偏：社区实际方法带 `_cuda` 后缀；runner 不再把不存在的无后缀
   方法静态判为有效。
 
@@ -103,6 +105,9 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/T079_REFERENCE_RUNNER_GPU.md](docs/T079_REFERENCE_RUNNER_GPU.md) | T-079 第四批 GPU 执行、case 列表与文本回传说明 |
 | [docs/T080_REFERENCE_RUNNER_GPU.md](docs/T080_REFERENCE_RUNNER_GPU.md) | T-080 第五批 GPU 执行、社区性能来源与文本回传说明 |
 | [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU pull 后按 T-076～T-080 指定任务一键运行；自动导出并维护 latest 入口 |
+| [docs/T078_FUNCTION_PERFORMANCE_GUIDE.md](docs/T078_FUNCTION_PERFORMANCE_GUIDE.md) | T-078 四单元的功能 case、派生性能 case、源码与判据讲解 |
+| [docs/T079_FUNCTION_PERFORMANCE_GUIDE.md](docs/T079_FUNCTION_PERFORMANCE_GUIDE.md) | T-079 四单元的图消除功能/性能证据讲解 |
+| [docs/T080_FUNCTION_PERFORMANCE_GUIDE.md](docs/T080_FUNCTION_PERFORMANCE_GUIDE.md) | T-080 社区 benchmark 复用、功能 guard 与 OFF/ON 讲解 |
 | [report/t076_t077_performance_20260903.md](report/t076_t077_performance_20260903.md) | 两批性能处置、backend 门禁、B2B capability 与 T-077 四项 OFF/ON 实测 |
 | [report/t076_pattern_gpu_npu_guide_20260902.md](report/t076_pattern_gpu_npu_guide_20260902.md) | T-076 20 个 variants 的源码意图、GPU/NPU 行为与 P-018 候选导读 |
 | [report/t077_npu_completion_20260902.md](report/t077_npu_completion_20260902.md) | T-077 五单元闭环、MM 回归定位与修复验证摘要 |
@@ -134,8 +139,9 @@ FX signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.m
 `results/current/AU-pad-mm-mm/`。T-076 NPU 闭环汇总见
 `report/t076_npu_completion_20260902.md`。T-077 第二波 reference 和 NPU 5/5 comparison 也已完成；
 GPU 后续统一使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077|T-078|T-079|T-080 --gpu ID`。
-T-077 性能 5/5 已处置、pending=0；T-078/T-079/T-080 均已完成静态准备，GPU 可按任务分别一键
-执行。优先完成 T-078，再依次回传 T-079 与 T-080 的 latest 文本 handoff。
+T-077 性能 5/5 已处置、pending=0；T-078/T-079/T-080 均已完成 reference、逐单元性能合同和
+中文 case guide 的静态准备，GPU 可按任务分别一键执行。优先完成 T-078，再依次回传 T-079 与
+T-080 的 latest 文本 handoff；NPU 性能 worker 要等 reference 与功能命中门禁通过后才解锁。
 独立 correctness 修复 `dfbcc25` 继续等待产品代码评审授权，不与 T-078 reference 混合。
 
 ## 执行环境合同

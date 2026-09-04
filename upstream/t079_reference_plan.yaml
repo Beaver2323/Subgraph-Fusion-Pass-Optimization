@@ -1,8 +1,10 @@
 {
   "schema_version": "1.0",
   "task_id": "T-079",
-  "generated_at": "2026-09-04T08:55:00+08:00",
+  "generated_at": "2026-09-04T09:08:48+08:00",
   "status": "prepared-awaiting-direct-gpu-execution",
+  "performance_plan": {"path": "upstream/t079_performance_plan.yaml", "status": "prepared-gated"},
+  "case_guide": {"path": "docs/T079_FUNCTION_PERFORMANCE_GUIDE.md", "language": "zh-CN"},
   "manifest": {
     "path": "upstream/t079_manifest.yaml",
     "schema_version": "1.0",

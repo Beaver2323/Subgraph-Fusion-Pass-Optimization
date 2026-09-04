@@ -1,7 +1,7 @@
 # Upstream Contract 与 Acceptance Unit 数据
 
-> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
-> 状态：T-076/T-077 已完成；T-078～T-080 共 11 units/29 cases/47 variants 已静态准备，等待 GPU reference。
+> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
+> 状态：T-076/T-077 已完成；T-078～T-080 共 11 units/29 cases/47 variants，reference、性能合同与测例讲解均已准备，等待 GPU reference。
 
 本目录保存 tracker 的活动数据入口：
 
@@ -17,8 +17,12 @@
 - `t078_reference_plan.yaml`：T-078 的 12 个 direct cases 与 20 个 variants；
 - `t079_manifest.yaml`、`t079_reference_plan.yaml`：T-079 的 4 个矩阵/cat-split 单元、4 cases 与 14 variants；
 - `t080_manifest.yaml`、`t080_reference_plan.yaml`：T-080 的 3 个访存/softmax/constructor 单元、13 cases 与 13 variants；
+- `performance_plan.schema.json`：新批次性能准备合同的公共结构；
 - `t076_performance_plan.yaml`、`t077_performance_plan.yaml`：同 backend 性能实测、显式关闭免测、
   capability 评估与候选拒绝依据；
+- `t078_performance_plan.yaml`～`t080_performance_plan.yaml`：逐单元功能门禁、社区/派生 benchmark
+  来源、目标级 OFF/ON、交错三轮、计时/内存与负例免测合同；
+- `../scripts/validate_prepared_tasks.py`：T-078～T-080 reference/performance/中文 guide 的零设备一致性检查；
 - `../scripts/validate_tracker_data.py`：零第三方依赖的一致性检查。
 - `../schemas/npu_result.schema.json`、`../schemas/comparison_result.schema.json`：统一
   NPU 执行与 GPU/NPU comparison 合同；
@@ -73,3 +77,5 @@ T-078 使用 `scripts/run_t078_reference_all.sh`，人工说明见
 T-079/T-080 使用同名独立 runner，人工说明见
 [`T079_REFERENCE_RUNNER_GPU.md`](../docs/T079_REFERENCE_RUNNER_GPU.md) 与
 [`T080_REFERENCE_RUNNER_GPU.md`](../docs/T080_REFERENCE_RUNNER_GPU.md)。
+逐单元学习说明见 `../docs/T078_FUNCTION_PERFORMANCE_GUIDE.md`、
+`../docs/T079_FUNCTION_PERFORMANCE_GUIDE.md` 和 `../docs/T080_FUNCTION_PERFORMANCE_GUIDE.md`。

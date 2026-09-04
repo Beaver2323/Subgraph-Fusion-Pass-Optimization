@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "performance_plan.schema.json",
+  "title": "Subgraph fusion performance preparation plan",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "task_id",
+    "status",
+    "backend_contract",
+    "measurement_contract",
+    "acceptance_units"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "generated_at": {"type": "string"},
+    "task_id": {"pattern": "^T-[0-9]{3}$"},
+    "status": {"type": "string"},
+    "backend_contract": {
+      "type": "object",
+      "required": ["npu_backend", "selection_timing", "process_isolation", "off_on_order"],
+      "properties": {
+        "npu_backend": {"const": "triton_experimental"},
+        "selection_timing": {"type": "string"},
+        "process_isolation": {"const": "fresh-process-per-arm"},
+        "off_on_order": {"type": "array", "minItems": 6}
+      }
+    },
+    "measurement_contract": {
+      "type": "object",
+      "required": ["correctness_gate", "warmup", "runs", "timing", "memory", "verdict_thresholds"]
+    },
+    "acceptance_units": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "acceptance_unit_id",
+          "performance_status",
+          "case_source",
+          "functional_gate",
+          "workloads",
+          "off_on_control",
+          "artifacts",
+          "negative_cases"
+        ]
+      }
+    }
+  }
+}

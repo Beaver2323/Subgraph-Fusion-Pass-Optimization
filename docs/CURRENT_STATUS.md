@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
+> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076/T-077 已完成；T-078～T-080 共静态审核 11 个新单元并准备 GPU runner；MM lowering 修复已验证、尚未合入。
+> 当前阶段：T-076/T-077 已完成；T-078～T-080 共 11 个新单元的 GPU runner、性能合同与中文测例讲解已准备；MM lowering 修复已验证、尚未合入。
 
 ## 1. 总结
 
@@ -171,13 +171,14 @@ T-078 已从上述集合审核 1 个 `no-test-found` 与 3 个 indirect 单元�
 T-077 修复支线：复核候选 `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`，经授权后推送/合入
 torch_npu，并用同一六变体合同做安装态回归。
 
-T-078 新批次：4 个单元的 manifest/reference plan 已完成；下一步由 GPU 执行 12 个原生 community
+T-078 新批次：4 个单元的 manifest/reference/performance plan 和功能/性能 guide 已完成；下一步由 GPU 执行 12 个原生 community
 cases，20/20 variants 有效后冻结 denominator，再进入 NPU `triton_experimental` comparison、
 条件 repair 与 performance。
 
-T-079/T-080 后续批次：7 个单元的 manifest/reference plan 已完成；GPU 分别执行 4 cases/14
-variants 与 13 cases/13 variants。T-080 已明确保存 const-scatter CrossEntropy 和 prepare-softmax
-的社区 benchmark 设计，只有 NPU `triton_experimental` 功能与命中门禁通过后才进入 OFF/ON 性能。
+T-079/T-080 后续批次：7 个单元的 manifest/reference/performance plan 和 guide 已完成；GPU 分别
+执行 4 cases/14 variants 与 13 cases/13 variants。T-080 保存 const-scatter CrossEntropy 和
+prepare-softmax 的社区 benchmark；T-078/T-079 无社区独立 benchmark，明确从社区功能正例派生。
+只有 NPU `triton_experimental` 功能与命中门禁通过后才进入目标级 OFF/ON 性能。
 ```
 
 ## 8. 当前环境边界

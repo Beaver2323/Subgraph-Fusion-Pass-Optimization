@@ -13,11 +13,14 @@ usage() {
   bash scripts/run_npu_performance_task.sh --task T-077 --unit gumbel --npu 0
   bash scripts/run_npu_performance_task.sh --task T-077 --unit decompose-mm --npu 0
   bash scripts/run_npu_performance_task.sh --task T-076 --validate-only
+  bash scripts/run_npu_performance_task.sh --task T-078 --validate-only
 
 说明：
   T-076 的性能阶段复用仓库内同冻结版本的既有三轮 A/B 证据；明确关闭的三类 pad 免测。
   T-077 的 --unit 支持 gumbel、decompose-bmm、decompose-mm、decompose-addmm。
   decompose 三项只做测试态最小 capability 适配，不修改产品源码；B2B 使用独立 capability 探针。
+  T-078～T-080 已冻结性能计划，但须先完成 GPU reference 与 NPU 功能/命中门禁；当前只开放
+  --validate-only，防止在合法 ON 路径确认前制造性能结果。
 EOF
 }
 
@@ -32,17 +35,6 @@ while (($#)); do
     esac
 done
 
-# 参数解析后 $# 已归零，再激活环境，避免 CANN set_env.sh 误收本脚本参数。
-# shellcheck disable=SC1091
-set +e
-source /home/z50063656/Pass/activate_pass.sh >/tmp/pass-performance-activate.log
-activate_status=$?
-set -e
-if ((activate_status != 0)); then
-    echo "错误：Pass 环境激活失败，详见 /tmp/pass-performance-activate.log" >&2
-    exit "${activate_status}"
-fi
-
 task_id="${task_id^^}"
 case "${task_id}" in
     T-076|T076)
@@ -56,9 +48,36 @@ case "${task_id}" in
         echo "plan=${repo_root}/upstream/t076_performance_plan.yaml"
         exit 0
         ;;
-    T-077|T077) task_id="T-077" ;;
-    *) echo "错误：--task 必须是 T-076 或 T-077" >&2; exit 2 ;;
+    T-077|T077)
+        task_id="T-077"
+        ;;
+    T-078|T078|T-079|T079|T-080|T080)
+        case "${task_id}" in
+            T078) task_id="T-078" ;;
+            T079) task_id="T-079" ;;
+            T080) task_id="T-080" ;;
+        esac
+        python "${repo_root}/scripts/validate_prepared_tasks.py" --task "${task_id}"
+        if ((validate_only)); then
+            echo "performance_task_validation=OK task=${task_id} status=prepared-gated"
+            exit 0
+        fi
+        echo "错误：${task_id} 性能 worker 尚未解锁；请先完成 GPU reference 与 NPU triton_experimental 功能/命中门禁。" >&2
+        exit 4
+        ;;
+    *) echo "错误：--task 必须是 T-076～T-080" >&2; exit 2 ;;
 esac
+
+# 参数解析后 $# 已归零，再激活环境，避免 CANN set_env.sh 误收本脚本参数。
+# shellcheck disable=SC1091
+set +e
+source /home/z50063656/Pass/activate_pass.sh >/tmp/pass-performance-activate.log
+activate_status=$?
+set -e
+if ((activate_status != 0)); then
+    echo "错误：Pass 环境激活失败，详见 /tmp/pass-performance-activate.log" >&2
+    exit "${activate_status}"
+fi
 
 export PYTHONPYCACHEPREFIX="${TMPDIR:-/tmp}/pass-python-cache"
 python -m py_compile \

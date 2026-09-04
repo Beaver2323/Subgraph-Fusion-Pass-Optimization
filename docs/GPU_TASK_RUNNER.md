@@ -1,6 +1,6 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-04 08:55 CST（UTC+08:00）
+> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
 > 当前任务：`T-076`、`T-077`、`T-078`、`T-079`、`T-080`
 
@@ -22,7 +22,7 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 1. 进入 `/data/z50063656/tmp`；
 2. 激活 `/data/z50063656/envs/PassGPURef`；
 3. 设置 CUDA、cuDNN、pip/Triton/Inductor cache；
-4. 先执行该任务的零设备静态校验；
+4. 先执行该任务的零设备静态校验；T-078～T-080 同时检查功能计划、性能计划和中文 case guide；
 5. 检查指定物理 GPU 当前没有计算进程；
 6. 执行任务对应的原生 community suite；
 7. 自动取得本轮 `reference-<timestamp>` 目录；
@@ -113,3 +113,6 @@ export PASS_TRACKER_WORK_DIR=/data/z50063656/tmp
 - suite 失败时仍保留本轮结果并尝试生成文本 handoff；
 - 脚本最终返回原 runner 退出码，不能把失败、skip 或 no-tests 当成成功；
 - 将 `latest-text-handoff.json` 的完整文本复制回 NPU 控制节点即可。
+
+T-078～T-080 的 reference wrapper 会先打印 `prepared_task_validation=OK`。这只表示测例来源、
+单元覆盖、性能合同与讲解文档齐全，不表示 GPU/NPU 已执行，也不解锁 NPU 性能测试。

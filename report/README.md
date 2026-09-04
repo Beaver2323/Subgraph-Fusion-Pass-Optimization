@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-04 08:55 CST（UTC+08:00）
+> 索引更新时间：2026-09-04 09:08 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -17,6 +17,9 @@
 | [t077_pattern_gpu_npu_guide_20260902.md](t077_pattern_gpu_npu_guide_20260902.md) | T-077 pattern 意图、源码块、GPU/NPU 对照和修复代码 | 17/17 variant 已解释 |
 | [t078_mapping_review_20260903.md](t078_mapping_review_20260903.md) | 第三批四单元的人工映射修正、源码意图和 GPU 合同 | 12 direct cases/20 variants 已准备，等待 reference |
 | [t079_t080_mapping_review_20260904.md](t079_t080_mapping_review_20260904.md) | 第四/五批七单元的人工映射、源码意图、性能来源与后端边界 | 17 direct cases/27 variants 已准备，等待 reference |
+| [T-078 功能/性能 guide](../docs/T078_FUNCTION_PERFORMANCE_GUIDE.md) | 四单元功能 case 与派生 benchmark 的源码化讲解 | 计划已准备，尚无动态 verdict |
+| [T-079 功能/性能 guide](../docs/T079_FUNCTION_PERFORMANCE_GUIDE.md) | 四个图改写/消除合同及性能证据解释 | 计划已准备，尚无动态 verdict |
+| [T-080 功能/性能 guide](../docs/T080_FUNCTION_PERFORMANCE_GUIDE.md) | 社区性能方法复用、功能 guard 与 OFF/ON 解释 | 计划已准备，尚无动态 verdict |
 | [REF-mm-plus-mm-native NPU 复现报告](../issues/REF-mm-plus-mm-native/复现报告.md) | 原生直接 `NO_TESTS`、最小 adapter、4/4 NPU 目标合同和 graph-mode 证据 | 统一 comparison 已落盘；`BEHAVIOR_UNCHANGED` |
 | [REF-pad-mm-dynamic-m-native NPU 复现报告](../issues/REF-pad-mm-dynamic-m-native/复现报告.md) | 原生 `NO_TESTS`、TRITON-only lowering 阻断、产品 gate baseline | 归属单元已正式闭环 |
 | [t076_gpu_reference_20260901.md](t076_gpu_reference_20260901.md) | 13/13 GPU direct valid、环境、FX signature 与结构化哈希 | reference 已冻结；原始大 artifacts 保留在 GPU |

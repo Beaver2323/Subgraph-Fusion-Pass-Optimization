@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-04T09:08:48+08:00",
+  "task_id": "T-080",
+  "status": "prepared-gated-awaiting-gpu-reference-and-npu-functional-validation",
+  "policy": "优先复用社区已有性能设计：const-scatter 复用 CrossEntropy backward 的 DO_PERF_TEST 全量 shape；prepare-softmax 复用两个社区 perf shape，但正式 verdict 比较同一 triton_experimental backend 的 compiled OFF/ON，而不是 eager/compiled。constructor mover 无社区 benchmark，才从功能正例派生。",
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "fresh worker 导入 torch/torch_npu 前选择 backend",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": ["OFF1", "ON1", "ON2", "OFF2", "OFF3", "ON3"],
+    "forbidden": ["用 A100 历史数值充当 NPU 结果", "把 eager/compiled 比较当目标 pass OFF/ON", "绕过显式产品 disable", "只看 matcher 不看实际改写"]
+  },
+  "measurement_contract": {
+    "correctness_gate": "先完成 GPU reference；NPU 正例必须在 triton_experimental 上命中并正确，负例不得误改写",
+    "warmup": 10,
+    "runs": 100,
+    "timing": ["host p50/p99/mean/stdev", "NPU Event p50/p99/mean/stdev", "compile latency separately"],
+    "memory": ["max_memory_allocated", "max_memory_reserved", "community E2E 特别报告 backward peak"],
+    "verdict_thresholds": {"improved": "Event p50 >=10%，p99 不回退且内存不恶化", "neutral": "改善不足 10% 且无稳定回退", "regressed": "Event/尾延迟/峰值内存稳定回退"}
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "performance_status": "planned-gated-community-benchmark-ready",
+      "case_source": {"kind": "community-benchmark-reuse", "nodeids": ["test/inductor/test_scatter_optimization.py::TestScatterOpt.test_cross_entropy_loss", "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_3d_tensor"], "community_benchmark": "test_cross_entropy_loss with DO_PERF_TEST=1", "reuse": "保留 B=32,T=1024,D=768,V=50257 的 logits/linear/cross_entropy/backward 流程、设备计时和峰值内存意图；资源不足只能登记 blocked，不静默缩小后仍称社区 benchmark。"},
+      "functional_gate": ["GPU 8/8 scatter cases 有效", "NPU optimize_scatter_upon_const_tensor=true 时目标 counter/FX 证明 full+scatter 改为 pointwise", "false 时不改写", "fp16/bf16 dtype 与 backward 正确"],
+      "workloads": [
+        {"workload_id": "scatter-cross-entropy-community-full", "role": "community-benchmark-primary", "shape_contract": "DO_PERF_TEST=1：B=32,T=1024,D=768,V=50257，linear→cross_entropy→backward", "measurement_scope": "端到端 forward+backward；host/Event、allocated/reserved peak、kernel/task 数"},
+        {"workload_id": "scatter-3d-community-functional-shape", "role": "community-shape-diagnostic", "shape_contract": "L=2,M=1024,N=2048 的 3D sparse scalar scatter", "measurement_scope": "仅用于解释单 pass 开销和中间量，不取代 E2E 主 verdict"}
+      ],
+      "off_on_control": {"OFF": "config.optimize_scatter_upon_const_tensor=false", "ON": "config.optimize_scatter_upon_const_tensor=true", "isolation_check": "同源码/输入/backend，fresh process；counter/FX 证明只有目标优化状态不同"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json", "kernel_task_counts.json"],
+      "negative_cases": "short index、dense selector、non-const base 及 guard 负例只做功能测试"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-prepare-softmax",
+      "performance_status": "planned-gated-community-benchmark-ready-capability-pending",
+      "case_source": {"kind": "community-benchmark-reuse", "nodeids": ["test/inductor/test_online_softmax.py::TestOnlineSoftmax.test_prepare_softmax_perf", "test/inductor/test_torchinductor.py::GPUTests.test_prepare_softmax_with_fast_math_cuda"], "community_benchmark": "两处 DO_PERF_TEST 分支", "reuse": "保留 BF16、N=32768、V=50304 的全量 softmax 形状与 fast-math/online-softmax 设计；正式目标对照改为 compiled OFF/ON。"},
+      "functional_gate": ["GPU 三个 softmax cases 有效", "NPU cuda/xpu generic guard 的最小适配经评审", "ON generated code/IR 证明 online softmax primitive 生效", "strict signed-zero 与 fast-math 正确性通过"],
+      "workloads": [
+        {"workload_id": "prepare-softmax-community-full", "role": "community-benchmark-primary", "shape_contract": "BF16[32768,50304]，按社区 DO_PERF_TEST 分支执行", "measurement_scope": "compiled OFF vs compiled ON；host/Event、显存、kernel/task 数"},
+        {"workload_id": "prepare-softmax-default-diagnostic", "role": "community-default-shape", "shape_contract": "BF16[1024,2048]；fast-math 功能默认另含 [128,128]", "measurement_scope": "诊断规模，单列报告，不替代全量主 verdict"}
+      ],
+      "off_on_control": {"OFF": "config.online_softmax=false", "ON": "config.online_softmax=true 且目标 rewrite 真实生效", "isolation_check": "两臂均 compiled+triton_experimental；禁止用 eager 作为 OFF"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json", "kernel_task_counts.json"],
+      "negative_cases": "strict signed-zero 是 correctness 回归门禁，不单独形成性能收益结论"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-move-constructors-to-gpu",
+      "performance_status": "planned-gated-capability-pending",
+      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_torchinductor.py::GPUTests.test_move_arange_cuda", "test/inductor/test_torchinductor.py::TritonCodeGenTests.test_ctr_not_moved_to_cuda_when_used_in_index_put"], "community_benchmark": "absent", "derivation": "原样复用 length=32 的 arange 正例；代表性长度扩展只能作为 tracker sensitivity，index_put 负例不测性能。"},
+      "functional_gate": ["GPU 两个 constructor cases 有效", "NPU mover 的 device/backend 路径经评审", "ON 证明 CPU→NPU copy 被消除且输出正确", "index_put scalar constructor 负例仍留在 CPU"],
+      "workloads": [
+        {"workload_id": "move-arange-community-shape", "role": "community-shape-primary", "shape_contract": "x 长度 32；arange(len(x), device=cpu).to(x.device)+x", "measurement_scope": "compiled end-to-end；记录 copy、kernel/task 数和 host/Event"},
+        {"workload_id": "move-arange-length-sensitivity", "role": "tracker-sensitivity-not-community", "shape_contract": "保持同一 arange→to→add 图，仅扩展一维长度", "measurement_scope": "各长度单列，仅在主 shape 正确命中后执行"}
+      ],
+      "off_on_control": {"OFF": "仅跳过 move_constructors_to_gpu 这一 graph pass 调用", "ON": "启用同一 graph pass", "isolation_check": "目标级 wrapper 必须证明其他 post-grad passes 完全相同；不能关闭整段 post_grad"},
+      "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json", "kernel_task_counts.json", "copy_evidence.json"],
+      "negative_cases": "index_put scalar constructor 是不可移动依赖 guard，只做功能验证"
+    }
+  ]
+}
