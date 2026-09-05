@@ -1,7 +1,7 @@
 # T-079 功能与性能测例讲解
 
-> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
-> 状态：4 个功能合同和 4 个性能合同已准备，等待 GPU reference。
+> 更新时间：2026-09-06 02:21 CST（UTC+08:00）
+> 状态：4 个功能合同和性能方案已准备，等待 GPU reference；性能 worker 尚未实现。
 > NPU 固定后端：`triton_experimental`；其他后端历史数据不计入 verdict。
 
 ## 1. batch=1 的 bmm 降为 mm（`AU-joint-graph-bmm-to-mm`）

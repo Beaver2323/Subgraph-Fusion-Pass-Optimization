@@ -1,6 +1,6 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
+> 更新时间：2026-09-06 02:21 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
 > 当前任务：`T-076`、`T-077`、`T-078`、`T-079`、`T-080`
 
@@ -46,9 +46,20 @@ sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
 其中：
 
 - `latest` 指向本轮实际 `reference-<timestamp>` 目录；
-- `latest-text-handoff.json` 指向本轮完整文本交接文件；
+- `latest-text-handoff.json` 固定指向 `latest/text-handoff.json`；正常为本轮文本交接文件；
 - 控制台仍打印真实 `run_dir=` 和 `text_handoff=`，便于审计；
 - 新一轮执行会原子更新软链接，不删除旧的带时间戳结果。
+
+2026-09-06 02:55 CST（UTC+08:00）修正：一键入口显式允许导出器**新建** run 内保留文件
+`text-handoff.json`，解决原先入口路径与导出器保护规则冲突的问题。其他 run 内文件、已有输出或
+软链接均不能覆盖；单独调用导出器时默认仍要求输出在原始 run 外。
+
+若 runner 没有返回 artifacts 或文本导出失败，入口仍更新到**本轮失败状态**，其中
+`handoff_status=export-failed`、`reference_valid=false`。复制这个 JSON 并附启动日志即可；
+该状态文件不是有效 reference 证据。旧运行目录与旧文本保留，不会删除；半写入文件改名保留。
+
+功能 reference 会清除继承的 `DO_PERF_TEST`/`USE_LARGE_INPUT`，避免误跑社区大规模性能分支。
+部分 skip、expected failure、实际测试数与选定方法数不一致，都会阻止 valid reference。
 
 T-076～T-080 分别对应 `t076-reference-results`～`t080-reference-results`，规则相同。
 

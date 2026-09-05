@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
-> 状态：T-076/T-077 已完成；T-078～T-080 的 11 个新单元、29 cases、47 variants、性能合同与测例讲解已准备，等待 GPU reference；MM lowering 修复已验证、尚未推送/合入。
+> 更新时间：2026-09-06 02:55 CST（UTC+08:00）
+> 状态：验收加固已实现；T-076/T-077 10 份结果通过校验。T-078～T-080 GPU 入口已准备，性能只有方案、worker 未实现；T-081～T-113 为待审核草案。MM 修复尚未合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -11,7 +11,18 @@
 - acceptance unit 是跟踪、比较和 verdict 的基本单位；
 - 一个 registration 可以展开多个 pattern/variant，也可能与其他 registration 共同服务一个 contract；
 - 只有人工审核并冻结的 acceptance unit 才能进入完成率分母；
-- T-074 当前 188/158 均为 provisional；首批冻结 denominator 的正式闭环数为 5/5。
+- T-074 当前 188/158 均为 provisional；T-076/T-077 冻结单元共 10 个、当前正式结果 10 份；修复合入状态单列。
+
+## 当前门禁补强与历史复核
+
+- [x] 补 T-076/T-077 逐单元历史复核清单，不改写原证据；
+- [x] 登记规则版本、代码哈希与源文件哈希，统一 `validate_all.py` 检查入口；
+- [x] 修复 GPU 一键入口和文本导出路径冲突，补真实导出/发布集成回归；
+- [ ] 补齐 24 个 GPU case 原文件重解析与断言语义复核；
+- [ ] 完成 10 个单元 NPU 原始运行与 7 个性能处置项的更强溯源复核；3 项显式关闭保留免测；
+- [ ] 严格历史再认证门禁通过后再声明新规则下的完整验收。
+
+清单与命令见 [历史复核与统一门禁](report/t076_t077_history_reaudit_20260906.md)。
 
 ## P0-A：仓库与文档收束
 
@@ -211,6 +222,19 @@ T-077 GPU 准备：
 
 ## 立即执行顺序
 
+2026-09-06 当前队列（以下历史步骤保留为已完成事实）：
+
+- [x] 修复部分 skip/expected failure/测试数缺口误算有效 reference，隔离功能入口的 DO_PERF_TEST/USE_LARGE_INPUT；
+- [x] 强制 NPU 结果 backend；允许数值失败证据落盘，并禁止计为功能通过、性能收益或已修复闭环；
+- [x] 修复 latest 与文本入口跨批次，导出失败也发布本轮状态；
+- [x] 性能准备校验拒绝非法 warmup/runs、空/跨单元来源、重复单元与 workload；
+- [x] 新增标准库零设备回归 `tests/test_tracker_contracts.py`，现有正式结果继续通过；
+- [x] 将 T-081～T-113 草案及每批完整 ID 写入 `upstream/task_backlog.json`，覆盖范围见 `docs/TASK_BACKLOG.md`；
+- [ ] 实现 T-078～T-080 目标级性能 worker：当前方案不等于执行准备完成，不因 GPU 回传自动解锁；
+- [ ] GPU 执行三批 reference，NPU 按原生优先完成最小适配审核、功能与命中，再允许性能测量；
+- [ ] 按草案逐批人工审核并准备后续 T；独立 lowering/template 清单另补后去重，不能冒充现有 FX inventory；
+- [ ] MM 产品修复经独立评审后推送/合入（本轮未操作产品仓库）。
+
 1. [x] T-075：冻结首批 acceptance-unit schema 并复核 5 个单元；
 2. [x] T-076：生成 GPU/reference runner、reference 子集 schema 和操作说明；
 3. [x] GPU 上执行 13 个原生 community cases，必要时才进入最小 adapter；
@@ -221,7 +245,7 @@ T-077 GPU 准备：
 8. [x] T-076、T-077 性能均已完成处置；T-078 留给下一批。
 9. [x] T-078 静态映射与 GPU runner 准备完成；等待 GPU 人工执行并回传 latest 文本 handoff。
 10. [x] T-079/T-080 静态映射、独立 runner 与一键任务入口准备完成；GPU 按 T-078→T-079→T-080 顺序执行即可。
-11. [x] 三批性能准备收束到各自 T：T-080 优先复用社区 benchmark，T-078/T-079 明示为社区功能例派生；NPU 功能门禁前性能入口保持锁定。
+11. [x] 三批性能方案归属各自 T：T-080 优先复用社区 benchmark，T-078/T-079 为社区功能例派生；worker 尚未实现，完整性能准备仍待办。
 
 ## 第一阶段完成标准
 

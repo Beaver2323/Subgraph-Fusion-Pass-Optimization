@@ -1,8 +1,9 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-04T09:08:48+08:00",
+  "generated_at": "2026-09-06T02:21:22+08:00",
   "task_id": "T-078",
-  "status": "prepared-gated-awaiting-gpu-reference-and-npu-functional-validation",
+  "status": "plan-only-worker-not-implemented",
+  "implementation": {"status": "not-implemented", "entrypoint": null, "required_before_execution": ["目标级 OFF/ON worker 实现与零设备验证", "GPU 原生 reference 与 NPU 功能/命中证据", "源码、输入、backend 和 worker 版本绑定；显式关闭免测"]},
   "policy": "先完成 GPU reference，再在 triton_experimental 上证明 NPU 正例正确且目标改写真实生效；之后才允许性能 OFF/ON。generic device guard 只能触发最小适配评审，不能直接算显式关闭或绕过后测性能。",
   "backend_contract": {
     "npu_backend": "triton_experimental",
@@ -36,9 +37,9 @@
       "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_successful_partial_reuse", "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unsuccessful_partial_reuse"], "community_benchmark": "absent", "derivation": "保持社区三组大输入正例，逐 shape 独立测量；小输入和 dynamic 只验证 guard。"},
       "functional_gate": ["GPU 正负例全部有效", "NPU 三个大 shape 的 partial_reduction_reuse=1", "小输入和 dynamic counter=0", "partial/full 两个输出均与 eager 一致"],
       "workloads": [
-        {"workload_id": "partial-amax-amax-2048", "role": "community-shape-primary", "shape_contract": "float32[2048,2048]，partial amax 后 full amax", "measurement_scope": "compiled end-to-end，partial/full 输出共同消费"},
-        {"workload_id": "partial-amin-min-1024", "role": "community-shape-primary", "shape_contract": "float32[1024,1024]，partial amin 后 full min", "measurement_scope": "compiled end-to-end，单独报告"},
-        {"workload_id": "partial-amax-max-4096x512", "role": "community-shape-primary", "shape_contract": "float32[4096,512]，partial amax 后 full max", "measurement_scope": "compiled end-to-end，单独报告"}
+        {"workload_id": "partial-amax-amax-2048", "role": "community-shape-primary", "shape_contract": "float32[2048,2048]，原函数同时返回 amax(x,[0],True) 和 amax(x)；full 仍输入原 x，不在测例中提前手写 reuse", "measurement_scope": "compiled end-to-end，partial/full 输出共同消费"},
+        {"workload_id": "partial-amin-min-1024", "role": "community-shape-primary", "shape_contract": "float32[1024,1024]，同时返回 amin(x,[0],True) 和 min(x)", "measurement_scope": "compiled end-to-end，单独报告"},
+        {"workload_id": "partial-amax-max-4096x512", "role": "community-shape-primary", "shape_contract": "float32[4096,512]，同时返回 amax(x,[0],True) 和 max(x)", "measurement_scope": "compiled end-to-end，单独报告"}
       ],
       "off_on_control": {"OFF": "仅抑制 reuse_partial 目标注册项", "ON": "启用 reuse_partial", "isolation_check": "确认 OFF counter=0、ON counter=1，其他 post-grad patterns 保持一致"},
       "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json"],

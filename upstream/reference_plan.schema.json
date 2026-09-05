@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/Beaver2323/Subgraph-Fusion-Pass-Optimization/main/upstream/reference_plan.schema.json",
   "title": "GPU Reference Execution Plan",
-  "$comment": "更新时间：2026-08-31 20:00 CST；先执行原生社区测例，未取得 direct blocker 证据前不得切换 adapter/extracted。",
+  "$comment": "更新时间：2026-09-06 02:21 CST；原生优先。支持性能方案导航、codegen-only 证据与适配入口预期执行数，不以缺失数值断言冒充性能门禁通过。",
   "type": "object",
   "required": [
     "schema_version",
@@ -19,6 +19,14 @@
     "task_id": {"type": "string", "pattern": "^T-[0-9]{3}$"},
     "generated_at": {"type": "string", "format": "date-time"},
     "status": {"type": "string"},
+    "performance_plan": {
+      "type": "object", "required": ["path", "status"], "additionalProperties": false,
+      "properties": {"path": {"type": "string"}, "status": {"type": "string"}}
+    },
+    "case_guide": {
+      "type": "object", "required": ["path", "language"], "additionalProperties": false,
+      "properties": {"path": {"type": "string"}, "language": {"const": "zh-CN"}}
+    },
     "manifest": {
       "type": "object",
       "required": ["path", "schema_version", "pytorch_commit"],
@@ -81,6 +89,8 @@
         "acceptance_unit_id": {"type": "string", "pattern": "^AU-"},
         "source_test": {"type": "string"},
         "tracking_mode": {"enum": ["direct", "adapter", "extracted"]},
+        "correctness_evidence": {"enum": ["community-numerical-assertion", "codegen-only"]},
+        "expected_tests": {"type": "integer", "minimum": 1},
         "variant_ids": {
           "type": "array",
           "uniqueItems": true,
@@ -105,7 +115,12 @@
         "benchmark": {
           "enum": [
             "not-configured-first-reference-wave",
-            "not-configured-functional-reference"
+            "not-configured-functional-reference",
+            "not-configured-negative-guard",
+            "not-configured-regression",
+            "community-benchmark-source-functional-default",
+            "community-e2e-benchmark-source-functional-default",
+            "community-functional-default"
           ]
         },
         "timeout_seconds": {"type": "integer", "minimum": 1},

@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "更新时间：2026-09-06 02:21 CST；正式 NPU 记录必须为 triton_experimental；failed 是可审计证据，不代表验收通过。",
   "$id": "https://example.invalid/subgraph-fusion-pass-optimization/npu_result.schema.json",
   "title": "NPU acceptance case result",
   "type": "object",
@@ -84,7 +85,7 @@
         "cann_version": {"type": "string"},
         "driver_version": {"type": "string"},
         "device": {"type": "string"},
-        "backend": {"type": "string"}
+        "backend": {"const": "triton_experimental"}
       }
     },
     "execution": {

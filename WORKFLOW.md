@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
+> 更新时间：2026-09-06 02:55 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -76,6 +76,19 @@ upstream change / community test discovery
 ```
 
 性能必须位于 trigger、正确性、fallback 和 graph-break 门禁之后。
+
+2026-09-06 起，工具验收边界补充为：
+
+- 原生 reference 必须有 unittest 成功摘要，实际测试数等于命令选定数，skip/expected failure 均为 0；
+  一个参数化子例缺失时整个关联 case 不得标记 valid，不将未执行 variants 自动补齐。
+- codegen-only 社区断言只证明 codegen 合同；不得声称已有数值对照，性能前必须补数值门禁。
+- NPU 结果与 comparison 必须显式为 `triton_experimental`；指纹一致不能替代 backend 合同检查。
+- 数值失败可以是合法结果记录，但必须判为未修复 `NPU_REGRESSION` 并进入 repair；不得标记性能收益，
+  不计入 formally_closed。已有修复回归通过也不代表产品合入，合入状态继续在 known_issues 单列。
+- 性能状态分为“方案已定义 → worker 实现并静态验证 → 功能/命中门禁通过 → 同后端实测”；
+  T-078～T-080 当前只到第一步。后续 T 的草案排期也不等于 GPU-ready。
+- `latest-text-handoff.json` 固定经 `latest/text-handoff.json` 寻址；运行结束仅原子切换 latest。
+  导出失败时回传本轮 `export-failed` 状态，不使用上轮成功文本代替。
 
 ## 5. 双机职责
 
@@ -487,3 +500,18 @@ T-076 GPU reference 已完成并通过文本 handoff 复核，13 个 direct case
 adapter。首个 NPU unit 已生成统一 comparison 并正式闭环；pad-mm 首个产品 baseline 也已完成，
 下一执行项是继续同一单元的 original-aten、stride、exclusion cases。48 个 `no-test-found` 和
 29 个 indirect 单元仍待人工审核，但不阻塞首批 5 个冻结单元的 NPU 验证。
+
+## 19. 统一提交检查与历史再认证
+
+提交代码、计划或验收数据之前，从 `/home/z50063656/tmp` 执行
+`python /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/validate_all.py --write-audit`。
+统一入口覆盖零设备回归、五批 reference 入口、NPU/comparison、性能准备计划、backlog 与语法检查。
+
+规则登记在 `schemas/audit_policy.json`。改变验收口径须同步规则版本、schema/validator 和反例测试；
+审计记录同时绑定实际代码哈希，不能只写未提交代码所基于的旧 HEAD。
+缺原始证据记 `pending`，证据冲突记 `failed`；不得静默修改原始结果中的历史 verdict。
+
+普通入口退出 0 仅代表工具检查通过。宣称历史已按新规则全部再认证前，还必须执行
+`--require-history-complete`；存在 pending 时退出 3。当前 T-076/T-077 记录检查通过不等于原始证据重验完成。
+完整清单、补证据路径与退出码见
+[历史复核与统一门禁](report/t076_t077_history_reaudit_20260906.md)。本条是工作流要求，不代表已安装 Git hooks 或远端分支保护。

@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-04 09:08 CST（UTC+08:00）
+> 日志校准时间：2026-09-06 02:21 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3571,3 +3571,16 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   新增 `performance_plan.schema.json` 与 `validate_prepared_tasks.py`，并接入三个 GPU reference wrapper。
 - `run_npu_performance_task.sh` 支持 T-078～T-080 `--validate-only`。在 GPU reference 与 NPU 功能/
   命中门禁前，实际性能入口明确返回锁定，不提前制造合法 ON 路径或性能结论。
+
+### E-222：验收加固、失败证据与后续草案收束（2026-09-06）
+
+- 登记时间：2026-09-06 02:21 CST（UTC+08:00）。修复部分 skip/expected failure/测试数缺口误算有效
+  reference；强制 NPU backend；允许合法数值失败记录但禁止冒充支持、性能通过或已修复闭环。
+- GPU latest 与文本入口统一寻址；导出或运行失败也发布本轮失败状态，不再返回旧成功文本。
+- 准备校验收紧迭代数、来源归属、重复记录与实现状态；功能 reference 不继承 DO_PERF_TEST。
+- 纠正 E-221 的完整度口径：T-078～T-080 只有性能方案，worker 尚未实现，不是 GPU 回传后自动解锁。
+  补齐部分归约原图、cat consumer、softmax log/no-log、BF16 CrossEntropy 与具体 sensitivity 输入说明。
+- constructor mover 的旧名称建立映射；剩余 137 个 provisional eligible 单元暂列 33 批 T-081～T-113，
+  另有 30 条非计数结构记录。它们是待审草案，不是可运行任务；lowering/template 独立清单仍待补。
+- 只修改 tracker；新增标准库回归，不运行 GPU/NPU，不合入 MM 产品修复，不改写既有实测结果。
+  完整记录见 `report/tracker_validation_hardening_20260906.md`。

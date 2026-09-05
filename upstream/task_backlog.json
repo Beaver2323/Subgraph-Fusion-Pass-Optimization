@@ -1,0 +1,1916 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-06T02:15:00+08:00",
+  "scope": "T-074 FX inventory 的剩余 provisional 单元；不是全 Inductor 分母",
+  "source_inventory": {
+    "path": "report/upstream_pass_test_index_20260829/acceptance_units.csv",
+    "sha256": "9b0a2c547af060629f473b44978071db47b95f1f6d305f39285795a5f3ef5322"
+  },
+  "aliases": {
+    "AU-post-grad-move-constructors-to-cuda": "AU-post-grad-move-constructors-to-gpu"
+  },
+  "planning_manifest_units": [
+    "AU-apply-gumbel-max-trick",
+    "AU-b2b-gemm",
+    "AU-decompose-mem-bound-mm-decompose-addmm",
+    "AU-decompose-mem-bound-mm-decompose-bmm",
+    "AU-decompose-mem-bound-mm-decompose-mm",
+    "AU-joint-graph-bmm-to-mm",
+    "AU-joint-graph-scatter-upon-const-tensor",
+    "AU-pad-mm-addmm",
+    "AU-pad-mm-bmm",
+    "AU-pad-mm-mm",
+    "AU-post-grad-addmm",
+    "AU-post-grad-cat-slice-cat",
+    "AU-post-grad-cat-splitwithsizes-replace",
+    "AU-post-grad-fuse-addcdiv-to-fma",
+    "AU-post-grad-mm-plus-mm",
+    "AU-post-grad-move-constructors-to-gpu",
+    "AU-post-grad-prepare-softmax",
+    "AU-post-grad-reuse-partial",
+    "AU-post-grad-splitwithsizes-cat-replace",
+    "AU-post-grad-unfuse-bias-add-to-pointwise",
+    "AU-post-grad-unfuse-bias-baddbmm-to-pointwise"
+  ],
+  "counts": {
+    "inventory_units": 188,
+    "selected_manifest_units": 21,
+    "remaining_provisional_units": 137,
+    "non_counting_review_records": 30,
+    "draft_batches": 33
+  },
+  "batch_acceptance": [
+    "逐单元审核 contract、正负例和真实测试入口；允许合并/拆分，但保留旧 ID 映射",
+    "性能先检索社区 benchmark；没有则记录功能例派生理由和精确输入/输出/梯度合同",
+    "准备 manifest、reference plan、功能/性能讲解、目标级 OFF/ON worker 与零设备回归",
+    "先 GPU 原生 reference；NPU triton_experimental 原生阻断后才评审最小适配",
+    "显式产品关闭只保留关闭证据/已有测量并免测；generic guard 进入能力评估，不能伪造 ON",
+    "功能/命中/正确性通过再做独立进程 OFF/ON 性能；修复及性能归属本批 T"
+  ],
+  "batches": [
+    {
+      "task_id": "T-081",
+      "family": "joint_graph",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-joint-graph-constant-fold-uniform-value",
+          "source_paths": [
+            "torch/_inductor/fx_passes/joint_graph.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_torchinductor_dynamic_shapes.py::TestInductorDynamic.test_constant_fold_uniform_value_self_referential_shape"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-joint-graph-div-softmax",
+          "source_paths": [
+            "torch/_inductor/fx_passes/joint_graph.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_scaled_softmax",
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_scaled_softmax_nonfinite_matches_eager"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-joint-graph-fix-iota-device",
+          "source_paths": [
+            "torch/_inductor/fx_passes/joint_graph.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-joint-graph-mul-softmax",
+          "source_paths": [
+            "torch/_inductor/fx_passes/joint_graph.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_scaled_softmax",
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_scaled_softmax_nonfinite_matches_eager"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-joint-graph-pointless-convert",
+          "source_paths": [
+            "torch/_inductor/fx_passes/joint_graph.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_convert"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-082",
+      "family": "joint_graph",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-joint-graph-pointless-permute-pair",
+          "source_paths": [
+            "torch/_inductor/fx_passes/joint_graph.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_permute_pair"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-joint-graph-pointless-view",
+          "source_paths": [
+            "torch/_inductor/fx_passes/joint_graph.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_view_pair",
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_view_pair_dynamic_shapes"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-joint-graph-pointless-view-pair",
+          "source_paths": [
+            "torch/_inductor/fx_passes/joint_graph.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_view_pair"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-joint-graph-remove-noop-ops",
+          "source_paths": [
+            "torch/_inductor/fx_passes/joint_graph.py"
+          ],
+          "community_test_candidates": [
+            "test/distributed/test_aten_comm_compute_reordering.py::TestComputeCommReorderingBucketing.test_uneven_sharding_spmd_graphs",
+            "test/inductor/test_torchinductor.py::CommonTemplate.test_complex_real_imag_conj"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-083",
+      "family": "post_grad",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-post-grad-bucket-all-gathers",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/distributed/test_aten_comm_compute_reordering.py::TestManualOverlapBucketing.test_bucketing_reordering_pass_all_gather_single_bucket_custom_module_stack_fn",
+            "test/distributed/test_aten_comm_compute_reordering.py::TestManualOverlapBucketing.test_manual_bucketing_reordering_pass_all_gather_no_bucket",
+            "test/distributed/test_aten_comm_compute_reordering.py::TestManualOverlapBucketing.test_manual_bucketing_reordering_pass_all_gather_single_bucket",
+            "test/distributed/test_aten_comm_compute_reordering.py::TestManualOverlapBucketing.test_manual_bucketing_reordering_pass_all_reduce_single_bucket"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-bucket-all-reduce",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/distributed/test_aten_comm_compute_reordering.py::TestComputeCommReorderingBucketing.test_basic_all_reduce_bucketing",
+            "test/distributed/test_aten_comm_compute_reordering.py::TestManualOverlapBucketing.test_manual_bucketing_reordering_pass_all_reduce_no_bucket",
+            "test/distributed/test_aten_comm_compute_reordering.py::TestManualOverlapBucketing.test_manual_bucketing_reordering_pass_all_reduce_single_bucket",
+            "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_all_reduce_bucket"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-bucket-reduce-scatters",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/distributed/test_aten_comm_compute_reordering.py::TestManualOverlapBucketing.test_manual_reduce_scatter_bucket_wait_stays_after_inputs"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-chain-random-ops-ordering",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-decomp-comms",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-084",
+      "family": "post_grad",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-post-grad-decompose-auto-functionalized",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-decompose-map-to-while-loop",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_triton_kernels.py::MutationTests.test_while_loop"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-decompose-scan-to-while-loop",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_triton_kernels.py::MutationTests.test_while_loop"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-decompose-triton-kernel-wrapper-functional",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_triton_kernels.py::KernelTests.test_triton_kernel_backend_options_preserved_in_fx_wrapper_hop",
+            "test/inductor/test_triton_kernels.py::KernelTests.test_triton_kernel_dunder_name_no_name_mangling",
+            "test/inductor/test_triton_kernels.py::KernelTests.test_triton_kernel_ill_formed",
+            "test/inductor/test_triton_kernels.py::KernelTests.test_triton_kernel_with_kernel_param"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-dedup-reduce-scatters",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_dedup_reduce_scatter"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-085",
+      "family": "post_grad",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-post-grad-fix-auto-functionalized-dtype-views",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_auto_functionalize.py::AutoFunctionalizeTests.test_dtype_view_clone_elimination"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-fuse-ddp-communication",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-overlap-scheduling",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/distributed/test_inductor_collectives.py::TestSyncDecisionCrossRanks.test_overlap_scheduling_device_put_sync"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-pointless-cumsum",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_cumsum"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-086",
+      "family": "post_grad",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-post-grad-reciprocal-sqrt-to-rsqrt",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_reciprocal_sqrt_to_rsqrt"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_auto_functionalize.py::AutoFunctionalizeTests.test_dtype_view_clone_elimination"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-remove-assert-ops",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_profiler.py::DynamoProfilerTests.test_inductor_remove_profiler_ops"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-remove-noop-ops",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/distributed/test_aten_comm_compute_reordering.py::TestComputeCommReorderingBucketing.test_uneven_sharding_spmd_graphs"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-remove-profiler-ops",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_profiler.py::DynamoProfilerTests.test_inductor_remove_profiler_ops"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-087",
+      "family": "post_grad",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-post-grad-reorder-for-locality",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_reorder_for_locality_in_training.py::TestReorderForLocalityInTraining.test_training_flag_reorders_and_preserves_semantics"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-replace-collectives-with-low-contention",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_low_contention_collectives.py::TestLowContentionCollectives.test_skip_overlap_check"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-respecialize-current-device",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-post-grad-stable-sort",
+          "source_paths": [
+            "torch/_inductor/fx_passes/post_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_stable_topological_sort"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-088",
+      "family": "split_cat",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-split-cat-merge-getitem-cat",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge_mutation"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-merge-select-cat-aten",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_move_view_after_cat_aten",
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_select_cat_post_grad",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge_mutation"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-merge-split-cat-aten",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad",
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad_singular",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge_mutation"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-merge-split-squeeze",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_consecutive_split_merge",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge_mutation",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_squeeze"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-merge-splits",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_consecutive_split_merge",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge_mutation"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-089",
+      "family": "split_cat",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-split-cat-merge-unbind-stack",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_unbind_stack"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-merge-unbind-stack-aten",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_unbind_stack"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-move-reshape-out-of-split-stack",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_new_patterns"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-move-view-after-cat",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_move_view_after_cat_aten"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-mutate-cat-node",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-090",
+      "family": "split_cat",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-cat-default",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_cat_normalization"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-cat-default-aten",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_move_view_after_cat_aten",
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAtenNormalizationPasses.test_split_aten_normalization",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_cat_normalization"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-clamp-default",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-detach-default",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-reshape-default",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-091",
+      "family": "split_cat",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-split-default",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAtenNormalizationPasses.test_split_aten_normalization",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_normalization"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-split-default-aten",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAtenNormalizationPasses.test_split_aten_normalization",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_normalization"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-split-with-size-default-aten",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAtenNormalizationPasses.test_split_aten_normalization",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_normalization"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-squeeze-default",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-stack-default",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_stack_normalization_axis_kwarg"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-092",
+      "family": "split_cat",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-unbind-default",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-remove-split-with-size-one",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-replace-einsum-to-pointwise",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-simplify-split-cat",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad",
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad_singular",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge_mutation"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-split-cat-to-slices",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_new_patterns"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-093",
+      "family": "split_cat",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-split-cat-split-stack-to-cats",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad",
+            "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad_singular",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge",
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge_mutation"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-unbind-cat-to-view",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_new_patterns"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-unbind-stack-to-slices",
+          "source_paths": [
+            "torch/_inductor/fx_passes/split_cat.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_new_patterns"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-094",
+      "family": "pre_grad",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-pre-grad-efficient-conv-bn-eval",
+          "source_paths": [
+            "torch/_inductor/fx_passes/pre_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-pre-grad-fuse-conv-bn",
+          "source_paths": [
+            "torch/_inductor/fx_passes/pre_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-pre-grad-linear-permute-fusion",
+          "source_paths": [
+            "torch/_inductor/fx_passes/pre_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fx_fusion.py::TestFxFusion.test_linear_permute_fusion"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-pre-grad-permute-linear-fusion",
+          "source_paths": [
+            "torch/_inductor/fx_passes/pre_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fx_fusion.py::TestFxFusion.test_permute_linear_fusion"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-pre-grad-permute-matmul-fusion",
+          "source_paths": [
+            "torch/_inductor/fx_passes/pre_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fx_fusion.py::TestFxFusion.test_permute_bmm_fusion"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-095",
+      "family": "pre_grad",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-pre-grad-remove-identity",
+          "source_paths": [
+            "torch/_inductor/fx_passes/pre_grad.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-096",
+      "family": "misc_patterns",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-misc-patterns-e8m0-rceil",
+          "source_paths": [
+            "torch/_inductor/fx_passes/misc_patterns.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+          "source_paths": [
+            "torch/_inductor/fx_passes/misc_patterns.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-misc-patterns-randperm-index",
+          "source_paths": [
+            "torch/_inductor/fx_passes/misc_patterns.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-misc-patterns-randperm-index-add",
+          "source_paths": [
+            "torch/_inductor/fx_passes/misc_patterns.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-misc-patterns-randperm-index-full",
+          "source_paths": [
+            "torch/_inductor/fx_passes/misc_patterns.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-097",
+      "family": "replace_random",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-replace-random-fuse-offset-creation",
+          "source_paths": [
+            "torch/_inductor/fx_passes/replace_random.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-replace-random-fuse-seed-creation",
+          "source_paths": [
+            "torch/_inductor/fx_passes/replace_random.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-replace-random-replace-randint",
+          "source_paths": [
+            "torch/_inductor/fx_passes/replace_random.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-replace-random-replace-random",
+          "source_paths": [
+            "torch/_inductor/fx_passes/replace_random.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_replace_random_pass_preserves_stack_trace_on_rng_prims"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-098",
+      "family": "efficient_conv_bn_eval",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform",
+          "source_paths": [
+            "torch/_inductor/fx_passes/efficient_conv_bn_eval.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-decomposed",
+          "source_paths": [
+            "torch/_inductor/fx_passes/efficient_conv_bn_eval.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined",
+          "source_paths": [
+            "torch/_inductor/fx_passes/efficient_conv_bn_eval.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-099",
+      "family": "freezing_patterns",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-freezing-patterns-addmm-fuse-pattern-second",
+          "source_paths": [
+            "torch/_inductor/fx_passes/freezing_patterns.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_inductor_freezing.py::OptimizeForInferenceTemplate.test_unequal_bias_horizontal_addmm_fusion",
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_reproduce_121253_issue_addmm_fusion_check"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-freezing-patterns-int8-woq-fusion",
+          "source_paths": [
+            "torch/_inductor/fx_passes/freezing_patterns.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcherGeneric.test_woq_int8"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-freezing-patterns-matmul-fuse",
+          "source_paths": [
+            "torch/_inductor/fx_passes/freezing_patterns.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-freezing-patterns-matmul-fuse-pattern-two",
+          "source_paths": [
+            "torch/_inductor/fx_passes/freezing_patterns.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-freezing-patterns-unnecessary-dtype-convert",
+          "source_paths": [
+            "torch/_inductor/fx_passes/freezing_patterns.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-100",
+      "family": "binary_folding",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-binary-folding-folded-op",
+          "source_paths": [
+            "torch/_inductor/fx_passes/binary_folding.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-101",
+      "family": "reduced_atomic_contention",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-reduced-atomic-contention-replacement",
+          "source_paths": [
+            "torch/_inductor/fx_passes/reduced_atomic_contention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_mutating_register_replacement_refreshes_mutation_regions",
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_nested_replacement_args_do_not_percolate_tags",
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pure_replacement_skips_mutation_region_refresh",
+            "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_register_replacement_with_get_attr_tensor_constant"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-102",
+      "family": "fuse_attention",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-1",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_1"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-2",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_2"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-3",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_3"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-4",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_4"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-5",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_5"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-103",
+      "family": "fuse_attention",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-6",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_6"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-7",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_7"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-8",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_8"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-9",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_9"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-10",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_10"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-104",
+      "family": "fuse_attention",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-11",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_11"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-12",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_12"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-13",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_13"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-14",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_14"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-15",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_15"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-105",
+      "family": "fuse_attention",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-16",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_16"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-17",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_17"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-18",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_18"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-19",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_19"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-20",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_20"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-106",
+      "family": "fuse_attention",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-21",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_21"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-22",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_22"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-23",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_23"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-24",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_24"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-25",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_25"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-107",
+      "family": "fuse_attention",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-26",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_26"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-27",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_27"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-28",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_28"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-29",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_29"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-30",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fuse_attention.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_30"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-108",
+      "family": "quantization",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-quantization-qcat",
+          "source_paths": [
+            "torch/_inductor/fx_passes/quantization.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qconv",
+          "source_paths": [
+            "torch/_inductor/fx_passes/quantization.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qconv-binary",
+          "source_paths": [
+            "torch/_inductor/fx_passes/quantization.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qlinear",
+          "source_paths": [
+            "torch/_inductor/fx_passes/quantization.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_aot_inductor.py::AOTInductorTestsTemplate.test_buffer_mutation_and_force_mmap_weights",
+            "test/inductor/test_cpu_select_algorithm.py::TestSelectAlgorithm.test_quantized_linear_with_pointwise_binary"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qlinear-binary",
+          "source_paths": [
+            "torch/_inductor/fx_passes/quantization.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-109",
+      "family": "quantization",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-quantization-qmaxpool2d",
+          "source_paths": [
+            "torch/_inductor/fx_passes/quantization.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qreshape",
+          "source_paths": [
+            "torch/_inductor/fx_passes/quantization.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-woq-int8-variant-line-1208",
+          "source_paths": [
+            "torch/_inductor/fx_passes/quantization.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcherGeneric.test_woq_int8"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-woq-int8-variant-line-1273",
+          "source_paths": [
+            "torch/_inductor/fx_passes/quantization.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcherGeneric.test_woq_int8"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-110",
+      "family": "mkldnn_fusion",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-convolution",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_aot_inductor.py::AOTInductorTestsTemplate.test_convolution",
+            "test/inductor/test_select_algorithm.py::TestSelectAlgorithm.test_convolution_as_mm",
+            "test/inductor/test_select_algorithm.py::TestSelectAlgorithm.test_convolution_as_mm_triton_only",
+            "test/inductor/test_select_algorithm.py::TestSelectAlgorithm.test_non_1x1_convolution_caps_template_warps"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-linear",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_linear_fp32",
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_linear_input_non_contiguous_3D_wo_bias",
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_linear_unary",
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcherGeneric.test_conv2d_linear_add_broadcast_shapes"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-linear-bias",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_binary_folding.py::BinaryFoldingTemplate.test_linear_binary_folding"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-mkldnn-rnn-layer",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_cpu_repro.py::CPUReproTests._test_lstm_packed"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-binary-unary-fusion-lowering",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_fusion_failed",
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_inplace_fusion_failed_cpu",
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_inplace_fusion_pass_cpu"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        }
+      ]
+    },
+    {
+      "task_id": "T-111",
+      "family": "mkldnn_fusion",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-binary-unary-maybe-inplace-fusion-lowering",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_fusion_failed",
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_inplace_fusion_failed_cpu",
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_inplace_fusion_pass_cpu"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-hardtanh-fusion-lowering",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-leaky-relu-fusion-lowering",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_leaky_relu_pattern_fallback"
+          ],
+          "coverage_hint": "indirect-regression-test"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-unary-fusion-lowering",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-reshape-linear-reshape",
+          "source_paths": [
+            "torch/_inductor/fx_passes/mkldnn_fusion.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-112",
+      "family": "fsdp",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-fsdp-get-dedup-rs",
+          "source_paths": [
+            "torch/_inductor/fx_passes/fsdp.py"
+          ],
+          "community_test_candidates": [],
+          "coverage_hint": "no-test-found"
+        }
+      ]
+    },
+    {
+      "task_id": "T-113",
+      "family": "group_batch_fusion",
+      "status": "draft-awaiting-contract-review",
+      "reference_ready": false,
+      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "units": [
+        {
+          "provisional_unit_id": "AU-group-batch-fusion",
+          "source_paths": [
+            "torch/_inductor/fx_passes/group_batch_fusion.py",
+            "torch/_inductor/fx_passes/pre_grad.py"
+          ],
+          "community_test_candidates": [
+            "test/inductor/test_group_batch_fusion.py::TestCatLinearFusion.test_cat_linear_rejects_small_traffic",
+            "test/inductor/test_group_batch_fusion.py::TestFindIndependentSubsetGreedy.test_find_independent_subset_greedy_fuse",
+            "test/inductor/test_group_batch_fusion.py::TestGroupBatchFusion.test_as_strided_storage_offset_after_mm_fusion",
+            "test/inductor/test_group_batch_fusion.py::TestGroupBatchFusion.test_batch_linear_lhs_skips_tensor_subclass_weights"
+          ],
+          "coverage_hint": "direct-trigger-test"
+        }
+      ]
+    }
+  ],
+  "non_counting_review": [
+    {
+      "provisional_unit_id": "AU-freezing-patterns-binary-folding",
+      "source_paths": [
+        "torch/_inductor/fx_passes/freezing_patterns.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-freezing-patterns-freezing",
+      "source_paths": [
+        "torch/_inductor/fx_passes/freezing_patterns.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-fsdp-dedup-reduce-scatter",
+      "source_paths": [
+        "torch/_inductor/fx_passes/fsdp.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-joint-custom-post-pass-extension-hook",
+      "source_paths": [
+        "torch/_inductor/fx_passes/joint_graph.py"
+      ],
+      "reason": "user-extension-hook"
+    },
+    {
+      "provisional_unit_id": "AU-joint-custom-pre-pass-extension-hook",
+      "source_paths": [
+        "torch/_inductor/fx_passes/joint_graph.py"
+      ],
+      "reason": "user-extension-hook"
+    },
+    {
+      "provisional_unit_id": "AU-joint-graph-early-patterns-registry",
+      "source_paths": [
+        "torch/_inductor/fx_passes/joint_graph.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-joint-graph-patterns-registry",
+      "source_paths": [
+        "torch/_inductor/fx_passes/joint_graph.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-micro-pipeline-tp-micro-pipeline-tp",
+      "source_paths": [
+        "torch/_inductor/fx_passes/micro_pipeline_tp.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-micro-pipeline-tp-patterns-registry",
+      "source_paths": [
+        "torch/_inductor/fx_passes/micro_pipeline_tp.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-mkldnn-fusion-grouped-gemm",
+      "source_paths": [
+        "torch/_inductor/fx_passes/mkldnn_fusion.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-mkldnn-fusion-register-weight-pack",
+      "source_paths": [
+        "torch/_inductor/fx_passes/mkldnn_fusion.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-custom-post-pass-extension-hook",
+      "source_paths": [
+        "torch/_inductor/fx_passes/post_grad.py"
+      ],
+      "reason": "user-extension-hook"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-custom-pre-pass-extension-hook",
+      "source_paths": [
+        "torch/_inductor/fx_passes/post_grad.py"
+      ],
+      "reason": "user-extension-hook"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-graph-pass-registry",
+      "source_paths": [
+        "torch/_inductor/fx_passes/post_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-custom-pass-extension-hook",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "user-extension-hook"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-fuse-chunk-squeeze-cat",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-fuse-split-linear-add",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-merge-getitem-cat-pass-aten",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-merge-splits-pass-aten",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-merge-stack-tahn-unbind-pass-aten",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-mutate-cat-pass-aten",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-normalization-pass-aten",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-remove-reshape",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-remove-split-with-size-one-pass-aten",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-split-cat-pass-aten",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-pre-grad-unbind-stack-pass-aten",
+      "source_paths": [
+        "torch/_inductor/fx_passes/pre_grad.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-reduced-atomic-contention-build-pattern",
+      "source_paths": [
+        "torch/_inductor/fx_passes/reduced_atomic_contention.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-reduced-atomic-contention-partitioned-scatter-optimization",
+      "source_paths": [
+        "torch/_inductor/fx_passes/reduced_atomic_contention.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-replace-random-patterns-registry",
+      "source_paths": [
+        "torch/_inductor/fx_passes/replace_random.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    },
+    {
+      "provisional_unit_id": "AU-split-cat-construct-pattern-matcher",
+      "source_paths": [
+        "torch/_inductor/fx_passes/split_cat.py"
+      ],
+      "reason": "registration-or-extension-scaffolding"
+    }
+  ],
+  "uncovered_independent_inventory": [
+    "torch/_inductor/lowering.py 的 ATen→IR registrations；先界定优化合同，不按算子数计数",
+    "torch/_inductor/kernel/ 与 select_algorithm.py 的 template/choice 注册；不得与 FX 合同重复计数"
+  ]
+}

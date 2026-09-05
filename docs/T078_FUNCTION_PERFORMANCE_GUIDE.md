@@ -1,7 +1,7 @@
 # T-078 功能与性能测例讲解
 
-> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
-> 状态：功能与性能方案已准备；等待 GPU reference，尚无 T-078 GPU/NPU 性能结论。
+> 更新时间：2026-09-06 02:21 CST（UTC+08:00）
+> 状态：GPU reference 入口与性能方案已准备；性能 worker 尚未实现，尚无 T-078 动态性能结论。
 > NPU 固定后端：`triton_experimental`，必须在导入 `torch/torch_npu` 前选择，并用 fresh process 隔离 OFF/ON。
 
 下文逐单元说明功能测例验证的语义、性能测例的来源，以及二者在结果中应如何区分。
@@ -51,7 +51,22 @@ def reuse_partial(match, input, reduced_dims, keepdim):
 性能测例：社区没有 benchmark，直接复用三个社区大 shape，逐 shape 报告。OFF 必须只抑制
 `reuse_partial`，ON 必须 `partial_reduction_reuse=1`；负例只验证 guard，不参与性能平均。
 
+注意测例应保留**优化前**的两条独立归约，不能把 `full(partial)` 直接写进输入图：
+
+```python
+# PyTorch test/inductor/test_pattern_matcher.py:564（test_successful_partial_reuse）
+partial = partial_fn(x, [0], True)
+full = full_fn(x)
+return partial, full
+```
+
+`full_fn(partial)` 应由目标 pass 在 ON 图中产生；否则 OFF 已经手工优化，无法测出本 pass 的效果。
+
 ## 3. addmm bias unfuse（`AU-post-grad-unfuse-bias-add-to-pointwise`）
+
+`test_unfuse_bias_addmm_half_dtypes_when_flag_disabled` 仅做 FileCheck，没有 eager/compiled 数值比较。
+reference 因而标注 `not-asserted-codegen-only`；性能 worker 必须补充同图数值门禁，不能把原生 PASS
+解释成已验证 half 数值正确。
 
 代码位置：`torch/_inductor/fx_passes/post_grad.py:1853-1940`。
 

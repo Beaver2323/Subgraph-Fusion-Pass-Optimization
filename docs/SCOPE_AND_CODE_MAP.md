@@ -1,6 +1,6 @@
 # Inductor Pass NPU 调研任务与代码地图
 
-> 更新时间：2026-08-31 20:00 CST（UTC+08:00）
+> 更新时间：2026-09-06 02:21 CST（UTC+08:00）
 > 当前主线以 community test 定义 upstream contract，以 acceptance unit 组织 GPU/reference 与
 > NPU `triton_experimental` 验收。本文中 T-054 以前的大段案例保留为历史源码导航。
 
@@ -14,6 +14,10 @@ runtime path、性能、final verdict 和 repair status。
 registration inventory 是 coverage 辅助输入；一个 registration 可能展开多个 pattern/variants，
 多个 registration 也可能共同实现一个 acceptance unit。不得假设
 `registration == pattern == pass == acceptance unit`。
+
+当前范围不能误读为已全量覆盖所有层：T-074 的 207 条候选全部来自 `fx_passes/`。
+`register_lowering`、template/choice 已有局部下游验证，但独立注册清单仍待建立；
+`inductor-extension` 只是历史分类标签。各层覆盖与后续草案以 [TASK_BACKLOG](TASK_BACKLOG.md) 为准。
 
 最终判定分为：
 
@@ -34,8 +38,8 @@ registration inventory 是 coverage 辅助输入；一个 registration 可能展
 ```text
 Python 模型
   -> TorchDynamo 捕获 FX 图
-  -> AOTAutograd / functionalization
   -> pre_grad passes
+  -> AOTAutograd / functionalization
   -> joint_graph passes
   -> post_grad passes
   -> lowering 到 Inductor IR

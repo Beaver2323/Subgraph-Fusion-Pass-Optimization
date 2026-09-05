@@ -1,7 +1,7 @@
 # T-080 功能与性能测例讲解
 
-> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
-> 状态：13 个 GPU 功能 cases 与 3 个性能单元已准备，等待 GPU reference。
+> 更新时间：2026-09-06 02:21 CST（UTC+08:00）
+> 状态：13 个 GPU 功能 cases 与 3 个性能单元的方案已准备；性能 worker 尚未实现，等待 GPU reference。
 > NPU 固定后端：`triton_experimental`；性能在功能命中和正确性门禁之后执行。
 
 下文按单元讲解功能测例、性能测例及其证据边界。
@@ -56,6 +56,19 @@ def prepare_softmax_replacement(x, dim):
 因此正式结论必须比较同一 compiled `triton_experimental` 的 `online_softmax=false/true`，而不是拿
 eager 当 OFF。上游 cuda/xpu guard 是 capability pending；最小适配、命中与正确性成立前不测性能。
 
+两处社区 benchmark 虽然大 shape 相同，但输出合同不同，必须作为两项 workload：
+
+```python
+# PyTorch test/inductor/test_online_softmax.py:28，_prepare_softmax
+return xmax, (x - xmax).exp().sum(dim=-1, keepdim=True)
+
+# PyTorch test/inductor/test_torchinductor.py:17907，test_prepare_softmax_with_fast_math 内 f
+return x_max, (x - x_max).exp().sum(dim=-1, keepdim=True).log()
+```
+
+前者默认 `[1024,2048]`，后者默认 `[128,128]`；全量均为 BF16 `[32768,50304]`。
+本轮 reference 强制不继承 `DO_PERF_TEST`，全量性能留给功能门禁后的独立 worker。
+
 ## 3. constructor 从 CPU 安全移动到加速器（`AU-post-grad-move-constructors-to-gpu`）
 
 代码位置：`torch/_inductor/fx_passes/post_grad.py:2488`。
@@ -72,6 +85,9 @@ def move_constructors_to_gpu(graph):
 CPU 中间量和 copy。正例是 length=32 的 arange→to→add；负例是给 `index_put_` 提供标量的
 constructor，这种受保护依赖不能被移动。NPU 结果不能仅凭 CUDA token 消失判 PASS，必须提供
 `triton_experimental` 下等价的 FX/IR、copy 与 kernel/task 证据。
+
+index_put 负例原生测试只断言 codegen token，不比较 eager 数值；该 case 会明确标为
+`not-asserted-codegen-only`。这不等于数值失败，也不能代替 NPU 最小适配中的数值/依赖验证。
 
 社区没有性能 benchmark。主测原样复用 length=32，额外长度网格只标为 tracker sensitivity。
 OFF 必须只跳过 `move_constructors_to_gpu` 调用，不能关闭整个 post-grad；负例只做功能 guard。

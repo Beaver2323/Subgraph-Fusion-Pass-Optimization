@@ -19,8 +19,8 @@ usage() {
   T-076 的性能阶段复用仓库内同冻结版本的既有三轮 A/B 证据；明确关闭的三类 pad 免测。
   T-077 的 --unit 支持 gumbel、decompose-bmm、decompose-mm、decompose-addmm。
   decompose 三项只做测试态最小 capability 适配，不修改产品源码；B2B 使用独立 capability 探针。
-  T-078～T-080 已冻结性能计划，但须先完成 GPU reference 与 NPU 功能/命中门禁；当前只开放
-  --validate-only，防止在合法 ON 路径确认前制造性能结果。
+  T-078～T-080 仅完成性能方案，worker 尚未实现；当前只开放 --validate-only。
+  后续必须先实现并验证 worker，再凭 GPU reference 与 NPU 功能/命中证据开放实测。
 EOF
 }
 
@@ -59,10 +59,10 @@ case "${task_id}" in
         esac
         python "${repo_root}/scripts/validate_prepared_tasks.py" --task "${task_id}"
         if ((validate_only)); then
-            echo "performance_task_validation=OK task=${task_id} status=prepared-gated"
+            echo "performance_task_validation=OK task=${task_id} status=plan-only worker=not-implemented"
             exit 0
         fi
-        echo "错误：${task_id} 性能 worker 尚未解锁；请先完成 GPU reference 与 NPU triton_experimental 功能/命中门禁。" >&2
+        echo "错误：${task_id} 性能 worker 尚未实现（不仅是等待解锁）；实现并验证后，仍需 GPU reference 与 NPU triton_experimental 功能/命中门禁。" >&2
         exit 4
         ;;
     *) echo "错误：--task 必须是 T-076～T-080" >&2; exit 2 ;;

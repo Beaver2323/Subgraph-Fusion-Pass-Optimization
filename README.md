@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-04 09:08 CST（UTC+08:00）
+> 文档更新时间：2026-09-06 02:55 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -14,6 +14,10 @@
 
 ## 当前结论
 
+- 新规则复核：T-076/T-077 的 10 份 NPU/comparison 记录通过；原始 GPU/NPU/性能证据再认证仍为
+  `pending`。下列历史闭环与收益不等于已完成新规则全量重验。详见
+  [逐单元清单与统一门禁](report/t076_t077_history_reaudit_20260906.md)，机器可读入口为
+  [最新审计](results/audits/latest.json)。
 - 2026-08-29 之后的活动主线是 community-native Inductor compatibility tracker；
   default backend、torch_npu custom pass 和 T-055～T-073 feature-family 工作保留为历史证据。
 - T-074 保存了 203 条 inherited-upstream registration candidate 和 4 条显式关闭控制项，
@@ -98,6 +102,8 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [WORKFLOW.md](WORKFLOW.md) | 双机执行流程、schema、判定与修复状态机 |
 | [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) | 2026-08-31 校准结论、T-074 边界与下一任务 |
 | [docs/SCOPE_AND_CODE_MAP.md](docs/SCOPE_AND_CODE_MAP.md) | 任务范围、Inductor 调用链和源码入口 |
+| [docs/TASK_BACKLOG.md](docs/TASK_BACKLOG.md) | T-081～T-113 草案批次；完整单元列表、非计数记录及 lowering/template 覆盖边界 |
+| [report/tracker_validation_hardening_20260906.md](report/tracker_validation_hardening_20260906.md) | 验收误判修复、零设备回归与性能准备尚未完成的边界 |
 | [docs/GUIDE.md](docs/GUIDE.md) | 机制说明与历史案例阅读指南 |
 | [docs/REFERENCE_RUNNER_GPU.md](docs/REFERENCE_RUNNER_GPU.md) | T-076 GPU 静态校验、整批执行、重跑、二进制/文本回传说明 |
 | [docs/T077_REFERENCE_RUNNER_GPU.md](docs/T077_REFERENCE_RUNNER_GPU.md) | T-077 第二波 GPU 执行与文本回传说明 |
@@ -141,8 +147,15 @@ FX signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.m
 GPU 后续统一使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077|T-078|T-079|T-080 --gpu ID`。
 T-077 性能 5/5 已处置、pending=0；T-078/T-079/T-080 均已完成 reference、逐单元性能合同和
 中文 case guide 的静态准备，GPU 可按任务分别一键执行。优先完成 T-078，再依次回传 T-079 与
-T-080 的 latest 文本 handoff；NPU 性能 worker 要等 reference 与功能命中门禁通过后才解锁。
+T-080 的 latest 文本 handoff。三批 NPU 性能目前仅有方案，worker 尚未实现；必须先完成实现和
+静态验证，再经 reference 与 NPU 功能/命中门禁开放实测，不会自动解锁。
 独立 correctness 修复 `dfbcc25` 继续等待产品代码评审授权，不与 T-078 reference 混合。
+
+2026-09-06 验收加固：部分 skip、expected failure、执行数不足均不算 valid reference；NPU
+结果强制校验 `triton_experimental`；未修复数值回归可作为合法失败证据落盘，但不算正式闭环。
+GPU 导出失败时 `latest-text-handoff.json` 显示本轮失败状态，不再保留上轮成功入口。
+后续 137 个 provisional eligible 单元已暂列 T-081～T-113，共 33 个**待审核草案**，不是可运行批次；
+另有 30 条非计数结构记录。详见上方 backlog，不将其计入冻结分母。
 
 ## 执行环境合同
 

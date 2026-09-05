@@ -203,21 +203,24 @@ set -e
 run_dir="$(sed -n 's/^artifacts=//p' "${launcher_log}" | tail -n 1)"
 if [[ -z "${run_dir}" || ! -d "${run_dir}" ]]; then
     echo "错误：runner 未返回有效 artifacts 目录；启动日志：${launcher_log}" >&2
-    exit "${runner_status:-1}"
+    if ((runner_status == 0)); then runner_status=1; fi
+    "${PYTHON}" "${tracker_root}/scripts/publish_reference_latest.py" \
+        --result-root "${result_root}" --runner-status "${runner_status}" --export-status 1
+    exit "${runner_status}"
 fi
 
-text_handoff="${run_dir}-text-handoff.json"
+text_handoff="${run_dir}/text-handoff.json"
 set +e
 "${PYTHON}" "${tracker_root}/scripts/export_reference_text.py" \
     --run-dir "${run_dir}" \
+    --allow-derived-output \
     --output "${text_handoff}"
 export_status=$?
 set -e
 
-ln -sfn "$(basename "${run_dir}")" "${result_root}/latest"
-if ((export_status == 0)); then
-    ln -sfn "$(basename "${text_handoff}")" "${result_root}/latest-text-handoff.json"
-fi
+"${PYTHON}" "${tracker_root}/scripts/publish_reference_latest.py" \
+    --result-root "${result_root}" --run-dir "${run_dir}" \
+    --runner-status "${runner_status}" --export-status "${export_status}"
 
 echo "gpu_task_status=${runner_status}"
 echo "run_dir=${run_dir}"

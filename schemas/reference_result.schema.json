@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/Beaver2323/Subgraph-Fusion-Pass-Optimization/main/schemas/reference_result.schema.json",
   "title": "GPU Reference Case Result",
-  "$comment": "更新时间：2026-08-31 20:00 CST；这是 T-076 reference 结果合同，不等同于后续 GPU/NPU unified verdict schema。",
+  "$comment": "更新时间：2026-09-06 02:21 CST；GPU reference 结果合同。新增可选执行数/expected failure 字段；reference valid 不等于 codegen-only case 已有数值或性能结论。",
   "type": "object",
   "required": [
     "schema_version",
@@ -64,6 +64,9 @@
         "timeout_seconds": {"type": "integer", "minimum": 1},
         "tests_ran": {"type": ["integer", "null"], "minimum": 0},
         "tests_skipped": {"type": ["integer", "null"], "minimum": 0},
+        "tests_expected": {"type": ["integer", "null"], "minimum": 1},
+        "tests_expected_failures": {"type": "integer", "minimum": 0},
+        "tests_unexpected_successes": {"type": "integer", "minimum": 0},
         "skip_reason": {"type": ["string", "null"]}
       }
     },

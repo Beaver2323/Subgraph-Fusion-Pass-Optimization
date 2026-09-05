@@ -11,6 +11,7 @@ from typing import Any
 
 
 SHA256_LENGTH = 64
+REQUIRED_NPU_BACKEND = "triton_experimental"
 FORMAL_VERDICTS = {
     "UPSTREAM_CHANGED",
     "NPU_REGRESSION",
@@ -132,6 +133,8 @@ def validate_npu_result(
         raise ValueError(f"{result_path} environment fingerprint 不一致")
     if environment["torch_commit"] != result["upstream_commit"]:
         raise ValueError(f"{result_path} torch commit 不一致")
+    if environment["backend"] != REQUIRED_NPU_BACKEND:
+        raise ValueError(f"{result_path} backend 必须为 {REQUIRED_NPU_BACKEND}")
 
     npu_control = result["npu_control"]
     require_keys(
@@ -174,6 +177,8 @@ def validate_npu_result(
         raise ValueError(f"{result_path} selected execution 状态非法")
     if selected["tests_run"] < 1 or selected["tests_skipped"] != 0:
         raise ValueError(f"{result_path} selected execution 测试计数无效")
+    if selected["execution_success"] is not (selected["status"] == "passed"):
+        raise ValueError(f"{result_path} selected execution 状态与 success 不一致")
 
     manifest_variants = {
         variant["variant_id"]: variant for variant in manifest_unit["variants"]
@@ -246,8 +251,20 @@ def validate_npu_result(
         ] is not False:
             raise ValueError(f"{result_path}:{variant_id} expected-disabled 必须不命中")
         if variant["evidence_mode"] == "runtime":
-            if variant["correctness"]["status"] != "passed":
-                raise ValueError(f"{result_path}:{variant_id} runtime correctness 未通过")
+            correctness = variant["correctness"]["status"]
+            if correctness not in {"passed", "failed"}:
+                raise ValueError(f"{result_path}:{variant_id} runtime correctness 状态非法")
+            if correctness == "failed":
+                if variant["support_status"] != "regressed":
+                    raise ValueError(f"{result_path}:{variant_id} 数值失败不得标记 supported")
+                if selected["execution_success"]:
+                    raise ValueError(f"{result_path}:{variant_id} 数值失败不得报告执行通过")
+                if variant["performance"]["status"] not in {
+                    "not-run", "not-configured", "not-applicable"
+                }:
+                    raise ValueError(f"{result_path}:{variant_id} 数值失败不得报告性能测量")
+                if variant["first_divergence"] == "none":
+                    raise ValueError(f"{result_path}:{variant_id} 数值失败必须记录首个分歧")
         elif variant["correctness"]["status"] not in {
             "not-run",
             "not-applicable",
@@ -362,8 +379,24 @@ def validate_comparison(
         raise ValueError(f"{comparison_path} NPU environment fingerprint 不一致")
     if npu["tracking_mode"] != npu_result["tracking_mode"]:
         raise ValueError(f"{comparison_path} NPU tracking_mode 不一致")
-    if npu["correctness_status"] != "passed":
-        raise ValueError(f"{comparison_path} NPU 数值正确性门禁未通过")
+    if npu_result["environment"]["backend"] != REQUIRED_NPU_BACKEND:
+        raise ValueError(f"{comparison_path} backend 必须为 {REQUIRED_NPU_BACKEND}")
+    if npu["execution_success"] != npu_result["selected_execution"]["execution_success"]:
+        raise ValueError(f"{comparison_path} NPU execution_success 不一致")
+    runtime_statuses = {
+        item["correctness"]["status"] for item in npu_result["variants"]
+        if item["evidence_mode"] == "runtime"
+    }
+    expected_correctness = (
+        "failed" if "failed" in runtime_statuses else "passed" if runtime_statuses else "not-run"
+    )
+    if npu["correctness_status"] != expected_correctness:
+        raise ValueError(f"{comparison_path} NPU correctness 与 variants 不一致")
+    if expected_correctness == "failed" and (
+        comparison["final_verdict"] != "NPU_REGRESSION"
+        or comparison["repair_status"] not in {"queued", "in-progress", "blocked"}
+    ):
+        raise ValueError(f"{comparison_path} 数值失败必须保留为未修复 NPU_REGRESSION")
     if not npu["execution_success"] and comparison["final_verdict"] not in {
         "NPU_REGRESSION",
         "EXPECTED_PRODUCT_DIVERGENCE",
@@ -436,11 +469,16 @@ def validate_comparison(
             raise ValueError(f"{comparison_path}:{variant_id} NPU match 不一致")
         if variant["runtime_path"] != npu_variant["runtime_path"]:
             raise ValueError(f"{comparison_path}:{variant_id} runtime path 不一致")
-        if not variant["match_contract_aligned"]:
+        if not variant["match_contract_aligned"] and variant["verdict"] != "NPU_REGRESSION":
             raise ValueError(f"{comparison_path}:{variant_id} comparison 未闭环")
         evidence_mode = npu_variant["evidence_mode"]
-        if evidence_mode == "runtime" and variant["correctness_status"] != "passed":
-            raise ValueError(f"{comparison_path}:{variant_id} runtime comparison 未通过")
+        if variant["correctness_status"] != npu_variant["correctness"]["status"]:
+            raise ValueError(f"{comparison_path}:{variant_id} correctness 与 NPU 记录不一致")
+        if evidence_mode == "runtime" and variant["correctness_status"] == "failed":
+            if variant["verdict"] != "NPU_REGRESSION":
+                raise ValueError(f"{comparison_path}:{variant_id} 数值失败不得标记支持或收益")
+            if variant["performance_status"] not in {"not-run", "not-configured", "not-applicable"}:
+                raise ValueError(f"{comparison_path}:{variant_id} 数值失败不得标记性能通过")
         if evidence_mode != "runtime" and variant["correctness_status"] not in {
             "not-run",
             "not-applicable",
@@ -455,6 +493,8 @@ def validate_comparison(
             "blocked",
         }:
             raise ValueError(f"{comparison_path} NPU_REGRESSION 未进入 repair 流程")
+    elif any(item["verdict"] == "NPU_REGRESSION" for item in comparisons):
+        raise ValueError(f"{comparison_path} 存在回归 variant，不得报告非回归总判定")
     elif comparison["final_verdict"] in FORMAL_VERDICTS:
         if comparison["repair_status"] not in {"not-needed", "verified"}:
             raise ValueError(f"{comparison_path} formal verdict 的 repair_status 非闭环")
@@ -468,11 +508,18 @@ def validate_comparison(
         raise ValueError(f"{comparison_path} 未覆盖 manifest 全部 variants")
 
 
-def validate(repo_root: Path) -> None:
-    manifest_paths = (
-        repo_root / "upstream/manifest.yaml",
-        repo_root / "upstream/t077_manifest.yaml",
+def is_formally_closed(comparison: dict[str, Any]) -> bool:
+    return (
+        comparison["final_verdict"] in FORMAL_VERDICTS
+        and comparison["repair_status"] in {"not-needed", "verified"}
+        and comparison["npu"]["correctness_status"] == "passed"
     )
+
+
+def validate(repo_root: Path) -> None:
+    manifest_paths = [repo_root / "upstream/manifest.yaml", *sorted(
+        (repo_root / "upstream").glob("t*_manifest.yaml")
+    )]
     manifests = [load_object(path) for path in manifest_paths]
     units: dict[str, dict[str, Any]] = {}
     for manifest_path, manifest in zip(manifest_paths, manifests):
@@ -517,7 +564,7 @@ def validate(repo_root: Path) -> None:
             units[unit_id],
         )
         variant_count += len(comparison["variant_comparisons"])
-        formally_closed += comparison["final_verdict"] in FORMAL_VERDICTS
+        formally_closed += is_formally_closed(comparison)
 
     expected_closed = sum(
         manifest["counting_policy"]["current_formally_closed_units"]
@@ -532,6 +579,7 @@ def validate(repo_root: Path) -> None:
     print(f"comparison_units={len(comparison_paths)}")
     print(f"comparison_variants={variant_count}")
     print(f"formally_closed_units={formally_closed}")
+    print(f"open_or_inconclusive_units={len(comparison_paths) - formally_closed}")
     print("torch_imported=0")
 
 

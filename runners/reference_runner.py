@@ -599,21 +599,38 @@ def artifact_inventory(case_dir: Path) -> list[dict[str, Any]]:
     return inventory
 
 
-def parse_unittest_output(stdout: str, stderr: str, return_code: int | None) -> dict[str, Any]:
+def parse_unittest_output(
+    stdout: str,
+    stderr: str,
+    return_code: int | None,
+    expected_tests: int | None = None,
+) -> dict[str, Any]:
     combined = "\n".join([stdout, stderr])
     ran = re.findall(r"Ran\s+(\d+)\s+tests?", combined)
     skipped = re.findall(r"skipped=(\d+)", combined)
     reasons = re.findall(r"skipped\s+['\"](.+?)['\"]", combined)
     tests_ran = int(ran[-1]) if ran else None
     tests_skipped = int(skipped[-1]) if skipped else 0 if tests_ran else None
+    expected_failures = re.findall(r"expected failures=(\d+)", combined)
+    unexpected_successes = re.findall(r"unexpected successes=(\d+)", combined)
+    tests_expected_failures = int(expected_failures[-1]) if expected_failures else 0
+    tests_unexpected_successes = int(unexpected_successes[-1]) if unexpected_successes else 0
+    summary_ok = bool(re.search(r"^OK(?:\s*\([^\n]*\))?\s*$", combined, re.MULTILINE))
     if return_code is None:
         status = "timed-out"
     elif return_code != 0:
         status = "failed"
     elif tests_ran == 0 or tests_ran is None:
         status = "no-tests"
-    elif tests_skipped is not None and tests_skipped >= tests_ran:
+    elif tests_skipped:
         status = "skipped"
+    elif (
+        tests_expected_failures
+        or tests_unexpected_successes
+        or not summary_ok
+        or (expected_tests is not None and tests_ran != expected_tests)
+    ):
+        status = "failed"
     else:
         status = "passed"
     return {
@@ -621,6 +638,9 @@ def parse_unittest_output(stdout: str, stderr: str, return_code: int | None) -> 
         "success": status == "passed",
         "tests_ran": tests_ran,
         "tests_skipped": tests_skipped,
+        "tests_expected": expected_tests,
+        "tests_expected_failures": tests_expected_failures,
+        "tests_unexpected_successes": tests_unexpected_successes,
         "skip_reason": reasons[-1] if reasons else None,
     }
 
@@ -677,6 +697,9 @@ def run_case(
     write_json(case_dir / "metadata.json", metadata)
 
     env = os.environ.copy()
+    # 功能 reference 不继承社区脚本的可选性能/超大输入开关。
+    env.pop("DO_PERF_TEST", None)
+    env.pop("USE_LARGE_INPUT", None)
     env.update(
         {
             "PYTHONUNBUFFERED": "1",
@@ -721,7 +744,12 @@ def run_case(
     duration = time.monotonic() - start
     stdout = stdout_path.read_text(encoding="utf-8", errors="replace")
     stderr = stderr_path.read_text(encoding="utf-8", errors="replace")
-    parsed = parse_unittest_output(stdout, stderr, return_code)
+    expected_tests = (
+        len(case.get("direct_args") or [case["source_test"]])
+        if case["tracking_mode"] == "direct"
+        else case.get("expected_tests")
+    )
+    parsed = parse_unittest_output(stdout, stderr, return_code, expected_tests)
     fx = collect_fx(case_dir, debug_parent, pytorch_root, work_dir)
     required_artifacts_valid = all(
         fx["before" if item == "fx-before" else "after"]["captured"]
@@ -734,7 +762,11 @@ def run_case(
             if case["expected_match"] == "not-directly-asserted"
             else "passed-inside-community-test"
         )
-        correctness_status = "community-assertion-passed"
+        correctness_status = (
+            "not-asserted-codegen-only"
+            if case.get("correctness_evidence") == "codegen-only"
+            else "community-assertion-passed"
+        )
     else:
         assertion_status = "not-established"
         correctness_status = "not-established"
@@ -749,9 +781,14 @@ def run_case(
 
     benchmark = {
         "status": "not-configured",
-        "functional_gate": "passed" if reference_valid else "not-passed",
+        "functional_gate": (
+            "passed" if reference_valid and correctness_status == "community-assertion-passed"
+            else "not-passed"
+        ),
         "reason": (
-            "本轮仅建立原生 community functional baseline；尚未定义独立 benchmark。"
+            "社区 case 只有 codegen 断言；数值门禁未建立，禁止运行 benchmark。"
+            if reference_valid and correctness_status == "not-asserted-codegen-only"
+            else "本轮仅建立原生 community functional baseline；独立性能方案与 worker 状态另行校验。"
             if reference_valid
             else "reference functional/artifact gate 未通过，禁止运行 benchmark。"
         ),
@@ -784,6 +821,9 @@ def run_case(
             "timeout_seconds": timeout_seconds,
             "tests_ran": parsed["tests_ran"],
             "tests_skipped": parsed["tests_skipped"],
+            "tests_expected": parsed["tests_expected"],
+            "tests_expected_failures": parsed["tests_expected_failures"],
+            "tests_unexpected_successes": parsed["tests_unexpected_successes"],
             "skip_reason": parsed["skip_reason"],
         },
         "match": {
@@ -799,7 +839,11 @@ def run_case(
         "fx": fx,
         "correctness": {
             "status": correctness_status,
-            "evidence_method": "原生 community test eager/compiled 断言",
+            "evidence_method": (
+                "社区入口仅断言 codegen；不能据此宣称数值正确，性能前须补充数值门禁"
+                if case.get("correctness_evidence") == "codegen-only"
+                else "原生 community test eager/compiled 断言"
+            ),
         },
         "benchmark": benchmark,
         "adapter_decision": adapter_decision,

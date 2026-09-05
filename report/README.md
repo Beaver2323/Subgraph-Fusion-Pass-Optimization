@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-04 09:08 CST（UTC+08:00）
+> 索引更新时间：2026-09-06 02:55 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -8,6 +8,8 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
+| [t076_t077_history_reaudit_20260906.md](t076_t077_history_reaudit_20260906.md) | 逐单元历史复核、规则版本与统一检查入口 | 10 份 NPU 记录检查通过；历史原始证据仍 pending，原始 verdict 不改写 |
+| [tracker_validation_hardening_20260906.md](tracker_validation_hardening_20260906.md) | 验收校验、失败落盘与 latest 一致性修复 | 零设备回归；不重写既有 GPU/NPU 实测结果 |
 | [t076_t077_performance_20260903.md](t076_t077_performance_20260903.md) | 两批性能处置、backend 门禁、B2B capability 与四项 experimental OFF/ON 实测 | T-076 2测/3显式关闭免测；T-077 5/5 已处置、pending=0 |
 | [t076_npu_completion_20260902.md](t076_npu_completion_20260902.md) | T-076 五个单元的 NPU/comparison 闭环及 addmm 运行态纠偏 | 正式闭环 5/5；1 个行为一致、4 个预期产品分歧 |
 | [t076_pattern_gpu_npu_guide_20260902.md](t076_pattern_gpu_npu_guide_20260902.md) | T-076 每个 pattern/variant 的源码意图与 GPU/NPU 行为导读 | 20/20 variant 学习说明；P-018 候选单列 |

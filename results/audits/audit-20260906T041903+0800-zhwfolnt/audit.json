@@ -1,0 +1,1659 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-06T04:19:03+08:00",
+  "rule_version": "2026-09-06.1",
+  "validator_version": "2.0.0",
+  "validator_fingerprint_sha256": "df2c4ac7652ca2974b167e671b4699889f9da6d76fc0b36b68024b2c9746553f",
+  "validator_files": {
+    "runners/aggregate_b2b_capability.py": "4e8a88dd5f911899894cdad76dee3375ed3e31e05b9ef1e41324e7b2cfa07c71",
+    "runners/aggregate_decompose_performance.py": "6e155829bdca73b19988f0378bf191060bbb510f122c86cbaebf56dbc6a22a3a",
+    "runners/aggregate_performance.py": "06d21aba5cb178756317c6bb5b9d57f5b5c1b57ade8b98f7dee3ec507fa92158",
+    "runners/decompose_performance_worker.py": "d8f1be97a2c632aa045f96fb4547d212a22363a6adac9dfaecfe8fbfc51f2fc3",
+    "runners/gumbel_performance_worker.py": "c4e7b713a0015ec04241a801dab8845373e1bf48f6a07bdb8618c6580c40fcdb",
+    "runners/reference_runner.py": "12fefa453beccc0483f6fa17754594766aa0de822b3dc8f5c38fc4aa2fe6b947",
+    "schemas/audit_policy.json": "f6a22211aeb3b4fd59c51432d9674b8d2d9cdc28a5f997536b55ab93afb5f77f",
+    "schemas/comparison_result.schema.json": "801baa07c9db50055b461269d571762eac592271c03560b386a621f01611eec5",
+    "schemas/npu_result.schema.json": "682cb9dd8395922e9bcd56b0809e4ec5cbf82e293f344a2f1674a42f0fad1c89",
+    "schemas/reference_result.schema.json": "8964bfeffcf039e97658e69b3985f4525ca3b258af9bea39df44128007d1aa69",
+    "scripts/audit_history.py": "971b99baad077988faa24a3658dac5ef29237a4aeba11a8ea9a1000f0bdfe8ea",
+    "scripts/build_task_backlog.py": "db95650f07c38357532d350fb39014d817deb490b0b5a02b227e275bc4b3c9b6",
+    "scripts/export_reference_text.py": "dea91835044f478ad6228b44ae81ae82156a04fded16d178c79fd3556631b696",
+    "scripts/publish_reference_latest.py": "caae1b7adefbf4af2f358fcf0dd13d0503b9085f43420975e552c409bfb8928a",
+    "scripts/run_gpu_reference_task.sh": "c34194004ca2f3c62d7f41a6ead83ed3f1979e12253b7190f2c1b8a7dd0f77ce",
+    "scripts/run_npu_performance_task.sh": "b6b814a64cfc97ab9bd766075081c0128fc98bb0026d56eb7e118931691b9557",
+    "scripts/run_reference_all.sh": "356aca12dd5a5d68c5c0556a5d9404f5fe20505ee2f130a9dff49850bdd2a752",
+    "scripts/run_t077_b2b_capability.sh": "b8617517e0ba3dcbf9fc07175cfce88c972225140354af6e7dcf10f52f292e75",
+    "scripts/run_t077_reference_all.sh": "cc84d73c524e5951b4e982c8a64555ded39be529e599f04b4531f9a41b7f38b5",
+    "scripts/run_t078_reference_all.sh": "79884408d3caecb8e67dd42eedc11bca9c7376d711e6f5578e9b47e945f75c3f",
+    "scripts/run_t079_reference_all.sh": "52c533d233d08beac3e3c985d0aa491ae13ab14be4906d567c7b62b657b06fbb",
+    "scripts/run_t080_reference_all.sh": "e5a2a7f29944555221eaa6bec0779cbc06ce63cb000067d02cb8c5e39bd2b81c",
+    "scripts/validate_all.py": "9c1e493b73411270ffe23b4dc83e7db9f734a2bd0fef66ce5ccddea0d0583ea1",
+    "scripts/validate_comparison_data.py": "8ec72b2f640e5ac3835fd2e2132a401116b3cae5e11ce5d91a6662df661e56ca",
+    "scripts/validate_prepared_tasks.py": "30a018bff480e2b89ba32b462ed3f40c29ce13e8d6c9036bcbc56dc81bedd0f7",
+    "scripts/validate_tracker_data.py": "fe9d00823c4821d1d0d42367ccb2c1b3c5238b16232f641bc0ae5b3e6520fd49",
+    "tests/test_history_audit.py": "b0bd2ca58c70154b4a014f0f2ee3e74e521a5b9d0ed651ce15c22e1023f4eff0",
+    "tests/test_tracker_contracts.py": "95f5fb15c3978e9ffba7d52f44d29311586ad8b8d866b63c0a3184092ae28371",
+    "upstream/manifest.schema.json": "353c324f7ec6372cc4cc3b76e168cad6648eb55a2d02193a1d606998d78f1f74",
+    "upstream/manifest.yaml": "6c00343b0ebeec30a7017138d0727ad63bad4c70ae587a1a152d35273312a7ab",
+    "upstream/pass_map.yaml": "d20ffcbda8231442f8d87c1bc616986ab87c3c54f0af4bba39c4da95df8bc1f9",
+    "upstream/performance_plan.schema.json": "3ffc24e4153222a126fd0147c56a9a236dbfe854ea092e32815aabc49aebc74c",
+    "upstream/reference_plan.schema.json": "52ec0e221e6ca0b20a3912c35ff09590d09bd5aa584e618a49481558001b0a03",
+    "upstream/reference_plan.yaml": "755bf5c89bdfb7c2511a96fd4847ee27de4199ffcef17b9d1745b95ce862be04",
+    "upstream/t076_performance_plan.yaml": "17c3f22aff440d27f70804b9d28f18561ca803b988432edbd0a8ca39f5a68be4",
+    "upstream/t077_manifest.yaml": "e5438ab233acfc00b10de9214338597d3e15bf4c6805e1fcdd2fd8f894ac37b8",
+    "upstream/t077_performance_plan.yaml": "35b269cddb653ac9f3d4722a056eb4acd2a1c0f6251c9fcadf2dbc3cb46d6756",
+    "upstream/t077_reference_plan.yaml": "533e93c8af44b2c5ae615363ec4c3de351827257f6e3f0ee7f8890d63a9cfc8f",
+    "upstream/t078_manifest.yaml": "9f26a67f0deda2df6a2a2096dc20b496f90222596beb62fffb68f4777cacb739",
+    "upstream/t078_performance_plan.yaml": "1e1b474104fae13fde1afc179970266018ec87c3831260903423de82be13e0e4",
+    "upstream/t078_reference_plan.yaml": "78dc518c82808881ee1ab4cac9e2d74da2cbc5d82737946a0c57a2f7dbdb29ad",
+    "upstream/t079_manifest.yaml": "2820b6043f00988ba2caa5ea963a809d3733925ce5011432b54c7a1e34f64c6e",
+    "upstream/t079_performance_plan.yaml": "550e65ba2fce53b183df95a70df3038ea354e06c270472887045aa1e8e04fc79",
+    "upstream/t079_reference_plan.yaml": "eeb43432324216ab267470cad9d76fef167e3d66d833b44734f6e798dd8d2695",
+    "upstream/t080_manifest.yaml": "a2387c98865ac21af73fd6ee775dce771203f4c5e831c1630b3a1197880bbcd9",
+    "upstream/t080_performance_plan.yaml": "45b6ddf993c3908cff850266e9981f3ed6f5e905d2cc2108d9bbe4a25e9fa024",
+    "upstream/t080_reference_plan.yaml": "8dcc74eb53d4ec87cdccd76902106b1aee561a82dc0717823c921567a8b290bf",
+    "upstream/task_backlog.json": "1c505a2b00cd01a6c6cebf1739e46cc298848fc1b01bdca448c29602c121672c"
+  },
+  "repository_head": "2cfc7ef3a2e33ca769efcbe8f4ed85cf27d7c3a7",
+  "source_files": {
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/upstream/reference_plan.yaml": {
+      "sha256": "755bf5c89bdfb7c2511a96fd4847ee27de4199ffcef17b9d1745b95ce862be04",
+      "bytes": 10676
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/upstream/manifest.yaml": {
+      "sha256": "6c00343b0ebeec30a7017138d0727ad63bad4c70ae587a1a152d35273312a7ab",
+      "bytes": 28695
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-pad-mm-addmm/comparison_result.json": {
+      "sha256": "eeb1ceb8a3d26228589182dd71299732a30bf8435f3c72ed3cd0a8dc63b5e771",
+      "bytes": 6949
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-pad-mm-addmm/npu_result.json": {
+      "sha256": "40fe80200413ac59d361f225eb9d5074f7450441ea0c2e473a1e9226e13dd6fd",
+      "bytes": 9027
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-pad-addmm-dynamic-m-native/npu_adapter.py": {
+      "sha256": "c47345eb34b05f395bb5f566f40f7a1a6a44806de9a43e13eaa5f6b61655c7cd",
+      "bytes": 4593
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-pad-addmm-bias-native/npu_adapter.py": {
+      "sha256": "f0937ba8c2fbfe4186ea533bb5e797b86844741faed7cffead7527e374facae1",
+      "bytes": 4022
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-pad-mm-bmm/comparison_result.json": {
+      "sha256": "d6c7847b47abe5f203480c1792a22bf448975da8838ae2e88b923ccc07618302",
+      "bytes": 6224
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-pad-mm-bmm/npu_result.json": {
+      "sha256": "0998e5bc430523f57c976916dc3afdf34c2736ae78a2ab4360e9605297d110c6",
+      "bytes": 7787
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-pad-bmm-dynamic-batch-native/npu_adapter.py": {
+      "sha256": "4f5c6216d7203bb99811485f32aaeefc733e3d7a2227877a0090a855d0a5190e",
+      "bytes": 4926
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-pad-bmm-static-fp16-native/npu_adapter.py": {
+      "sha256": "bb8554d79cd9e1acdb0f7eeda5add5a9a474a2d0eae23dd419d54dcfbdd4745b",
+      "bytes": 4547
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-pad-bmm-autocast-regression-native/npu_adapter.py": {
+      "sha256": "4adf26aa2bc9166c1eb9cf47e06cdbed369d6fb496e3685be9c1875258a95520",
+      "bytes": 3099
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-pad-mm-mm/comparison_result.json": {
+      "sha256": "e3c1291306ae9ac8914f39844b566dd0bcf7457a10fe7d53fc0df46e2131d5e6",
+      "bytes": 6836
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-pad-mm-mm/npu_result.json": {
+      "sha256": "8434daff01c9686ae5f1f9442deeaa4c11a4647464548945ed955365a6d20b59",
+      "bytes": 11599
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-pad-mm-dynamic-m-native/npu_adapter.py": {
+      "sha256": "7e5a6e5f62d9a29463c15da13bd8a897570eb25f224742e467187608affd1201",
+      "bytes": 7170
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-pad-mm-original-aten-native/npu_adapter.py": {
+      "sha256": "b2fa21a5700cb7aeef9f3083cc0c26e370a95c94961134da31dd01e459789189",
+      "bytes": 5746
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-pad-mm-stride-native/npu_adapter.py": {
+      "sha256": "63fb93e9c01ea948d526d84920958711a1f819b30b80499736a1a078a1344420",
+      "bytes": 4985
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-pad-mm-exclusion-native/npu_adapter.py": {
+      "sha256": "c069201f762bd185f8e561e208085179cacfd554b3def8eb884fbdf804149a26",
+      "bytes": 6402
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-post-grad-addmm/comparison_result.json": {
+      "sha256": "456152cec8a1cfcdfa1e800be55d729063cdc37c67ca0f6e0dc27c3d10e78bae",
+      "bytes": 6113
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-post-grad-addmm/npu_result.json": {
+      "sha256": "ec624004b13c19521bfd41f8265c5fe216f33014a22514b663f26c66ecaec0d4",
+      "bytes": 8425
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-addmm-contract-native/npu_adapter.py": {
+      "sha256": "728ec1dc6221137006e61fcce620a461ed3826696a7972e4f239bc61a35a4b1a",
+      "bytes": 3547
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-addmm-symbolic-scalar-negative-native/npu_adapter.py": {
+      "sha256": "f74267198529aa65f0c9d30ac557c9a9f86d674e470f462074303048847ef8e8",
+      "bytes": 2814
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/REF-mm-plus-mm-native/comparison_result.json": {
+      "sha256": "6faed729b8fbbd038b35f0017436f6c8d46a96a9c2bd4626a5d9013fb6430615",
+      "bytes": 5157
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/REF-mm-plus-mm-native/npu_result.json": {
+      "sha256": "fe9e7779a7423d57101b3e4149dcc0cf0a6421cca0334aaa86a3d37eed28be82",
+      "bytes": 10612
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-mm-plus-mm-native/npu_adapter.py": {
+      "sha256": "06b22271b370f466a27e5f7f3677fe26a891d800c59a6629999ac10a52efa716",
+      "bytes": 6309
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-076/performance_summary.json": {
+      "sha256": "7a51803da0b1878c07ea7865eec8c31c76da73c2b34136c7ce91ceebf8d65591",
+      "bytes": 2607
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/report/p0_sweep_performance_20260820.md": {
+      "sha256": "daeab8f733e8181932f903fa95cbfe49bf3a03b9d09f70f718439ab81dbfb673",
+      "bytes": 10554
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/report/t058_experimental_addmm_gate_20260826.md": {
+      "sha256": "65dbbe6cdb2afc7180849c88a51a8ffb57547ec47909360c82898c4ce900d967",
+      "bytes": 8284
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/upstream/t077_reference_plan.yaml": {
+      "sha256": "533e93c8af44b2c5ae615363ec4c3de351827257f6e3f0ee7f8890d63a9cfc8f",
+      "bytes": 9306
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/upstream/t077_manifest.yaml": {
+      "sha256": "e5438ab233acfc00b10de9214338597d3e15bf4c6805e1fcdd2fd8f894ac37b8",
+      "bytes": 18826
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-apply-gumbel-max-trick/comparison_result.json": {
+      "sha256": "e54386395911cfb5d93c3769898829bccfbe25df5c332dd2643e24f3623bf1af",
+      "bytes": 2930
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-apply-gumbel-max-trick/npu_result.json": {
+      "sha256": "610b5898acb1f3cfcf9d6e74817bd59d3ff90b242130096109c294393306922d",
+      "bytes": 3439
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-gumbel-max-trick-native/npu_adapter.py": {
+      "sha256": "2a3e409836e254f7c2b6abbf4586ef00123b0b638359fcc26f4fb7b485a5ced9",
+      "bytes": 3946
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-b2b-gemm/comparison_result.json": {
+      "sha256": "871a71a9c0a9d5b28396d269fc17347d87f774f8c176274d57d6369bd7005863",
+      "bytes": 8341
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-b2b-gemm/npu_result.json": {
+      "sha256": "6821c331c99e475d21303a3b0163ed9dd7857970ad153ed0c895af14cb7a60d0",
+      "bytes": 10288
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-b2b-gemm-native/npu_adapter.py": {
+      "sha256": "c029c347b1c7bbaeafc8bec847cf61b3e12ecaf394f2191e702aad696d6140f6",
+      "bytes": 6077
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-decompose-mem-bound-mm-decompose-addmm/comparison_result.json": {
+      "sha256": "36002246523cd6ff631a2150e3af495908e15dd59d52d3b81ad8dfac4f29e16b",
+      "bytes": 2758
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-decompose-mem-bound-mm-decompose-addmm/npu_result.json": {
+      "sha256": "28de0d85bac18eb90b9a9aba942ff8cf6efc35dc81ab2ad55364b9374cf2100a",
+      "bytes": 3743
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-decompose-addmm-dynamic-native/npu_adapter.py": {
+      "sha256": "ab99fc87f71ec82542c1bfb6a1590f00b402aefa08f4f1b9bcd1f650673f7b9f",
+      "bytes": 3728
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-decompose-mem-bound-mm-decompose-bmm/comparison_result.json": {
+      "sha256": "82489b1bb3e1ce07060eb7f1c867c86b5d4ccaeb4f810aeebe4d3c7879b0ad6f",
+      "bytes": 4295
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-decompose-mem-bound-mm-decompose-bmm/npu_result.json": {
+      "sha256": "0f918fe0a5f6935bd7d33f84b832930fe38d5269615e34a362eb263f63097086",
+      "bytes": 6416
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-decompose-bmm-native/npu_adapter.py": {
+      "sha256": "55c636351a3f3f88ad04b522a6d4c9fc6373b87bff3f0180d1649128db7bb09b",
+      "bytes": 4860
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-decompose-mem-bound-mm-decompose-mm/comparison_result.json": {
+      "sha256": "f3447f3db511958cd0383a5f8d05425efc187c7a7c6ff4ef3ce27e533f12d5be",
+      "bytes": 7459
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/AU-decompose-mem-bound-mm-decompose-mm/npu_result.json": {
+      "sha256": "a7cdd26c7394c1ac4341f511dba068506d4d98d8bd95a4405faa72337bb01d4c",
+      "bytes": 12063
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-decompose-mm-native/npu_adapter.py": {
+      "sha256": "7bd480e773492133d30c5c7dbd69cd98210b28118bc7cb47443e4c6c1916c0ec",
+      "bytes": 9124
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-decompose-mm-native/backend_fix_dfbcc25.patch": {
+      "sha256": "c2250a7e07802c4e22dc1d2926ec09278a6ed71b21927123c996161d1f7a5305",
+      "bytes": 4639
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-077/performance_summary.json": {
+      "sha256": "0a94505972aff56ec5fcd267bca523c592b4f5788ad1a44860d94f14813405ab",
+      "bytes": 6775
+    },
+    "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/performance_summary.json": {
+      "sha256": "64092ce90ea753769eef301548c7daebbfc6adab1b5744882f041d3c92e4b24f",
+      "bytes": 3770
+    },
+    "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/off1/result.json": {
+      "sha256": "cd33bf2561c9531e34c116b49cfb5637b56ea038350a0d2b7e80a51001437594",
+      "bytes": 2484
+    },
+    "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/on1/result.json": {
+      "sha256": "5c6a34652ba9784abc7988b0e8f4a1337a8d632b81a12d00de3e7f12af6a1caf",
+      "bytes": 2492
+    },
+    "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/on2/result.json": {
+      "sha256": "e781f73d557889cd557f010f24fa2266694c1d2958a4ef03841eb1d6a8c3fe09",
+      "bytes": 2497
+    },
+    "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/off2/result.json": {
+      "sha256": "1693af3a180efb3db3a68a2ce5caf98342ee7c5975bae626d9e5802be2a9f04d",
+      "bytes": 2484
+    },
+    "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/off3/result.json": {
+      "sha256": "bc71cbd1dce83bdc38b87a76ccbfbd2cddf5e521f9019be6d6a562d53f11c9e5",
+      "bytes": 2473
+    },
+    "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/on3/result.json": {
+      "sha256": "315dca157ebc8e68e85e9d858bc9d0f1e6513fcfb93d638200e94b136e7841b7",
+      "bytes": 2496
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-077/b2b_capability_assessment.json": {
+      "sha256": "2698a96d2112e363b9390b039545c8c0251b5be4f81ed372aa4d4ab8ad9ad179",
+      "bytes": 3088
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-077/decompose_bmm_performance_summary.json": {
+      "sha256": "a3426dbcabb73314ff2b27f37339888278399638307177dbcb37a6176dbe1eca",
+      "bytes": 1248
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/performance_summary.json": {
+      "sha256": "54f8087d1c8ff1417e82e8491a84f44b14587dd6ebe2b02cba70145c78514b33",
+      "bytes": 4157
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/off1/result.json": {
+      "sha256": "3ba83d58667917ba709147d174229a6d2123a752d2561d6dc58857ce2262e789",
+      "bytes": 2293
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/on1/result.json": {
+      "sha256": "0e758cef3636fd9e4ebb45014a5f154b6e9345fb4d16519450b07b8d575f9869",
+      "bytes": 2283
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/on2/result.json": {
+      "sha256": "93b843a34abe33c8dfc3962d5dd73fec789295c19c7a98922d49d4de5f36b378",
+      "bytes": 2302
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/off2/result.json": {
+      "sha256": "528fd48514e76f1b57a81e90d24bd7263451c0473ec2e6355e2f0ba3ddc6c0ec",
+      "bytes": 2294
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/off3/result.json": {
+      "sha256": "912bb2ce862b7a4d00d3921356ef55a12d5d8b99966bdc992fa089a4f98ded26",
+      "bytes": 2292
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/on3/result.json": {
+      "sha256": "637659c7259f332b1a11d559ec7fb6ad5560dc4007892b4670b2d01df8a94760",
+      "bytes": 2289
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-077/decompose_mm_performance_summary.json": {
+      "sha256": "1900b458a543fcda078e84e586b229f89ac1cab4c64bdfd78685406977014872",
+      "bytes": 1333
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/performance_summary.json": {
+      "sha256": "1a4b5f6b50edfaba1ae7bb8ab8b58dc0f61d7dfb240a1642078a8da44362cc87",
+      "bytes": 4204
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/off1/result.json": {
+      "sha256": "d6164656c31f14b4a42ef4c9f21ae0e327995784b8cf633e87f62e2d40fcd5fa",
+      "bytes": 2285
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/on1/result.json": {
+      "sha256": "2d5368e4580a3b99bb9e9dc5e84ee6d19bec43d7e557791ab1a6643ea93af73e",
+      "bytes": 2269
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/on2/result.json": {
+      "sha256": "b7c9fa2efb82fbc6c1dd9bdf739841becc37e26c0afcea1e947268b5774c8873",
+      "bytes": 2277
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/off2/result.json": {
+      "sha256": "25b412107239da241afc080c3fe79585e5a6e936cf3ef05c3b1743d479f68300",
+      "bytes": 2273
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/off3/result.json": {
+      "sha256": "171836c9ce1f0dff1f7da1ff82c74a0db3b52441c021415a400ba11fe8ee526f",
+      "bytes": 2285
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/on3/result.json": {
+      "sha256": "1d634316f0614680e68b66525f76e58a3f770571847f4e47311c559af46c4834",
+      "bytes": 2279
+    },
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-077/decompose_addmm_performance_summary.json": {
+      "sha256": "05372c9d5217b2b72995fd06588b41510c55971e075382ddfc4266a1df40aef7",
+      "bytes": 1451
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/performance_summary.json": {
+      "sha256": "9c910fe08beceaac394254e3a6186da9436fba1b5da827e22a0beae2984ed2a3",
+      "bytes": 4196
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/off1/result.json": {
+      "sha256": "bc6c1018802440fcce7e05f5192eb1ffcce4bbfbcfbc61d40834230fd0f2e465",
+      "bytes": 2331
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/on1/result.json": {
+      "sha256": "55e0ce96dc62118220ff01950654d8a1e497e39404a913d921293cc8cd3e0954",
+      "bytes": 2324
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/on2/result.json": {
+      "sha256": "9cefd5368affd5480b174e489791b56d0e08b4ed218cea8fb33a0b0f9445927f",
+      "bytes": 2330
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/off2/result.json": {
+      "sha256": "564774a54c295aacaf852b3b083e6f32b9465b81bc8196bd8b6ebfa1e0f40a39",
+      "bytes": 2333
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/off3/result.json": {
+      "sha256": "0e5b16ca0a11b1d654f3b562b2d19ccb2b552d5eabd1bc7eafbb8edb6e6dc31d",
+      "bytes": 2333
+    },
+    "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/on3/result.json": {
+      "sha256": "fee8ed7e7b91396dd40ba8c8e046a6dee16c2e802fd75236ffd6cad7e7d42538",
+      "bytes": 2315
+    }
+  },
+  "tasks": [
+    {
+      "task_id": "T-076",
+      "gpu_run_id": "reference-20260901T180826+0800",
+      "gpu_cases": [
+        {
+          "case_id": "REF-mm-plus-mm-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-mm-plus-mm-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-mm-plus-mm-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-mm-dynamic-m-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-mm-dynamic-m-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-mm-dynamic-m-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-mm-original-aten-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-mm-original-aten-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-mm-original-aten-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-mm-stride-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-mm-stride-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-mm-stride-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-mm-exclusion-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-mm-exclusion-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-mm-exclusion-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-bmm-dynamic-batch-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-bmm-dynamic-batch-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-bmm-dynamic-batch-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-bmm-static-fp16-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-bmm-static-fp16-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-bmm-static-fp16-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-bmm-autocast-regression-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-bmm-autocast-regression-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-bmm-autocast-regression-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-addmm-dynamic-m-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-addmm-dynamic-m-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-addmm-dynamic-m-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-addmm-bias-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-addmm-bias-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-addmm-bias-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-pad-addmm-beta-zero-negative-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-addmm-beta-zero-negative-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-pad-addmm-beta-zero-negative-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-addmm-contract-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-addmm-contract-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-addmm-contract-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-addmm-symbolic-scalar-negative-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-addmm-symbolic-scalar-negative-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800/cases/REF-addmm-symbolic-scalar-negative-native/artifact_inventory.json"
+            }
+          }
+        }
+      ],
+      "npu_records": [
+        {
+          "acceptance_unit_id": "AU-pad-mm-addmm",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+          "original_repair_status": "not-needed",
+          "variant_count": 5
+        },
+        {
+          "acceptance_unit_id": "AU-pad-mm-bmm",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+          "original_repair_status": "not-needed",
+          "variant_count": 4
+        },
+        {
+          "acceptance_unit_id": "AU-pad-mm-mm",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+          "original_repair_status": "not-needed",
+          "variant_count": 4
+        },
+        {
+          "acceptance_unit_id": "AU-post-grad-addmm",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+          "original_repair_status": "not-needed",
+          "variant_count": 4
+        },
+        {
+          "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "BEHAVIOR_UNCHANGED",
+          "original_repair_status": "not-needed",
+          "variant_count": 3
+        }
+      ],
+      "performance_units": [
+        {
+          "acceptance_unit_id": "AU-post-grad-mm-plus-mm",
+          "status": "pending",
+          "original_verdict": "representative-beneficial-with-neutral-layouts",
+          "checks": {
+            "manual_provenance": {
+              "status": "pending",
+              "reason": "旧报告/能力网格证据需人工建立 revision、输入、后端和测量合同映射；不由旧 verdict 自动通过。",
+              "source": "report/p0_sweep_performance_20260820.md"
+            }
+          }
+        },
+        {
+          "acceptance_unit_id": "AU-pad-mm-mm",
+          "status": "exempt",
+          "reason": "experimental backend 同时保留 upstream NPU device gate 与 disable_pad_mm；目标优化明确关闭，性能免测且不临时解除 gate。",
+          "boundary": "保留已登记的显式关闭处置，不补测、不代表性能通过；运行态来源另由 NPU 复核项跟踪。"
+        },
+        {
+          "acceptance_unit_id": "AU-pad-mm-bmm",
+          "status": "exempt",
+          "reason": "experimental backend 同时保留 upstream NPU device gate 与 disable_pad_mm；目标优化明确关闭，性能免测且不临时解除 gate。",
+          "boundary": "保留已登记的显式关闭处置，不补测、不代表性能通过；运行态来源另由 NPU 复核项跟踪。"
+        },
+        {
+          "acceptance_unit_id": "AU-pad-mm-addmm",
+          "status": "exempt",
+          "reason": "experimental backend 同时保留 upstream NPU device gate 与 disable_pad_mm；目标优化明确关闭，性能免测且不临时解除 gate。",
+          "boundary": "保留已登记的显式关闭处置，不补测、不代表性能通过；运行态来源另由 NPU 复核项跟踪。"
+        },
+        {
+          "acceptance_unit_id": "AU-post-grad-addmm",
+          "status": "pending",
+          "original_verdict": "beneficial-with-host-tail-monitor",
+          "checks": {
+            "manual_provenance": {
+              "status": "pending",
+              "reason": "旧报告/能力网格证据需人工建立 revision、输入、后端和测量合同映射；不由旧 verdict 自动通过。",
+              "source": "report/t058_experimental_addmm_gate_20260826.md；installed 复核见 docs/CHANGE_CONTROL.md::E-167"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "task_id": "T-077",
+      "gpu_run_id": "reference-20260902T125636+0800",
+      "gpu_cases": [
+        {
+          "case_id": "REF-gumbel-max-trick-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-gumbel-max-trick-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-gumbel-max-trick-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-b2b-gemm-left-gelu-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-left-gelu-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-left-gelu-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-b2b-gemm-right-relu-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-right-relu-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-right-relu-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-b2b-gemm-trivial-left-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-trivial-left-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-trivial-left-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-b2b-gemm-trivial-right-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-trivial-right-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-trivial-right-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-b2b-gemm-bad-pattern-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-bad-pattern-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-bad-pattern-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-b2b-gemm-bad-shape-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-bad-shape-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-b2b-gemm-bad-shape-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-decompose-bmm-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-decompose-bmm-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-decompose-bmm-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-decompose-mm-fp32-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-decompose-mm-fp32-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-decompose-mm-fp32-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-decompose-mm-mixed-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-decompose-mm-mixed-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-decompose-mm-mixed-native/artifact_inventory.json"
+            }
+          }
+        },
+        {
+          "case_id": "REF-decompose-addmm-dynamic-native",
+          "status": "pending",
+          "checks": {
+            "reference_result.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-decompose-addmm-dynamic-native/reference_result.json"
+            },
+            "artifact_inventory.json": {
+              "status": "pending",
+              "reason": "控制节点缺少原文件，不能由摘要/哈希推断内容。",
+              "path": "/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800/cases/REF-decompose-addmm-dynamic-native/artifact_inventory.json"
+            }
+          }
+        }
+      ],
+      "npu_records": [
+        {
+          "acceptance_unit_id": "AU-apply-gumbel-max-trick",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "PERF_IMPROVED",
+          "original_repair_status": "not-needed",
+          "variant_count": 1
+        },
+        {
+          "acceptance_unit_id": "AU-b2b-gemm",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+          "original_repair_status": "not-needed",
+          "variant_count": 6
+        },
+        {
+          "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-addmm",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+          "original_repair_status": "not-needed",
+          "variant_count": 1
+        },
+        {
+          "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-bmm",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+          "original_repair_status": "not-needed",
+          "variant_count": 3
+        },
+        {
+          "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-mm",
+          "record_check": {
+            "status": "passed",
+            "reason": "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"
+          },
+          "runtime_reaudit": {
+            "status": "pending",
+            "reason": "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"
+          },
+          "original_verdict": "NPU_REGRESSION",
+          "original_repair_status": "verified",
+          "variant_count": 6
+        }
+      ],
+      "performance_units": [
+        {
+          "acceptance_unit_id": "AU-apply-gumbel-max-trick",
+          "status": "pending",
+          "original_verdict": "PERF_IMPROVED",
+          "checks": {
+            "raw_summary": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/performance_summary.json"
+            },
+            "off1": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/off1/result.json"
+            },
+            "off1:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off1:backend": {
+              "status": "pending",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off1:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on1": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/on1/result.json"
+            },
+            "on1:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on1:backend": {
+              "status": "pending",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on1:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on2": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/on2/result.json"
+            },
+            "on2:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on2:backend": {
+              "status": "pending",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on2:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "off2": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/off2/result.json"
+            },
+            "off2:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off2:backend": {
+              "status": "pending",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off2:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "off3": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/off3/result.json"
+            },
+            "off3:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off3:backend": {
+              "status": "pending",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off3:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on3": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-performance-results/performance-20260903T001149+0800/workers/on3/result.json"
+            },
+            "on3:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on3:backend": {
+              "status": "pending",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on3:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "same_input_method": {
+              "status": "passed",
+              "reason": "六轮输入与测例来源、迭代数一致；不等同于完整测量方法审核。"
+            },
+            "measurement_review": {
+              "status": "pending",
+              "reason": "需复核计时同步/原始样本/聚合公式、社区来源、候选审批与安装态绑定；本脚本不认证旧性能收益。"
+            }
+          }
+        },
+        {
+          "acceptance_unit_id": "AU-b2b-gemm",
+          "status": "pending",
+          "original_verdict": "CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE",
+          "checks": {
+            "manual_provenance": {
+              "status": "pending",
+              "reason": "旧报告/能力网格证据需人工建立 revision、输入、后端和测量合同映射；不由旧 verdict 自动通过。",
+              "source": "results/current/T-077/b2b_capability_assessment.json"
+            }
+          }
+        },
+        {
+          "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-bmm",
+          "status": "pending",
+          "original_verdict": "PERF_REGRESSED",
+          "checks": {
+            "raw_summary": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/performance_summary.json"
+            },
+            "off1": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/off1/result.json"
+            },
+            "off1:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off1:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off1:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on1": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/on1/result.json"
+            },
+            "on1:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on1:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on1:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on2": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/on2/result.json"
+            },
+            "on2:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on2:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on2:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "off2": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/off2/result.json"
+            },
+            "off2:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off2:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off2:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "off3": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/off3/result.json"
+            },
+            "off3:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off3:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off3:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on3": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/bmm/workers/on3/result.json"
+            },
+            "on3:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on3:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on3:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "same_input_method": {
+              "status": "passed",
+              "reason": "六轮输入与测例来源、迭代数一致；不等同于完整测量方法审核。"
+            },
+            "measurement_review": {
+              "status": "pending",
+              "reason": "需复核计时同步/原始样本/聚合公式、社区来源、候选审批与安装态绑定；本脚本不认证旧性能收益。"
+            }
+          }
+        },
+        {
+          "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-mm",
+          "status": "pending",
+          "original_verdict": "PERF_REGRESSED",
+          "checks": {
+            "raw_summary": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/performance_summary.json"
+            },
+            "off1": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/off1/result.json"
+            },
+            "off1:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off1:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off1:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on1": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/on1/result.json"
+            },
+            "on1:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on1:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on1:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on2": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/on2/result.json"
+            },
+            "on2:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on2:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on2:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "off2": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/off2/result.json"
+            },
+            "off2:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off2:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off2:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "off3": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/off3/result.json"
+            },
+            "off3:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off3:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off3:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on3": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/mm/workers/on3/result.json"
+            },
+            "on3:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on3:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on3:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "same_input_method": {
+              "status": "passed",
+              "reason": "六轮输入与测例来源、迭代数一致；不等同于完整测量方法审核。"
+            },
+            "measurement_review": {
+              "status": "pending",
+              "reason": "需复核计时同步/原始样本/聚合公式、社区来源、候选审批与安装态绑定；本脚本不认证旧性能收益。"
+            }
+          }
+        },
+        {
+          "acceptance_unit_id": "AU-decompose-mem-bound-mm-decompose-addmm",
+          "status": "pending",
+          "original_verdict": "PERF_REGRESSED",
+          "checks": {
+            "raw_summary": {
+              "status": "passed",
+              "reason": "原文件可读；已校验登记哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/performance_summary.json"
+            },
+            "off1": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/off1/result.json"
+            },
+            "off1:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off1:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off1:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on1": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/on1/result.json"
+            },
+            "on1:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on1:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on1:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on2": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/on2/result.json"
+            },
+            "on2:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on2:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on2:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "off2": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/off2/result.json"
+            },
+            "off2:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off2:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off2:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "off3": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/off3/result.json"
+            },
+            "off3:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "off3:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "off3:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "on3": {
+              "status": "passed",
+              "reason": "原文件可读；本次记录内容哈希。",
+              "path": "/home/z50063656/tmp/t077-decompose-performance/performance-20260903T071500+0800/addmm/workers/on3/result.json"
+            },
+            "on3:functional_round": {
+              "status": "passed",
+              "reason": "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。"
+            },
+            "on3:backend": {
+              "status": "passed",
+              "reason": "逐 worker 后端实录；缺失时不借用汇总声明。"
+            },
+            "on3:provenance": {
+              "status": "pending",
+              "reason": "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。",
+              "missing_fields": [
+                "torch_commit",
+                "torch_npu_commit",
+                "triton_ascend_commit",
+                "backend_selected_before_import",
+                "process_start",
+                "pid"
+              ]
+            },
+            "same_input_method": {
+              "status": "passed",
+              "reason": "六轮输入与测例来源、迭代数一致；不等同于完整测量方法审核。"
+            },
+            "measurement_review": {
+              "status": "pending",
+              "reason": "需复核计时同步/原始样本/聚合公式、社区来源、候选审批与安装态绑定；本脚本不认证旧性能收益。"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "status": "pending",
+  "status_counts": {
+    "pending": 41,
+    "exempt": 3
+  },
+  "npu_record_checks_passed": 10,
+  "boundary": "旧 verdict 原样保留。通过的记录校验不等于重新验证所有 GPU/NPU/性能证据；本清单不得用于扩大冻结分母。T-067 属旧 feature-family 格式，未自动迁入本清单。"
+}

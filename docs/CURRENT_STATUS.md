@@ -1,11 +1,17 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
+> 更新时间：2026-09-06 02:55 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076/T-077 已完成；T-078～T-080 共 11 个新单元的 GPU runner、性能合同与中文测例讲解已准备；MM lowering 修复已验证、尚未合入。
+> 当前阶段：T-076/T-077 已形成 10 份正式结果；T-078～T-080 的 GPU runner 已准备、性能只有方案且 worker 未实现；T-081～T-113 为草案；MM 修复未合入。
 
 ## 1. 总结
+
+2026-09-06 增补：T-076/T-077 的 10 份 NPU/comparison 记录通过当前校验，但历史原始证据再认证
+仍为 `pending`，不能从旧闭环数直接推断新规则全绿。24 个 GPU case 原文件不在控制节点；
+NPU 原始运行与 7 项性能处置还需加强溯源复核，3 项显式关闭免测保留。原始结果不改写。
+详见 [历史复核与统一门禁](../report/t076_t077_history_reaudit_20260906.md)；
+固定机器可读入口为 [最新审计](../results/audits/latest.json)。
 
 8 月 31 日需求与 8 月 29 日主线方向一致，都要求从 T-056/T-074 的静态 inventory 转向
 PyTorch community-native Inductor compatibility。需要修正的不是基础候选数据，而是任务主键、
@@ -167,6 +173,11 @@ T-078 已从上述集合审核 1 个 `no-test-found` 与 3 个 indirect 单元�
 
 ## 7. 下一条 Codex 任务
 
+2026-09-06：验收校验加固和零设备回归已落地，见
+[修复记录](../report/tracker_validation_hardening_20260906.md)。完整后续草案见
+[TASK_BACKLOG](TASK_BACKLOG.md)：137 个剩余 provisional eligible 单元暂列 33 批；
+30 条非计数结构记录单列。该数量只覆盖旧 FX inventory，不含尚未独立建表的 lowering/template。
+
 ```text
 T-077 修复支线：复核候选 `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`，经授权后推送/合入
 torch_npu，并用同一六变体合同做安装态回归。
@@ -178,7 +189,8 @@ cases，20/20 variants 有效后冻结 denominator，再进入 NPU `triton_exper
 T-079/T-080 后续批次：7 个单元的 manifest/reference/performance plan 和 guide 已完成；GPU 分别
 执行 4 cases/14 variants 与 13 cases/13 variants。T-080 保存 const-scatter CrossEntropy 和
 prepare-softmax 的社区 benchmark；T-078/T-079 无社区独立 benchmark，明确从社区功能正例派生。
-只有 NPU `triton_experimental` 功能与命中门禁通过后才进入目标级 OFF/ON 性能。
+三批性能 worker 均尚未实现，需先完成代码与静态验证；之后只有 NPU
+`triton_experimental` 功能与命中门禁通过，才允许目标级 OFF/ON 性能。
 ```
 
 ## 8. 当前环境边界

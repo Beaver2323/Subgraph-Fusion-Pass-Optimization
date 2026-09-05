@@ -106,7 +106,11 @@ def case_audit(run_dir: Path, item: dict[str, Any]) -> tuple[dict[str, Any], lis
         "duration_seconds": execution.get("duration_seconds"),
         "tests_ran": execution.get("tests_ran"),
         "tests_skipped": execution.get("tests_skipped"),
+        "tests_expected": execution.get("tests_expected"),
+        "tests_expected_failures": execution.get("tests_expected_failures"),
+        "tests_unexpected_successes": execution.get("tests_unexpected_successes"),
         "reference_valid": result.get("reference_valid"),
+        "correctness_status": result.get("correctness", {}).get("status"),
         "adapter_decision": result.get("adapter_decision"),
         "actual_commit": source.get("actual_commit"),
         "fx_before_captured": before.get("captured"),
@@ -176,6 +180,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-dir", required=True, type=Path, help="reference-<timestamp> 目录")
     parser.add_argument("--output", type=Path, help="输出文件；省略时写到 stdout")
     parser.add_argument("--compact", action="store_true", help="输出单行 JSON")
+    parser.add_argument("--allow-derived-output", action="store_true",
+                        help="仅允许在 run 内新建保留文件 text-handoff.json；不覆盖原证据")
     return parser.parse_args()
 
 
@@ -185,7 +191,12 @@ def main() -> int:
         run_dir = args.run_dir.resolve()
         if args.output is not None:
             output = args.output.resolve()
-            if output == run_dir or output.is_relative_to(run_dir):
+            reserved = run_dir / "text-handoff.json"
+            if args.output.is_symlink():
+                raise ValueError("输出不得是软链接")
+            if (output == run_dir or output.is_relative_to(run_dir)) and not (
+                args.allow_derived_output and output == reserved
+            ):
                 raise ValueError("文本 handoff 必须写在原始 run 目录外")
         payload = build_payload(run_dir)
         indent = None if args.compact else 2
@@ -196,7 +207,8 @@ def main() -> int:
             sys.stdout.write(content)
         else:
             args.output.parent.mkdir(parents=True, exist_ok=True)
-            args.output.write_text(content, encoding="utf-8")
+            with args.output.open("x", encoding="utf-8") as handle:
+                handle.write(content)
             print(f"text_handoff={args.output.resolve()}")
             print(f"payload_sha256={payload['payload_sha256']}")
             print(f"bytes={len(content.encode('utf-8'))}")

@@ -7,7 +7,9 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import json
+from datetime import datetime
 from pathlib import Path
 
 
@@ -26,8 +28,40 @@ def load_json(path: Path) -> dict:
 
 
 def require_nonempty(value: object, label: str) -> None:
-    if value is None or value == "" or value == [] or value == {}:
+    if value is None or (isinstance(value, str) and not value.strip()) or value == [] or value == {}:
         raise ValueError(f"缺少或为空：{label}")
+
+
+def unique_records(records: object, key: str, label: str) -> dict:
+    if not isinstance(records, list) or not records:
+        raise ValueError(f"{label} 必须是非空列表")
+    result = {}
+    for item in records:
+        if not isinstance(item, dict) or not isinstance(item.get(key), str) or not item[key].strip():
+            raise ValueError(f"{label} 缺少有效 {key}")
+        if item[key] in result:
+            raise ValueError(f"{label} 重复 {key}: {item[key]}")
+        result[item[key]] = item
+    return result
+
+
+def validate_implementation(repo_root: Path, performance: dict) -> str:
+    implementation = performance.get("implementation", {})
+    status = implementation.get("status")
+    entrypoint = implementation.get("entrypoint")
+    if status == "not-implemented":
+        if entrypoint is not None:
+            raise ValueError("not-implemented 不得声明 worker entrypoint")
+        return "plan-only"
+    if status != "implemented-awaiting-runtime-validation":
+        raise ValueError("implementation.status 必须如实声明未实现或待动态验证")
+    if not isinstance(entrypoint, str) or not entrypoint:
+        raise ValueError("已实现 worker 必须声明 entrypoint")
+    path = (repo_root / entrypoint).resolve()
+    if not path.is_relative_to(repo_root.resolve()) or not path.is_file():
+        raise ValueError("worker entrypoint 必须是仓库内实际文件")
+    ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    return "worker-static-only"
 
 
 def validate_task(repo_root: Path, task_id: str) -> tuple[int, int, int]:
@@ -42,8 +76,11 @@ def validate_task(repo_root: Path, task_id: str) -> tuple[int, int, int]:
 
     if reference.get("task_id") != task_id or performance.get("task_id") != task_id:
         raise ValueError(f"{task_id}：reference/performance task_id 不一致")
+    validate_implementation(repo_root, performance)
     for name, data in (("manifest", manifest), ("reference", reference), ("performance", performance)):
         require_nonempty(data.get("generated_at"), f"{task_id}.{name}.generated_at")
+        if datetime.fromisoformat(data["generated_at"]).utcoffset() is None:
+            raise ValueError(f"{task_id}.{name}.generated_at 必须包含时区")
 
     declared_perf = reference.get("performance_plan", {}).get("path")
     declared_guide = reference.get("case_guide", {}).get("path")
@@ -69,13 +106,15 @@ def validate_task(repo_root: Path, task_id: str) -> tuple[int, int, int]:
     measurement = performance.get("measurement_contract", {})
     for key in ("correctness_gate", "warmup", "runs", "timing", "memory", "verdict_thresholds"):
         require_nonempty(measurement.get(key), f"{task_id}.measurement_contract.{key}")
+    for key in ("warmup", "runs"):
+        value = measurement[key]
+        if type(value) is not int or value <= 0:
+            raise ValueError(f"{task_id}.measurement_contract.{key} 必须为正整数")
 
-    manifest_units = {
-        unit["acceptance_unit_id"] for unit in manifest.get("acceptance_units", [])
-    }
-    performance_units = {
-        unit["acceptance_unit_id"] for unit in performance.get("acceptance_units", [])
-    }
+    manifest_by_id = unique_records(manifest.get("acceptance_units"), "acceptance_unit_id", f"{task_id}.manifest")
+    performance_by_id = unique_records(performance.get("acceptance_units"), "acceptance_unit_id", f"{task_id}.performance")
+    manifest_units = set(manifest_by_id)
+    performance_units = set(performance_by_id)
     if manifest_units != performance_units:
         raise ValueError(
             f"{task_id}：manifest/performance units 不一致："
@@ -85,13 +124,11 @@ def validate_task(repo_root: Path, task_id: str) -> tuple[int, int, int]:
         if unit_id not in guide_text:
             raise ValueError(f"{task_id}：中文 guide 未逐单元讲解 {unit_id}")
 
-    manifest_nodeids = {
-        test["nodeid"]
-        for unit in manifest.get("acceptance_units", [])
-        for test in unit.get("community_tests", [])
-    }
     for unit in performance.get("acceptance_units", []):
         unit_id = unit["acceptance_unit_id"]
+        manifest_nodeids = {
+            test["nodeid"] for test in manifest_by_id[unit_id].get("community_tests", [])
+        }
         for key in (
             "performance_status",
             "case_source",
@@ -108,10 +145,16 @@ def validate_task(repo_root: Path, task_id: str) -> tuple[int, int, int]:
             "tracker-derived-from-community-functional-case",
         }:
             raise ValueError(f"{task_id}.{unit_id}：未知 case_source.kind")
-        for nodeid in source.get("nodeids", []):
+        nodeids = source.get("nodeids")
+        if not isinstance(nodeids, list) or not nodeids or any(not isinstance(item, str) for item in nodeids):
+            raise ValueError(f"{task_id}.{unit_id}：性能来源 nodeids 必须是非空字符串列表")
+        if len(nodeids) != len(set(nodeids)):
+            raise ValueError(f"{task_id}.{unit_id}：性能来源 nodeids 重复")
+        for nodeid in nodeids:
             if nodeid not in manifest_nodeids:
                 raise ValueError(f"{task_id}.{unit_id}：性能来源未登记于 manifest：{nodeid}")
-        for workload in unit["workloads"]:
+        workloads = unique_records(unit["workloads"], "workload_id", f"{task_id}.{unit_id}.workloads")
+        for workload in workloads.values():
             for key in ("workload_id", "role", "shape_contract", "measurement_scope"):
                 require_nonempty(workload.get(key), f"{task_id}.{unit_id}.workload.{key}")
 
@@ -131,10 +174,13 @@ def main() -> int:
     tasks = args.task or list(TASKS)
     for task_id in tasks:
         units, cases, variants = validate_task(repo_root, task_id)
+        plan = load_json(repo_root / "upstream" / f"{task_id.lower().replace('-', '')}_performance_plan.yaml")
+        readiness = validate_implementation(repo_root, plan)
         print(
             "prepared_task_validation=OK "
             f"task={task_id} units={units} cases={cases} variants={variants} "
-            f"performance_units={units} guide=valid"
+            f"performance_units={units} guide=valid performance_readiness={readiness} "
+            f"worker={plan['implementation']['status']}"
         )
     return 0
 
