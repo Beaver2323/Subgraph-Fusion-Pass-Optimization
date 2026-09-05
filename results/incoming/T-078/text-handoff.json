@@ -1,0 +1,1269 @@
+{
+  "case_audit": [
+    {
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 323115,
+      "artifact_count": 24,
+      "artifact_inventory_sha256": "a958d76d996f745b0581a896b4643238dbc71dea7a98068916ae9a07ae87988c",
+      "case_id": "REF-addcdiv-fma-bitwise-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 21.092213,
+      "fx_after_captured": true,
+      "fx_after_count": 2,
+      "fx_after_signature": "4a74de706adb46eb4ed49b34b5774028ecc655054f755cb2c297156c18e7fb5e",
+      "fx_before_captured": true,
+      "fx_before_count": 2,
+      "fx_before_signature": "4a74de706adb46eb4ed49b34b5774028ecc655054f755cb2c297156c18e7fb5e",
+      "fx_stable_signature": "48abdbb57bc9c3184953c1b9aec0b2bc359fb01db8bc0a7d9c7306624510c671",
+      "reference_result_sha256": "21aee9b1b1536944dbab3e65a9b032bbc4a24a8d38bf5fe1f44618fce558aa3b",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "value-one-bitwise-positive",
+        "scaled-value-bitwise-positive"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 154302,
+      "artifact_count": 16,
+      "artifact_inventory_sha256": "a34148bcbb990926147ed9ec5943f06727d64956a342f07b6f946b3f093233a9",
+      "case_id": "REF-addcdiv-fma-codegen-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 21.243405,
+      "fx_after_captured": true,
+      "fx_after_count": 1,
+      "fx_after_signature": "a9bbc77cdf4514e57e095b1a3961dcf64911ba56234b39037dcb1f5b6d80af05",
+      "fx_before_captured": true,
+      "fx_before_count": 1,
+      "fx_before_signature": "e0f911ba5bd5f2932b8bf8da202b2f7da37add25857731f4622e249eb9b27bb9",
+      "fx_stable_signature": "008c4607efc6013fb14b0000bbe0125cb041c78d5098cdcceef77b2178d4a682",
+      "reference_result_sha256": "e81cbfc74caf9566e618358a3e0057fd3a6cbdb25842a4452de2ca45e8275b0c",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "fma-div-rn-codegen-positive"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 488578,
+      "artifact_count": 32,
+      "artifact_inventory_sha256": "4d94b0277057155aa7c4800db0cd7859d2db49fb3d9a70b0572829cd9eba7532",
+      "case_id": "REF-partial-reuse-positive-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.832231,
+      "fx_after_captured": true,
+      "fx_after_count": 3,
+      "fx_after_signature": "6ff896ac0e2600475ff151686be6f20388b78993f7ee7393a99cc75d34f77d5a",
+      "fx_before_captured": true,
+      "fx_before_count": 3,
+      "fx_before_signature": "6e6342b93fcbea895843334ba13476d02dbac22195b04c88cc38269dcbf72f6d",
+      "fx_stable_signature": "82ebe270a71ce6246bc75df0db782fa3ff9475df4cbacdb35bd4d7b6cd81d29b",
+      "reference_result_sha256": "3548f3ea01233d628ec990bbd21de7f07810d7696fc2f587a9d4bcb0488a082c",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 3,
+      "tests_expected_failures": 0,
+      "tests_ran": 3,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "amax-amax-large-positive",
+        "amin-min-large-positive",
+        "amax-max-large-positive"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 360030,
+      "artifact_count": 24,
+      "artifact_inventory_sha256": "1025972fde2bd95d9f70ef9faa390ce6323bae72c9fc9577fd5d7f6832c30c1e",
+      "case_id": "REF-partial-reuse-negative-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.882304,
+      "fx_after_captured": true,
+      "fx_after_count": 2,
+      "fx_after_signature": "bdb9437679da29877b3eb4d697c76ec64ec8f000c4f5b3270dc6028ccf71d7cb",
+      "fx_before_captured": true,
+      "fx_before_count": 2,
+      "fx_before_signature": "bdb9437679da29877b3eb4d697c76ec64ec8f000c4f5b3270dc6028ccf71d7cb",
+      "fx_stable_signature": "8d797bff2a2c7f0efd444b3df5b696547a6577e475f0dde02e05123ea950c06c",
+      "reference_result_sha256": "b780de8d51e509b338477f10bde0f382ba87c3e5bf95b0e9481b597c434e6e15",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 2,
+      "tests_expected_failures": 0,
+      "tests_ran": 2,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "small-numel-negative",
+        "dynamic-input-negative"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 534676,
+      "artifact_count": 32,
+      "artifact_inventory_sha256": "20d7a2700bbcd930662fb3afcf062a1f032e1af0326ac883dec72266f94df37d",
+      "case_id": "REF-unfuse-addmm-core-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.88182,
+      "fx_after_captured": true,
+      "fx_after_count": 3,
+      "fx_after_signature": "5269cf9af81afc65e23f3a8d8b51b49f666f9da6813d0522712d099f27e90998",
+      "fx_before_captured": true,
+      "fx_before_count": 3,
+      "fx_before_signature": "b475dc864739ed2d2f03de871b627d5efc1227b4eb492e54c87ca2b384a6ced0",
+      "fx_stable_signature": "090aa361ca57f67c67b649a59f810a6317e985dd44bbc430403550745681b7fc",
+      "reference_result_sha256": "5d2685160672df51c93e6c514d8659fa65219d46616a6fe5ed7e9c12c0f5d6f8",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "gelu-consumer-positive",
+        "view-gelu-consumer-positive",
+        "no-pointwise-consumer-negative"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 210888,
+      "artifact_count": 16,
+      "artifact_inventory_sha256": "fc42909beedea3f3f6e7064356fbd72ea9d8407684116ed20859d5ed68db8b58",
+      "case_id": "REF-unfuse-addmm-accumulator-negative-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 13.131678,
+      "fx_after_captured": true,
+      "fx_after_count": 1,
+      "fx_after_signature": "e34d339851509e55e112f9faadf91f56d8e0cdb8e903d4be623b9024fc5741b2",
+      "fx_before_captured": true,
+      "fx_before_count": 1,
+      "fx_before_signature": "e34d339851509e55e112f9faadf91f56d8e0cdb8e903d4be623b9024fc5741b2",
+      "fx_stable_signature": "23665e6e97856e47146f6ea51735f0ce1ad98aa7e7c486c18456b8456c51b443",
+      "reference_result_sha256": "ebb2601881b1730d1225bb43d97281f667f6239f3f44484a81cfcf668af08bf6",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "computed-accumulator-negative"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 209560,
+      "artifact_count": 16,
+      "artifact_inventory_sha256": "df79a483918f58ee514bc392e8309830d8eb728564549ef19dce58d213eda1d3",
+      "case_id": "REF-unfuse-addmm-leaf-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.731369,
+      "fx_after_captured": true,
+      "fx_after_count": 1,
+      "fx_after_signature": "dee656365cf94c003c014abaddcea693c4bf725deb261366f01d39da233eb1d4",
+      "fx_before_captured": true,
+      "fx_before_count": 1,
+      "fx_before_signature": "dee656365cf94c003c014abaddcea693c4bf725deb261366f01d39da233eb1d4",
+      "fx_stable_signature": "a505cc96edbb4e3b41ebd559b85d53371bec8c19fe6f8d89f2c766eee9bde085",
+      "reference_result_sha256": "eda2a90a6bcddeeaab623c2950a4a03d81fbdd76155bbf4cffe9457cf8ef0f37",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "same-shape-leaf-positive"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 198395,
+      "artifact_count": 16,
+      "artifact_inventory_sha256": "638aa0f4f471a10d7f077bf53a5f4178a53f047bde57b9f80ea73d59dcde229a",
+      "case_id": "REF-unfuse-addmm-expanded-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.83156,
+      "fx_after_captured": true,
+      "fx_after_count": 1,
+      "fx_after_signature": "4bd945ea9a2b1680439eb2a4b688e190d8aa3a8fba19b10d87c6c151da215b1f",
+      "fx_before_captured": true,
+      "fx_before_count": 1,
+      "fx_before_signature": "a1829bd4a3a00b617788515a56053dbcfa3ee99aca5a92436865292eafb33c1e",
+      "fx_stable_signature": "048c851b17ec32e8e4b61d962459f06fbb757514894c7bd57ec162ae509ed34b",
+      "reference_result_sha256": "52c59be9ba2343fffd57ad9596daa5c3074d69bd656c7dd5b70781d53f86fa95",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "expanded-bias-positive"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 406602,
+      "artifact_count": 24,
+      "artifact_inventory_sha256": "c94f99d8a3881410af7ce9eb553b0dbae081e2b51dc30ed1126fed59ef668c84",
+      "case_id": "REF-unfuse-addmm-half-preserve-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 13.331422,
+      "fx_after_captured": true,
+      "fx_after_count": 2,
+      "fx_after_signature": "6334fe6b57a0ef2efd6f9dedc0f2c36747e6ba5a66a4f8828d63ff48c4bdebc9",
+      "fx_before_captured": true,
+      "fx_before_count": 2,
+      "fx_before_signature": "6334fe6b57a0ef2efd6f9dedc0f2c36747e6ba5a66a4f8828d63ff48c4bdebc9",
+      "fx_stable_signature": "f4f7da195cbff5a684fea652b07ba7dd89cb580b144a967709298530ad6ab38a",
+      "reference_result_sha256": "5b7937d4bde1c78bba524b753d871243fe6297bd8391f36740fa8a5953e1f0de",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 2,
+      "tests_expected_failures": 0,
+      "tests_ran": 2,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "half-dtype-preserve-negative"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 411983,
+      "artifact_count": 24,
+      "artifact_inventory_sha256": "a4641c6e367a3dda7551ee7419b96e67a88f31b84727add5feda72dab02b34c0",
+      "case_id": "REF-unfuse-addmm-half-enabled-native",
+      "correctness_status": "not-asserted-codegen-only",
+      "duration_seconds": 16.636666,
+      "fx_after_captured": true,
+      "fx_after_count": 2,
+      "fx_after_signature": "57d4ec99b6f134cf29d4a7e108bb5061cacec2b5eefb3ba34d66df6e7a5fd56f",
+      "fx_before_captured": true,
+      "fx_before_count": 2,
+      "fx_before_signature": "bbe73486d15c889e69aa6868f91d40e58ed86c4a8b284497282a44ad00917fbf",
+      "fx_stable_signature": "c35683ba3851a909d10def2aa99a2707c870cac44801d8a24a68adcbe22602d6",
+      "reference_result_sha256": "f88dc251d64b25946ce3ebb10b3b0eff0aa858636f2ac765231b3b9f0b265ab7",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 2,
+      "tests_expected_failures": 0,
+      "tests_ran": 2,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "half-dtype-gate-disabled-positive"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 529343,
+      "artifact_count": 32,
+      "artifact_inventory_sha256": "fcf6e513c462f9e98ab5ebe8738e36b4ce7ab3454c613d76a49f5944626a1039",
+      "case_id": "REF-unfuse-baddbmm-core-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.781118,
+      "fx_after_captured": true,
+      "fx_after_count": 3,
+      "fx_after_signature": "2d5a42350ef72f6cef987b955797f4d19c981de1ca4471592ae71ef8b9071391",
+      "fx_before_captured": true,
+      "fx_before_count": 3,
+      "fx_before_signature": "207fa05b3f9f4fbdf8f58f35ab1fc47f7f930e00e51469a3c156d627162b715d",
+      "fx_stable_signature": "5ceebc5fb0d1cb1b21d74e955cea4415cbe499eb6bb44aa9a4aa90e8c62ff5ed",
+      "reference_result_sha256": "029b564f6110cd5d92a42208f7fc363e40b338cf1616d6343b8bc66daf3f697e",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "broadcast-gelu-positive",
+        "expanded-bias-relu-positive",
+        "no-pointwise-consumer-negative"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 198725,
+      "artifact_count": 16,
+      "artifact_inventory_sha256": "526b7ce161986f96822f931395b866959fd0a4c2de69503b9de3113a182fa165",
+      "case_id": "REF-unfuse-baddbmm-alpha-beta-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.880951,
+      "fx_after_captured": true,
+      "fx_after_count": 1,
+      "fx_after_signature": "7309c5217f52be4a7981c55b0ead9239d5e36c7eb4f7f220611e6dd9f6e2b1f7",
+      "fx_before_captured": true,
+      "fx_before_count": 1,
+      "fx_before_signature": "f24ba86b49340ca7d521711bb02c063f660759360c333f1fa9d879cebaeff829",
+      "fx_stable_signature": "6541523e29fb950947afa8534589b77d066b0d2e1bb330edb02a741a045cdc76",
+      "reference_result_sha256": "f338b0a8ba0453088a6159a0ab71b0bd68daa3615de99afc88232dedc986eded",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "alpha-beta-positive"
+      ]
+    }
+  ],
+  "environment": {
+    "fingerprint_sha256": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "generated_at": "2026-09-05T21:47:14+08:00",
+    "host": {
+      "effective_uid": 1039,
+      "hostname": "node-5-15",
+      "machine": "x86_64",
+      "platform": "Linux-5.15.0-43-generic-x86_64-with-glibc2.35",
+      "uid": 1039,
+      "user": "z00824525",
+      "working_directory": "/data/z50063656/tmp"
+    },
+    "nvcc": {
+      "available": true,
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Tue_Oct_29_23:50:19_PDT_2024\nCuda compilation tools, release 12.6, V12.6.85\nBuild cuda_12.6.r12.6/compiler.35059454_0"
+    },
+    "nvidia_smi": {
+      "available": true,
+      "driver_query": {
+        "return_code": 0,
+        "stderr": "",
+        "stdout": "0, NVIDIA A100-SXM4-80GB, 550.54.15\n1, NVIDIA A100-SXM4-80GB, 550.54.15\n2, NVIDIA A100-SXM4-80GB, 550.54.15\n3, NVIDIA A100-SXM4-80GB, 550.54.15\n4, NVIDIA A100-SXM4-80GB, 550.54.15\n5, NVIDIA A100-SXM4-80GB, 550.54.15\n6, NVIDIA A100-SXM4-80GB, 550.54.15\n7, NVIDIA A100-SXM4-80GB, 550.54.15"
+      },
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "GPU 0: NVIDIA A100-SXM4-80GB (UUID: GPU-4222641e-5b3c-2d95-3038-ed9ff2fc1abd)\nGPU 1: NVIDIA A100-SXM4-80GB (UUID: GPU-1c9756fa-4985-3673-d4e7-92f03e5978d2)\nGPU 2: NVIDIA A100-SXM4-80GB (UUID: GPU-26c4ea92-705d-1754-761c-57fa432361b8)\nGPU 3: NVIDIA A100-SXM4-80GB (UUID: GPU-7d357952-8ec0-2ce3-13d8-3f6be9979cb3)\nGPU 4: NVIDIA A100-SXM4-80GB (UUID: GPU-280e7450-cf26-6ce4-cf01-3dd135bbcd3f)\nGPU 5: NVIDIA A100-SXM4-80GB (UUID: GPU-f09747b1-1200-e1f0-4301-338a23bd32a1)\nGPU 6: NVIDIA A100-SXM4-80GB (UUID: GPU-11e15b5e-eb6c-ccc0-8250-352f99ace8b2)\nGPU 7: NVIDIA A100-SXM4-80GB (UUID: GPU-67e1ca7a-cb22-e8bb-c5f8-eef856b4863e)",
+      "version": {
+        "return_code": 0,
+        "stderr": "",
+        "stdout": "NVIDIA-SMI version  : 550.54.15\nNVML version        : 550.54\nDRIVER version      : 550.54.15\nCUDA Version        : 12.4"
+      }
+    },
+    "runtime": {
+      "cuda_available": true,
+      "cuda_device_count": 1,
+      "cuda_driver_api": {
+        "error": null,
+        "init_return_code": 0,
+        "library_loaded": true,
+        "version": 12040,
+        "version_return_code": 0
+      },
+      "cudnn_version": 92501,
+      "devices": [
+        {
+          "index": 0,
+          "major": 8,
+          "minor": 0,
+          "multi_processor_count": 108,
+          "name": "NVIDIA A100-SXM4-80GB",
+          "total_memory": 84974239744
+        }
+      ],
+      "effective_uid": 1039,
+      "gpu_type": "cuda",
+      "has_gpu_and_triton": true,
+      "packages": {
+        "pytorch-triton": null,
+        "pytorch-triton-rocm": null,
+        "torch": "2.14.0a0+git8e86e0a",
+        "triton": "3.8.0+git675c5987"
+      },
+      "platform": "Linux-5.15.0-43-generic-x86_64-with-glibc2.35",
+      "python_executable": "/data/z50063656/envs/PassGPURef/bin/python",
+      "python_version": "3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]",
+      "selected_environment": {
+        "CONDA_PREFIX": null,
+        "CUDA_COMPAT_DIR": null,
+        "CUDA_HOME": "/data/z50063656/cuda-12.6",
+        "CUDA_VISIBLE_DEVICES": "2",
+        "HOME": "/data/z50063656",
+        "LD_LIBRARY_PATH": "/data/z50063656/envs/PassGPURef/lib/python3.12/site-packages/nvidia/cudnn/lib:/data/z50063656/cuda-12.6/lib64:/data/z50063656/cuda-12.6/lib64:/data/z50063656/envs/PassGPURef/lib/python3.12/site-packages/nvidia/cudnn/lib:/data/z50063656/cuda-12.6/lib64",
+        "PASS_GPU_COMPUTE_MODE": "DEFAULT",
+        "PASS_GPU_EXECUTION_MODE": "shared",
+        "PASS_GPU_MIN_FREE_MEMORY_MIB": "1024",
+        "PASS_GPU_PREFLIGHT_FREE_MEMORY_MIB": "81034",
+        "PATH": "/data/z50063656/cuda-12.6/bin:/data/z50063656/envs/PassGPURef/bin:/data/z50063656/envs/PassGPURef/bin:/data/z50063656/cuda-12.6/bin:/data/z50063656/envs/PassGPURef/bin:/data/z50063656/cuda-12.6/bin:/home/z00824525/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+        "PIP_CACHE_DIR": "/data/z50063656/pip-cache",
+        "TMPDIR": "/data/z50063656/tmp",
+        "TORCHINDUCTOR_CACHE_DIR": "/data/z50063656/inductor-cache",
+        "TORCH_EXTENSIONS_DIR": "/data/z50063656/torch-extensions",
+        "TRITON_CACHE_DIR": "/data/z50063656/triton-cache",
+        "VIRTUAL_ENV": "/data/z50063656/envs/PassGPURef",
+        "XDG_CACHE_HOME": "/data/z50063656/cache"
+      },
+      "torch_cuda_version": "12.6",
+      "torch_file": "/data/z50063656/src/pytorch/torch/__init__.py",
+      "torch_git_version": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_version": "2.14.0a0+git8e86e0a",
+      "uid": 1039,
+      "user": "z00824525"
+    },
+    "schema_version": "1.0",
+    "source": {
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "expected_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "pytorch_root": "/data/z50063656/src/pytorch",
+      "working_tree_state": "clean",
+      "working_tree_status": []
+    }
+  },
+  "evidence_files": [
+    {
+      "bytes": 5216,
+      "path": "cases/REF-addcdiv-fma-bitwise-native/artifact_inventory.json",
+      "sha256": "a958d76d996f745b0581a896b4643238dbc71dea7a98068916ae9a07ae87988c"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-addcdiv-fma-bitwise-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 1752,
+      "path": "cases/REF-addcdiv-fma-bitwise-native/fx_after.txt",
+      "sha256": "673ab4e9f45fb052e0cae8095e34d771f3bb10a52ab099530a06ff59852fc422"
+    },
+    {
+      "bytes": 1746,
+      "path": "cases/REF-addcdiv-fma-bitwise-native/fx_before.txt",
+      "sha256": "fa5d4212869a2918fe30e8d218c3e7644b754822ffb084dae37d1824a0e24236"
+    },
+    {
+      "bytes": 692,
+      "path": "cases/REF-addcdiv-fma-bitwise-native/metadata.json",
+      "sha256": "b5b9ed04bb0fdc950bfd8fa3dae91b15e7dfdb6965a24e3dc775dae3ce0a323e"
+    },
+    {
+      "bytes": 4255,
+      "path": "cases/REF-addcdiv-fma-bitwise-native/reference_result.json",
+      "sha256": "21aee9b1b1536944dbab3e65a9b032bbc4a24a8d38bf5fe1f44618fce558aa3b"
+    },
+    {
+      "bytes": 2938,
+      "path": "cases/REF-addcdiv-fma-bitwise-native/stderr.log",
+      "sha256": "f30a638d5892cda3440a9c4fc21e4bbd6e1e3fe381b4d488044935e575f92953"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-addcdiv-fma-bitwise-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3213,
+      "path": "cases/REF-addcdiv-fma-codegen-native/artifact_inventory.json",
+      "sha256": "a34148bcbb990926147ed9ec5943f06727d64956a342f07b6f946b3f093233a9"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-addcdiv-fma-codegen-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 596,
+      "path": "cases/REF-addcdiv-fma-codegen-native/fx_after.txt",
+      "sha256": "2928de79f7efb351fcb9d3368fad272b840137c286b85a00e37c5fd47359eafe"
+    },
+    {
+      "bytes": 702,
+      "path": "cases/REF-addcdiv-fma-codegen-native/fx_before.txt",
+      "sha256": "45dd6171c55c5ac8baa2a8ff89163b96198067536f6b7e543d0d84785259e6aa"
+    },
+    {
+      "bytes": 691,
+      "path": "cases/REF-addcdiv-fma-codegen-native/metadata.json",
+      "sha256": "d676679c3a9c92e80b8cb90f7fdf667500676a1764baf5b819bad513e51a33b9"
+    },
+    {
+      "bytes": 3499,
+      "path": "cases/REF-addcdiv-fma-codegen-native/reference_result.json",
+      "sha256": "e81cbfc74caf9566e618358a3e0057fd3a6cbdb25842a4452de2ca45e8275b0c"
+    },
+    {
+      "bytes": 1684,
+      "path": "cases/REF-addcdiv-fma-codegen-native/stderr.log",
+      "sha256": "a6c27d4ad1796e55c1d196b07429f47b382d8a1a615e8ec4f5392050da7c8221"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-addcdiv-fma-codegen-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 5218,
+      "path": "cases/REF-partial-reuse-negative-native/artifact_inventory.json",
+      "sha256": "1025972fde2bd95d9f70ef9faa390ce6323bae72c9fc9577fd5d7f6832c30c1e"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-partial-reuse-negative-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 1378,
+      "path": "cases/REF-partial-reuse-negative-native/fx_after.txt",
+      "sha256": "d7e033b9d73d89751e5e19cc27cfa9dfe565ee54e44dc289990bab947ffc153b"
+    },
+    {
+      "bytes": 1372,
+      "path": "cases/REF-partial-reuse-negative-native/fx_before.txt",
+      "sha256": "f9cce982455acd9a24e5c8dc76320efbffcb33c8de9652c027905cdeff4f57e9"
+    },
+    {
+      "bytes": 735,
+      "path": "cases/REF-partial-reuse-negative-native/metadata.json",
+      "sha256": "9357b83819fd600fa50c469738dc01431ce34a7f475ea8e44e78123e311c39b4"
+    },
+    {
+      "bytes": 4380,
+      "path": "cases/REF-partial-reuse-negative-native/reference_result.json",
+      "sha256": "b780de8d51e509b338477f10bde0f382ba87c3e5bf95b0e9481b597c434e6e15"
+    },
+    {
+      "bytes": 3156,
+      "path": "cases/REF-partial-reuse-negative-native/stderr.log",
+      "sha256": "fa258df2224f2ab7bd1d0aa6b49f28e59293ba7b5d8a6978a99489c756fb12d8"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-partial-reuse-negative-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7220,
+      "path": "cases/REF-partial-reuse-positive-native/artifact_inventory.json",
+      "sha256": "4d94b0277057155aa7c4800db0cd7859d2db49fb3d9a70b0572829cd9eba7532"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-partial-reuse-positive-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 2147,
+      "path": "cases/REF-partial-reuse-positive-native/fx_after.txt",
+      "sha256": "b4fdfd415b81d0444854087eed55c99b53df069f8b5f25eca84e73e118c624f1"
+    },
+    {
+      "bytes": 2032,
+      "path": "cases/REF-partial-reuse-positive-native/fx_before.txt",
+      "sha256": "6a5313d3e9786e427027c8b048e31ebc33f31951c50cf92da8e6456f01b6d96b"
+    },
+    {
+      "bytes": 759,
+      "path": "cases/REF-partial-reuse-positive-native/metadata.json",
+      "sha256": "6464e8016bb53641cb84132df92631a419f16a98d6093663810d40443a916142"
+    },
+    {
+      "bytes": 5227,
+      "path": "cases/REF-partial-reuse-positive-native/reference_result.json",
+      "sha256": "3548f3ea01233d628ec990bbd21de7f07810d7696fc2f587a9d4bcb0488a082c"
+    },
+    {
+      "bytes": 4673,
+      "path": "cases/REF-partial-reuse-positive-native/stderr.log",
+      "sha256": "a22419484efa7174b20eab895f884327a04134be69bc05fc560c037f24386d39"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-partial-reuse-positive-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3218,
+      "path": "cases/REF-unfuse-addmm-accumulator-negative-native/artifact_inventory.json",
+      "sha256": "fc42909beedea3f3f6e7064356fbd72ea9d8407684116ed20859d5ed68db8b58"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-unfuse-addmm-accumulator-negative-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 1186,
+      "path": "cases/REF-unfuse-addmm-accumulator-negative-native/fx_after.txt",
+      "sha256": "09642c2f1788ffe8e995862ddfea278576a85b79af3fc3dc5c17fdfa3b9163a0"
+    },
+    {
+      "bytes": 1183,
+      "path": "cases/REF-unfuse-addmm-accumulator-negative-native/fx_before.txt",
+      "sha256": "5dd959e20e5ebff6031e04c3a05f3fb403a6f02fd978ed856e12d9f94ea2946e"
+    },
+    {
+      "bytes": 740,
+      "path": "cases/REF-unfuse-addmm-accumulator-negative-native/metadata.json",
+      "sha256": "c58f1326e0dd75676e32b795bb6e05139407677a61f527b5fc0798e537597f3f"
+    },
+    {
+      "bytes": 3567,
+      "path": "cases/REF-unfuse-addmm-accumulator-negative-native/reference_result.json",
+      "sha256": "ebb2601881b1730d1225bb43d97281f667f6239f3f44484a81cfcf668af08bf6"
+    },
+    {
+      "bytes": 1677,
+      "path": "cases/REF-unfuse-addmm-accumulator-negative-native/stderr.log",
+      "sha256": "5829e49c4da3b9a5d05a9ab268e338f2418b99b5d33169ad0be074999533bb74"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-unfuse-addmm-accumulator-negative-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7217,
+      "path": "cases/REF-unfuse-addmm-core-native/artifact_inventory.json",
+      "sha256": "20d7a2700bbcd930662fb3afcf062a1f032e1af0326ac883dec72266f94df37d"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-unfuse-addmm-core-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 2983,
+      "path": "cases/REF-unfuse-addmm-core-native/fx_after.txt",
+      "sha256": "8ca51da2fa53f5efdb37761c8878246a12fd4e0065b9214033e77c59bb588318"
+    },
+    {
+      "bytes": 2757,
+      "path": "cases/REF-unfuse-addmm-core-native/fx_before.txt",
+      "sha256": "1ba89ef226d5e789b234b09a5310141efbc28f00601f897caa7d3050c1019853"
+    },
+    {
+      "bytes": 813,
+      "path": "cases/REF-unfuse-addmm-core-native/metadata.json",
+      "sha256": "6fef7c8c95cd5c8579b298f29865268650d463e51e0041e68b58dd85deb64c9b"
+    },
+    {
+      "bytes": 5141,
+      "path": "cases/REF-unfuse-addmm-core-native/reference_result.json",
+      "sha256": "5d2685160672df51c93e6c514d8659fa65219d46616a6fe5ed7e9c12c0f5d6f8"
+    },
+    {
+      "bytes": 4383,
+      "path": "cases/REF-unfuse-addmm-core-native/stderr.log",
+      "sha256": "fb1e6493c2f1db8d1c20205b4ce26757b02918ac278e936f9506693e0454baf5"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-unfuse-addmm-core-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3214,
+      "path": "cases/REF-unfuse-addmm-expanded-native/artifact_inventory.json",
+      "sha256": "638aa0f4f471a10d7f077bf53a5f4178a53f047bde57b9f80ea73d59dcde229a"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-unfuse-addmm-expanded-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 1084,
+      "path": "cases/REF-unfuse-addmm-expanded-native/fx_after.txt",
+      "sha256": "dc97196f8cd36f7eb4e0a2d88c35ac87fe5fa2d7e302578b9b8bf584db42c7ec"
+    },
+    {
+      "bytes": 975,
+      "path": "cases/REF-unfuse-addmm-expanded-native/fx_before.txt",
+      "sha256": "074be934fc6b9bec9ae051f07c38550ddf2f4f7d2a8c3309e2523dbbaa89dd4d"
+    },
+    {
+      "bytes": 681,
+      "path": "cases/REF-unfuse-addmm-expanded-native/metadata.json",
+      "sha256": "7fb54a1444c7162c54d708a438f119a5c87d876ce421ab0707ce2c7c648ba078"
+    },
+    {
+      "bytes": 3490,
+      "path": "cases/REF-unfuse-addmm-expanded-native/reference_result.json",
+      "sha256": "52c59be9ba2343fffd57ad9596daa5c3074d69bd656c7dd5b70781d53f86fa95"
+    },
+    {
+      "bytes": 1611,
+      "path": "cases/REF-unfuse-addmm-expanded-native/stderr.log",
+      "sha256": "94ec10f021cb701936a2eb099e2ff479c4730b45989f2cf70cfa78d5d2002dc0"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-unfuse-addmm-expanded-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 5222,
+      "path": "cases/REF-unfuse-addmm-half-enabled-native/artifact_inventory.json",
+      "sha256": "a4641c6e367a3dda7551ee7419b96e67a88f31b84727add5feda72dab02b34c0"
+    },
+    {
+      "bytes": 169,
+      "path": "cases/REF-unfuse-addmm-half-enabled-native/benchmark.json",
+      "sha256": "095e01edc5fe8ab01a8fd0efe6a74c3a2db1484fc2b5810c288c9dd77ab449f0"
+    },
+    {
+      "bytes": 2847,
+      "path": "cases/REF-unfuse-addmm-half-enabled-native/fx_after.txt",
+      "sha256": "b7ecfa5d43402b0a6573f333a1b4acb41c65232c42af21dd92a24b459e3138f1"
+    },
+    {
+      "bytes": 2628,
+      "path": "cases/REF-unfuse-addmm-half-enabled-native/fx_before.txt",
+      "sha256": "d93d97b15eae9ab7063fa93e8175629ee4a2548e4ed504756ac44a767bced458"
+    },
+    {
+      "bytes": 740,
+      "path": "cases/REF-unfuse-addmm-half-enabled-native/metadata.json",
+      "sha256": "a01c7636dd4c9931510988fe70efaa1f3eb1dbca5bbbee5bdaac59974e4318bd"
+    },
+    {
+      "bytes": 4472,
+      "path": "cases/REF-unfuse-addmm-half-enabled-native/reference_result.json",
+      "sha256": "f88dc251d64b25946ce3ebb10b3b0eff0aa858636f2ac765231b3b9f0b265ab7"
+    },
+    {
+      "bytes": 3272,
+      "path": "cases/REF-unfuse-addmm-half-enabled-native/stderr.log",
+      "sha256": "14e806e4e0de2897ac384a646851b6249b04381a5656a5f37527f0374c20eb13"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-unfuse-addmm-half-enabled-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 5220,
+      "path": "cases/REF-unfuse-addmm-half-preserve-native/artifact_inventory.json",
+      "sha256": "c94f99d8a3881410af7ce9eb553b0dbae081e2b51dc30ed1126fed59ef668c84"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-unfuse-addmm-half-preserve-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 2634,
+      "path": "cases/REF-unfuse-addmm-half-preserve-native/fx_after.txt",
+      "sha256": "2139bedeb6e46c44795182a80969533c9884ff37983973bc5edd226382bfd860"
+    },
+    {
+      "bytes": 2628,
+      "path": "cases/REF-unfuse-addmm-half-preserve-native/fx_before.txt",
+      "sha256": "53709c4fd9483f1e621bc9cccbc09e4eed55347eabbc362c9df8ff217476514f"
+    },
+    {
+      "bytes": 717,
+      "path": "cases/REF-unfuse-addmm-half-preserve-native/metadata.json",
+      "sha256": "d531f1be4624813475d94292e551e8bf77f0d39f1778ef7da568491b422497bc"
+    },
+    {
+      "bytes": 4375,
+      "path": "cases/REF-unfuse-addmm-half-preserve-native/reference_result.json",
+      "sha256": "5b7937d4bde1c78bba524b753d871243fe6297bd8391f36740fa8a5953e1f0de"
+    },
+    {
+      "bytes": 3202,
+      "path": "cases/REF-unfuse-addmm-half-preserve-native/stderr.log",
+      "sha256": "c8fb5555e09bf8555d8802c04b5fb79be802a2701061b9a2b5971f5d2e25d995"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-unfuse-addmm-half-preserve-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3199,
+      "path": "cases/REF-unfuse-addmm-leaf-native/artifact_inventory.json",
+      "sha256": "df79a483918f58ee514bc392e8309830d8eb728564549ef19dce58d213eda1d3"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-unfuse-addmm-leaf-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 974,
+      "path": "cases/REF-unfuse-addmm-leaf-native/fx_after.txt",
+      "sha256": "054db16d1c8cb51c823f345635637a270a651827ba2a5f5a63d2bfaca4509a7b"
+    },
+    {
+      "bytes": 971,
+      "path": "cases/REF-unfuse-addmm-leaf-native/fx_before.txt",
+      "sha256": "db129341dd3406a8a3026c13fc47c2ea26a3b0db8cddfac09083f2b12984175f"
+    },
+    {
+      "bytes": 693,
+      "path": "cases/REF-unfuse-addmm-leaf-native/metadata.json",
+      "sha256": "69304126cfe8701e10bbadf5cc387a43480083b9dca0f890fafc852a79959030"
+    },
+    {
+      "bytes": 3506,
+      "path": "cases/REF-unfuse-addmm-leaf-native/reference_result.json",
+      "sha256": "eda2a90a6bcddeeaab623c2950a4a03d81fbdd76155bbf4cffe9457cf8ef0f37"
+    },
+    {
+      "bytes": 1609,
+      "path": "cases/REF-unfuse-addmm-leaf-native/stderr.log",
+      "sha256": "5df49547c541765eff86d0d4719455db98a765514e1d2a99df21f53ac17139c6"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-unfuse-addmm-leaf-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3214,
+      "path": "cases/REF-unfuse-baddbmm-alpha-beta-native/artifact_inventory.json",
+      "sha256": "526b7ce161986f96822f931395b866959fd0a4c2de69503b9de3113a182fa165"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-unfuse-baddbmm-alpha-beta-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 1109,
+      "path": "cases/REF-unfuse-baddbmm-alpha-beta-native/fx_after.txt",
+      "sha256": "434421aab07e8183582228460854eb9ec99e03b44dbd06b68a9382f46023ff2c"
+    },
+    {
+      "bytes": 822,
+      "path": "cases/REF-unfuse-baddbmm-alpha-beta-native/fx_before.txt",
+      "sha256": "06b46ccd43516a337805a69bfe43d1d3f6e0a7347f292d560ccb30ce0fd72105"
+    },
+    {
+      "bytes": 735,
+      "path": "cases/REF-unfuse-baddbmm-alpha-beta-native/metadata.json",
+      "sha256": "f57e6d17bfa400250a906845f4f955c3c1c146bef6e15ba9557478d2c9e192c6"
+    },
+    {
+      "bytes": 3559,
+      "path": "cases/REF-unfuse-baddbmm-alpha-beta-native/reference_result.json",
+      "sha256": "f338b0a8ba0453088a6159a0ab71b0bd68daa3615de99afc88232dedc986eded"
+    },
+    {
+      "bytes": 1651,
+      "path": "cases/REF-unfuse-baddbmm-alpha-beta-native/stderr.log",
+      "sha256": "3ecbbc8d11d40f8b4c4fd409b7b08442005ea8c8a7a6d18dff43c61540f58e9c"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-unfuse-baddbmm-alpha-beta-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7215,
+      "path": "cases/REF-unfuse-baddbmm-core-native/artifact_inventory.json",
+      "sha256": "fcf6e513c462f9e98ab5ebe8738e36b4ce7ab3454c613d76a49f5944626a1039"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-unfuse-baddbmm-core-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 2677,
+      "path": "cases/REF-unfuse-baddbmm-core-native/fx_after.txt",
+      "sha256": "ae305a5c30094a25fb634203ec1b144b480c7dd2b78f14970d4f25163534959a"
+    },
+    {
+      "bytes": 2459,
+      "path": "cases/REF-unfuse-baddbmm-core-native/fx_before.txt",
+      "sha256": "549edb687ba1ac1592dff0fd9ab9ed39f3898e1a06c16ec689cb336aa305f31c"
+    },
+    {
+      "bytes": 816,
+      "path": "cases/REF-unfuse-baddbmm-core-native/metadata.json",
+      "sha256": "f9cce11155011414abb452e147280448f756f1f21661470d3fde846cb3f5ff29"
+    },
+    {
+      "bytes": 5155,
+      "path": "cases/REF-unfuse-baddbmm-core-native/reference_result.json",
+      "sha256": "029b564f6110cd5d92a42208f7fc363e40b338cf1616d6343b8bc66daf3f697e"
+    },
+    {
+      "bytes": 4425,
+      "path": "cases/REF-unfuse-baddbmm-core-native/stderr.log",
+      "sha256": "a0559cc60fb317bc158b2c289f07b371f2b98bbcfdc382d40165784d5cc876a4"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-unfuse-baddbmm-core-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 4967,
+      "path": "environment.json",
+      "sha256": "e6af86f422870c96d9daaba211dcd03614b93275f1b1442df7ac7ebdfc9ccaa6"
+    },
+    {
+      "bytes": 20114,
+      "path": "manifest_snapshot.json",
+      "sha256": "d3b94681f6e1fecf94fb90682c237bcd0c5e154f317e3bc17233ca0da59de35e"
+    },
+    {
+      "bytes": 10684,
+      "path": "reference_plan_snapshot.json",
+      "sha256": "4a25689cd8da7541314a5e5aeb9c9ed23b75faf58b3354576e4dc718a10c51fc"
+    },
+    {
+      "bytes": 10515,
+      "path": "reference_summary.json",
+      "sha256": "4c27d3c0febf6c9c0a0b06bd8be501df169bb9ac081392e03085c1c020dab474"
+    }
+  ],
+  "handoff_format_version": "1.0",
+  "payload_sha256": "03300f564d4e16435a17eb0b641dccdf55dccded2be9064208951ef1208f52ed",
+  "reference_summary": {
+    "case_counts": {
+      "failed": 0,
+      "no-tests": 0,
+      "passed": 12,
+      "reference_valid": 12,
+      "skipped": 0,
+      "timed-out": 0
+    },
+    "cases": [
+      {
+        "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+        "case_id": "REF-addcdiv-fma-bitwise-native",
+        "reference_valid": true,
+        "result": "cases/REF-addcdiv-fma-bitwise-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+        "case_id": "REF-addcdiv-fma-codegen-native",
+        "reference_valid": true,
+        "result": "cases/REF-addcdiv-fma-codegen-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-reuse-partial",
+        "case_id": "REF-partial-reuse-positive-native",
+        "reference_valid": true,
+        "result": "cases/REF-partial-reuse-positive-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-reuse-partial",
+        "case_id": "REF-partial-reuse-negative-native",
+        "reference_valid": true,
+        "result": "cases/REF-partial-reuse-negative-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_id": "REF-unfuse-addmm-core-native",
+        "reference_valid": true,
+        "result": "cases/REF-unfuse-addmm-core-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_id": "REF-unfuse-addmm-accumulator-negative-native",
+        "reference_valid": true,
+        "result": "cases/REF-unfuse-addmm-accumulator-negative-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_id": "REF-unfuse-addmm-leaf-native",
+        "reference_valid": true,
+        "result": "cases/REF-unfuse-addmm-leaf-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_id": "REF-unfuse-addmm-expanded-native",
+        "reference_valid": true,
+        "result": "cases/REF-unfuse-addmm-expanded-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_id": "REF-unfuse-addmm-half-preserve-native",
+        "reference_valid": true,
+        "result": "cases/REF-unfuse-addmm-half-preserve-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_id": "REF-unfuse-addmm-half-enabled-native",
+        "reference_valid": true,
+        "result": "cases/REF-unfuse-addmm-half-enabled-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+        "case_id": "REF-unfuse-baddbmm-core-native",
+        "reference_valid": true,
+        "result": "cases/REF-unfuse-baddbmm-core-native/reference_result.json",
+        "status": "passed"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+        "case_id": "REF-unfuse-baddbmm-alpha-beta-native",
+        "reference_valid": true,
+        "result": "cases/REF-unfuse-baddbmm-alpha-beta-native/reference_result.json",
+        "status": "passed"
+      }
+    ],
+    "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "generated_at": "2026-09-05T21:50:09+08:00",
+    "next_action": "reference 有效；回传 artifacts 后由 NPU 控制节点复核并决定是否冻结 denominator。",
+    "run_id": "reference-20260905T214703+0800-rarkggw1",
+    "schema_version": "1.0",
+    "selected_case_count": 12,
+    "selection_valid": true,
+    "status": "valid-reference-suite",
+    "suite_complete": true,
+    "suite_valid": true,
+    "variants": [
+      {
+        "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+        "case_ids": [
+          "REF-addcdiv-fma-bitwise-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "value-one-bitwise-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+        "case_ids": [
+          "REF-addcdiv-fma-bitwise-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "scaled-value-bitwise-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+        "case_ids": [
+          "REF-addcdiv-fma-codegen-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "fma-div-rn-codegen-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-reuse-partial",
+        "case_ids": [
+          "REF-partial-reuse-positive-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "amax-amax-large-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-reuse-partial",
+        "case_ids": [
+          "REF-partial-reuse-positive-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "amin-min-large-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-reuse-partial",
+        "case_ids": [
+          "REF-partial-reuse-positive-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "amax-max-large-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-reuse-partial",
+        "case_ids": [
+          "REF-partial-reuse-negative-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "small-numel-negative"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-reuse-partial",
+        "case_ids": [
+          "REF-partial-reuse-negative-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "dynamic-input-negative"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-addmm-core-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "gelu-consumer-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-addmm-core-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "view-gelu-consumer-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-addmm-core-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "no-pointwise-consumer-negative"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-addmm-accumulator-negative-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "computed-accumulator-negative"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-addmm-leaf-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "same-shape-leaf-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-addmm-expanded-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "expanded-bias-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-addmm-half-preserve-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "half-dtype-preserve-negative"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-addmm-half-enabled-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "half-dtype-gate-disabled-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-baddbmm-core-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "broadcast-gelu-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-baddbmm-core-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "expanded-bias-relu-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-baddbmm-alpha-beta-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "alpha-beta-positive"
+      },
+      {
+        "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+        "case_ids": [
+          "REF-unfuse-baddbmm-core-native"
+        ],
+        "reason": "所有关联原生 community tests 与必需 artifacts 均有效。",
+        "status": "valid-reference",
+        "variant_id": "no-pointwise-consumer-negative"
+      }
+    ]
+  },
+  "source_run_dir": "/data/z50063656/tmp/t078-reference-results/reference-20260905T214703+0800-rarkggw1"
+}
