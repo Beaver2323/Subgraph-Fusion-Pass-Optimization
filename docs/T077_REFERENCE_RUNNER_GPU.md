@@ -1,6 +1,6 @@
 # T-077 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
+> 更新时间：2026-09-06 05:20 CST（UTC+08:00）
 > 状态：GPU 11/11 direct cases、17/17 variants 已完成；本文保留合同，并提供统一一键复跑入口。
 > 执行原则：先运行冻结 PyTorch commit 中的原生社区测例；direct 无效时只回传证据，不在 GPU 机器临时改图或写 adapter。
 
@@ -80,21 +80,23 @@ reference_plan_validation=OK acceptance_units=5 cases=11 community_tests=11 vari
 torch_imported=0 gpu_executed=0
 ```
 
-推荐直接使用统一入口，它会完成环境激活、静态校验、空闲 GPU 检查、运行和文本导出：
+推荐直接使用统一入口，它会完成环境激活、静态校验、共享/独占策略检查、运行和文本导出：
 
 ```bash
 bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-077 --gpu 2
 ```
 
-下文的底层 runner 命令保留给排障和精确重跑；日常执行见 `docs/GPU_TASK_RUNNER.md`。
+默认共享；加 `--wait-gpu` 每 1 秒检查启动条件，独占需加 `--exclusive`。
+下文的底层 runner 命令不含等卡/协作锁，仅保留给排障和精确重跑；日常执行见
+[通用一键说明](GPU_TASK_RUNNER.md)。
 
 ## 4. 执行完整 GPU reference
 
-先用 `nvidia-smi` 选择无其他用户进程的空闲物理卡，然后只限制当前 shell：
+先用 `nvidia-smi` 查看所选物理卡的空余显存（功能测试可以共享），然后只限制当前 shell：
 
 ```bash
 nvidia-smi
-export CUDA_VISIBLE_DEVICES=<空闲GPU编号>
+export CUDA_VISIBLE_DEVICES=2  # 换成所选物理 GPU 编号
 
 cd /data/z50063656/tmp
 bash "${TRACKER_ROOT}/scripts/run_t077_reference_all.sh" \

@@ -15,6 +15,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 from datetime import datetime
 from pathlib import Path
@@ -26,6 +27,19 @@ SCHEMA_VERSION = "1.0"
 
 def timestamp() -> str:
     return datetime.now().astimezone().isoformat(timespec="seconds")
+
+
+def create_run_directory(output_root: Path, run_id: str | None = None) -> Path:
+    if run_id is not None:
+        if not re.fullmatch(r"[A-Za-z0-9._+-]+", run_id) or run_id in {".", ".."}:
+            raise ValueError("--run-id 只允许字母、数字、点、下划线、加号和连字符，且不能为 . 或 ..")
+        run_dir = output_root / run_id
+        run_dir.mkdir(parents=True, exist_ok=False)
+        return run_dir
+    # 共享运行可以同秒启动同一任务；原子分配唯一目录，不覆盖或合并已有 artifacts。
+    output_root.mkdir(parents=True, exist_ok=True)
+    prefix = datetime.now().astimezone().strftime("reference-%Y%m%dT%H%M%S%z-")
+    return Path(tempfile.mkdtemp(prefix=prefix, dir=output_root))
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -345,6 +359,10 @@ selected_environment = {
         "CUDA_HOME",
         "CUDA_COMPAT_DIR",
         "CUDA_VISIBLE_DEVICES",
+        "PASS_GPU_EXECUTION_MODE",
+        "PASS_GPU_MIN_FREE_MEMORY_MIB",
+        "PASS_GPU_PREFLIGHT_FREE_MEMORY_MIB",
+        "PASS_GPU_COMPUTE_MODE",
         "CONDA_PREFIX",
         "LD_LIBRARY_PATH",
         "PATH",
@@ -1073,18 +1091,13 @@ def main() -> int:
         if unknown:
             raise ValueError(f"未知 case_id: {unknown}")
         cases = [case for case in cases if case["case_id"] in requested]
-    run_id = args.run_id or datetime.now().astimezone().strftime(
-        "reference-%Y%m%dT%H%M%S%z"
-    )
-    if not re.fullmatch(r"[A-Za-z0-9._+-]+", run_id):
-        raise ValueError("--run-id 只允许字母、数字、点、下划线、加号和连字符")
     output_root = args.output_root.resolve()
     if is_relative_to(output_root, repo_root) or is_relative_to(
         output_root, pytorch_root
     ):
         raise ValueError("原始 reference artifacts 必须写到 tracker/PyTorch 仓库外")
-    run_dir = output_root / run_id
-    run_dir.mkdir(parents=True, exist_ok=False)
+    run_dir = create_run_directory(output_root, args.run_id)
+    run_id = run_dir.name
     write_json(run_dir / "manifest_snapshot.json", manifest)
     write_json(run_dir / "reference_plan_snapshot.json", plan)
     expected_commit = manifest["source_baselines"]["pytorch"]["commit"]

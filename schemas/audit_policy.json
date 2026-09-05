@@ -1,11 +1,12 @@
 {
-  "rule_version": "2026-09-06.1",
+  "rule_version": "2026-09-06.2",
   "validator_version": "2.0.0",
-  "updated_at": "2026-09-06T02:55:21+08:00",
+  "updated_at": "2026-09-06T05:20:00+08:00",
   "required_npu_backend": "triton_experimental",
   "history_tasks": ["T-076", "T-077"],
   "rules": {
     "reference": "原始日志重解析：返回码为零、用例数与计划一致、完整 OK，禁止 skip/expected failure/unexpected success 计通过。代码生成断言不能替代数值正确性。",
+    "gpu_functional": "GPU 功能 reference 默认共享、可选 --exclusive；--wait-gpu 默认每 1 秒轮询指定卡，默认显存门槛 1024 MiB，可设 0。记录运行策略；不杀其他进程、不改计算模式；共享耗时不得作为正式性能证据。",
     "npu": "只接受 triton_experimental；失败证据可保留，但不得宣称已修复或性能通过。记录校验不等同于原始运行重验。",
     "performance": "同 revision/输入/后端/测量方法；导入前选择后端，OFF/ON 各三个独立进程，正确性和目标命中先通过，再比较 host/Event p50/p99。",
     "disable": "明确产品关闭免测，保留已有证据；普通 device guard 只算 capability-pending，未经独立评审不得绕过。",

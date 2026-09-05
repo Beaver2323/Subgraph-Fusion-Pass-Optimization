@@ -1,6 +1,6 @@
 # T-076 GPU/reference Runner 人工操作说明
 
-> 更新时间：2026-09-02 23:32 CST（UTC+08:00）
+> 更新时间：2026-09-06 05:20 CST（UTC+08:00）
 > 状态：GPU 环境与文本 handoff 已复核；13/13 direct cases 均 passed 且 `reference_valid=true`。
 > 核心规则：先取得 direct 结果；没有 direct blocker 证据，不创建或运行 adapter。
 
@@ -126,7 +126,8 @@ HEAD 必须为 `8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`，`status --short` 必
 bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-076 --gpu 2
 ```
 
-完整说明见 `docs/GPU_TASK_RUNNER.md`。下文底层命令保留用于排障。
+默认共享；加 `--wait-gpu` 每 1 秒检查启动条件，独占需加 `--exclusive`。
+完整说明见[通用一键说明](GPU_TASK_RUNNER.md)。下文底层命令不含等卡/协作锁，仅保留用于排障。
 
 ## 4. 先做零设备静态校验
 
@@ -149,10 +150,10 @@ torch_imported=0 gpu_executed=0
 
 ## 5. 执行全部原生社区测例
 
-先用 `nvidia-smi` 选择空闲物理卡，再设置只对本进程有效的设备号：
+先用 `nvidia-smi` 查看所选物理卡的空余显存（功能测试可以共享），再设置当前 shell 及子进程的设备号：
 
 ```bash
-export CUDA_VISIBLE_DEVICES=<空闲GPU编号>
+export CUDA_VISIBLE_DEVICES=2  # 换成所选物理 GPU 编号
 cd /data/z50063656/tmp
 
 bash "${TRACKER_ROOT}/scripts/run_reference_all.sh" \

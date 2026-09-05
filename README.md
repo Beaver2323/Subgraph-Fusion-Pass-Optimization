@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-06 02:55 CST（UTC+08:00）
+> 文档更新时间：2026-09-06 05:20 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -110,7 +110,7 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/T078_REFERENCE_RUNNER_GPU.md](docs/T078_REFERENCE_RUNNER_GPU.md) | T-078 第三批 GPU 执行、case 列表与文本回传说明 |
 | [docs/T079_REFERENCE_RUNNER_GPU.md](docs/T079_REFERENCE_RUNNER_GPU.md) | T-079 第四批 GPU 执行、case 列表与文本回传说明 |
 | [docs/T080_REFERENCE_RUNNER_GPU.md](docs/T080_REFERENCE_RUNNER_GPU.md) | T-080 第五批 GPU 执行、社区性能来源与文本回传说明 |
-| [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU pull 后按 T-076～T-080 指定任务一键运行；自动导出并维护 latest 入口 |
+| [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU 一键运行（默认共享、可选独占、快速等卡）、固定 latest 与 results/incoming/ JSON 接收路径 |
 | [docs/T078_FUNCTION_PERFORMANCE_GUIDE.md](docs/T078_FUNCTION_PERFORMANCE_GUIDE.md) | T-078 四单元的功能 case、派生性能 case、源码与判据讲解 |
 | [docs/T079_FUNCTION_PERFORMANCE_GUIDE.md](docs/T079_FUNCTION_PERFORMANCE_GUIDE.md) | T-079 四单元的图消除功能/性能证据讲解 |
 | [docs/T080_FUNCTION_PERFORMANCE_GUIDE.md](docs/T080_FUNCTION_PERFORMANCE_GUIDE.md) | T-080 社区 benchmark 复用、功能 guard 与 OFF/ON 讲解 |

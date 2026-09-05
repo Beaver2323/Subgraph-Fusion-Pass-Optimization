@@ -29,6 +29,31 @@ backlog = module("backlog", "scripts/build_task_backlog.py")
 
 
 class ReferenceTests(unittest.TestCase):
+    def test_same_second_runs_get_unique_artifact_directories(self):
+        with tempfile.TemporaryDirectory(dir="/home/z50063656/tmp") as directory:
+            root = Path(directory) / "results"
+            with patch.object(reference, "datetime") as clock:
+                clock.now.return_value.astimezone.return_value.strftime.return_value = "reference-same-second-"
+                first = reference.create_run_directory(root)
+                marker = first / "original.txt"
+                marker.write_text("preserve")
+                second = reference.create_run_directory(root)
+            self.assertNotEqual(first, second)
+            self.assertEqual(marker.read_text(), "preserve")
+            self.assertEqual(second.parent, root)
+            self.assertTrue(second.is_dir())
+
+    def test_explicit_run_directory_cannot_be_overwritten_or_escape(self):
+        with tempfile.TemporaryDirectory(dir="/home/z50063656/tmp") as directory:
+            root = Path(directory)
+            first = reference.create_run_directory(root, "reference-chosen")
+            self.assertEqual(first.name, "reference-chosen")
+            with self.assertRaises(FileExistsError):
+                reference.create_run_directory(root, "reference-chosen")
+            for run_id in ("", ".", "..", "../escape", "/absolute", "two/levels"):
+                with self.subTest(run_id=run_id), self.assertRaises(ValueError):
+                    reference.create_run_directory(root, run_id)
+
     def test_functional_worker_does_not_inherit_performance_flags(self):
         from unittest.mock import Mock
 

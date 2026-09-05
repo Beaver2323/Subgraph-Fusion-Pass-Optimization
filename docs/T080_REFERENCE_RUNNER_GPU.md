@@ -1,6 +1,6 @@
 # T-080 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-04 09:08 CST（UTC+08:00）
+> 更新时间：2026-09-06 05:20 CST（UTC+08:00）
 > 状态：3 个 acceptance units、13 个 direct cases、13 个 variants 及逐单元性能计划已准备，等待 GPU 执行
 > 原则：reference 阶段只跑社区默认功能规模；`DO_PERF_TEST=1` 的社区性能路径留到功能/NPU 门禁后
 
@@ -14,6 +14,9 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
   --task T-080 \
   --gpu 2
 ```
+
+默认共享，允许已有计算进程；加 `--wait-gpu` 每 1 秒检查启动条件，独占需加 `--exclusive`。
+显存门槛、等卡超时和固定结果入口见[通用一键说明](GPU_TASK_RUNNER.md)。
 
 ## 静态校验预期
 

@@ -8,11 +8,20 @@ task_id=""
 gpu_id="${CUDA_VISIBLE_DEVICES:-}"
 case_id=""
 validate_only=0
+wait_gpu=0
+wait_timeout=0
+poll_interval=1
+wait_options_set=0
+execution_mode=shared
+min_free_memory=1024
 
 usage() {
     cat <<'EOF'
 用法：
   bash scripts/run_gpu_reference_task.sh --task T-078 --gpu 2
+  bash scripts/run_gpu_reference_task.sh --task T-078 --gpu 2 --wait-gpu
+  bash scripts/run_gpu_reference_task.sh --task T-078 --gpu 2 --wait-gpu --wait-timeout 7200
+  bash scripts/run_gpu_reference_task.sh --task T-078 --gpu 2 --exclusive --wait-gpu
   bash scripts/run_gpu_reference_task.sh --task T-079 --gpu 2
   bash scripts/run_gpu_reference_task.sh --task T-080 --gpu 2
   bash scripts/run_gpu_reference_task.sh --task T-076 --gpu 2 --case REF-mm-plus-mm-native
@@ -23,6 +32,11 @@ usage() {
   --gpu ID             实际运行时使用的物理 GPU 编号；也可预先设置 CUDA_VISIBLE_DEVICES
   --case CASE_ID       可选，只运行指定 case
   --validate-only      只做零设备静态校验
+  --exclusive          可选独占策略：启动时无计算进程；默认 shared，允许已有进程
+  --min-free-memory-mib MIB  最低空闲显存，默认 1024 MiB；0 取消显存门槛，不保证无 OOM
+  --wait-gpu           指定卡不满足当前策略时轮询等待；不指定则立即退出
+  --wait-timeout SEC   等卡最大秒数，默认 0 表示一直等；需 --wait-gpu
+  --poll-interval SEC  检查间隔，1～60 秒，默认 1；需 --wait-gpu
   -h, --help           显示帮助
 
 路径可通过环境变量覆盖：
@@ -31,6 +45,14 @@ EOF
 }
 
 while (($#)); do
+    case "$1" in
+        --task|--gpu|--case|--wait-timeout|--poll-interval|--min-free-memory-mib)
+            if (($# < 2)) || [[ -z "$2" || "$2" == --* ]]; then
+                echo "错误：$1 缺少参数值。" >&2
+                exit 2
+            fi
+            ;;
+    esac
     case "$1" in
         --task)
             task_id="${2:-}"
@@ -47,6 +69,28 @@ while (($#)); do
         --validate-only)
             validate_only=1
             shift
+            ;;
+        --wait-gpu)
+            wait_gpu=1
+            shift
+            ;;
+        --exclusive)
+            execution_mode=exclusive
+            shift
+            ;;
+        --min-free-memory-mib)
+            min_free_memory="$2"
+            shift 2
+            ;;
+        --wait-timeout)
+            wait_timeout="$2"
+            wait_options_set=1
+            shift 2
+            ;;
+        --poll-interval)
+            poll_interval="$2"
+            wait_options_set=1
+            shift 2
             ;;
         -h|--help)
             usage
@@ -93,6 +137,14 @@ case "${task_id}" in
         exit 2
         ;;
 esac
+
+# shellcheck disable=SC1090
+source "${tracker_root}/scripts/gpu_wait.sh"
+tracker_gpu_validate_wait_options "${wait_gpu}" "${wait_timeout}" "${poll_interval}" "${min_free_memory}"
+if ((wait_options_set && !wait_gpu)); then
+    echo "错误：--wait-timeout/--poll-interval 需要同时指定 --wait-gpu。" >&2
+    exit 2
+fi
 
 pytorch_root="${PYTORCH_ROOT:-${data_root}/src/pytorch}"
 venv_root="${PASS_GPU_VENV:-${data_root}/envs/PassGPURef}"
@@ -169,25 +221,14 @@ if [[ -z "${gpu_id}" ]]; then
     echo "错误：实际运行必须通过 --gpu ID 或 CUDA_VISIBLE_DEVICES 指定 GPU。" >&2
     exit 2
 fi
-if [[ ! "${gpu_id}" =~ ^[0-9]+$ ]]; then
+if [[ ! "${gpu_id}" =~ ^[0-9]{1,9}$ ]]; then
     echo "错误：一键入口只接受单个物理 GPU 编号，当前值为 ${gpu_id}。" >&2
     exit 2
 fi
 
-if ! command -v nvidia-smi >/dev/null 2>&1; then
-    echo "错误：找不到 nvidia-smi，不能验证 GPU 是否空闲。" >&2
-    exit 2
-fi
-if ! gpu_processes="$(nvidia-smi -i "${gpu_id}" --query-compute-apps=pid --format=csv,noheader,nounits 2>&1)"; then
-    echo "错误：无法查询 GPU ${gpu_id}：${gpu_processes}" >&2
-    exit 2
-fi
-if [[ -n "${gpu_processes//[[:space:]]/}" ]]; then
-    echo "错误：GPU ${gpu_id} 已存在计算进程，拒绝启动：${gpu_processes//$'\n'/,}" >&2
-    exit 3
-fi
+gpu_id=$((10#${gpu_id}))
+tracker_gpu_acquire "${gpu_id}" "${wait_gpu}" "${wait_timeout}" "${poll_interval}" "${data_root}/tmp/tracker-gpu-locks" "${execution_mode}" "${min_free_memory}"
 export CUDA_VISIBLE_DEVICES="${gpu_id}"
-echo "gpu_preflight=free physical_gpu=${gpu_id}"
 
 launcher_log="$(mktemp "${work_dir}/${task_id,,}-gpu-launch.XXXXXX.log")"
 run_args=(--pytorch-root "${pytorch_root}" --output-root "${result_root}")
