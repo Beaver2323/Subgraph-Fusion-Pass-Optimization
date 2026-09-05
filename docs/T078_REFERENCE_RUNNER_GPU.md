@@ -1,7 +1,7 @@
 # T-078 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-06 05:20 CST（UTC+08:00）
-> 状态：4 个 acceptance units、12 个 direct cases、20 个 variants 及逐单元性能计划已准备，等待 GPU 执行
+> 更新时间：2026-09-06 06:43 CST（UTC+08:00）
+> 状态：已收到 12/12 通过的 1.0 紧凑摘要；尚需 1.1 原文 handoff 完成 GPU FX/日志正文复核
 > 原则：先运行冻结 PyTorch commit 中的原生社区测例；direct 失败只回传证据，不在 GPU 机器临时写 adapter
 
 2026-09-04 已按 PyTorch `copy_tests` 的真实命名规则，将两个 addcdiv 执行入口纠正为带
@@ -23,7 +23,7 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 将 `2` 替换为所选物理 GPU 编号；功能 reference 默认共享，允许已有计算进程。
 加 `--wait-gpu` 每 1 秒检查启动条件，加 `--exclusive` 才要求启动时无计算进程。
 入口会自动进入 `/data/z50063656/tmp`、激活 `PassGPURef`、检查 PyTorch commit/工作树、
-按所选策略检查 GPU、执行 12 个 fresh-process cases，并生成文本 handoff。
+按所选策略检查 GPU、执行 12 个 fresh-process cases，并生成 1.1 原文文本 handoff。
 显存门槛、等卡超时和固定结果入口见[通用一键说明](GPU_TASK_RUNNER.md)。
 
 ## 2. 预期静态校验
@@ -90,6 +90,9 @@ sha256sum "${TEXT_HANDOFF}"
 
 请复制 `latest-text-handoff.json` 的完整文本。12/12 cases 均 `passed` 且 `reference_valid=true` 才能
 冻结 T-078；失败、skip、no-tests 或 FX artifacts 缺失都必须原样保留，不能记作 PASS。
+新版一键入口默认携带可恢复的 FX、日志、生成代码和常见 IR 原文；旧 1.0 文件不能恢复正文。
+完整校验、手工重导出旧 run、GitHub 文本复制与恢复说明见
+[GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)。
 
 ## 5. 环境边界
 

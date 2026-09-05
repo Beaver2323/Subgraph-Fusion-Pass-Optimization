@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""将 GPU/reference run 导出为可复制、可校验的紧凑 JSON 文本证据。"""
+"""将 GPU/reference run 导出为可复制、可校验的 JSON 文本证据。"""
 
 from __future__ import annotations
 
@@ -7,11 +7,38 @@ import argparse
 import hashlib
 import json
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 
 FORMAT_VERSION = "1.0"
+RAW_TEXT_FORMAT_VERSION = "1.1"
+TEXT_SUFFIXES = {
+    ".asm",
+    ".c",
+    ".cpp",
+    ".csv",
+    ".cu",
+    ".dot",
+    ".h",
+    ".hpp",
+    ".html",
+    ".json",
+    ".jsonl",
+    ".ll",
+    ".log",
+    ".md",
+    ".mlir",
+    ".ptx",
+    ".py",
+    ".s",
+    ".ttgir",
+    ".ttir",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
+MAX_TEXT_BYTES = 64 * 1024 * 1024
 ROOT_EVIDENCE_FILES = (
     "environment.json",
     "manifest_snapshot.json",
@@ -69,7 +96,114 @@ def file_record(path: Path, root: Path) -> dict[str, Any]:
     }
 
 
-def case_audit(run_dir: Path, item: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def safe_relative_path(relative: str) -> PurePosixPath:
+    if (
+        not isinstance(relative, str)
+        or not relative
+        or "\\" in relative
+        or any(ord(character) < 32 for character in relative)
+    ):
+        raise ValueError("证据路径必须是非空 POSIX 相对路径")
+    path = PurePosixPath(relative)
+    if path.is_absolute() or any(
+        part in {"", ".", "..", ".git"} for part in relative.split("/")
+    ):
+        raise ValueError(f"证据路径不安全：{relative}")
+    return path
+
+
+def checked_file(root: Path, relative: str) -> Path:
+    path = root
+    for part in safe_relative_path(relative).parts:
+        path = path / part
+        if path.is_symlink():
+            raise ValueError(f"证据路径不得含软链接：{relative}")
+    if not path.is_file():
+        raise ValueError(f"缺少证据文件：{relative}")
+    return path
+
+
+def seal_payload(payload: dict[str, Any]) -> None:
+    payload.pop("payload_sha256", None)
+    canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    payload["payload_sha256"] = hashlib.sha256(canonical).hexdigest()
+
+
+def include_raw_text(payload: dict[str, Any], run_dir: Path) -> None:
+    """嵌入已登记文件的 UTF-8 原文；二进制只列缺项，不编码伪装成文本。"""
+    records = {item["path"]: item for item in payload["evidence_files"]}
+    for case in payload["case_audit"]:
+        case_id = case["case_id"]
+        safe_relative_path(case_id)
+        if "/" in case_id:
+            raise ValueError("case_id 必须是单个目录名")
+        inventory = load_json(
+            checked_file(run_dir, f"cases/{case_id}/artifact_inventory.json")
+        )
+        seen = set()
+        for item in require_list(inventory, "artifact_inventory"):
+            relative = item["path"]
+            safe_relative_path(relative)
+            if relative in seen:
+                raise ValueError(f"inventory 存在重复路径：{relative}")
+            seen.add(relative)
+            path = f"cases/{case_id}/{relative}"
+            record = {"path": path, "bytes": item["bytes"], "sha256": item["sha256"]}
+            if path in records and records[path] != record:
+                raise ValueError(f"文件与 inventory 哈希不一致：{path}")
+            records[path] = record
+    embedded, omitted, total = [], [], 0
+    for relative, record in sorted(records.items()):
+        path = checked_file(run_dir, relative)
+        if path.stat().st_size != record["bytes"]:
+            raise ValueError(f"证据文件大小/哈希与登记值不一致：{relative}")
+        if path.suffix.lower() not in TEXT_SUFFIXES:
+            if sha256_file(path) != record["sha256"]:
+                raise ValueError(f"证据文件大小/哈希与登记值不一致：{relative}")
+            omitted.append(dict(record, reason="non-text-artifact"))
+            continue
+        if total + record["bytes"] > MAX_TEXT_BYTES:
+            raise ValueError("原文总量超过 64 MiB，停止导出；不截断证据")
+        try:
+            # read_bytes + strict decode 保留 CRLF，回传可恢复相同字节/哈希。
+            raw = path.read_bytes()
+            if (
+                len(raw) != record["bytes"]
+                or hashlib.sha256(raw).hexdigest() != record["sha256"]
+            ):
+                raise ValueError(f"证据文件大小/哈希与登记值不一致：{relative}")
+            content = raw.decode("utf-8")
+        except UnicodeDecodeError:
+            omitted.append(dict(record, reason="not-utf8"))
+            continue
+        if "\x00" in content:
+            omitted.append(dict(record, reason="contains-nul"))
+            continue
+        embedded.append(dict(record, encoding="utf-8", text=content))
+        total += record["bytes"]
+    required = {item["path"] for item in payload["evidence_files"]}
+    if not required <= {item["path"] for item in embedded}:
+        raise ValueError("必需摘要/FX/日志文件不能作为 UTF-8 原文回传，停止导出")
+    payload.update(
+        handoff_format_version=RAW_TEXT_FORMAT_VERSION,
+        raw_text_files=embedded,
+        raw_text_transfer={
+            "embedded_files": len(embedded),
+            "embedded_bytes": total,
+            "omitted_files": omitted,
+            "all_registered_artifacts_embedded": not omitted,
+            "boundary": (
+                "包含原文供离线复核；未执行任何回传代码。缺失二进制只保留哈希，"
+                "不宣称完整二进制归档或重新运行通过。"
+            ),
+        },
+    )
+    seal_payload(payload)
+
+
+def case_audit(
+    run_dir: Path, item: dict[str, Any]
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     case_id = item.get("case_id")
     if not isinstance(case_id, str) or not case_id:
         raise ValueError("reference_summary.json 中存在无效 case_id")
@@ -166,10 +300,7 @@ def build_payload(run_dir: Path) -> dict[str, Any]:
         "case_audit": audits,
         "evidence_files": sorted(evidence, key=lambda item: item["path"]),
     }
-    canonical = json.dumps(
-        payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
-    ).encode("utf-8")
-    payload["payload_sha256"] = hashlib.sha256(canonical).hexdigest()
+    seal_payload(payload)
     return payload
 
 
@@ -177,11 +308,21 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="将 reference run 导出为适合终端复制的单个 JSON 文本证据包"
     )
-    parser.add_argument("--run-dir", required=True, type=Path, help="reference-<timestamp> 目录")
+    parser.add_argument(
+        "--run-dir", required=True, type=Path, help="reference-<timestamp> 目录"
+    )
     parser.add_argument("--output", type=Path, help="输出文件；省略时写到 stdout")
     parser.add_argument("--compact", action="store_true", help="输出单行 JSON")
-    parser.add_argument("--allow-derived-output", action="store_true",
-                        help="仅允许在 run 内新建保留文件 text-handoff.json；不覆盖原证据")
+    parser.add_argument(
+        "--include-raw-text",
+        action="store_true",
+        help="嵌入 FX、生成代码、IR、日志与 JSON 原文；不重新运行 GPU，不包含二进制",
+    )
+    parser.add_argument(
+        "--allow-derived-output",
+        action="store_true",
+        help="仅允许在 run 内新建保留文件 text-handoff.json；不覆盖原证据",
+    )
     return parser.parse_args()
 
 
@@ -199,6 +340,8 @@ def main() -> int:
             ):
                 raise ValueError("文本 handoff 必须写在原始 run 目录外")
         payload = build_payload(run_dir)
+        if args.include_raw_text:
+            include_raw_text(payload, run_dir)
         indent = None if args.compact else 2
         content = json.dumps(
             payload, ensure_ascii=False, sort_keys=True, indent=indent

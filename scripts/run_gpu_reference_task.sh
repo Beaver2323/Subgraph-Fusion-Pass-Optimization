@@ -254,6 +254,7 @@ text_handoff="${run_dir}/text-handoff.json"
 set +e
 "${PYTHON}" "${tracker_root}/scripts/export_reference_text.py" \
     --run-dir "${run_dir}" \
+    --include-raw-text \
     --allow-derived-output \
     --output "${text_handoff}"
 export_status=$?

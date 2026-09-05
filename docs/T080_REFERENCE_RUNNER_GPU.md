@@ -1,6 +1,6 @@
 # T-080 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-06 05:20 CST（UTC+08:00）
+> 更新时间：2026-09-06 06:43 CST（UTC+08:00）
 > 状态：3 个 acceptance units、13 个 direct cases、13 个 variants 及逐单元性能计划已准备，等待 GPU 执行
 > 原则：reference 阶段只跑社区默认功能规模；`DO_PERF_TEST=1` 的社区性能路径留到功能/NPU 门禁后
 
@@ -60,6 +60,9 @@ cat /data/z50063656/tmp/t080-reference-results/latest-text-handoff.json
 只有 13/13 cases 均 `passed` 且 `reference_valid=true` 才能冻结 T-080。即使社区方法包含性能代码，
 本轮也不设置 `DO_PERF_TEST=1`；后续仅在 NPU `triton_experimental` 功能命中、correctness 与
 artifact 门禁通过后，才运行同来源 OFF/ON 性能对照。
+
+一键入口默认生成可恢复 FX/日志正文的 1.1 handoff；复制、校验和恢复见
+[GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)。
 
 各 case 的输入、guard、社区 benchmark 复用边界和 compiled OFF/ON 设计见
 `docs/T080_FUNCTION_PERFORMANCE_GUIDE.md` 与 `upstream/t080_performance_plan.yaml`。

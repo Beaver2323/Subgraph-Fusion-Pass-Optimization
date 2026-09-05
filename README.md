@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-06 06:00 CST（UTC+08:00）
+> 文档更新时间：2026-09-06 06:43 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -50,8 +50,8 @@
   decompose 最小候选均为 `PERF_REGRESSED` 并保留 NPU guard。default backend 历史结果不得迁移为
   experimental verdict。
 - T-078 已从 no-test-found/indirect inventory 人工复核出 4 个新 acceptance units：addcdiv→FMA、
-  partial reduction reuse、addmm bias unfuse、baddbmm bias unfuse；12 个 direct community cases、
-  20 个 variants 和 GPU 一键入口均已准备，当前等待 GPU reference，不计入冻结 denominator。
+  partial reduction reuse、addmm bias unfuse、baddbmm bias unfuse；已收到 12/12 通过的 GPU 1.0
+  紧凑摘要，但该格式不含 FX/日志正文，尚待用 1.1 原文 handoff 补齐复核，不计入冻结 denominator。
 - T-079/T-080 又准备 7 个 acceptance units、17 个 direct cases、27 个 variants：T-079 覆盖
   bmm→mm 与三类 cat/split lowering；T-080 覆盖 const-scatter、prepare-softmax 和 constructor
   mover。连同 T-078，11 个单元均已补齐性能计划和中文功能/性能测例讲解；计划区分社区 benchmark
@@ -111,6 +111,7 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/T079_REFERENCE_RUNNER_GPU.md](docs/T079_REFERENCE_RUNNER_GPU.md) | T-079 第四批 GPU 执行、case 列表与文本回传说明 |
 | [docs/T080_REFERENCE_RUNNER_GPU.md](docs/T080_REFERENCE_RUNNER_GPU.md) | T-080 第五批 GPU 执行、社区性能来源与文本回传说明 |
 | [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU 一键运行（默认共享、可选独占、快速等卡）、固定 latest 与 results/incoming/ JSON 接收路径 |
+| [docs/GPU_TEXT_HANDOFF.md](docs/GPU_TEXT_HANDOFF.md) | 1.0/1.1 格式边界、原文导出、GitHub 文本复制、校验、安全恢复与 FX 查看 |
 | [results/incoming/README.md](results/incoming/README.md) | GPU 文本 handoff 接收目录，T-076～T-080 文件夹随 clone/pull 建立 |
 | [docs/T078_FUNCTION_PERFORMANCE_GUIDE.md](docs/T078_FUNCTION_PERFORMANCE_GUIDE.md) | T-078 四单元的功能 case、派生性能 case、源码与判据讲解 |
 | [docs/T079_FUNCTION_PERFORMANCE_GUIDE.md](docs/T079_FUNCTION_PERFORMANCE_GUIDE.md) | T-079 四单元的图消除功能/性能证据讲解 |

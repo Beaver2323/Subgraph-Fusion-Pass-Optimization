@@ -1,6 +1,6 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-06 06:00 CST（UTC+08:00）
+> 更新时间：2026-09-06 06:43 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
 > 当前任务：`T-076`、`T-077`、`T-078`、`T-079`、`T-080`
 
@@ -32,7 +32,7 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 5. 按共享/独占策略检查指定物理 GPU；指定 `--wait-gpu` 时等待条件满足；
 6. 执行任务对应的原生 community suite；
 7. 自动取得本轮 `reference-<timestamp>` 目录；
-8. 自动生成文本 handoff，并建立不含时间戳的 `latest` 入口。
+8. 自动生成包含 FX、日志、生成代码和 IR 原文的 1.1 文本 handoff，并建立不含时间戳的 `latest` 入口。
 
 脚本不会安装或升级驱动、CUDA、Python、PyTorch，也不会修改 GPU 上的源码。
 本入口只运行 GPU 功能 reference，不自动运行 NPU 或性能测试。
@@ -106,7 +106,7 @@ sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
 其中：
 
 - `latest` 指向本轮实际 `reference-<timestamp>` 目录；
-- `latest-text-handoff.json` 固定指向 `latest/text-handoff.json`；正常为本轮文本交接文件；
+- `latest-text-handoff.json` 固定指向 `latest/text-handoff.json`；正常为本轮可恢复原文的 1.1 文本交接文件；
 - 控制台仍打印真实 `run_dir=` 和 `text_handoff=`，便于审计；
 - 新一轮执行会原子更新软链接，不删除旧的带时间戳结果。
 
@@ -132,7 +132,7 @@ T-076～T-080 分别对应 `t076-reference-results`～`t080-reference-results`�
 GPU 侧只有文本复制条件时，打印本轮完整 JSON：
 
 ```bash
-python -m json.tool /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
+cat /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
 ```
 
 复制从开头 `{` 到最后 `}` 的完整 JSON 文本，不复制软链接本身，也不要混入提示符或启动日志。
@@ -155,21 +155,26 @@ python -m json.tool /data/z50063656/tmp/t078-reference-results/latest-text-hando
 mkdir -p /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/incoming/T-078
 ```
 
-保存后可在控制节点检查 JSON 语法：
+保存后应在控制节点运行 1.1 完整性校验，而不只检查 JSON 语法：
 
 ```bash
-python -m json.tool /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/incoming/T-078/text-handoff.json >/dev/null
+cd /home/z50063656/tmp
+python /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/import_reference_text.py \
+  --input /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/incoming/T-078/text-handoff.json \
+  --validate-only
 ```
 
-已有同名文件时不要覆盖，另存新文件。保存后告知 Agent 任务号和文件路径，由 Agent 读取复核；
+通过 GitHub 网页更新同名文件时，旧版本由 Git 历史保留；同一 checkout 需要并存多轮时另存带
+run ID 的文件。保存后告知 Agent 任务号、路径和 commit，由 Agent 拉取复核；
 接收目录不是自动验收入口，JSON 能解析也不代表测试通过。
 接收说明和目录占位纳入 Git，`results/incoming/` 中实际 JSON/日志仍默认忽略；
 不要用它覆盖 `results/current/` 的正式结果，
 也不要把 GPU 回传文件放进 `results/audits/`（该目录存放控制节点生成的复核记录）。
 
-紧凑 handoff 包含结果摘要、环境和文件哈希，没有原始日志/FX 正文。
-历史日志重解析还需要原始证据，不能只凭这个 JSON 完成；具体缺项由 Agent 复核后列出，见
-[T-076/T-077 历史复核说明](../report/t076_t077_history_reaudit_20260906.md)。
+当前一键入口默认生成 1.1 原文 handoff，可恢复已登记的 UTF-8 FX、日志、生成代码和常见 IR；
+二进制只登记哈希和缺项原因。旧版 1.0 紧凑 handoff 只有摘要与哈希，不能恢复 FX 正文。
+导出、复制、接收端校验、安全恢复和 FX 查看命令见
+[GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)。
 
 ## 3. 任务选择
 

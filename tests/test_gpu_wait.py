@@ -256,6 +256,9 @@ print('artifacts=' + str(root))
         self.assertEqual(env["PASS_GPU_COMPUTE_MODE"], "DEFAULT")
         self.assertEqual(env["CUDA_VISIBLE_DEVICES"], "2")
         self.assertEqual(payload["environment"]["cwd"], str(WORK))
+        self.assertEqual(payload["handoff_format_version"], "1.1")
+        self.assertEqual(payload["raw_text_transfer"]["omitted_files"], [])
+        self.assertEqual(len(payload["raw_text_files"]), 4)
 
     def test_exclusive_flag_blocks_busy_gpu_before_runner(self):
         result = self.run_launcher("--exclusive")
