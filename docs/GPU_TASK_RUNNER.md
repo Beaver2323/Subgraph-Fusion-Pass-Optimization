@@ -1,6 +1,6 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-06 05:20 CST（UTC+08:00）
+> 更新时间：2026-09-06 06:00 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
 > 当前任务：`T-076`、`T-077`、`T-078`、`T-079`、`T-080`
 
@@ -147,7 +147,9 @@ python -m json.tool /data/z50063656/tmp/t078-reference-results/latest-text-hando
 └── T-080/text-handoff.json
 ```
 
-例如 T-078，先在控制节点创建目录，再用编辑器粘贴保存：
+接收目录已通过 `.gitkeep` 纳入仓库，clone/pull 后会出现 T-076～T-080 文件夹；
+见[接收目录说明](../results/incoming/README.md)。上面的 JSON 文件由用户粘贴生成，不提供空模板。
+例如 T-078，更新后直接用编辑器粘贴保存即可；旧 checkout 尚未更新时可先手工创建目录：
 
 ```bash
 mkdir -p /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/incoming/T-078
@@ -161,7 +163,8 @@ python -m json.tool /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/resul
 
 已有同名文件时不要覆盖，另存新文件。保存后告知 Agent 任务号和文件路径，由 Agent 读取复核；
 接收目录不是自动验收入口，JSON 能解析也不代表测试通过。
-`results/incoming/` 按现有 Git 忽略规则不自动入库；不要用它覆盖 `results/current/` 的正式结果，
+接收说明和目录占位纳入 Git，`results/incoming/` 中实际 JSON/日志仍默认忽略；
+不要用它覆盖 `results/current/` 的正式结果，
 也不要把 GPU 回传文件放进 `results/audits/`（该目录存放控制节点生成的复核记录）。
 
 紧凑 handoff 包含结果摘要、环境和文件哈希，没有原始日志/FX 正文。

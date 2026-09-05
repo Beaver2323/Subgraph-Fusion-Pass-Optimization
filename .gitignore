@@ -12,5 +12,11 @@ results/audits/*
 !results/audits/audit-*/
 results/audits/audit-*/*
 !results/audits/audit-*/audit.json
+!results/incoming/
+results/incoming/*
+!results/incoming/README.md
+!results/incoming/T-*/
+results/incoming/T-*/*
+!results/incoming/T-*/.gitkeep
 *.tar.gz
 *.tar.gz.sha256
