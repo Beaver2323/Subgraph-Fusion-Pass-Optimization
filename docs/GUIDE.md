@@ -1,6 +1,6 @@
 # PyTorch Feature 设计与实现分析
 
-> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
+> 更新时间：2026-09-06（补充 experimental lowering fallback 与 kernel 模板机制）
 > 定位：机制与历史案例指南。当前 tracker 主线、术语和执行顺序以仓库根目录
 > `README.md`、`TODO.md`、`WORKFLOW.md` 及 [CURRENT_STATUS.md](CURRENT_STATUS.md) 为准。
 
@@ -495,7 +495,68 @@ torch_npu default backend 通过 <code>torch_npu/_inductor/fx_passes/graph_match
 - 通用 op 的设备无关 lowering 缺失：优先讨论 PyTorch 上游。
 - 只是图变换 gate 阻止：不要先改 lowering。
 
+#### experimental 的 lowering fallback 如何登记
+
+以下机制依据 `/home/z50063656/Pass/src/` 当前源码工作区静态核对。PyTorch 基线为
+`release/2.14@8e86e0a`，torch_npu 基线为 `master@83cc452`；工作区中的 int64 条件 fallback
+含未提交修改，不能只用 HEAD 标识推断某个已安装 wheel 的行为。
+
+注册调用链为：
+
+```text
+_load_backend(): restore_inductor_baseline()
+  → _load_triton_experimental_backend()
+  → _register_triton_experimental_decompositions()
+  → triton_experimental._activate()
+  → _register_npu_inductor_fallbacks()
+  → make_fallback(op)
+  → torch._inductor.lowering.lowerings[overload] = fallback handler
+```
+
+入口位于 `torch_npu/_inductor/__init__.py::_load_triton_experimental_backend()`，实际策略位于
+`torch_npu/_inductor/triton_experimental/lowering.py::_register_npu_inductor_fallbacks()`。
+该策略遍历**当时已有的 lowerings 注册表**，按下表处理：
+
+| 集合/条件 | 注册行为 |
+|---|---|
+| `KEEP_UPSTREAM_LOWERING` | 跳过批量 fallback，保留当时的 handler；也可能是已安装的 NPU 自定义 handler |
+| `GENERATE_LIST` | 跳过批量 fallback，保留当时的 lowering；不保证最终生成 Triton |
+| `decompositions` | 跳过批量 fallback，避免 decomposition 与 fallback 冲突 |
+| 上述集合之外的 `OpOverloadPacket`、`OpOverload`、`HigherOrderOperator` | 调用 `make_fallback(op)`，并把 op 追加到本模块的 `FALLBACK_LIST` |
+
+前两个集合定义在 `triton_experimental/lowering_override_list.py`，packet 会展开成全部
+overload。这里的 `FALLBACK_LIST` 是批量注册结果记录，手工追加条目不会安装 handler，也不能
+用它枚举所有条件 fallback。对于注册表之外的算子，后续 `GraphLowering.call_function()`
+还可能根据上游 `implicit_fallbacks` 等条件创建 fallback 或报错。
+
+上游 `torch/_inductor/lowering.py::make_fallback()` 会登记 `needs_realized_inputs`，按需
+登记 layout constraint，并通过 `register_lowering(..., type_promotion_kind=None)` 写入
+`lowerings`；`fallback_handler()` 默认把 overload 加入 `fallbacks` 集合，执行时创建
+`ir.FallbackKernel`。生成的 wrapper 调用对应 `torch.ops.aten.xxx` 等外部算子，NPU Tensor
+由 dispatcher 寻找 NPU 实现。这不等同于 Dynamo graph break，也不意味着自动搬到 CPU。
+
+普通强制 fallback 可以在适当的注册阶段调用 `make_fallback(aten.xxx.default)`；有
+decomposition 时必须先处理语义和注册冲突。仅从 `GENERATE_LIST` 移除算子也要核对 keep 与
+decomposition 条件。当前 experimental loader 没有接入 default loader 的
+`NPU_INDUCTOR_FALLBACK_LIST=allfallback` 分支，不能把该变量当作 experimental 全 fallback 开关。
+
+条件 fallback 则包装已有 handler。当前 `_register_int64_fallbacks()` 对列出的算术、比较、
+sum 和 copy overload 检查 IR 输入 dtype：发现 int64 时调用同 overload 的
+`fallback_handler(op, add_to_fallback_set=False)`，其他 dtype 调原 handler。`False` 仅控制
+是否加入全局 `fallbacks` 集合，仍会创建 `FallbackKernel`。该路由不把 embedding/gather 的
+int64 索引用途统一禁用。
+
+还有两个具体例子：`aten.cat` 在 `GENERATE_LIST` 中，但 `npu_cat()` 直接走 fallback；
+`index_put/index_put_` 在 keep 集合中，实际保留的是先对齐 dtype 再调用 extern 的自定义
+lowering。因此查看最终 handler 和生成代码比只看列表更准确。
+
+已有案例见 [T-062 generate-list 审计](../report/t062_experimental_generate_list_20260828.md)
+和 [T-061 int64 边界报告](../report/t061_experimental_int64_boundary_20260827.md)。这些报告中的
+动态数据保留各自环境与版本边界，本节没有新增动态验证结论。
+
 ### 阶段 7：NPU scheduler、codegen 和 wrapper
+
+下面先列 default backend 的历史路径；experimental 的独立注册与模板路径见本节后半部分。
 
 <code>torch_npu/_inductor/__init__.py::_load_triton_backend():71</code> 调用：
 
@@ -517,6 +578,69 @@ torch_npu default backend 通过 <code>torch_npu/_inductor/fx_passes/graph_match
 - fallback。
 
 所以“没有看到 Triton kernel”不等于失败。对 GEMM/attention，vendor extern 可能就是正确且更快的实现。
+
+#### experimental 自有 codegen 与原生模板的分工
+
+experimental 在 `triton_experimental/device.py::register_backend_for_npu()` 登记
+`NPUTritonScheduling` 和 `NPUWrapperCodeGen`。逐点/归约计算通常由 lowering 产生 IR，再由
+代码生成器拼出融合 kernel；MM/BMM 等还有显式 `TritonTemplate` 候选，两种路径应分别观察。
+
+| experimental 源码位置（相对 `torch_npu/_inductor/`） | 职责 |
+|---|---|
+| `triton_experimental/codegen/triton.py::NPUTritonKernel` | 继承原生 `TritonKernel`，增加 NPU 索引、调度和计算生成逻辑 |
+| 同文件 `codegen_kernel()` / `codegen_body()` | 生成 import、heuristics 装饰器、参数、分核循环和计算主体；普通 add/exp 等没有各自独立的 Jinja 模板 |
+| 同文件 `NPUTritonScheduling.create_kernel_choices()` | 为普通融合计算创建 `NPUTritonKernel` |
+| 同文件 `_npu_emit_rsplit_combine()` | 以字符串模板生成跨核归约的第二阶段 combine kernel，经 `define_kernel()` 登记 |
+| `triton_experimental/npu_triton_heuristics.py` | `pointwise()`、`reduction()`、`persistent_reduction()` 提供配置选择、编译与调优 |
+| `triton_experimental/codegen/wrapper.py::NPUWrapperCodeGen` | 生成 kernel 调用和 NPU buffer 分配等 wrapper 代码 |
+
+例如 `add → mul → exp → sum` 可经 IR 融合生成一个 kernel，主体按图动态生成。
+上述普通 kernel 生成器的 `triton_meta` 带有 `mix_mode="aiv"`；不要把这一点推广到所有
+原生显式模板的生成路径。
+
+experimental 的 `GENERATE_LIST` 包含 `mm/bmm/addmm/convolution` 等，自己的 `lowering.py`
+没有为这些算子重写对应 lowering，因而保留原生相关实现。以下是原生候选模板位置，路径相对
+`/home/z50063656/Pass/src/pytorch/`，**不是 NPU 已验证或实际获选模板清单**：
+
+| 算子/模板 | 原生源码位置 |
+|---|---|
+| MM；ADDMM 复用 MM 模板并处理 epilogue | `torch/_inductor/kernel/mm.py::mm_template`；`kernel/templates/triton_mm.py.jinja` |
+| BMM | `torch/_inductor/kernel/bmm.py::bmm_template`；`kernel/templates/triton_bmm.py.jinja` |
+| Conv2D / Conv3D | `torch/_inductor/kernel/conv.py::conv2d_template/conv3d_template`，内嵌源码字符串 |
+| Conv2D backward | `kernel/templates/triton_conv2d_bwd_weight.py.jinja`、`triton_conv2d_bwd_input.py.jinja` |
+| MM + MM 融合 | `torch/_inductor/kernel/mm_plus_mm.py::mm_plus_mm_template` |
+| B2B GEMM 左/右结合 | `torch/_inductor/fx_passes/b2b_gemm.py::b2b_gemm_left_template/b2b_gemm_right_template` |
+
+表中 `kernel/templates/` 均位于 `torch/_inductor/` 下。原生 `mm.py` 还定义 persistent、TMA、
+scaled-MM 等候选；是否适用于 NPU 必须逐条检查能力与调用路径。显式模板基础设施位于
+`torch/_inductor/select_algorithm.py::TritonTemplate/TritonTemplateKernel`；继承普通
+`TritonScheduling` 不意味着每个原生模板都会改用 experimental 的普通 kernel body 生成器。
+
+模板实际执行需要经过以下链路：
+
+```text
+算子或融合 pattern 到达 lowering
+  → 设备、dtype、shape、配置与能力 gate 通过
+  → 模板加入算法候选
+  → 算法选择器选中模板
+  → generated wrapper 调用对应 kernel
+```
+
+上游 `torch/_inductor/utils.py::use_triton_template()` 检查设备能力、dtype、autotune 配置、
+`TRITON` 候选后端以及 `BackendFeature.TRITON_TEMPLATES`。MM/BMM 等还可能选中 ATen extern
+候选；“保留 lowering”“进入 autotune”“模板获选”是三个不同事实。B2B GEMM 的原生
+`is_b2b_gemm_good_on()` 当前只接受 CUDA/XPU，未经适配的 NPU 输入被此 gate 拦截；此类通用
+设备 guard 按 capability-pending 处理，需另行审核最小适配后才能 benchmark。
+
+`torch_npu/_inductor/kernel/` 中的 NPU 专用 MM、FlexAttention 等属于另一组实现。
+default loader 会显式注册相应 lowering，experimental loader 没有执行同一组注册，不能因为
+这些模板在源码树中存在就认定 experimental 使用了它们。
+
+pass 验收应同时记录改写后的 FX 图、目标 lowering/候选选择、`output_code.py` 中的 kernel
+定义和调用。wrapper 出现 experimental import 只能辅助确认后端，不能证明某个目标模板获选。
+有显式产品/backend 禁用决定的路径，记录禁用证据并将性能标记为 exempt；不临时绕过禁用构造
+ON 路径。动态测试从 `/home/z50063656/tmp` 启动，在导入 torch/torch_npu 前选定
+`triton_experimental`，OFF/ON 使用独立进程，并核对实际加载的源码或安装包版本。
 
 ### 阶段 8：审计证据如何回填矩阵
 
