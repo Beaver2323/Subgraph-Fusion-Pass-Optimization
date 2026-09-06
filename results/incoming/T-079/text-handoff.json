@@ -1,0 +1,401 @@
+{
+  "case_audit": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 263609,
+      "artifact_count": 24,
+      "artifact_inventory_sha256": "6642e46ceebfcc138d006de0dc070847465b46d81558a4136a2d104e9c9896bd",
+      "case_id": "REF-bmm-to-mm-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.78084,
+      "fx_after_captured": true,
+      "fx_after_count": 2,
+      "fx_after_signature": "0f99c8fa337fff07796dc8ef6edb15b341af487b0a6247dbb3b5aecb68d00174",
+      "fx_before_captured": true,
+      "fx_before_count": 2,
+      "fx_before_signature": "0f99c8fa337fff07796dc8ef6edb15b341af487b0a6247dbb3b5aecb68d00174",
+      "fx_stable_signature": "cc17c6da5f17f170badcd4a0fa8f743985c46828a98ca03afd4162814f4aec59",
+      "reference_result_sha256": "793135829c00f6617761389be1a945e8ed9e4bec5642a8387bd5955c54c4d841",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "batch-one-positive",
+        "multi-batch-negative"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-cat-slice-cat",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 510260,
+      "artifact_count": 32,
+      "artifact_inventory_sha256": "6b8faa8cde65492ce9da4a2a7dcf02e9ff7de7ab11fd8373bb3033f0d2f7ff53",
+      "case_id": "REF-cat-slice-cat-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.831074,
+      "fx_after_captured": true,
+      "fx_after_count": 3,
+      "fx_after_signature": "64addbc762d153f56b3590a8be60487e1d8ad5da1c4e83768dcbf304f8745c1e",
+      "fx_before_captured": true,
+      "fx_before_count": 3,
+      "fx_before_signature": "16ce1f90182d8db2a28c3f5152c3b3f4cb8427698b87d796747a2efbc565c438",
+      "fx_stable_signature": "d6af9666cd47466c235d87020da1535ab5ac61fc432e562a11c19b0149c7c737",
+      "reference_result_sha256": "4d5d8d491e8e4addfe2f7cdfedfe7080f8cf0aaa8ca272ef4e6f6fae5619d66d",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "slice-within-first-input-positive",
+        "slice-end-exceeds-first-input-fallback",
+        "negative-slice-end-fallback"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-splitwithsizes-cat-replace",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 606055,
+      "artifact_count": 40,
+      "artifact_inventory_sha256": "517ff0bd5d6ff1ba092fce343a2b450a8494ae5979ecb7cda2b4db6367de5677",
+      "case_id": "REF-splitwithsizes-cat-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.831757,
+      "fx_after_captured": true,
+      "fx_after_count": 4,
+      "fx_after_signature": "910a6546fa6034a37e857a7225026db41fd44a243f79441a73269dc14744ea2d",
+      "fx_before_captured": true,
+      "fx_before_count": 4,
+      "fx_before_signature": "0d9575a3437728c2925262d2e5d8c5f0652684113fd623280a38b489d0ab4f9a",
+      "fx_stable_signature": "e86adeb4a4a2d9f144dfce59bf404177ef717ee094e451e8e7f2568f580a795a",
+      "reference_result_sha256": "848a194ff67b53d54266e223e5854277300e6188420aa11990e08443c7ea79bd",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "complete-same-order-positive",
+        "missing-getitem-negative",
+        "different-cat-dim-negative",
+        "reordered-getitems-negative"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-cat-splitwithsizes-replace",
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "adapter_decision": "not-needed-direct-valid",
+      "artifact_bytes": 1007037,
+      "artifact_count": 48,
+      "artifact_inventory_sha256": "6f175f8a6d6a0ad2a3808a972273ca20057e4a3614b353c636675576ec6f472a",
+      "case_id": "REF-cat-splitwithsizes-native",
+      "correctness_status": "community-assertion-passed",
+      "duration_seconds": 12.830995,
+      "fx_after_captured": true,
+      "fx_after_count": 5,
+      "fx_after_signature": "be4d13c0a61beb599a1becfdebcbeaa1dc68b9c362f3cb6a0fd7b3156f364f95",
+      "fx_before_captured": true,
+      "fx_before_count": 5,
+      "fx_before_signature": "79387399f50778440d69552ef265af3e742281f0d4c2ba0f35878b8b66ae07ba",
+      "fx_stable_signature": "9bf84f8dffcb8017672ffeebd2446219cbb472eb3f7cdd5408d600a983f5f5d4",
+      "reference_result_sha256": "5964494b8156aeaabf0ce145c623ce837d508b8f1ad1383ee553543cdbcde237",
+      "reference_valid": true,
+      "return_code": 0,
+      "status": "passed",
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_unexpected_successes": 0,
+      "variant_ids": [
+        "same-boundaries-positive",
+        "cat-multi-user-negative",
+        "different-split-dim-negative",
+        "different-split-count-negative",
+        "different-boundaries-negative"
+      ]
+    }
+  ],
+  "environment": {
+    "fingerprint_sha256": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "generated_at": "2026-09-06T21:21:29+08:00",
+    "host": {
+      "effective_uid": 1039,
+      "hostname": "node-5-15",
+      "machine": "x86_64",
+      "platform": "Linux-5.15.0-43-generic-x86_64-with-glibc2.35",
+      "uid": 1039,
+      "user": "z00824525",
+      "working_directory": "/data/z50063656/tmp"
+    },
+    "nvcc": {
+      "available": true,
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Tue_Oct_29_23:50:19_PDT_2024\nCuda compilation tools, release 12.6, V12.6.85\nBuild cuda_12.6.r12.6/compiler.35059454_0"
+    },
+    "nvidia_smi": {
+      "available": true,
+      "driver_query": {
+        "return_code": 0,
+        "stderr": "",
+        "stdout": "0, NVIDIA A100-SXM4-80GB, 550.54.15\n1, NVIDIA A100-SXM4-80GB, 550.54.15\n2, NVIDIA A100-SXM4-80GB, 550.54.15\n3, NVIDIA A100-SXM4-80GB, 550.54.15\n4, NVIDIA A100-SXM4-80GB, 550.54.15\n5, NVIDIA A100-SXM4-80GB, 550.54.15\n6, NVIDIA A100-SXM4-80GB, 550.54.15\n7, NVIDIA A100-SXM4-80GB, 550.54.15"
+      },
+      "return_code": 0,
+      "stderr": "",
+      "stdout": "GPU 0: NVIDIA A100-SXM4-80GB (UUID: GPU-4222641e-5b3c-2d95-3038-ed9ff2fc1abd)\nGPU 1: NVIDIA A100-SXM4-80GB (UUID: GPU-1c9756fa-4985-3673-d4e7-92f03e5978d2)\nGPU 2: NVIDIA A100-SXM4-80GB (UUID: GPU-26c4ea92-705d-1754-761c-57fa432361b8)\nGPU 3: NVIDIA A100-SXM4-80GB (UUID: GPU-7d357952-8ec0-2ce3-13d8-3f6be9979cb3)\nGPU 4: NVIDIA A100-SXM4-80GB (UUID: GPU-280e7450-cf26-6ce4-cf01-3dd135bbcd3f)\nGPU 5: NVIDIA A100-SXM4-80GB (UUID: GPU-f09747b1-1200-e1f0-4301-338a23bd32a1)\nGPU 6: NVIDIA A100-SXM4-80GB (UUID: GPU-11e15b5e-eb6c-ccc0-8250-352f99ace8b2)\nGPU 7: NVIDIA A100-SXM4-80GB (UUID: GPU-67e1ca7a-cb22-e8bb-c5f8-eef856b4863e)",
+      "version": {
+        "return_code": 0,
+        "stderr": "",
+        "stdout": "NVIDIA-SMI version  : 550.54.15\nNVML version        : 550.54\nDRIVER version      : 550.54.15\nCUDA Version        : 12.4"
+      }
+    },
+    "runtime": {
+      "cuda_available": true,
+      "cuda_device_count": 1,
+      "cuda_driver_api": {
+        "error": null,
+        "init_return_code": 0,
+        "library_loaded": true,
+        "version": 12040,
+        "version_return_code": 0
+      },
+      "cudnn_version": 92501,
+      "devices": [
+        {
+          "index": 0,
+          "major": 8,
+          "minor": 0,
+          "multi_processor_count": 108,
+          "name": "NVIDIA A100-SXM4-80GB",
+          "total_memory": 84974239744
+        }
+      ],
+      "effective_uid": 1039,
+      "gpu_type": "cuda",
+      "has_gpu_and_triton": true,
+      "packages": {
+        "pytorch-triton": null,
+        "pytorch-triton-rocm": null,
+        "torch": "2.14.0a0+git8e86e0a",
+        "triton": "3.8.0+git675c5987"
+      },
+      "platform": "Linux-5.15.0-43-generic-x86_64-with-glibc2.35",
+      "python_executable": "/data/z50063656/envs/PassGPURef/bin/python",
+      "python_version": "3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]",
+      "selected_environment": {
+        "CONDA_PREFIX": null,
+        "CUDA_COMPAT_DIR": null,
+        "CUDA_HOME": "/data/z50063656/cuda-12.6",
+        "CUDA_VISIBLE_DEVICES": "2",
+        "HOME": "/data/z50063656",
+        "LD_LIBRARY_PATH": "/data/z50063656/envs/PassGPURef/lib/python3.12/site-packages/nvidia/cudnn/lib:/data/z50063656/cuda-12.6/lib64:/data/z50063656/cuda-12.6/lib64:/data/z50063656/envs/PassGPURef/lib/python3.12/site-packages/nvidia/cudnn/lib:/data/z50063656/cuda-12.6/lib64",
+        "PASS_GPU_COMPUTE_MODE": "DEFAULT",
+        "PASS_GPU_EXECUTION_MODE": "shared",
+        "PASS_GPU_MIN_FREE_MEMORY_MIB": "1024",
+        "PASS_GPU_PREFLIGHT_FREE_MEMORY_MIB": "81034",
+        "PATH": "/data/z50063656/cuda-12.6/bin:/data/z50063656/envs/PassGPURef/bin:/data/z50063656/envs/PassGPURef/bin:/data/z50063656/cuda-12.6/bin:/data/z50063656/envs/PassGPURef/bin:/data/z50063656/cuda-12.6/bin:/home/z00824525/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+        "PIP_CACHE_DIR": "/data/z50063656/pip-cache",
+        "TMPDIR": "/data/z50063656/tmp",
+        "TORCHINDUCTOR_CACHE_DIR": "/data/z50063656/inductor-cache",
+        "TORCH_EXTENSIONS_DIR": "/data/z50063656/torch-extensions",
+        "TRITON_CACHE_DIR": "/data/z50063656/triton-cache",
+        "VIRTUAL_ENV": "/data/z50063656/envs/PassGPURef",
+        "XDG_CACHE_HOME": "/data/z50063656/cache"
+      },
+      "torch_cuda_version": "12.6",
+      "torch_file": "/data/z50063656/src/pytorch/torch/__init__.py",
+      "torch_git_version": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_version": "2.14.0a0+git8e86e0a",
+      "uid": 1039,
+      "user": "z00824525"
+    },
+    "schema_version": "1.0",
+    "source": {
+      "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "expected_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "pytorch_root": "/data/z50063656/src/pytorch",
+      "working_tree_state": "clean",
+      "working_tree_status": []
+    }
+  },
+  "evidence_files": [
+    {
+      "bytes": 5212,
+      "path": "cases/REF-bmm-to-mm-native/artifact_inventory.json",
+      "sha256": "6642e46ceebfcc138d006de0dc070847465b46d81558a4136a2d104e9c9896bd"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-bmm-to-mm-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 1341,
+      "path": "cases/REF-bmm-to-mm-native/fx_after.txt",
+      "sha256": "c6ab07f79e2b934e441201f9e600a0c83b833b600d8986ad93cbfaf98dec87b7"
+    },
+    {
+      "bytes": 1335,
+      "path": "cases/REF-bmm-to-mm-native/fx_before.txt",
+      "sha256": "024a30a34d3910c7f406d59299d83d7ac8c8c38b18ea4ec3382d33e12e061131"
+    },
+    {
+      "bytes": 700,
+      "path": "cases/REF-bmm-to-mm-native/metadata.json",
+      "sha256": "16ec29c9d8dea29ba47946a9e31a870c0f0b3e26eb2c368806887800ad45f496"
+    },
+    {
+      "bytes": 4255,
+      "path": "cases/REF-bmm-to-mm-native/reference_result.json",
+      "sha256": "793135829c00f6617761389be1a945e8ed9e4bec5642a8387bd5955c54c4d841"
+    },
+    {
+      "bytes": 2918,
+      "path": "cases/REF-bmm-to-mm-native/stderr.log",
+      "sha256": "cd01aa30f195a7aae80543791e34894181fb51c01df91896458caf1547257669"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-bmm-to-mm-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7217,
+      "path": "cases/REF-cat-slice-cat-native/artifact_inventory.json",
+      "sha256": "6b8faa8cde65492ce9da4a2a7dcf02e9ff7de7ab11fd8373bb3033f0d2f7ff53"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-cat-slice-cat-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 1738,
+      "path": "cases/REF-cat-slice-cat-native/fx_after.txt",
+      "sha256": "c2528713de063aa83f37af11ef206ffbb1c33b1e3133341d348a73403e073a92"
+    },
+    {
+      "bytes": 3013,
+      "path": "cases/REF-cat-slice-cat-native/fx_before.txt",
+      "sha256": "3eb5664f5f9ce4e968c4a993c0962ff8b9db3ddac8532e309e3c11ce56002f63"
+    },
+    {
+      "bytes": 803,
+      "path": "cases/REF-cat-slice-cat-native/metadata.json",
+      "sha256": "81d37b8c30aa2478c7440bfb1f6ed286da2c9bfbd4e809f4fa1d75188f0c2a6f"
+    },
+    {
+      "bytes": 5131,
+      "path": "cases/REF-cat-slice-cat-native/reference_result.json",
+      "sha256": "4d5d8d491e8e4addfe2f7cdfedfe7080f8cf0aaa8ca272ef4e6f6fae5619d66d"
+    },
+    {
+      "bytes": 4349,
+      "path": "cases/REF-cat-slice-cat-native/stderr.log",
+      "sha256": "1bf51c8b1fe0daddc46a42648434aa8f8255fb3b46740bdb859523b42f41e3ed"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-cat-slice-cat-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 11243,
+      "path": "cases/REF-cat-splitwithsizes-native/artifact_inventory.json",
+      "sha256": "6f175f8a6d6a0ad2a3808a972273ca20057e4a3614b353c636675576ec6f472a"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-cat-splitwithsizes-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 6987,
+      "path": "cases/REF-cat-splitwithsizes-native/fx_after.txt",
+      "sha256": "dc16a929d14c474652146e4b8c5244f00b4a8bfa8604fb9df4e85e17ab1f863c"
+    },
+    {
+      "bytes": 7280,
+      "path": "cases/REF-cat-splitwithsizes-native/fx_before.txt",
+      "sha256": "fdec64d5a4a84a47b492315b52187d0a2a94ed2e2c50c83b6dee90c6ac9a3907"
+    },
+    {
+      "bytes": 857,
+      "path": "cases/REF-cat-splitwithsizes-native/metadata.json",
+      "sha256": "17bf8380576123cd6a220ad8fa034e2f992b0519a4f8aa315c26f8b7711ebdde"
+    },
+    {
+      "bytes": 6721,
+      "path": "cases/REF-cat-splitwithsizes-native/reference_result.json",
+      "sha256": "5964494b8156aeaabf0ce145c623ce837d508b8f1ad1383ee553543cdbcde237"
+    },
+    {
+      "bytes": 7202,
+      "path": "cases/REF-cat-splitwithsizes-native/stderr.log",
+      "sha256": "a112d4ad9505f3a86016b955a519814345036f9d2dca3643d74ad519cace1401"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-cat-splitwithsizes-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 9222,
+      "path": "cases/REF-splitwithsizes-cat-native/artifact_inventory.json",
+      "sha256": "517ff0bd5d6ff1ba092fce343a2b450a8494ae5979ecb7cda2b4db6367de5677"
+    },
+    {
+      "bytes": 184,
+      "path": "cases/REF-splitwithsizes-cat-native/benchmark.json",
+      "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+    },
+    {
+      "bytes": 4356,
+      "path": "cases/REF-splitwithsizes-cat-native/fx_after.txt",
+      "sha256": "99dac882f38c3ebd351879cca9fda333a677c22db4379f7f1a2f42b7bc504020"
+    },
+    {
+      "bytes": 4668,
+      "path": "cases/REF-splitwithsizes-cat-native/fx_before.txt",
+      "sha256": "3a10fde1bedab1ecb4e48a7c36e6c2e25cff6fc9c2f516cab69e0ce0b86b687e"
+    },
+    {
+      "bytes": 798,
+      "path": "cases/REF-splitwithsizes-cat-native/metadata.json",
+      "sha256": "9070b2346f4e50292b7663c3688449a577aa6e90e734757a71c1846865e04ebc"
+    },
+    {
+      "bytes": 5893,
+      "path": "cases/REF-splitwithsizes-cat-native/reference_result.json",
+      "sha256": "848a194ff67b53d54266e223e5854277300e6188420aa11990e08443c7ea79bd"
+    },
+    {
+      "bytes": 5798,
+      "path": "cases/REF-splitwithsizes-cat-native/stderr.log",
+      "sha256": "7411b12e57465d283b8fb5e176f67ac4f8e06647f560b042055be122c5f98568"
+    },
+    {
+      "bytes": 0,
+      "path": "cases/REF-splitwithsizes-cat-native/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 4967,
+      "path": "environment.json",
+
