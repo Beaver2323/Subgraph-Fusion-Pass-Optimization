@@ -47,19 +47,19 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
 
     def test_dynamic_and_pending_evidence_are_not_conflated(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 10)
+        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 14)
         self.assertEqual(
-            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 10
+            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 14
         )
         self.assertEqual(
-            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 11
+            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 7
         )
         self.assertEqual(
             sum(
                 row["performance_evidence_path"].startswith("results/current/")
                 for row in rows
             ),
-            10,
+            14,
         )
 
     def test_committed_outputs_are_current(self):

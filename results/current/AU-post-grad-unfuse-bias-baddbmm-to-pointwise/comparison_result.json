@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-06T09:40:00+08:00",
+  "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260905T214703+0800-rarkggw1",
+    "suite_status": "valid-reference-suite",
+    "suite_valid": true,
+    "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "payload_sha256": "03300f564d4e16435a17eb0b641dccdf55dccded2be9064208951ef1208f52ed",
+    "cases": [
+      {"case_id": "REF-unfuse-baddbmm-core-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "029b564f6110cd5d92a42208f7fc363e40b338cf1616d6343b8bc66daf3f697e", "artifact_inventory_sha256": "fcf6e513c462f9e98ab5ebe8738e36b4ce7ab3454c613d76a49f5944626a1039"},
+      {"case_id": "REF-unfuse-baddbmm-alpha-beta-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "f338b0a8ba0453088a6159a0ab71b0bd68daa3615de99afc88232dedc986eded", "artifact_inventory_sha256": "526b7ce161986f96822f931395b866959fd0a4c2de69503b9de3113a182fa165"}
+    ]
+  },
+  "npu": {
+    "result_path": "results/current/AU-post-grad-unfuse-bias-baddbmm-to-pointwise/npu_result.json",
+    "result_sha256": "4953a312afb464c91ed1b72421103ec78e3ca0ae005c29e2ddb49921510c42b1",
+    "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "tracking_mode": "adapter",
+    "execution_success": true,
+    "correctness_status": "passed"
+  },
+  "variant_comparisons": [
+    {
+      "variant_id": "broadcast-gelu-positive",
+      "intent": "把 broadcast-bias baddbmm 拆成 bmm+bias，使 bias 与 GELU 进入 pointwise 路径。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1882, "symbol": "should_prefer_unfused_baddbmm"}, {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1955, "symbol": "unfuse_bias_baddbmm_to_pointwise"}],
+      "gpu_behavior": "A100 原生正例拆为 bmm+add+GELU，数值与结构断言通过。",
+      "npu_behavior": "Ascend910B2 最终选择性 gate 允许默认 alpha=beta=1，handler 命中 1，生成 bmm 而非 baddbmm，数值误差不超过 2.384185791015625e-7。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "mixed",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "NPU Event p50/p99 改善 12.24%/71.39%，默认标量路径保留启用。"
+    },
+    {
+      "variant_id": "expanded-bias-relu-positive",
+      "intent": "验证 stride-0 expanded batch bias 能在不改变 broadcast 语义的情况下拆为 bmm+pointwise ReLU。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1882, "symbol": "should_prefer_unfused_baddbmm"}, {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1955, "symbol": "unfuse_bias_baddbmm_to_pointwise"}],
+      "gpu_behavior": "A100 原生 expanded-bias ReLU 分支拆分并通过。",
+      "npu_behavior": "NPU core 适配中同样生成 expand→bmm→add→ReLU，数值通过；最终 gate 仅拒绝非默认标量，因此该分支保持启用。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "mixed",
+      "correctness_status": "passed",
+      "performance_status": "not-configured",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "未借用 broadcast-GELU 数字给 expanded-ReLU；后者只形成独立功能结论。"
+    },
+    {
+      "variant_id": "alpha-beta-positive",
+      "intent": "拆分非默认 alpha=0.8、beta=0.2 的 baddbmm 时保留两项标量语义。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1882, "symbol": "should_prefer_unfused_baddbmm"}, {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1955, "symbol": "unfuse_bias_baddbmm_to_pointwise"}],
+      "gpu_behavior": "A100 原生正例生成 bmm×0.8+bias×0.2，再执行 ReLU，数值与结构通过。",
+      "npu_behavior": "门禁前 NPU 也能正确拆分，但候选 Event p50 回退 5.29% 且峰值分配增加 512B；最终 gate 命中 0、保留带 alpha/beta 的 baddbmm，数值完全一致。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "mixed",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "显式关闭仅覆盖非默认标量，不影响默认标量收益路径；不再绕过门禁补测 ON。"
+    },
+    {
+      "variant_id": "no-pointwise-consumer-negative",
+      "intent": "无 pointwise consumer 时保持 baddbmm，避免不能带来融合收益的拆分。",
+      "source_locations": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1882, "symbol": "should_prefer_unfused_baddbmm"}, {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1955, "symbol": "unfuse_bias_baddbmm_to_pointwise"}],
+      "gpu_behavior": "A100 原生负例保留 baddbmm，并通过数值断言。",
+      "npu_behavior": "Ascend910B2 同样不匹配、保留 baddbmm，compiled/eager 通过。",
+      "reference_contract_stable": true,
+      "reference_target_match": false,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "extern",
+      "correctness_status": "passed",
+      "performance_status": "not-applicable",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "负例只验证 guard，不纳入性能收益。"
+    }
+  ],
+  "first_divergence": "config",
+  "root_cause": "NPU 功能合同全部可执行，但收益随标量域不同：默认标量明显改善，非默认 alpha/beta 的 Event p50 达到 5% 回退阈值。",
+  "recommended_action": "保持选择性 gate：alpha=beta=1 继续启用，任一非默认时保留 baddbmm；分别维护功能与性能回归，禁止用整体平均掩盖差异。",
+  "final_verdict": "PERF_MIXED",
+  "repair_status": "verified"
+}

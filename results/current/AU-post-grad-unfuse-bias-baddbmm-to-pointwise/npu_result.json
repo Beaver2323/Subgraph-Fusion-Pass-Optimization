@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-06T09:35:00+08:00",
+  "case_ids": [
+    "REF-unfuse-baddbmm-core-native",
+    "REF-unfuse-baddbmm-alpha-beta-native"
+  ],
+  "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": [
+    "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_broadcast_bias_baddbmm",
+    "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_broadcast_bias_baddbmm_alpha_beta"
+  ],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "guarded",
+    "source_control": "默认 alpha=beta=1 继续调用 upstream unfuse handler；triton_experimental.config.disable_unfuse_baddbmm_non_default_scalars=true 只拒绝非默认标量。",
+    "product_gate_bypassed": false
+  },
+  "paired_control": {
+    "status": "passed",
+    "reason": "门禁前两个正例均完成 3×OFF/3×ON；最终 fresh process 又验证默认标量命中 1、非默认标量命中 0，且两条数值均正确。"
+  },
+  "direct_execution": {
+    "status": "no-tests",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 0,
+    "reason": "上游 HAS_GPU 未生成 NPU 入口；direct 运行退出 0 但执行 0 tests，不能计 PASS。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 4,
+    "tests_skipped": 0,
+    "reason": "两条社区方法经最小入口/codegen spelling 适配通过，最终选择性 product gate 的默认与非默认标量两图也通过。"
+  },
+  "variants": [
+    {
+      "variant_id": "broadcast-gelu-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[4, 1, 8], [4, 6, 5], [4, 5, 8]], "strides": [[8, 8, 1], [30, 5, 1], [40, 8, 1]], "symbolic_bias": "alpha=1,beta=1,GELU"}]},
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
+      "match": {"target_matched": true, "count": 1, "nodes": 1, "scope": "target-pattern", "note": "最终 product gate 验证中 unfuse_bias_baddbmm_to_pointwise 命中 1 次。"},
+      "fx": {"status": "observed", "evidence": "transformed FX 从 baddbmm→GELU 改为 bmm→add→GELU。"},
+      "replacement": {"status": "observed", "evidence": "默认标量通过选择性门禁并执行 upstream handler。"},
+      "decomposition": {"status": "not-applicable", "evidence": "post-grad replacement。"},
+      "lowering": {"status": "observed", "evidence": "bmm 走 extern，bias/GELU 进入 pointwise lowering。"},
+      "scheduler": {"status": "observed", "evidence": "extern bmm 与 Triton pointwise 正常调度。"},
+      "codegen": {"status": "observed", "evidence": "最终代码包含 bmm、不包含 baddbmm。"},
+      "runtime_path": "mixed",
+      "correctness": {"status": "passed", "assertion": "最终门禁图与 eager 一致，最大绝对误差 2.384185791015625e-7。"},
+      "performance": {"status": "passed", "reason": "Event p50/p99 改善 12.24%/71.39%，判定 PERF_IMPROVED。"},
+      "first_divergence": "none",
+      "root_cause": "默认标量拆分让 bias/GELU 进入 pointwise，同时设备时延显著改善。",
+      "recommended_action": "保持默认标量路径启用并保留当前 shape 的功能/性能回归。"
+    },
+    {
+      "variant_id": "expanded-bias-relu-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[4, 6, 8], [4, 6, 5], [4, 5, 8]], "strides": [[8, 0, 1], [30, 5, 1], [40, 8, 1]], "symbolic_bias": "expanded bias,alpha=1,beta=1,ReLU"}]},
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
+      "match": {"target_matched": true, "count": 1, "nodes": 1, "scope": "target-pattern", "note": "社区 core 适配中 expanded 默认标量分支命中；新门禁只检查非默认标量，不改变此分支。"},
+      "fx": {"status": "observed", "evidence": "transformed FX 为 expand→bmm→add→relu。"},
+      "replacement": {"status": "observed", "evidence": "stride-0 bias 满足 upstream bias-like guard。"},
+      "decomposition": {"status": "not-applicable", "evidence": "post-grad replacement。"},
+      "lowering": {"status": "observed", "evidence": "bmm extern 与 add/ReLU pointwise lowering 成功。"},
+      "scheduler": {"status": "observed", "evidence": "完整图调度成功。"},
+      "codegen": {"status": "observed", "evidence": "不含 baddbmm，保留 bmm。"},
+      "runtime_path": "mixed",
+      "correctness": {"status": "passed", "assertion": "社区 compiled/eager 断言通过，0 skip。"},
+      "performance": {"status": "not-configured", "reason": "性能主点选择同一默认标量合同的 broadcast-GELU；expanded-ReLU 只做功能覆盖。"},
+      "first_divergence": "none",
+      "root_cause": "默认标量选择性门禁不影响 expanded bias。",
+      "recommended_action": "保留功能回归；若扩展性能矩阵，应作为独立 workload 报告。"
+    },
+    {
+      "variant_id": "alpha-beta-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[4, 1, 8], [4, 6, 5], [4, 5, 8]], "strides": [[8, 8, 1], [30, 5, 1], [40, 8, 1]], "symbolic_bias": "alpha=0.8,beta=0.2,ReLU"}]},
+      "reference_match_expectation": true,
+      "npu_match_expectation": false,
+      "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "最终选择性 gate 检测到 alpha/beta 非默认并在 handler 前拒绝。"},
+      "fx": {"status": "observed", "evidence": "最终图保留带 alpha=0.8、beta=0.2 的 aten.baddbmm，再由 ReLU 消费。"},
+      "replacement": {"status": "not-observed", "evidence": "不生成 bmm×0.8 + bias×0.2。"},
+      "decomposition": {"status": "not-applicable", "evidence": "显式产品 guard。"},
+      "lowering": {"status": "observed", "evidence": "带非默认标量的 baddbmm 走 NPU extern lowering。"},
+      "scheduler": {"status": "observed", "evidence": "baddbmm 与 ReLU 图调度成功。"},
+      "codegen": {"status": "observed", "evidence": "最终代码包含 baddbmm、不包含独立 bmm。"},
+      "runtime_path": "mixed",
+      "correctness": {"status": "passed", "assertion": "最终门禁图与 eager 完全一致，最大绝对误差 0。"},
+      "performance": {"status": "passed", "reason": "门禁前候选 Event p50 回退 5.29%，并增加 512B 峰值分配；测量成功但候选被拒绝。"},
+      "first_divergence": "config",
+      "root_cause": "额外两个标量 pointwise 运算使设备 p50 达到回退阈值。",
+      "recommended_action": "保持非默认标量显式关闭；不绕过门禁重复测试最终 ON。"
+    },
+    {
+      "variant_id": "no-pointwise-consumer-negative",
+      "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {"direction": "forward", "dtype": "float32", "dynamic": false, "cases": [{"shapes": [[4, 1, 8], [4, 6, 5], [4, 5, 8]], "strides": [[8, 8, 1], [30, 5, 1], [40, 8, 1]], "symbolic_bias": "alpha=1,beta=1,no pointwise consumer"}]},
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "upstream user guard 拒绝无 pointwise consumer。"},
+      "fx": {"status": "observed", "evidence": "transformed FX 保持 aten.baddbmm。"},
+      "replacement": {"status": "not-observed", "evidence": "没有可融合消费者，不执行拆分。"},
+      "decomposition": {"status": "not-applicable", "evidence": "保持原 op。"},
+      "lowering": {"status": "observed", "evidence": "baddbmm 走 NPU direct-ATen/extern 等价路径。"},
+      "scheduler": {"status": "observed", "evidence": "原图执行成功。"},
+      "codegen": {"status": "observed", "evidence": "生成代码保留 baddbmm。"},
+      "runtime_path": "extern",
+      "correctness": {"status": "passed", "assertion": "社区 compiled/eager 数值断言通过。"},
+      "performance": {"status": "not-applicable", "reason": "功能负例，不做收益测试。"},
+      "first_divergence": "none",
+      "root_cause": "无 pointwise consumer 时拆分没有融合机会。",
+      "recommended_action": "保留负例，防止选择性门禁误放开。"
+    }
+  ],
+  "artifacts": [
+    {"role": "core-adapter", "path": "issues/REF-unfuse-baddbmm-core-native/npu_adapter.py", "sha256": "0ae4a7e6bff3437803d2ad34827d5d24a8e108d59cdfdefe43a3e5ae37146f6a", "availability": "repository"},
+    {"role": "alpha-beta-adapter", "path": "issues/REF-unfuse-baddbmm-alpha-beta-native/npu_adapter.py", "sha256": "30a39f4c06b21acfba065079d345a2a6c2c1aee1b15ce8b0abd40a16e20abb43", "availability": "repository"},
+    {"role": "performance-summary", "path": "results/current/T-078/performance_summary.json", "sha256": "bd7f0c33c83f17edc78d31822bbd8bc230bad45ae488c62f93184ac3e563c297", "availability": "repository"},
+    {"role": "product-gate-verification", "path": "results/current/T-078/product_gate_verification.json", "sha256": "e5f719948793d0a1db909de283fd03caf81d57459f5121f557dbf91ef1dbf63d", "availability": "repository"},
+    {"role": "core-adapter-result", "path": "/home/z50063656/tmp/t078-npu-results/REF-unfuse-baddbmm-core-native/codegen-adapter-rh7gibct/adapter_result.json", "sha256": "fb27df5b4ec4be0bda0b4300d148cedd8a3e24edbc055a1c5e1479fc3851dfc3", "availability": "external-run-root"},
+    {"role": "alpha-beta-adapter-result", "path": "/home/z50063656/tmp/t078-npu-results/REF-unfuse-baddbmm-alpha-beta-native/adapter-u79l6n53/adapter_result.json", "sha256": "a99d2d817e26abcef003e87cf120b58925f4852231ecc1b08c64cfdc8cf5d51a", "availability": "external-run-root"}
+  ]
+}

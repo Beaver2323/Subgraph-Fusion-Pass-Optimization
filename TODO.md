@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-06 02:55 CST（UTC+08:00）
-> 状态：验收加固已实现；T-076/T-077 10 份结果通过校验。T-078～T-080 GPU 入口已准备，性能只有方案、worker 未实现；T-081～T-113 为待审核草案。MM 修复尚未合入。
+> 更新时间：2026-09-06 09:50 CST（UTC+08:00）
+> 状态：T-076～T-078 共 14 个单元已闭环；T-078 已完成修复验证、性能处置和产品门禁。T-079/T-080 等待 GPU reference 且性能 worker 未实现；T-081～T-113 为待审核草案。T-077 MM 与 T-078 产品改动尚未合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -11,7 +11,7 @@
 - acceptance unit 是跟踪、比较和 verdict 的基本单位；
 - 一个 registration 可以展开多个 pattern/variant，也可能与其他 registration 共同服务一个 contract；
 - 只有人工审核并冻结的 acceptance unit 才能进入完成率分母；
-- T-074 当前 188/158 均为 provisional；T-076/T-077 冻结单元共 10 个、当前正式结果 10 份；修复合入状态单列。
+- T-074 当前 188/158 均为 provisional；T-076～T-078 冻结单元共 14 个、当前正式结果 14 份；修复合入状态单列。
 
 ## 当前门禁补强与历史复核
 
@@ -63,8 +63,8 @@
 
 ### B3. 收敛未确认映射
 
-- [ ] 先按 acceptance unit 审核 48 个 `no-test-found`，同时保留其对应的 54 条 candidate 行；
-- [ ] 再审核 29 个 indirect 单元，保留其对应的 33 条 candidate 行；
+- [ ] 继续审核剩余 45 个 `no-test-found`；T-078/T-080 已纠正并处置其中 3 个；
+- [ ] 继续审核剩余 26 个 indirect 单元；T-078 已处置其中 3 个；
 - [ ] 优先从 community tests 反向识别 optimization contracts；
 - [ ] 判断多个 registration 是否属于一个 contract；
 - [ ] 判断一个 registration 是否展开多个必须分别验证的 variants；
@@ -180,6 +180,18 @@ T-077 GPU 准备：
 - [x] 新增 `run_npu_performance_task.sh --task T-076|T-077`；
 - [x] T-077 性能处置 5/5：measured=4、capability-assessed=1、pending=0；未把 device guard 冒充显式关闭免测。
 
+## P0-I：T-078 第三批闭环
+
+- [x] 接收并复核 12/12 GPU 原生 cases 与 20/20 variants，冻结 4 个 acceptance units；
+- [x] 明确紧凑 handoff 只有 FX signature/hash、没有 FX 正文，不扩大为逐行图对照；
+- [x] 在 NPU `triton_experimental` 上先走社区入口，再做仅 device/backend/证据采集的最小适配；
+- [x] 补齐 addcdiv FP32 pattern/lowering，并用 bitwise、counter、FMA/div_rn 验证；
+- [x] 修复 partial amin→min 的 Triton Ascend NaN helper，三正例与两 guard 均通过；
+- [x] 四个候选单元完成 OFF1/ON1/ON2/OFF2/OFF3/ON3 性能测量；
+- [x] addmm 性能回退后设置全局 unfuse gate；baddbmm 按默认/非默认标量设置选择性 gate；
+- [x] 最终产品 gate 动态验证 addmm hit=0、默认 baddbmm hit=1、非默认 baddbmm hit=0；
+- [x] 四份正式 NPU/comparison、性能汇总、中文逐 pattern 讲解与闭环报告落盘。
+
 ## P0-G：首批跟踪闭环
 
 - [x] negative case：从 pad/addmm 显式关闭控制中选择，记录 expected disabled/guarded 行为；
@@ -197,6 +209,8 @@ T-077 GPU 准备：
 - [x] 禁止用 FX workaround 掩盖纯 scheduler/codegen 问题；T-077 保留原 FX/contract，仅修复 lowering 选择；
 - [ ] 区分 `SUPPORTED_NATIVE`、`SUPPORTED_FALLBACK` 和 `UNSUPPORTED`；
 - [x] 修复后使用同一 tracked community contract 回归；T-077 MM 六变体 6/6 通过；
+- [x] T-078 addcdiv 与 partial 修复使用同一 community contract 回归，并以
+  `repair-verified-not-merged` 进入 known issues；
 - [ ] 保存历史 compatibility 到 `results/history/`；
 - [ ] PyTorch/torch_npu 升级后自动检查 fixed issue 是否重新失败。
 
@@ -209,10 +223,10 @@ T-077 GPU 准备：
 - [x] T-080 建立 3 个单元、13 个 direct cases、13 个 variants，覆盖 const-scatter、prepare-softmax 与 constructor mover；
 - [x] T-078～T-080 逐单元补齐性能计划：功能门禁、社区 benchmark/功能例派生来源、目标级 OFF/ON、三轮交错、Event/host/内存与负例边界；
 - [x] T-078～T-080 增加中文功能/性能测例讲解，并用零设备 validator 与 reference wrapper 联检；
-- [ ] GPU 执行 T-078 12/12 direct cases；全部 reference valid 后冻结 4 个单元；
+- [x] GPU 执行 T-078 12/12 direct cases；全部 reference valid 后冻结 4 个单元；
 - [ ] GPU 执行 T-079 4/4 direct cases；全部 reference valid 后冻结 4 个单元；
 - [ ] GPU 执行 T-080 13/13 direct cases；全部 reference valid 后冻结 3 个单元；
-- [ ] T-078 内完整执行 reference → NPU → compare → 条件 repair → performance；
+- [x] T-078 内完整执行 reference → NPU → compare → 条件 repair → performance → final product gate；
 - [ ] T-079/T-080 分别完成 reference → NPU → compare → 条件 repair → performance；
 - [ ] 建立 upstream source/test/mapping drift 检测；
 - [ ] 支持一条命令运行 NPU suite；
@@ -230,8 +244,8 @@ T-077 GPU 准备：
 - [x] 性能准备校验拒绝非法 warmup/runs、空/跨单元来源、重复单元与 workload；
 - [x] 新增标准库零设备回归 `tests/test_tracker_contracts.py`，现有正式结果继续通过；
 - [x] 将 T-081～T-113 草案及每批完整 ID 写入 `upstream/task_backlog.json`，覆盖范围见 `docs/TASK_BACKLOG.md`；
-- [ ] 实现 T-078～T-080 目标级性能 worker：当前方案不等于执行准备完成，不因 GPU 回传自动解锁；
-- [ ] GPU 执行三批 reference，NPU 按原生优先完成最小适配审核、功能与命中，再允许性能测量；
+- [ ] 实现 T-079/T-080 目标级性能 worker：当前方案不等于执行准备完成，不因 GPU 回传自动解锁；
+- [ ] GPU 依次执行 T-079/T-080 reference，NPU 按原生优先完成最小适配审核、功能与命中，再允许性能测量；
 - [ ] 按草案逐批人工审核并准备后续 T；独立 lowering/template 清单另补后去重，不能冒充现有 FX inventory；
 - [ ] MM 产品修复经独立评审后推送/合入（本轮未操作产品仓库）。
 
@@ -243,9 +257,9 @@ T-077 GPU 准备：
 6. [x] 执行 NPU、compare、failure classification（正式闭环 5/5）；
 7. [x] 复核 repair queue；`AU-post-grad-addmm` 纠偏为预期产品分歧，P-018 候选完成精确上游合同验证。
 8. [x] T-076、T-077 性能均已完成处置；T-078 留给下一批。
-9. [x] T-078 静态映射与 GPU runner 准备完成；等待 GPU 人工执行并回传 latest 文本 handoff。
-10. [x] T-079/T-080 静态映射、独立 runner 与一键任务入口准备完成；GPU 按 T-078→T-079→T-080 顺序执行即可。
-11. [x] 三批性能方案归属各自 T：T-080 优先复用社区 benchmark，T-078/T-079 为社区功能例派生；worker 尚未实现，完整性能准备仍待办。
+9. [x] T-078 静态映射、GPU 12/12、NPU 4/4、repair、性能和最终产品 gate 全部闭环。
+10. [x] T-079/T-080 静态映射、独立 runner 与一键任务入口准备完成；GPU 下一步按 T-079→T-080 执行。
+11. [x] T-078 性能 worker 与实测闭环；T-079/T-080 性能方案已归属各自 T，但 worker 仍待实现。
 
 ## 第一阶段完成标准
 

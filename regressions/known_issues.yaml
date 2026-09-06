@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-02T22:54:00+08:00",
+  "generated_at": "2026-09-06T09:50:00+08:00",
   "issues": [
     {
       "issue_id": "T077-decompose-mm-small-pointwise-backward",
@@ -27,6 +27,56 @@
         "comparison": "results/current/AU-decompose-mem-bound-mm-decompose-mm/comparison_result.json"
       },
       "next_action": "经产品代码评审后将候选提交推送/合入 torch_npu；合入前不得移动到 fixed_issues。"
+    },
+    {
+      "issue_id": "T078-addcdiv-fma-registration-and-lowering",
+      "status": "repair-verified-not-merged",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_baseline": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+      "failure_class": "TARGET_PATTERN_AND_CODEGEN_MISSING",
+      "first_divergence": "pattern-registration",
+      "affected_contract": "FP32 value=2 的 div→mul→add 应重融合为 addcdiv，并生成 tl.fma 与 div_rn",
+      "symptom": "修复前 NPU target hit=0，生成普通 div/mul/add；数值正确但不满足社区 codegen 合同。",
+      "root_cause": "upstream registration 限定 CUDA/XPU，triton_experimental 未提供经 NPU 能力验证的对应 pattern；fallback 扫描还覆盖了可用 addcdiv lowering。",
+      "repair": {
+        "layer": "post-grad-pattern-and-lowering",
+        "strategy": "仅注册 NPU+FP32+非 Tensor scalar 的重融合，并在 fallback 扫描后窄注册 addcdiv div_rn+fma lowering；FP16/BF16 不扩围。",
+        "candidate_state": "shared-worktree-not-committed-not-merged",
+        "source_files": ["torch_npu/_inductor/triton_experimental/fx_passes.py", "torch_npu/_inductor/triton_experimental/lowering.py", "torch_npu/_inductor/triton_experimental/overrides.py"],
+        "verification": "value=1 邻接 counter=0 且 bitwise equal；value=2/codegen counter=1、tl.fma/div_rn 存在且 bitwise equal。"
+      },
+      "artifacts": {
+        "npu_result": "results/current/AU-post-grad-fuse-addcdiv-to-fma/npu_result.json",
+        "comparison": "results/current/AU-post-grad-fuse-addcdiv-to-fma/comparison_result.json",
+        "verification_report": "issues/REF-addcdiv-fma-codegen-native/修复验证报告.md"
+      },
+      "next_action": "产品改动从共享脏工作树拆分审查并提交；合入前不得移动到 fixed_issues。"
+    },
+    {
+      "issue_id": "T078-partial-reuse-min2-triton-ascend",
+      "status": "repair-verified-not-merged",
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_baseline": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+      "failure_class": "TRITON_COMPILE_FAIL",
+      "first_divergence": "codegen-helper",
+      "affected_contract": "1024×1024 amin partial 复用于 full min，并保持 NaN 传播语义",
+      "symptom": "pattern counter=1，但旧 min2 helper 在 Triton Ascend 编译失败。",
+      "root_cause": "experimental min2 helper 与当前 Triton Ascend reduction/NaN API 不兼容。",
+      "repair": {
+        "layer": "triton-helper",
+        "strategy": "改用 tl.reduce 与 tl.minimum(..., propagate_nan=tl.PropagateNan.ALL) 表达 min2。",
+        "candidate_state": "shared-worktree-not-committed-not-merged",
+        "source_files": ["torch_npu/_inductor/triton_experimental/npu_triton_helpers.py"],
+        "verification": "三组大 shape target hit=1；min 数值和 NaN 邻接通过；4×8 与 dynamic guard target hit=0。"
+      },
+      "artifacts": {
+        "npu_result": "results/current/AU-post-grad-reuse-partial/npu_result.json",
+        "comparison": "results/current/AU-post-grad-reuse-partial/comparison_result.json",
+        "verification_report": "issues/REF-partial-reuse-positive-native/修复验证报告.md"
+      },
+      "next_action": "产品改动从共享脏工作树拆分审查并提交；合入前不得移动到 fixed_issues。"
     }
   ],
   "reclassified": [

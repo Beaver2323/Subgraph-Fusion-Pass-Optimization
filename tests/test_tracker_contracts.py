@@ -145,6 +145,25 @@ class ComparisonTests(unittest.TestCase):
         self.validate_record()
         self.assertTrue(comparison.is_formally_closed(self.record))
 
+    def test_neutral_and_mixed_performance_are_formal_verdicts(self):
+        for verdict in ("PERF_NEUTRAL", "PERF_MIXED"):
+            with self.subTest(verdict=verdict):
+                record = copy.deepcopy(self.record)
+                record["final_verdict"] = verdict
+                with patch.object(
+                    comparison,
+                    "sha256",
+                    return_value=record["npu"]["result_sha256"],
+                ):
+                    comparison.validate_comparison(
+                        record,
+                        self.comparison_path,
+                        self.result,
+                        self.result_path,
+                        self.unit,
+                    )
+                self.assertTrue(comparison.is_formally_closed(record))
+
     def test_other_backend_rejected_even_with_consistent_fingerprint(self):
         for backend in ("default", "dvm", "mlir", ""):
             with self.subTest(backend=backend):
@@ -252,6 +271,23 @@ class PreparationTests(unittest.TestCase):
             data["implementation"] = {"status": "implemented-awaiting-runtime-validation", "entrypoint": "runners/missing_worker.py"}
         with self.assertRaisesRegex(ValueError, "实际文件"):
             self.validate_changed(mutate)
+
+    def test_runtime_validated_worker_requires_real_entrypoint(self):
+        def valid(data):
+            data["implementation"] = {
+                "status": "implemented-runtime-validated",
+                "entrypoint": "runners/t078_performance_worker.py",
+            }
+
+        def missing(data):
+            data["implementation"] = {
+                "status": "implemented-runtime-validated",
+                "entrypoint": "runners/missing_worker.py",
+            }
+
+        self.assertEqual(self.validate_changed(valid), (4, 12, 20))
+        with self.assertRaisesRegex(ValueError, "实际文件"):
+            self.validate_changed(missing)
 
 
 class PublicationTests(unittest.TestCase):

@@ -42,7 +42,8 @@
     "final_verdict": {
       "enum": [
         "UPSTREAM_CHANGED", "NPU_REGRESSION", "NEWLY_SUPPORTED", "PERF_IMPROVED",
-        "PERF_REGRESSED", "BEHAVIOR_UNCHANGED", "EXPECTED_PRODUCT_DIVERGENCE", "INCONCLUSIVE"
+        "PERF_NEUTRAL", "PERF_MIXED", "PERF_REGRESSED", "BEHAVIOR_UNCHANGED",
+        "EXPECTED_PRODUCT_DIVERGENCE", "INCONCLUSIVE"
       ]
     },
     "repair_status": {"enum": ["not-needed", "queued", "in-progress", "verified", "blocked"]}

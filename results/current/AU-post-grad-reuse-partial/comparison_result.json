@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-06T09:40:00+08:00",
+  "acceptance_unit_id": "AU-post-grad-reuse-partial",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260905T214703+0800-rarkggw1",
+    "suite_status": "valid-reference-suite",
+    "suite_valid": true,
+    "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "payload_sha256": "03300f564d4e16435a17eb0b641dccdf55dccded2be9064208951ef1208f52ed",
+    "cases": [
+      {"case_id": "REF-partial-reuse-positive-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "3548f3ea01233d628ec990bbd21de7f07810d7696fc2f587a9d4bcb0488a082c", "artifact_inventory_sha256": "4d94b0277057155aa7c4800db0cd7859d2db49fb3d9a70b0572829cd9eba7532"},
+      {"case_id": "REF-partial-reuse-negative-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "b780de8d51e509b338477f10bde0f382ba87c3e5bf95b0e9481b597c434e6e15", "artifact_inventory_sha256": "1025972fde2bd95d9f70ef9faa390ce6323bae72c9fc9577fd5d7f6832c30c1e"}
+    ]
+  },
+  "npu": {
+    "result_path": "results/current/AU-post-grad-reuse-partial/npu_result.json",
+    "result_sha256": "0cdfd873a343255c3c25113f34a18cd51122c6f07c2f0e4ddd3a85629f61aaa8",
+    "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "tracking_mode": "adapter",
+    "execution_success": true,
+    "correctness_status": "passed"
+  },
+  "variant_comparisons": [
+    {
+      "variant_id": "amax-amax-large-positive",
+      "intent": "让 full amax 继续归约已经计算出的 dim0 partial amax，避免第二次扫描 2048×2048 原输入。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2095, "symbol": "register_partial_reduction_pattern"},
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2119, "symbol": "reuse_partial"}
+      ],
+      "gpu_behavior": "A100 原生正例命中且正确，FX before/after 签名不同。",
+      "npu_behavior": "Ascend910B2 命中 1 次；after 图中 full amax 读取 partial 结果，两个输出与 eager 一致。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "NPU Event p50/p99 改善 56.65%/54.21%，host p50/p99 改善 47.09%/44.12%。"
+    },
+    {
+      "variant_id": "amin-min-large-positive",
+      "intent": "复用 1024×1024 的 dim0 amin 结果完成全局 min，并保持 NaN 传播语义。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2095, "symbol": "register_partial_reduction_pattern"},
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2119, "symbol": "reuse_partial"}
+      ],
+      "gpu_behavior": "A100 原生正例命中且正确，FX before/after 签名不同。",
+      "npu_behavior": "pattern 一开始已命中，但旧 min2 helper 编译失败；改为 tl.reduce+tl.minimum(PropagateNan.ALL) 后命中、数值和 NaN 邻居均通过。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "NPU Event p50 仅改善 2.71%，按阈值为 PERF_NEUTRAL；p99 改善 27.85%，不能用尾延迟掩盖 p50 中性。"
+    },
+    {
+      "variant_id": "amax-max-large-positive",
+      "intent": "在 4096×512 非方阵上用 dim0 amax 结果完成全局 max，覆盖跨 amax/max 的兼容复用。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2095, "symbol": "register_partial_reduction_pattern"},
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2119, "symbol": "reuse_partial"}
+      ],
+      "gpu_behavior": "A100 原生正例命中且正确，FX before/after 签名不同。",
+      "npu_behavior": "Ascend910B2 命中 1 次，full max 改读 partial amax，compiled/eager 一致。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "NPU Event p50/p99 改善 33.23%/37.69%，host p50/p99 改善 23.64%/32.21%。"
+    },
+    {
+      "variant_id": "small-numel-negative",
+      "intent": "验证 numel 小于 4096 时不为微小输入引入 partial reuse 改写。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2095, "symbol": "register_partial_reduction_pattern"},
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2119, "symbol": "reuse_partial"}
+      ],
+      "gpu_behavior": "A100 4×8 原生负例 counter=0、正确。",
+      "npu_behavior": "Ascend910B2 同样 counter=0；transformed FX 保持两条 reduction 都读原输入，结果正确。",
+      "reference_contract_stable": true,
+      "reference_target_match": false,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "not-applicable",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "guard-only，不纳入性能平均。"
+    },
+    {
+      "variant_id": "dynamic-input-negative",
+      "intent": "验证 symbolic numel 无法静态证明达到收益阈值时不进行复用。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2095, "symbol": "register_partial_reduction_pattern"},
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2119, "symbol": "reuse_partial"}
+      ],
+      "gpu_behavior": "A100 dynamic 2048×64 原生负例 counter=0、正确。",
+      "npu_behavior": "Ascend910B2 counter=0，symbolic dim 保留，两个输出与 eager 一致。",
+      "reference_contract_stable": true,
+      "reference_target_match": false,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "not-applicable",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "没有借用静态 shape 性能结果评价 dynamic 分支。"
+    }
+  ],
+  "first_divergence": "performance",
+  "root_cause": "功能合同与 GPU 对齐；NPU 唯一修复点是 min2 的 Triton Ascend NaN API 兼容。性能随归约类型和 shape 变化：两个显著改善、一个中性。",
+  "recommended_action": "保留 pass 与 min2 修复，逐 shape 报告性能；持续保留小输入和 dynamic guard，不用三点平均数替代 PERF_MIXED。",
+  "final_verdict": "PERF_MIXED",
+  "repair_status": "verified"
+}

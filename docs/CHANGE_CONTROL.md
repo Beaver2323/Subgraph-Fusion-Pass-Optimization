@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-06 07:21 CST（UTC+08:00）
+> 日志校准时间：2026-09-06 09:50 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3637,3 +3637,21 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 生成器分别记录 GPU reference backend、要求的 NPU backend 与实际观测 NPU backend；任何当前
   NPU result、正式性能汇总或计划不是 `triton_experimental` 都直接校验失败。新增零设备回归，
   并接入统一门禁；81 项测试通过。不导入 torch，不运行 GPU/NPU，不改写任何既有动态证据。
+
+### E-227：T-078 reference、修复、性能与最终产品门禁闭环（2026-09-06）
+
+- 登记时间：2026-09-06 09:50 CST（UTC+08:00）。复核 GPU 1.0 紧凑 handoff：12/12 原生 cases、
+  20/20 variants 有效，冻结 4 个 acceptance units；包内有 FX signature/hash 但无正文，未宣称逐行
+  GPU/NPU FX 对照。
+- NPU `triton_experimental` 上完成原生优先与最小入口适配。addcdiv 补齐 NPU+FP32 pattern/lowering，
+  通过 bitwise、counter、`tl.fma`/`div_rn`；partial amin→min 改用保持 NaN 传播的 Triton helper，
+  三正例和两 guard 全部通过。
+- 四个候选单元按 fresh-process、OFF1/ON1/ON2/OFF2/OFF3/ON3、warmup=10/runs=100 完成性能；
+  addcdiv 为中性，partial 为 shape-dependent mixed，addmm 稳定回退，baddbmm 默认标量改善而非默认
+  标量回退。
+- 在 torch_npu 共享工作树增加可逆产品 gate：全局关闭 addmm unfuse，仅关闭 baddbmm 非默认
+  alpha/beta。最终动态验证分别得到 addmm hit=0、默认 baddbmm hit=1、非默认 baddbmm hit=0，
+  且数值正确。显式关闭路径不再绕过门禁补测。
+- 落盘 4 份 NPU result、4 份逐 variant comparison、T-078 性能汇总、最终门禁证据、中文讲解与
+  闭环报告；当前矩阵预期更新为 21 units 中 14 个闭环、7 个等待 reference。
+- tracker 变更本轮尚未提交/推送；torch_npu 工作树含其他既有改动，产品提交必须另做归属审查。

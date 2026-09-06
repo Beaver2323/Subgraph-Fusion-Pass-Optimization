@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-06 02:55 CST（UTC+08:00）
+> 更新时间：2026-09-06 09:50 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076/T-077 已形成 10 份正式结果；T-078～T-080 的 GPU runner 已准备、性能只有方案且 worker 未实现；T-081～T-113 为草案；MM 修复未合入。
+> 当前阶段：T-076～T-078 已形成 14 份正式结果；T-078 完成修复验证、性能处置和产品门禁；T-079/T-080 等待 GPU reference；T-081～T-113 为草案；T-077 MM 与 T-078 产品改动尚未合入。
 
 ## 1. 总结
 
@@ -57,6 +57,14 @@ host p50/p99 改善 45.79%/45.75%，NPU Event p50/p99 改善 46.69%/46.50%，升
 `CAPABILITY_REJECTED_NO_EFFECTIVE_TEMPLATE`；decompose-BMM/MM/dynamic-addmm 均能命中并正确运行，
 但三轮 OFF/ON 分别形成 `PERF_REGRESSED`，因此保留现有 NPU guard。T-078 仅用于下一批新
 acceptance units。
+
+T-078 已完成下一批 4 个 post-grad 单元。GPU 回传 12/12 原生 cases、20/20 variants 有效，
+4 个单元冻结；紧凑 handoff 保留 FX signature 与 inventory hash，但不含 FX 正文，因此没有扩大为
+逐行 GPU/NPU FX 比较。NPU `triton_experimental` 上补齐 addcdiv FP32 pattern/lowering，并修复
+partial amin→min 的 Triton Ascend NaN helper；两项均通过同合同回归。性能处置结果为 addcdiv
+`PERF_NEUTRAL`、partial `PERF_MIXED`、addmm unfuse `PERF_REGRESSED`、baddbmm unfuse
+`PERF_MIXED`。最终产品 gate 全局关闭 addmm unfuse，只关闭 baddbmm 的非默认 alpha/beta，默认
+标量收益路径保留。详情见 [T-078 闭环报告](../report/t078_npu_completion_20260906.md)。
 
 ## 2. 工作线吻合性
 
@@ -165,10 +173,12 @@ report/         不可改写的实验事实和 T-074 数据
   known issues，修复候选已验证。
 - T-076、T-077 性能处置均完成；T-077 为 measured=4、capability-assessed=1、pending=0。机器可读结果位于
   `results/current/T-076/performance_summary.json` 与 `results/current/T-077/performance_summary.json`。
+- T-078 的 12/12 GPU 原生 cases、20/20 variants、4/4 NPU comparison 均已闭环；addcdiv/partial
+  修复已验证，候选性能和最终 addmm/baddbmm 产品门禁均已落盘。正式数据位于
+  `results/current/T-078/` 与四个对应 acceptance-unit 目录。
 
-T-078 已从上述集合审核 1 个 `no-test-found` 与 3 个 indirect 单元，建立 12 个 direct cases 和
-20 个 variants；T-080 又纠正 2 个 `no-test-found`，其余 45 个 `no-test-found` 和 26 个 indirect
-单元继续待审。仍未完成 T-077 MM 候选修复的
+T-078 已从上述集合审核并闭环 1 个 `no-test-found` 与 3 个 indirect 单元；T-080 又纠正 2 个
+`no-test-found`，其余 45 个 `no-test-found` 和 26 个 indirect 单元继续待审。仍未完成 T-077 MM 候选修复的
 产品代码评审/合入。P-018 是否并入正式产品属于候选变更评审，不再作为 T-076 未闭环回归。
 
 ## 7. 下一条 Codex 任务
@@ -182,14 +192,13 @@ T-078 已从上述集合审核 1 个 `no-test-found` 与 3 个 indirect 单元�
 T-077 修复支线：复核候选 `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`，经授权后推送/合入
 torch_npu，并用同一六变体合同做安装态回归。
 
-T-078 新批次：4 个单元的 manifest/reference/performance plan 和功能/性能 guide 已完成；下一步由 GPU 执行 12 个原生 community
-cases，20/20 variants 有效后冻结 denominator，再进入 NPU `triton_experimental` comparison、
-条件 repair 与 performance。
+T-078：12/12 GPU reference、4/4 NPU comparison、条件 repair、候选性能和最终产品 gate 已闭环；
+后续只做同合同回归和 source drift 检查，不再绕过显式门禁补测。
 
 T-079/T-080 后续批次：7 个单元的 manifest/reference/performance plan 和 guide 已完成；GPU 分别
 执行 4 cases/14 variants 与 13 cases/13 variants。T-080 保存 const-scatter CrossEntropy 和
 prepare-softmax 的社区 benchmark；T-078/T-079 无社区独立 benchmark，明确从社区功能正例派生。
-三批性能 worker 均尚未实现，需先完成代码与静态验证；之后只有 NPU
+T-079/T-080 性能 worker 尚未实现，需先完成代码与静态验证；之后只有 NPU
 `triton_experimental` 功能与命中门禁通过，才允许目标级 OFF/ON 性能。
 ```
 

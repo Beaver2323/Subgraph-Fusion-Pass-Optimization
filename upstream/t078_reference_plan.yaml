@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
   "task_id": "T-078",
-  "generated_at": "2026-09-06T02:21:22+08:00",
-  "status": "prepared-awaiting-direct-gpu-execution",
-  "performance_plan": {"path": "upstream/t078_performance_plan.yaml", "status": "plan-only-worker-not-implemented"},
+  "generated_at": "2026-09-06T09:48:21+08:00",
+  "status": "direct-gpu-reference-complete",
+  "performance_plan": {"path": "upstream/t078_performance_plan.yaml", "status": "performance-disposition-and-product-gate-complete"},
   "case_guide": {"path": "docs/T078_FUNCTION_PERFORMANCE_GUIDE.md", "language": "zh-CN"},
   "manifest": {
     "path": "upstream/t078_manifest.yaml",
@@ -25,8 +25,8 @@
       "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda",
       "tracking_mode": "direct",
       "variant_ids": ["value-one-bitwise-positive", "scaled-value-bitwise-positive"],
-      "expected_match": true,
-      "expected_assertions": ["value=1 与 value=2 均执行原生 addcdiv 重融合路径", "compiled 与 eager bitwise equal"],
+      "expected_match": "mixed",
+      "expected_assertions": ["value=1 的乘一在 decomposition 中消去，因此保持 bitwise 正确但不命中目标重融合", "value=2 保持 bitwise 正确；独立 codegen case 证明目标重融合命中"],
       "required_artifacts": ["fx-before", "fx-after"],
       "benchmark": "not-configured-functional-reference"
     },

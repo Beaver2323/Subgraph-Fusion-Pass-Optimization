@@ -53,15 +53,21 @@ def validate_implementation(repo_root: Path, performance: dict) -> str:
         if entrypoint is not None:
             raise ValueError("not-implemented 不得声明 worker entrypoint")
         return "plan-only"
-    if status != "implemented-awaiting-runtime-validation":
-        raise ValueError("implementation.status 必须如实声明未实现或待动态验证")
+    readiness_by_status = {
+        "implemented-awaiting-runtime-validation": "worker-static-only",
+        "implemented-runtime-validated": "worker-runtime-validated",
+    }
+    if status not in readiness_by_status:
+        raise ValueError(
+            "implementation.status 必须如实声明未实现、待动态验证或已动态验证"
+        )
     if not isinstance(entrypoint, str) or not entrypoint:
         raise ValueError("已实现 worker 必须声明 entrypoint")
     path = (repo_root / entrypoint).resolve()
     if not path.is_relative_to(repo_root.resolve()) or not path.is_file():
         raise ValueError("worker entrypoint 必须是仓库内实际文件")
     ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-    return "worker-static-only"
+    return readiness_by_status[status]
 
 
 def validate_task(repo_root: Path, task_id: str) -> tuple[int, int, int]:

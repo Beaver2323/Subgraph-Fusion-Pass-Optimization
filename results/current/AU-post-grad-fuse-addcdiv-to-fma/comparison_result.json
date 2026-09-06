@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-06T09:40:00+08:00",
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260905T214703+0800-rarkggw1",
+    "suite_status": "valid-reference-suite",
+    "suite_valid": true,
+    "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "payload_sha256": "03300f564d4e16435a17eb0b641dccdf55dccded2be9064208951ef1208f52ed",
+    "cases": [
+      {"case_id": "REF-addcdiv-fma-bitwise-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "21aee9b1b1536944dbab3e65a9b032bbc4a24a8d38bf5fe1f44618fce558aa3b", "artifact_inventory_sha256": "a958d76d996f745b0581a896b4643238dbc71dea7a98068916ae9a07ae87988c"},
+      {"case_id": "REF-addcdiv-fma-codegen-native", "case_status": "passed", "reference_valid": true, "reference_result_sha256": "e81cbfc74caf9566e618358a3e0057fd3a6cbdb25842a4452de2ca45e8275b0c", "artifact_inventory_sha256": "a34148bcbb990926147ed9ec5943f06727d64956a342f07b6f946b3f093233a9"}
+    ]
+  },
+  "npu": {
+    "result_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/npu_result.json",
+    "result_sha256": "f9858119f6c2f0d2580b065a601cd6e803f36fdf18d35cb6a0d210b1533e0874",
+    "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "tracking_mode": "adapter",
+    "execution_success": true,
+    "correctness_status": "passed"
+  },
+  "variant_comparisons": [
+    {
+      "variant_id": "value-one-bitwise-positive",
+      "intent": "验证 addcdiv 的 value=1 常量分支在编译后仍与 eager 位级一致，同时明确它不会形成目标 div→mul→add 图。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2064, "symbol": "aten.add.Tensor"},
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2078, "symbol": "_fuse_addcdiv_to_fma"}
+      ],
+      "gpu_behavior": "A100 原生位级 case 通过；两次捕获的 before/after 聚合签名相同。源码语义表明 value=1 时乘一被消去，因此该分支只证明正确性、不证明 FMA pattern 命中。",
+      "npu_behavior": "Ascend910B2 上 counter=0，图为 div→add，compiled/eager bitwise equal，最大绝对误差 0；没有插入伪造的 mul。",
+      "reference_contract_stable": true,
+      "reference_target_match": false,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "not-applicable",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "该修正消除了旧计划中“value=1 也必须重融合”的错误预期；GPU 紧凑包尚无 FX 正文，不能宣称逐行图对照。"
+    },
+    {
+      "variant_id": "scaled-value-bitwise-positive",
+      "intent": "对 value=2 的 div→mul→add 图执行 addcdiv 重融合，并保持 FP32 位级语义。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2064, "symbol": "aten.add.Tensor"},
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2078, "symbol": "_fuse_addcdiv_to_fma"}
+      ],
+      "gpu_behavior": "A100 原生 bitwise 与 codegen case 均通过；value=2 对应 codegen case 的 FX before/after 签名不同。",
+      "npu_behavior": "补齐 experimental pattern/lowering 后命中 1 次，改写为 aten.addcdiv，生成 div_rn+fma，且与 eager 位级一致。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "同后端六轮候选测量的 NPU Event p50/p99 改善 1.82%/2.62%，低于 10% 收益阈值，最终为 PERF_NEUTRAL。"
+    },
+    {
+      "variant_id": "fma-div-rn-codegen-positive",
+      "intent": "不仅要求数值正确，还要求重融合后的 Triton codegen 确实采用 fused multiply-add 与 round-to-nearest 除法。",
+      "source_locations": [
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2064, "symbol": "aten.add.Tensor"},
+        {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2078, "symbol": "_fuse_addcdiv_to_fma"}
+      ],
+      "gpu_behavior": "A100 原生断言 counter=1、tl.fma 存在、triton.language.div_rn 存在，case 有效。",
+      "npu_behavior": "修复前 counter=0 且只是普通 /、*、+；修复后 counter=1，生成代码同时出现 tl.fma 与 triton.language.div_rn，派生数值位级一致。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "修复范围限定为 NPU+FP32+非 Tensor scalar；FP16/BF16 邻居保持不命中。"
+    }
+  ],
+  "first_divergence": "performance",
+  "root_cause": "NPU experimental 原先缺少 CUDA/XPU-only upstream pattern 的对应注册，并且 fallback 扫描覆盖了可用的 addcdiv lowering；两处窄修复后功能对齐，性能为中性。",
+  "recommended_action": "保留 FP32 功能修复、bitwise/codegen 邻居和六轮中性基线；value=1 永远作为 correctness 邻居，不计目标命中。",
+  "final_verdict": "PERF_NEUTRAL",
+  "repair_status": "verified"
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-06T09:27:43+08:00",
+  "task_id": "T-078",
+  "status": "passed",
+  "environment": {
+    "backend": "triton_experimental",
+    "device": "Ascend910B2",
+    "physical_device": "0",
+    "torch": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "cwd": "/home/z50063656/tmp",
+    "python": "3.11.15 | packaged by conda-forge | (main, Aug 11 2026, 10:16:23) [GCC 14.4.0]"
+  },
+  "product_config": {
+    "disable_unfuse_bias_addmm": true,
+    "disable_unfuse_baddbmm_non_default_scalars": true
+  },
+  "selected_entries": [
+    {
+      "handler": "unfuse_bias_add_to_pointwise",
+      "registry_key": ["call_function", "aten.addmm"],
+      "gate_installed": true
+    },
+    {
+      "handler": "unfuse_bias_baddbmm_to_pointwise",
+      "registry_key": ["call_function", "aten.baddbmm"],
+      "gate_installed": true
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "addmm-default-disabled",
+      "status": "passed",
+      "handler": "unfuse_bias_add_to_pointwise",
+      "target_hits": 0,
+      "required_operator": "addmm",
+      "forbidden_operator": "mm",
+      "max_abs_error": 2.384185791015625e-7
+    },
+    {
+      "case_id": "baddbmm-default-enabled",
+      "status": "passed",
+      "handler": "unfuse_bias_baddbmm_to_pointwise",
+      "target_hits": 1,
+      "required_operator": "bmm",
+      "forbidden_operator": "baddbmm",
+      "max_abs_error": 2.384185791015625e-7
+    },
+    {
+      "case_id": "baddbmm-alpha-beta-disabled",
+      "status": "passed",
+      "handler": "unfuse_bias_baddbmm_to_pointwise",
+      "target_hits": 0,
+      "required_operator": "baddbmm",
+      "forbidden_operator": "bmm",
+      "max_abs_error": 0.0
+    }
+  ],
+  "source_sha256": {
+    "torch_npu/_inductor/triton_experimental/config.py": "b0728e10c22fceb5d882198f9e80ced134938ddc6f961b7a27fcc8bdd3b3e5ac",
+    "torch_npu/_inductor/triton_experimental/fx_passes.py": "4f04bd766604fde78bfdfa6d568961bede1970633244317b47c017622fe3d175",
+    "torch_npu/_inductor/triton_experimental/overrides.py": "c8d83d1252fd4e3da384b54eed8c9e99672ba1f4b86e36ab7b022fd8ca264e5b"
+  },
+  "loaded_formal_modules": {
+    "config": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/config.py",
+    "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+    "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py"
+  }
+}

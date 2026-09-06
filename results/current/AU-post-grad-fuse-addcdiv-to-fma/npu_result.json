@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-06T09:35:00+08:00",
+  "case_ids": [
+    "REF-addcdiv-fma-bitwise-native",
+    "REF-addcdiv-fma-codegen-native"
+  ],
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": [
+    "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda",
+    "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda"
+  ],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "patched",
+    "source_control": "triton_experimental 安装 NPU-only、FP32-only 的 div→mul→add 重融合，并在 fallback 扫描后窄注册 aten.addcdiv.default 的 div_rn+fma lowering。",
+    "product_gate_bypassed": false
+  },
+  "paired_control": {
+    "status": "passed",
+    "reason": "value=2 在目标级 OFF/ON 六个 fresh process 中分别稳定命中 0/1；value=1 因分解消去乘一，只作为位级正确性邻居。"
+  },
+  "direct_execution": {
+    "status": "no-tests",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 0,
+    "reason": "上游 GPUTests 仅为 CUDA/Triton 生成；NPU 原生入口没有该类，未进入测试体。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 2,
+    "tests_skipped": 0,
+    "reason": "最小设备入口适配后，两条社区方法通过；value=2 counter=1 且生成 tl.fma/div_rn，value=1/2 均与 eager 位级一致。"
+  },
+  "variants": [
+    {
+      "variant_id": "value-one-bitwise-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [{"shapes": [[64, 64], [64, 64], [64, 64]], "strides": [[64, 1], [64, 1], [64, 1]], "symbolic_bias": "value=1.0"}]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {"target_matched": false, "count": 0, "nodes": 0, "scope": "target-pattern", "note": "addcdiv 的 value=1 decomposition 消去乘一，形成 div→add，不满足 div→mul→add pattern。"},
+      "fx": {"status": "observed", "evidence": "社区位级分支捕获到 value=1 的 div→add 图；没有伪造 mul 节点。"},
+      "replacement": {"status": "not-observed", "evidence": "该分支按冻结图形不执行 addcdiv 重融合。"},
+      "decomposition": {"status": "observed", "evidence": "aten.addcdiv(value=1) 被分解并消去乘一。"},
+      "lowering": {"status": "observed", "evidence": "div/add 进入 NPU pointwise lowering。"},
+      "scheduler": {"status": "observed", "evidence": "静态 64×64 pointwise 图成功调度。"},
+      "codegen": {"status": "observed", "evidence": "生成 NPU Triton pointwise kernel；本分支不要求 tl.fma。"},
+      "runtime_path": "triton",
+      "correctness": {"status": "passed", "assertion": "compiled 与 eager bitwise equal，最大绝对误差 0。"},
+      "performance": {"status": "not-applicable", "reason": "没有合法目标 ON 路径；保留为功能邻居，不纳入收益统计。"},
+      "first_divergence": "none",
+      "root_cause": "乘一由 decomposition 常量化消除，这是 GPU/NPU 共享图形语义。",
+      "recommended_action": "继续保留位级回归，但不要把 value=1 计为目标命中或性能样本。"
+    },
+    {
+      "variant_id": "scaled-value-bitwise-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [{"shapes": [[64, 64], [64, 64], [64, 64]], "strides": [[64, 1], [64, 1], [64, 1]], "symbolic_bias": "value=2.0"}]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
+      "match": {"target_matched": true, "count": 1, "nodes": 1, "scope": "target-pattern", "note": "npu_fuse_addcdiv_to_fma 命中 1 次。"},
+      "fx": {"status": "observed", "evidence": "post-grad 捕获 div→mul(value=2)→add，并改写为 aten.addcdiv。"},
+      "replacement": {"status": "observed", "evidence": "NPU 专用 handler 调用 replace_by_example 生成 aten.addcdiv。"},
+      "decomposition": {"status": "observed", "evidence": "前置 decomposition 先展开 addcdiv，post-grad 再对合格图重融合。"},
+      "lowering": {"status": "observed", "evidence": "aten.addcdiv.default 进入 NPU 窄 lowering。"},
+      "scheduler": {"status": "observed", "evidence": "单 pointwise buffer 调度成功。"},
+      "codegen": {"status": "observed", "evidence": "生成代码包含 tl.fma 和 triton.language.div_rn。"},
+      "runtime_path": "triton",
+      "correctness": {"status": "passed", "assertion": "FP32 value=2 compiled 与 eager bitwise equal，最大绝对误差 0。"},
+      "performance": {"status": "passed", "reason": "完成 3×OFF/3×ON；NPU Event p50/p99 改善 1.82%/2.62%，判定 PERF_NEUTRAL。"},
+      "first_divergence": "none",
+      "root_cause": "原始能力缺口由 NPU FX 注册与 exact addcdiv lowering 补齐。",
+      "recommended_action": "保留 FP32 窄能力和功能回归；性能按中性基线监控。"
+    },
+    {
+      "variant_id": "fma-div-rn-codegen-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [{"shapes": [[64, 64], [64, 64], [64, 64]], "strides": [[64, 1], [64, 1], [64, 1]], "symbolic_bias": "value=2.0"}]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
+      "match": {"target_matched": true, "count": 1, "nodes": 1, "scope": "target-pattern", "note": "inductor.addcdiv_fma_fused=1。"},
+      "fx": {"status": "observed", "evidence": "修复后 transformed FX 使用 aten.addcdiv.default。"},
+      "replacement": {"status": "observed", "evidence": "div→mul→add 被重新融合。"},
+      "decomposition": {"status": "observed", "evidence": "目标 pass 位于 decomposition 之后、lowering/autotune 之前。"},
+      "lowering": {"status": "observed", "evidence": "NPU addcdiv lowering 使用 ops.div_rn 与 ops.fma。"},
+      "scheduler": {"status": "observed", "evidence": "pointwise kernel 调度完成。"},
+      "codegen": {"status": "observed", "evidence": "原社区 codegen 三项断言全部通过：counter=1、tl.fma、div_rn。"},
+      "runtime_path": "triton",
+      "correctness": {"status": "passed", "assertion": "派生 value=2 数值位级一致，社区 codegen 方法执行成功。"},
+      "performance": {"status": "passed", "reason": "与 scaled-value 共用同一社区合同测量，最终 PERF_NEUTRAL。"},
+      "first_divergence": "none",
+      "root_cause": "NPU experimental 原先缺少 pattern 与 lowering，修复后与 GPU codegen 意图对齐。",
+      "recommended_action": "锁定源码哈希、counter 和两项 Triton 代码标记作为回归门禁。"
+    }
+  ],
+  "artifacts": [
+    {"role": "npu-bitwise-adapter", "path": "issues/REF-addcdiv-fma-bitwise-native/npu_adapter.py", "sha256": "94f6aeb4a0be1677fd69de94772cbe6e3148fca01d06a353a4190de45d2e3ef9", "availability": "repository"},
+    {"role": "npu-codegen-adapter", "path": "issues/REF-addcdiv-fma-codegen-native/npu_adapter.py", "sha256": "2dca76b37a3814576eeb1dc598a3b34c338a043f8837815e4dc4d55b66b6ffbd", "availability": "repository"},
+    {"role": "repair-verification-report", "path": "issues/REF-addcdiv-fma-codegen-native/修复验证报告.md", "sha256": "401b1d9c554c160e4825d003e463db868e9a8b011b559bfe01e868821d517168", "availability": "repository"},
+    {"role": "performance-summary", "path": "results/current/T-078/performance_summary.json", "sha256": "bd7f0c33c83f17edc78d31822bbd8bc230bad45ae488c62f93184ac3e563c297", "availability": "repository"},
+    {"role": "bitwise-source-fix-result", "path": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-bitwise-native/source-fix-lp6oiclu/source_fix_result.json", "sha256": "62bc6593b76235f0c07f4f2e18326d4d27bbbe90a3c0c805fd5ee1090702e591", "availability": "external-run-root"},
+    {"role": "codegen-source-fix-result", "path": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/source_fix_result.json", "sha256": "ea7c395d0b0d8410ccf291b175ef95720d95157f4c57766983ff148f07633851", "availability": "external-run-root"}
+  ]
+}

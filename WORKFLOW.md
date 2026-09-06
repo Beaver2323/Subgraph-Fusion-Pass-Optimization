@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-06 02:55 CST（UTC+08:00）
+> 更新时间：2026-09-06 09:50 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -85,8 +85,9 @@ upstream change / community test discovery
 - NPU 结果与 comparison 必须显式为 `triton_experimental`；指纹一致不能替代 backend 合同检查。
 - 数值失败可以是合法结果记录，但必须判为未修复 `NPU_REGRESSION` 并进入 repair；不得标记性能收益，
   不计入 formally_closed。已有修复回归通过也不代表产品合入，合入状态继续在 known_issues 单列。
-- 性能状态分为“方案已定义 → worker 实现并静态验证 → 功能/命中门禁通过 → 同后端实测”；
-  T-078～T-080 当前只到第一步。后续 T 的草案排期也不等于 GPU-ready。
+- 性能状态分为“方案已定义 → worker 实现并静态验证 → 功能/命中门禁通过 → 同后端实测 →
+  最终产品 gate 复验”；T-078 已走完整链路，T-079/T-080 当前只到方案阶段。后续 T 的草案排期
+  也不等于 GPU-ready。
 - `latest-text-handoff.json` 固定经 `latest/text-handoff.json` 寻址；运行结束仅原子切换 latest。
   导出失败时回传本轮 `export-failed` 状态，不使用上轮成功文本代替。
 
@@ -193,7 +194,8 @@ results/history/
 
 T-078～T-080 的 reference wrapper 在执行设备测试前先运行 `validate_prepared_tasks.py`，交叉检查
 manifest/reference/performance unit 集合、固定 backend、OFF/ON 隔离、workload 来源和中文 case
-guide。校验成功只说明“准备完整”，不能替代 GPU/NPU 动态结果。
+guide。校验成功只说明“准备完整”，不能替代 GPU/NPU 动态结果；T-078 的动态结果已另行落盘，
+T-079/T-080 仍遵守该前置门禁。
 
 ## 7. Tracking mode
 

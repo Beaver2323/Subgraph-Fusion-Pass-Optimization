@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-04T08:55:00+08:00",
-  "status": "t078-third-wave-human-reviewed-awaiting-gpu-reference",
+  "generated_at": "2026-09-06T09:40:00+08:00",
+  "status": "t078-reference-npu-performance-and-product-gate-complete",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -43,24 +43,27 @@
     "device_identity": "8x-NVIDIA-A100-SXM4-80GB-sm80",
     "backend": "inductor-default",
     "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
-    "runtime_fingerprint": "pending-t078-gpu-execution"
+    "runtime_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "suite_status": "valid-reference-suite",
+    "run_id": "reference-20260905T214703+0800-rarkggw1",
+    "payload_sha256": "03300f564d4e16435a17eb0b641dccdf55dccded2be9064208951ef1208f52ed"
   },
   "counting_policy": {
     "primary_fact_source": "PyTorch community test plus GPU/reference baseline",
     "inventory_role": "registration candidate only for discovery and coverage",
     "tracking_key": "human-reviewed upstream optimization contract acceptance unit",
-    "denominator_rule": "T078 units remain pending-reference until the complete direct GPU suite is valid",
+    "denominator_rule": "12/12 direct GPU cases 有效后冻结 4 个 acceptance units；NPU comparison 与产品门禁均已闭环",
     "current_manifest_units": 4,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0
+    "current_frozen_denominator_units": 4,
+    "current_formally_closed_units": 4
   },
   "acceptance_units": [
     {
       "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
       "contract_name": "add+div+mul 子图重新融合为 addcdiv 并生成 FMA/div_rn 的合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2064, "symbol": "aten.add.Tensor", "role": "registered-pattern"},
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2078, "symbol": "_fuse_addcdiv_to_fma", "role": "registered-rewrite-handler"}
@@ -70,9 +73,9 @@
         {"nodeid": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda", "role": "primary-positive", "evidence_scope": "counter=1，generated code 同时包含 tl.fma 与 triton.language.div_rn"}
       ],
       "variants": [
-        {"variant_id": "value-one-bitwise-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "value=1 的 addcdiv 重融合且与 eager bitwise 一致", "expected_counter": "covered by bitwise community test", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "scaled-value-bitwise-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "value=2 的 addcdiv 重融合且与 eager bitwise 一致", "expected_counter": "covered by bitwise and codegen community tests", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "fma-div-rn-codegen-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "最终 Triton codegen 使用 tl.fma 与 div_rn", "expected_counter": "inductor.addcdiv_fma_fused=1 when visible in-process", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "value-one-bitwise-positive", "kind": "positive", "expected_reference_match": false, "expected_behavior": "value=1 的乘一在 decomposition 中消去；不重融合但与 eager bitwise 一致", "expected_counter": "addcdiv_fma_fused=0", "reference_status": "valid-reference", "npu_status": "supported-correctness-neighbor-no-target-match"},
+        {"variant_id": "scaled-value-bitwise-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "value=2 的 addcdiv 重融合且与 eager bitwise 一致", "expected_counter": "addcdiv_fma_fused=1 in codegen contract", "reference_status": "valid-reference", "npu_status": "supported-source-fixed-perf-neutral"},
+        {"variant_id": "fma-div-rn-codegen-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "最终 Triton codegen 使用 tl.fma 与 div_rn", "expected_counter": "inductor.addcdiv_fma_fused=1", "reference_status": "valid-reference", "npu_status": "supported-source-fixed-perf-neutral"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -81,15 +84,15 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 value 分支", "放宽 bitwise 合同", "删除 tl.fma/div_rn 代码断言"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后再执行 NPU"},
+      "npu_control": {"status": "complete-source-fixed", "next_action": "保留 FP32 窄能力、位级/codegen 回归和 PERF_NEUTRAL 基线；FP16/BF16 不扩围"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-post-grad-reuse-partial",
       "contract_name": "大输入 partial reduction 复用于 full reduction 的 post-grad 合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2095, "symbol": "register_partial_reduction_pattern", "role": "pattern-family-registration"},
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2119, "symbol": "reuse_partial", "role": "registered-rewrite-handler"}
@@ -99,11 +102,11 @@
         {"nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unsuccessful_partial_reuse", "role": "primary-negative", "evidence_scope": "小静态输入和 dynamic 输入均 counter=0 且正确"}
       ],
       "variants": [
-        {"variant_id": "amax-amax-large-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "2048x2048 amax partial 被 full amax 复用", "expected_counter": "partial_reduction_reuse=1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "amin-min-large-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "1024x1024 amin partial 被 full min 复用", "expected_counter": "partial_reduction_reuse=1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "amax-max-large-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "4096x512 amax partial 被 full max 复用", "expected_counter": "partial_reduction_reuse=1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "small-numel-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "4x8 输入低于 4096 元素收益阈值，不复用", "expected_counter": "partial_reduction_reuse=0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "dynamic-input-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "dynamic 2048x64 输入在当前合同下不复用", "expected_counter": "partial_reduction_reuse=0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "amax-amax-large-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "2048x2048 amax partial 被 full amax 复用", "expected_counter": "partial_reduction_reuse=1", "reference_status": "valid-reference", "npu_status": "supported-perf-improved"},
+        {"variant_id": "amin-min-large-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "1024x1024 amin partial 被 full min 复用", "expected_counter": "partial_reduction_reuse=1", "reference_status": "valid-reference", "npu_status": "supported-source-fixed-perf-neutral"},
+        {"variant_id": "amax-max-large-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "4096x512 amax partial 被 full max 复用", "expected_counter": "partial_reduction_reuse=1", "reference_status": "valid-reference", "npu_status": "supported-perf-improved"},
+        {"variant_id": "small-numel-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "4x8 输入低于 4096 元素收益阈值，不复用", "expected_counter": "partial_reduction_reuse=0", "reference_status": "valid-reference", "npu_status": "guard-passed"},
+        {"variant_id": "dynamic-input-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "dynamic 2048x64 输入在当前合同下不复用", "expected_counter": "partial_reduction_reuse=0", "reference_status": "valid-reference", "npu_status": "guard-passed"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -112,15 +115,15 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["修改 4096 阈值", "缩小正例 shape", "删除 dynamic 负例"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后再执行 NPU"},
+      "npu_control": {"status": "complete-source-fixed", "next_action": "保留 min2 NaN 修复与三 shape 分项性能回归；不放宽小输入/dynamic guard"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
       "contract_name": "有 pointwise 消费者时将 bias addmm 拆为 mm 与 pointwise bias 的合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1850, "symbol": "should_prefer_unfused_addmm", "role": "bias-device-dtype-and-user-guard"},
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1905, "symbol": "unfuse_bias_add_to_pointwise", "role": "registered-rewrite-handler"}
@@ -134,31 +137,31 @@
         {"nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_bias_addmm_half_dtypes_when_flag_disabled", "role": "primary-positive", "evidence_scope": "显式关闭 half dtype 保留 gate 后，bf16/fp16 允许拆分"}
       ],
       "variants": [
-        {"variant_id": "gelu-consumer-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "float32 addmm 的 GELU consumer 触发拆分", "expected_counter": "generated code has no extern_kernels.addmm", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "view-gelu-consumer-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "addmm→view→GELU 路径仍可拆分", "expected_counter": "generated code has no extern_kernels.addmm", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "no-pointwise-consumer-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "无 pointwise consumer 时保留 extern addmm", "expected_counter": "generated code contains extern_kernels.addmm", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "computed-accumulator-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "计算得到的同 shape accumulator 不是 bias-like leaf，保留 addmm", "expected_counter": "generated code contains extern_kernels.addmm", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "same-shape-leaf-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "Parameter leaf bias 即使同输出 shape 也允许拆分", "expected_counter": "generated code has no extern_kernels.addmm", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "expanded-bias-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "stride-0 expanded bias 允许拆分", "expected_counter": "generated code has no extern_kernels.addmm", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "half-dtype-preserve-negative", "kind": "guard", "expected_reference_match": false, "expected_behavior": "默认 gate 下 bf16/fp16 保留 fused addmm", "expected_counter": "generated code contains extern_kernels.addmm", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "half-dtype-gate-disabled-positive", "kind": "guard", "expected_reference_match": true, "expected_behavior": "关闭 keep_addmm_fused_for_half_dtypes 后 bf16/fp16 拆分", "expected_counter": "generated code has no extern_kernels.addmm", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "gelu-consumer-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "GPU 上 float32 addmm 的 GELU consumer 触发拆分；NPU 产品门禁保留 addmm", "expected_counter": "GPU generated code has no extern_kernels.addmm; NPU target_hit=0", "reference_status": "valid-reference", "npu_status": "expected-disabled-product-gate"},
+        {"variant_id": "view-gelu-consumer-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "GPU 上 addmm→view→GELU 路径可拆分；NPU 产品门禁保留 addmm", "expected_counter": "GPU generated code has no extern_kernels.addmm; NPU target_hit=0", "reference_status": "valid-reference", "npu_status": "expected-disabled-product-gate"},
+        {"variant_id": "no-pointwise-consumer-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "无 pointwise consumer 时保留 extern addmm", "expected_counter": "generated code contains extern_kernels.addmm", "reference_status": "valid-reference", "npu_status": "guard-passed"},
+        {"variant_id": "computed-accumulator-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "计算得到的同 shape accumulator 不是 bias-like leaf，保留 addmm", "expected_counter": "generated code contains extern_kernels.addmm", "reference_status": "valid-reference", "npu_status": "guard-passed"},
+        {"variant_id": "same-shape-leaf-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "GPU 允许拆分同 shape Parameter leaf bias；NPU 产品门禁保留 addmm", "expected_counter": "GPU generated code has no extern_kernels.addmm; NPU target_hit=0", "reference_status": "valid-reference", "npu_status": "expected-disabled-product-gate"},
+        {"variant_id": "expanded-bias-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "GPU 允许拆分 stride-0 expanded bias；NPU 产品门禁保留 addmm", "expected_counter": "GPU generated code has no extern_kernels.addmm; NPU target_hit=0", "reference_status": "valid-reference", "npu_status": "expected-disabled-product-gate"},
+        {"variant_id": "half-dtype-preserve-negative", "kind": "guard", "expected_reference_match": false, "expected_behavior": "默认 half dtype gate 下 bf16/fp16 保留 fused addmm", "expected_counter": "generated code contains extern_kernels.addmm", "reference_status": "valid-reference", "npu_status": "guard-passed"},
+        {"variant_id": "half-dtype-gate-disabled-positive", "kind": "guard", "expected_reference_match": true, "expected_behavior": "GPU 关闭 half dtype gate 后可拆分；NPU 的 addmm 产品总门禁仍显式保留 addmm", "expected_counter": "GPU generated code has no extern_kernels.addmm; NPU target_hit=0", "reference_status": "valid-reference", "npu_status": "expected-disabled-explicit"}
       ],
       "tracking": {
         "reference_mode": "direct",
         "npu_mode": "adapter",
-        "adapter_reason": "社区测试固定 GPU_TYPE，且 should_prefer_unfused_addmm 使用 is_gpu device guard；NPU 阶段必须先记录 direct blocker",
+        "adapter_reason": "社区测试的生成入口固定 GPU_TYPE；torch_npu patch_is_gpu 已把 NPU 纳入 upstream is_gpu 语义，因此 is_gpu guard 不是 NPU capability blocker。NPU 仅适配 device/backend 与证据采集。",
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 bias shape/stride", "删除 half dtype gate", "用数值正确代替 generated-code 断言"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后再执行 NPU"},
+      "npu_control": {"status": "complete-explicit-product-disable", "next_action": "保留 disable_unfuse_bias_addmm=true；该产品路径不再做性能补测，也不得绕过门禁制造 ON 路径"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
       "contract_name": "有 pointwise 消费者时将 broadcast-bias baddbmm 拆为 bmm 与 pointwise bias 的合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1882, "symbol": "should_prefer_unfused_baddbmm", "role": "bias-device-and-user-guard"},
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1955, "symbol": "unfuse_bias_baddbmm_to_pointwise", "role": "registered-rewrite-handler"}
@@ -168,19 +171,19 @@
         {"nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_unfuse_broadcast_bias_baddbmm_alpha_beta", "role": "primary-positive", "evidence_scope": "alpha=0.8、beta=0.2 时保持标量语义并拆分"}
       ],
       "variants": [
-        {"variant_id": "broadcast-gelu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "broadcast bias baddbmm 的 GELU consumer 触发拆分", "expected_counter": "no extern baddbmm; extern bmm remains", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "expanded-bias-relu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "stride-0 expanded bias 与 ReLU 路径触发拆分", "expected_counter": "no extern baddbmm; extern bmm remains", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "alpha-beta-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "非默认 alpha/beta 被保留到 bmm 与 pointwise 标量运算", "expected_counter": "no extern baddbmm; extern bmm remains", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "no-pointwise-consumer-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "无 pointwise consumer 时保留 extern baddbmm", "expected_counter": "generated code contains extern_kernels.baddbmm", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "broadcast-gelu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "默认 alpha=beta=1 的 broadcast bias baddbmm+GELU 拆为 bmm+pointwise", "expected_counter": "no extern baddbmm; extern bmm remains", "reference_status": "valid-reference", "npu_status": "supported-perf-improved"},
+        {"variant_id": "expanded-bias-relu-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "默认标量下 stride-0 expanded bias 与 ReLU 路径拆为 bmm+pointwise", "expected_counter": "no extern baddbmm; extern bmm remains", "reference_status": "valid-reference", "npu_status": "supported-selective-product-gate"},
+        {"variant_id": "alpha-beta-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "GPU 保持非默认 alpha/beta 并拆分；NPU 因稳定性能回退和额外显存而保留 baddbmm", "expected_counter": "GPU no extern baddbmm; NPU target_hit=0 with baddbmm retained", "reference_status": "valid-reference", "npu_status": "expected-disabled-product-gate"},
+        {"variant_id": "no-pointwise-consumer-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "无 pointwise consumer 时保留 extern baddbmm", "expected_counter": "generated code contains extern_kernels.baddbmm", "reference_status": "valid-reference", "npu_status": "guard-passed"}
       ],
       "tracking": {
         "reference_mode": "direct",
         "npu_mode": "adapter",
-        "adapter_reason": "社区测试固定 GPU_TYPE，且 should_prefer_unfused_baddbmm 使用 is_gpu device guard；NPU 阶段必须先记录 direct blocker",
+        "adapter_reason": "社区测试的生成入口固定 GPU_TYPE；torch_npu patch_is_gpu 已把 NPU 纳入 upstream is_gpu 语义，因此 is_gpu guard 不是 NPU capability blocker。NPU 仅适配 device/backend 与证据采集。",
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 broadcast/expanded bias", "丢弃 alpha/beta", "用 correctness 推断 rewrite"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后再执行 NPU"},
+      "npu_control": {"status": "complete-selective-product-gate", "next_action": "默认 alpha=beta=1 保持启用；disable_unfuse_baddbmm_non_default_scalars=true，非默认标量路径显式免测"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     }
   ]

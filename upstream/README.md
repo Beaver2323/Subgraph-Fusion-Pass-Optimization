@@ -1,7 +1,7 @@
 # Upstream Contract 与 Acceptance Unit 数据
 
-> 更新时间：2026-09-06 07:21 CST（UTC+08:00）
-> 状态：T-076/T-077 共 10 units 已形成正式 NPU/comparison；T-078～T-080 共 11 units/29 cases/47 variants 的 reference、性能合同与测例讲解已准备。T-078 已收到缺少 FX/日志正文的 1.0 紧凑摘要，仍与 T-079/T-080 一样不计入冻结分母。
+> 更新时间：2026-09-06 09:50 CST（UTC+08:00）
+> 状态：T-076～T-078 共 14 units 已形成正式 NPU/comparison；T-078 的 12/12 GPU cases、修复、性能与产品门禁已闭环。T-079/T-080 共 7 units/17 cases/27 variants 已准备，等待 GPU reference。
 
 本目录保存 tracker 的活动数据入口：
 
@@ -13,15 +13,16 @@
 - `reference_plan.yaml`：13 个原生 community cases、variant 覆盖和非动态处置；
 - `t077_manifest.yaml`：第二波 5 个已冻结并完成 NPU comparison 的单元与 17 个 variants；
 - `t077_reference_plan.yaml`：T-077 的 11 个 direct cases 与精确参数化入口；
-- `t078_manifest.yaml`：第三批 4 个已人工审核、等待 reference 的 acceptance units；
-- `t078_reference_plan.yaml`：T-078 的 12 个 direct cases 与 20 个 variants；
+- `t078_manifest.yaml`：第三批 4 个已冻结并完成 NPU comparison/性能处置的 acceptance units；
+- `t078_reference_plan.yaml`：T-078 的 12 个 direct cases 与 20 个已验证 variants；
 - `t079_manifest.yaml`、`t079_reference_plan.yaml`：T-079 的 4 个矩阵/cat-split 单元、4 cases 与 14 variants；
 - `t080_manifest.yaml`、`t080_reference_plan.yaml`：T-080 的 3 个访存/softmax/constructor 单元、13 cases 与 13 variants；
 - `performance_plan.schema.json`：新批次性能准备合同的公共结构；
 - `t076_performance_plan.yaml`、`t077_performance_plan.yaml`：同 backend 性能实测、显式关闭免测、
   capability 评估与候选拒绝依据；
-- `t078_performance_plan.yaml`～`t080_performance_plan.yaml`：逐单元功能门禁、社区/派生 benchmark
-  来源、目标级 OFF/ON、交错三轮、计时/内存与负例免测合同；
+- `t078_performance_plan.yaml`：第三批目标级 OFF/ON 实测、性能处置和最终产品门禁合同；
+- `t079_performance_plan.yaml`、`t080_performance_plan.yaml`：逐单元功能门禁、社区/派生 benchmark
+  来源、目标级 OFF/ON、交错三轮、计时/内存与负例免测计划；
 - `../scripts/validate_prepared_tasks.py`：T-078～T-080 reference/performance/中文 guide 的零设备一致性检查；
 - `../scripts/validate_tracker_data.py`：零第三方依赖的一致性检查。
 - `../scripts/generate_current_acceptance_matrix.py`：从本目录 manifest、`results/current/` 和性能
@@ -40,8 +41,8 @@ Python 标准库 `json` 解析，避免 GPU 机器额外安装 PyYAML。
 
 - T-074 v1 的 207 行 candidate CSV 继续作为 inventory 输入；
 - 本目录五批 manifest 共包含 21 个已人工复核的 acceptance units；
-- T-076/T-077 的 10 个单元为 `yes-frozen` 并已形成正式 NPU/comparison；T-078～T-080 的
-  11 个单元仍为 `pending-reference`，不进入冻结 denominator；
+- T-076～T-078 的 14 个单元为 `yes-frozen` 并已形成正式 NPU/comparison；T-079/T-080 的
+  7 个单元仍为 `pending-reference`，不进入冻结 denominator；
 - T-076 已为 20 个 variants 中 14 个建立原生动态 case 映射；3 个 registration-only 和 3 个
   NPU-only gate 已显式列为 reference 非动态项；
 - 当前 GPU adapter/extracted case 数为 0；13 个 direct 均 valid，不再设计 GPU adapter；
@@ -49,14 +50,17 @@ Python 标准库 `json` 解析，避免 GPU 机器额外安装 PyYAML。
 - 后续单元只能在 community contract 人工审核后增量进入 manifest。
 - T-077 的 5 个单元已由 11/11 direct GPU cases 冻结，并全部形成正式 NPU/comparison；
   decompose-MM 的 lowering 回归保留在 known issues，候选修复已通过同合同回归。
-- T-078 的 4 个单元仍为 `pending-reference`，不计入冻结 denominator；旧索引中 addcdiv
-  `no-test-found` 已纠正，pointless_view/pair 错误映射未进入本批。
+- T-078 的 4 个单元已由 12/12 direct GPU cases 冻结并完成 NPU/性能闭环；旧索引中 addcdiv
+  `no-test-found` 已纠正，pointless_view/pair 错误映射未进入本批。紧凑 handoff 没有 FX 正文，
+  因此只依据原生断言、FX signature 与哈希冻结，不宣称逐行图对照。
 - T-079/T-080 的 7 个单元同样为 `pending-reference`；T-080 又纠正 const-scatter 与 constructor
   mover 两个 `no-test-found`，并登记社区 CrossEntropy/softmax 性能方法供功能门禁后复用。
 - 性能处置不改变 denominator：T-076 为 2 measured + 3 exempt-explicitly-disabled；T-077 为
   4 measured + 1 capability-assessed-no-effective-template，pending=0。device guard 未包含 NPU
   没有被直接当成显式 disable，而是完成最小适配与收益评估；
   default/DVM/MLIR 结果不得迁移为 experimental verdict。
+- T-078 为 4 个候选单元实测：addcdiv 中性、partial shape-dependent、addmm 回退后全局关闭、
+  baddbmm 默认标量收益且非默认标量关闭；最终 gate 已在 `triton_experimental` 动态验证。
 
 ## 验证
 

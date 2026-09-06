@@ -4,7 +4,7 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 task_id=""
 npu_id=""
-unit="gumbel"
+unit=""
 validate_only=0
 
 usage() {
@@ -14,13 +14,15 @@ usage() {
   bash scripts/run_npu_performance_task.sh --task T-077 --unit decompose-mm --npu 0
   bash scripts/run_npu_performance_task.sh --task T-076 --validate-only
   bash scripts/run_npu_performance_task.sh --task T-078 --validate-only
+  bash scripts/run_npu_performance_task.sh --task T-078
 
 说明：
   T-076 的性能阶段复用仓库内同冻结版本的既有三轮 A/B 证据；明确关闭的三类 pad 免测。
   T-077 的 --unit 支持 gumbel、decompose-bmm、decompose-mm、decompose-addmm。
   decompose 三项只做测试态最小 capability 适配，不修改产品源码；B2B 使用独立 capability 探针。
-  T-078～T-080 仅完成性能方案，worker 尚未实现；当前只开放 --validate-only。
-  后续必须先实现并验证 worker，再凭 GPU reference 与 NPU 功能/命中证据开放实测。
+  T-078 已完成候选 OFF1-ON1-ON2-OFF2-OFF3-ON3、性能处置和最终产品门禁；
+  当前入口只校验并展示正式结果。addmm 与 baddbmm 非默认标量已显式关闭，不得绕过门禁重跑 ON。
+  T-079～T-080 仅完成性能方案，worker 尚未实现；当前只开放 --validate-only。
 EOF
 }
 
@@ -51,9 +53,28 @@ case "${task_id}" in
     T-077|T077)
         task_id="T-077"
         ;;
-    T-078|T078|T-079|T079|T-080|T080)
+    T-078|T078)
+        task_id="T-078"
+        python "${repo_root}/scripts/validate_prepared_tasks.py" --task "${task_id}"
+        test -s "${repo_root}/results/current/T-078/performance_summary.json" || {
+            echo "错误：缺少 T-078 正式性能汇总" >&2
+            exit 2
+        }
+        test -s "${repo_root}/results/current/T-078/product_gate_verification.json" || {
+            echo "错误：缺少 T-078 最终产品门禁验证" >&2
+            exit 2
+        }
+        if [[ -n "${unit}" && "${unit}" != "all" ]]; then
+            echo "错误：T-078 已完成并进入最终门禁态，不再开放单元级候选 ON 重跑" >&2
+            exit 4
+        fi
+        echo "performance_task=T-078 status=performance-disposition-and-product-gate-complete"
+        echo "summary=${repo_root}/results/current/T-078/performance_summary.json"
+        echo "product_gate=${repo_root}/results/current/T-078/product_gate_verification.json"
+        exit 0
+        ;;
+    T-079|T079|T-080|T080)
         case "${task_id}" in
-            T078) task_id="T-078" ;;
             T079) task_id="T-079" ;;
             T080) task_id="T-080" ;;
         esac
@@ -78,8 +99,14 @@ if ((activate_status != 0)); then
     echo "错误：Pass 环境激活失败，详见 /tmp/pass-performance-activate.log" >&2
     exit "${activate_status}"
 fi
+pass_python_env_root="${VIRTUAL_ENV:-${CONDA_PREFIX:-/home/z50063656/envs/Pass}}"
+if [[ ! -d "${pass_python_env_root}/lib/python3.11/site-packages/torch_npu/lib" ]]; then
+    echo "错误：无法定位 Pass 环境中的 torch_npu/lib：${pass_python_env_root}" >&2
+    exit 2
+fi
 
 export PYTHONPYCACHEPREFIX="${TMPDIR:-/tmp}/pass-python-cache"
+
 python -m py_compile \
     "${repo_root}/runners/gumbel_performance_worker.py" \
     "${repo_root}/runners/aggregate_performance.py" \
@@ -112,8 +139,9 @@ export TORCH_DEVICE_BACKEND_AUTOLOAD=1
 export TORCHINDUCTOR_NPU_BACKEND=triton_experimental
 export TORCHINDUCTOR_FORCE_DISABLE_CACHES=1
 export TORCHINDUCTOR_COMPILE_THREADS=1
-export LD_LIBRARY_PATH="${VIRTUAL_ENV}/lib/python3.11/site-packages/torch_npu/lib:${LD_LIBRARY_PATH:-}"
+export LD_LIBRARY_PATH="${pass_python_env_root}/lib/python3.11/site-packages/torch_npu/lib:${LD_LIBRARY_PATH:-}"
 
+unit="${unit:-gumbel}"
 case "${unit}" in
     gumbel) ;;
     decompose-bmm) worker_unit="bmm"; warmup=10; runs=100 ;;
