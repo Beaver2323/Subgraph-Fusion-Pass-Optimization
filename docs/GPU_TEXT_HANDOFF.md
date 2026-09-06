@@ -1,6 +1,6 @@
 # GPU 原文 handoff 导出、复制与恢复指南
 
-> 更新时间：2026-09-07 06:58 CST（UTC+08:00）
+> 更新时间：2026-09-07 07:17 CST（UTC+08:00）
 > 适用任务：T-076～T-080 及后续复用统一 GPU reference runner 的任务
 > 目标：在 GPU 服务器不能直接推 Git、不能传二进制时，用一个可复制 JSON 回传可校验的 FX、日志、生成代码和 IR 原文
 
@@ -116,8 +116,9 @@ python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
 find "${PARTS_DIR}" -maxdepth 1 -type f -printf '%f %s bytes\n' | sort
 ```
 
-默认每片承载 192 KiB 原始 JSON；经 Base64 和 JSON 包装后通常约 260 KiB。将 `manifest.json` 和
-全部 `part-*.json` 原样创建到例如：
+默认每片承载 48 KiB 原始 JSON；经 Base64 和 JSON 包装后通常约 66 KiB。这个默认值来自
+T-079 的实际回传：约 260 KiB 的首版分片仍被当前 GitHub 网页通道拒绝，因此进一步缩小。
+将 `manifest.json` 和全部 `part-*.json` 原样创建到例如：
 
 ```text
 results/incoming/T-079/text-handoff-parts/
@@ -158,8 +159,9 @@ results/incoming/T-078/text-handoff.json
 历史；如需并存多轮，也可另建带 run ID 的 JSON 文件。实际 handoff 在本地默认被 `.gitignore`
 忽略，但通过 GitHub 网页提交后会成为受版本控制文件，控制节点 `git pull` 可以取得。
 
-如果网页编辑器因文件过大拒绝保存，不能截断、拆改或删除日志后伪装成完整 handoff；应保留
-`wc -c`、错误信息和原 artifacts，再决定使用受控文件传输或另行设计分片格式。
+如果网页编辑器因单文件过大拒绝保存，不能截断、删日志或手工改 JSON；应使用 2.2 节的受控
+分片格式。默认约 66 KiB 仍不适用时，可在导出命令增加 `--split-part-bytes 16384`，将单片进一步
+降到约 23 KiB；导入和校验方式不变。
 
 ## 4. 控制节点校验、恢复与查看 FX
 

@@ -281,8 +281,6 @@ class RawTextTests(unittest.TestCase):
                 "--compact",
                 "--split-output-dir",
                 str(parts),
-                "--split-part-bytes",
-                str(exporter.MIN_SPLIT_PART_BYTES),
             ],
             cwd=WORK,
             capture_output=True,
@@ -291,6 +289,10 @@ class RawTextTests(unittest.TestCase):
         self.assertEqual(export.returncode, 0, export.stderr)
         manifest = json.loads((parts / "manifest.json").read_text())
         self.assertGreater(manifest["part_count"], 1)
+        self.assertLessEqual(
+            max(item["transport_file_bytes"] for item in manifest["parts"]),
+            70 * 1024,
+        )
         validation = subprocess.run(
             [
                 sys.executable,

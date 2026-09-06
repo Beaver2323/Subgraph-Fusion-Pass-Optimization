@@ -1,6 +1,6 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-07 06:58 CST（UTC+08:00）
+> 更新时间：2026-09-07 07:17 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
 > 当前任务：`T-076`、`T-077`、`T-078`、`T-079`、`T-080`
 
@@ -32,7 +32,8 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 5. 按共享/独占策略检查指定物理 GPU；指定 `--wait-gpu` 时等待条件满足；
 6. 执行任务对应的原生 community suite；
 7. 自动取得本轮 `reference-<timestamp>` 目录；
-8. 自动生成包含 FX、日志、生成代码和 IR 原文的 1.1 文本 handoff，并建立不含时间戳的 `latest` 入口。
+8. 自动生成包含 FX、日志、生成代码和 IR 原文的 1.2 压缩 handoff、约 66 KiB/片的网页分片，
+   并建立不含时间戳的 `latest` 入口。
 
 脚本不会安装或升级驱动、CUDA、Python、PyTorch，也不会修改 GPU 上的源码。
 本入口只运行 GPU 功能 reference，不自动运行 NPU 或性能测试。

@@ -1,6 +1,6 @@
 # T-079 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-07 06:58 CST（UTC+08:00）
+> 更新时间：2026-09-07 07:17 CST（UTC+08:00）
 > 状态：4 个 acceptance units、4 个 direct cases、14 个 variants 及逐单元性能计划已准备，等待 GPU 执行
 > 原则：只运行冻结 PyTorch commit 的原生社区方法；失败原样回传，不在 GPU 机器临时修改测试
 
