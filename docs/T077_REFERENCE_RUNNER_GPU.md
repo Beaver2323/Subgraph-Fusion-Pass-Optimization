@@ -1,6 +1,6 @@
 # T-077 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-07 06:02 CST（UTC+08:00）
+> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
 > 状态：GPU 11/11 direct cases、17/17 variants 已完成；本文保留合同，并提供统一一键复跑入口。
 > 执行原则：先运行冻结 PyTorch commit 中的原生社区测例；direct 无效时只回传证据，不在 GPU 机器临时改图或写 adapter。
 
@@ -122,7 +122,7 @@ bash "${TRACKER_ROOT}/scripts/run_t077_reference_all.sh" \
 
 ## 5. 文本回传
 
-统一入口会自动生成 1.2 压缩原文 handoff，并将本轮真实时间戳映射到稳定入口，不需要人工查找目录：
+统一入口会自动生成 1.3 review handoff，并将本轮真实时间戳映射到稳定入口，不需要人工查找目录：
 
 ```bash
 export RESULT_ROOT=/data/z50063656/tmp/t077-reference-results
@@ -134,7 +134,7 @@ sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
 wc -c "${RESULT_ROOT}/latest-text-handoff.json"
 ```
 
-请复制完整 JSON 文本。压缩只改变传输表示，控制节点恢复后继续按原始大小和 SHA256 校验。
+请复制完整 JSON 文本。review 包包含摘要、FX 与关键 case 正文；其余文件按原始大小和 SHA256 登记。
 失败时也保留并导出整轮目录；不要删除失败 case，不要把 skip 记作 PASS。
 
 ## 6. Direct blocker 决策

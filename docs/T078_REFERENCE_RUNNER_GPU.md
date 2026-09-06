@@ -1,7 +1,7 @@
 # T-078 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-07 06:02 CST（UTC+08:00）
-> 状态：已收到 12/12 通过的 1.0 紧凑摘要；尚需 1.2 压缩原文 handoff 完成 GPU FX/日志正文复核
+> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
+> 状态：已收到 12/12 通过的 1.0 紧凑摘要；尚需 1.3 review handoff 完成 GPU FX 正文复核
 > 原则：先运行冻结 PyTorch commit 中的原生社区测例；direct 失败只回传证据，不在 GPU 机器临时写 adapter
 
 2026-09-04 已按 PyTorch `copy_tests` 的真实命名规则，将两个 addcdiv 执行入口纠正为带
@@ -23,7 +23,7 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 将 `2` 替换为所选物理 GPU 编号；功能 reference 默认共享，允许已有计算进程。
 加 `--wait-gpu` 每 1 秒检查启动条件，加 `--exclusive` 才要求启动时无计算进程。
 入口会自动进入 `/data/z50063656/tmp`、激活 `PassGPURef`、检查 PyTorch commit/工作树、
-按所选策略检查 GPU、执行 12 个 fresh-process cases，并生成 1.2 压缩原文文本 handoff。
+按所选策略检查 GPU、执行 12 个 fresh-process cases，并生成 1.3 review handoff。
 显存门槛、等卡超时和固定结果入口见[通用一键说明](GPU_TASK_RUNNER.md)。
 
 ## 2. 预期静态校验

@@ -17,6 +17,7 @@ from typing import Any
 FORMAT_VERSION = "1.0"
 RAW_TEXT_FORMAT_VERSION = "1.1"
 COMPRESSED_RAW_TEXT_FORMAT_VERSION = "1.2"
+REVIEW_FORMAT_VERSION = "1.3"
 SPLIT_FORMAT_VERSION = "1.0"
 DEFAULT_SPLIT_PART_BYTES = 48 * 1024
 MIN_SPLIT_PART_BYTES = 16 * 1024
@@ -63,6 +64,17 @@ CASE_EVIDENCE_FILES = (
     "reference_result.json",
     "stderr.log",
     "stdout.log",
+)
+REVIEW_ROOT_FILES = frozenset(("environment.json", "reference_summary.json"))
+REVIEW_CASE_FILES = frozenset(
+    (
+        "artifact_inventory.json",
+        "benchmark.json",
+        "fx_after.txt",
+        "fx_before.txt",
+        "metadata.json",
+        "reference_result.json",
+    )
 )
 
 
@@ -209,10 +221,36 @@ def write_split_payload(
     return manifest
 
 
+def review_text_paths(payload: dict[str, Any]) -> set[str]:
+    """返回功能/性能评审必需正文；通过用例的大日志与生成代码仅保留哈希。"""
+    selected = set(REVIEW_ROOT_FILES)
+    for case in payload["case_audit"]:
+        case_id = case["case_id"]
+        selected.update(
+            f"cases/{case_id}/{name}" for name in REVIEW_CASE_FILES
+        )
+        if (
+            case.get("status") != "passed"
+            or case.get("reference_valid") is not True
+        ):
+            selected.update(
+                (f"cases/{case_id}/stderr.log", f"cases/{case_id}/stdout.log")
+            )
+    return selected
+
+
 def include_raw_text(
-    payload: dict[str, Any], run_dir: Path, *, compress: bool = False
+    payload: dict[str, Any],
+    run_dir: Path,
+    *,
+    compress: bool = False,
+    profile: str = "archive",
 ) -> None:
     """嵌入已登记文件的 UTF-8 原文；二进制只列缺项，不编码伪装成文本。"""
+    if profile not in {"archive", "review"}:
+        raise ValueError(f"未知 handoff profile：{profile}")
+    if profile == "review" and not compress:
+        raise ValueError("review profile 必须使用压缩原文")
     records = {item["path"]: item for item in payload["evidence_files"]}
     for case in payload["case_audit"]:
         case_id = case["case_id"]
@@ -234,11 +272,20 @@ def include_raw_text(
             if path in records and records[path] != record:
                 raise ValueError(f"文件与 inventory 哈希不一致：{path}")
             records[path] = record
+    selected = review_text_paths(payload) if profile == "review" else None
+    if selected is not None and not selected <= set(records):
+        missing = ", ".join(sorted(selected - set(records)))
+        raise ValueError(f"review profile 缺少必需文件：{missing}")
     embedded, omitted, total, compressed_total = [], [], 0, 0
     for relative, record in sorted(records.items()):
         path = checked_file(run_dir, relative)
         if path.stat().st_size != record["bytes"]:
             raise ValueError(f"证据文件大小/哈希与登记值不一致：{relative}")
+        if selected is not None and relative not in selected:
+            if sha256_file(path) != record["sha256"]:
+                raise ValueError(f"证据文件大小/哈希与登记值不一致：{relative}")
+            omitted.append(dict(record, reason="review-profile-hash-only"))
+            continue
         if path.suffix.lower() not in TEXT_SUFFIXES:
             if sha256_file(path) != record["sha256"]:
                 raise ValueError(f"证据文件大小/哈希与登记值不一致：{relative}")
@@ -276,6 +323,8 @@ def include_raw_text(
             embedded.append(dict(record, encoding="utf-8", text=content))
         total += record["bytes"]
     required = {item["path"] for item in payload["evidence_files"]}
+    if selected is not None:
+        required &= selected
     if not required <= {item["path"] for item in embedded}:
         raise ValueError("必需摘要/FX/日志文件不能作为 UTF-8 原文回传，停止导出")
     transfer = {
@@ -284,9 +333,17 @@ def include_raw_text(
         "omitted_files": omitted,
         "all_registered_artifacts_embedded": not omitted,
         "boundary": (
-            "包含原文供离线复核；未执行任何回传代码。缺失二进制只保留哈希，"
-            "不宣称完整二进制归档或重新运行通过。"
+            (
+                "包含评审范围原文供离线复核；未执行任何回传代码。未嵌入文件"
+                "只保留 inventory 哈希，不宣称完整归档或重新运行通过。"
+            )
+            if profile == "review"
+            else (
+                "包含已登记 UTF-8 原文供离线复核；未执行任何回传代码。"
+                "缺失二进制只保留哈希，不宣称完整二进制归档或重新运行通过。"
+            )
         ),
+        "profile": profile,
     }
     if compress:
         transfer.update(
@@ -295,10 +352,15 @@ def include_raw_text(
         )
     payload.update(
         handoff_format_version=(
-            COMPRESSED_RAW_TEXT_FORMAT_VERSION
-            if compress
-            else RAW_TEXT_FORMAT_VERSION
+            REVIEW_FORMAT_VERSION
+            if profile == "review"
+            else (
+                COMPRESSED_RAW_TEXT_FORMAT_VERSION
+                if compress
+                else RAW_TEXT_FORMAT_VERSION
+            )
         ),
+        handoff_profile=profile,
         raw_text_files=embedded,
         raw_text_transfer=transfer,
     )
@@ -428,6 +490,14 @@ def parse_args() -> argparse.Namespace:
         help="将原文逐文件 zlib 压缩并 Base64 编码为 1.2 handoff；须与 --include-raw-text 同用",
     )
     parser.add_argument(
+        "--profile",
+        choices=("summary", "review", "archive"),
+        help=(
+            "summary=结构化摘要；review=摘要+FX/关键 case 正文（推荐网页回传）；"
+            "archive=全部已登记文本"
+        ),
+    )
+    parser.add_argument(
         "--allow-derived-output",
         action="store_true",
         help="仅允许在 run 内新建保留文件 text-handoff.json；不覆盖原证据",
@@ -470,9 +540,23 @@ def main() -> int:
             ):
                 raise ValueError("文本 handoff 分片必须写在原始 run 目录外")
         payload = build_payload(run_dir)
+        if args.profile is not None and (
+            args.include_raw_text or args.compress_raw_text
+        ):
+            raise ValueError("--profile 不能与旧的原文选项同时使用")
         if args.compress_raw_text and not args.include_raw_text:
             raise ValueError("--compress-raw-text 必须与 --include-raw-text 同时使用")
-        if args.include_raw_text:
+        if args.profile in {"review", "archive"}:
+            include_raw_text(
+                payload,
+                run_dir,
+                compress=True,
+                profile=args.profile,
+            )
+        elif args.profile == "summary":
+            payload["handoff_profile"] = "summary"
+            seal_payload(payload)
+        elif args.include_raw_text:
             include_raw_text(payload, run_dir, compress=args.compress_raw_text)
         indent = None if args.compact else 2
         content = json.dumps(

@@ -48,6 +48,8 @@ class RawTextTests(unittest.TestCase):
         (case / "fx_after.txt").write_bytes("图 after\n".encode())
         (case / "stdout.log").write_text("")
         (case / "stderr.log").write_text("Ran 1 test in 1s\nOK\n")
+        (case / "benchmark.json").write_text("{}\n")
+        (case / "metadata.json").write_text("{}\n")
         (case / "cache/output_code.py").write_text(
             "raise RuntimeError('不得执行回传代码')\n"
         )
@@ -86,9 +88,11 @@ class RawTextTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data, ensure_ascii=False) + "\n")
 
-    def payload(self, *, compress=False):
+    def payload(self, *, compress=False, profile="archive"):
         payload = exporter.build_payload(self.run)
-        exporter.include_raw_text(payload, self.run, compress=compress)
+        exporter.include_raw_text(
+            payload, self.run, compress=compress, profile=profile
+        )
         return payload
 
     def test_round_trip_restores_exact_text_not_binary_and_never_executes(self):
@@ -123,6 +127,41 @@ class RawTextTests(unittest.TestCase):
                 (restored / item["path"]).read_bytes(),
                 (self.run / item["path"]).read_bytes(),
             )
+
+    def test_review_profile_keeps_fx_and_hashes_large_artifacts(self):
+        payload = self.payload(compress=True, profile="review")
+        self.assertEqual(payload["handoff_format_version"], "1.3")
+        self.assertEqual(payload["handoff_profile"], "review")
+        embedded = {item["path"] for item in payload["raw_text_files"]}
+        self.assertIn("cases/case/fx_before.txt", embedded)
+        self.assertIn("cases/case/fx_after.txt", embedded)
+        self.assertNotIn("cases/case/stderr.log", embedded)
+        self.assertNotIn("cases/case/cache/output_code.py", embedded)
+        omitted = {
+            item["path"]: item["reason"]
+            for item in payload["raw_text_transfer"]["omitted_files"]
+        }
+        self.assertEqual(
+            omitted["cases/case/cache/output_code.py"],
+            "review-profile-hash-only",
+        )
+        restored = importer.restore(payload, self.root / "review-imports")
+        self.assertTrue((restored / "cases/case/fx_before.txt").is_file())
+        self.assertFalse((restored / "cases/case/stderr.log").exists())
+        self.assertFalse((restored / "cases/case/cache/output_code.py").exists())
+
+    def test_review_profile_includes_failure_logs(self):
+        result_path = self.run / "cases/case/reference_result.json"
+        result = json.loads(result_path.read_text())
+        result["execution"]["status"] = "failed"
+        result["execution"]["return_code"] = 1
+        result["reference_valid"] = False
+        result_path.write_text(json.dumps(result) + "\n")
+        payload = self.payload(compress=True, profile="review")
+        embedded = {item["path"] for item in payload["raw_text_files"]}
+        self.assertIn("cases/case/stderr.log", embedded)
+        self.assertIn("cases/case/stdout.log", embedded)
+        importer.validate_payload(payload)
 
     def test_compressed_payload_tampering_is_rejected(self):
         payload = self.payload(compress=True)
@@ -212,8 +251,8 @@ class RawTextTests(unittest.TestCase):
                 str(ROOT / "scripts/export_reference_text.py"),
                 "--run-dir",
                 str(self.run),
-                "--include-raw-text",
-                "--compress-raw-text",
+                "--profile",
+                "review",
                 "--compact",
                 "--output",
                 str(output),
@@ -223,7 +262,7 @@ class RawTextTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(export.returncode, 0, export.stderr)
-        self.assertEqual(json.loads(output.read_text())["handoff_format_version"], "1.2")
+        self.assertEqual(json.loads(output.read_text())["handoff_format_version"], "1.3")
         validation = subprocess.run(
             [
                 sys.executable,

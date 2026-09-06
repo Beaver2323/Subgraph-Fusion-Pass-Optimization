@@ -3689,3 +3689,16 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   66 KiB，T-079 预计约 15 片。保留 `--split-part-bytes 16384` 作为约 23 KiB/片的保守退路。
 - 分片数量变化不改变 handoff 内容与验收口径；manifest、逐片 SHA256、整包 SHA256、内部
   `payload_sha256` 和 inventory 绑定继续全部校验。默认成品大小已纳入往返回归。
+
+### E-231：GPU handoff 按评审与归档分级（2026-09-07）
+
+- 登记时间：2026-09-07 07:32 CST（UTC+08:00）。复核确认 T-078 的 51559 字节文件是 1.0
+  summary，只含状态、FX 签名与 artifact 哈希；T-079 的 727467 字节文件是 1.2 archive，嵌入了
+  成功日志、生成代码和 IR。两者内容合同不同，不能仅以文件大小比较。
+- 新增 `summary/review/archive` 三档。统一 GPU 一键入口默认生成 1.3 review：保留环境、suite、FX
+  前后、case metadata/result、benchmark 和完整 inventory；通过 case 的日志、生成代码、IR 与
+  二进制只保留原大小/SHA256，失败或无效 case 自动携带 stdout/stderr。
+- 1.2 archive 改为按需 `--profile archive`，用于生成代码/IR 深度排障；1.0 summary 继续只看
+  结论。导入器校验 profile/格式绑定、review 必需文件、hash-only 缺项和 inventory 全覆盖，且
+  不执行回传代码。分片作为 review 单文件仍超网页限制时的备用传输，不再作为默认首选交付。
+- 新增 review 正常路径、失败日志自动携带和一键入口回归；统一零设备门禁 88 项测试通过。

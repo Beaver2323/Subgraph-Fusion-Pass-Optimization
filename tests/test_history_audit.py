@@ -173,8 +173,7 @@ class ExportIntegrationTests(HistoryFixtures):
         for path, expected in originals.items():
             self.assertEqual(audit.digest(Path(path)), expected)
         self.assertIn("--allow-derived-output", (ROOT / "scripts/run_gpu_reference_task.sh").read_text())
-        self.assertIn("--include-raw-text", (ROOT / "scripts/run_gpu_reference_task.sh").read_text())
-        self.assertIn("--compress-raw-text", (ROOT / "scripts/run_gpu_reference_task.sh").read_text())
+        self.assertIn("--profile review", (ROOT / "scripts/run_gpu_reference_task.sh").read_text())
         self.assertIn("--split-output-dir", (ROOT / "scripts/run_gpu_reference_task.sh").read_text())
 
     def test_output_cannot_replace_source_even_with_flag(self):

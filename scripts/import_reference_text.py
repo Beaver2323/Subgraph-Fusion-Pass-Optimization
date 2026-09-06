@@ -15,6 +15,9 @@ from typing import Any
 
 from export_reference_text import (
     MAX_TEXT_BYTES,
+    REVIEW_CASE_FILES,
+    REVIEW_FORMAT_VERSION,
+    REVIEW_ROOT_FILES,
     SPLIT_FORMAT_VERSION,
     safe_relative_path,
     seal_payload,
@@ -149,8 +152,16 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
     if expected != copied["payload_sha256"]:
         raise ValueError("handoff 整包 SHA256 不一致，可能复制不完整或被修改")
     format_version = payload.get("handoff_format_version")
-    if format_version not in {"1.1", "1.2"}:
-        raise ValueError("不是带原文的 1.1/1.2 handoff；摘要 1.0 不能恢复 FX 正文")
+    if format_version not in {"1.1", "1.2", REVIEW_FORMAT_VERSION}:
+        raise ValueError(
+            "不是带原文的 1.1/1.2/1.3 handoff；摘要 1.0 不能恢复 FX 正文"
+        )
+    profile = payload.get("handoff_profile", "archive")
+    if (
+        profile not in {"archive", "review"}
+        or (format_version == REVIEW_FORMAT_VERSION) != (profile == "review")
+    ):
+        raise ValueError("handoff 格式版本与 profile 不一致")
     raw_text_files = require_list(payload.get("raw_text_files"), "raw_text_files")
     summary = require_mapping(payload.get("reference_summary"), "reference_summary")
     run_id = summary.get("run_id")
@@ -219,20 +230,35 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
             if str(parent) != "."
         ):
             raise ValueError("原文路径存在文件/目录冲突")
+    transfer = require_mapping(payload.get("raw_text_transfer"), "raw_text_transfer")
+    omitted_files = require_list(transfer.get("omitted_files"), "omitted_files")
+    for index, value in enumerate(omitted_files):
+        validate_record(value, f"omitted_files[{index}]")
+    omitted = {item["path"]: item for item in omitted_files}
+    if len(omitted) != len(omitted_files) or set(data) & set(omitted):
+        raise ValueError("缺项路径重复或同时存在正文")
+
     evidence_files = require_list(payload.get("evidence_files"), "evidence_files")
     for index, value in enumerate(evidence_files):
         record = validate_record(value, f"evidence_files[{index}]")
         content = data.get(record["path"])
-        if (
-            content is None
-            or len(content) != record["bytes"]
-            or hashlib.sha256(content).hexdigest() != record["sha256"]
+        hash_only = omitted.get(record["path"])
+        if content is None and profile == "review" and hash_only is not None:
+            if (
+                hash_only.get("reason") != "review-profile-hash-only"
+                or any(
+                    hash_only.get(key) != record[key] for key in ("bytes", "sha256")
+                )
+            ):
+                raise ValueError(f"评审缺项声明不一致：{record['path']}")
+            continue
+        if content is None or len(content) != record["bytes"] or (
+            hashlib.sha256(content).hexdigest() != record["sha256"]
         ):
             raise ValueError(f"缺失或不一致的必需原文：{record['path']}")
-    transfer = require_mapping(payload.get("raw_text_transfer"), "raw_text_transfer")
     if transfer["embedded_files"] != len(data) or transfer["embedded_bytes"] != total:
         raise ValueError("原文数量/字节统计不一致")
-    if format_version == "1.2":
+    if format_version in {"1.2", REVIEW_FORMAT_VERSION}:
         if transfer.get("transport_encoding") != "zlib+base64-per-file":
             raise ValueError("原文传输编码声明不一致")
         compressed_total = sum(item["compressed_bytes"] for item in raw_text_files)
@@ -266,12 +292,24 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
             if path in indexed and indexed[path] != record:
                 raise ValueError(f"inventory 与正文登记冲突：{path}")
             indexed[path] = record
-    omitted_files = require_list(transfer.get("omitted_files"), "omitted_files")
-    for index, value in enumerate(omitted_files):
-        validate_record(value, f"omitted_files[{index}]")
-    omitted = {item["path"]: item for item in omitted_files}
-    if len(omitted) != len(omitted_files) or set(data) & set(omitted):
-        raise ValueError("缺项路径重复或同时存在正文")
+    if profile == "review":
+        required_review = set(REVIEW_ROOT_FILES)
+        for case in case_audit:
+            case_id = case["case_id"]
+            required_review.update(
+                f"cases/{case_id}/{name}" for name in REVIEW_CASE_FILES
+            )
+            if (
+                case.get("status") != "passed"
+                or case.get("reference_valid") is not True
+            ):
+                required_review.update(
+                    (f"cases/{case_id}/stderr.log", f"cases/{case_id}/stdout.log")
+                )
+        if transfer.get("profile") != "review" or not required_review <= set(data):
+            raise ValueError("review handoff 缺少摘要、FX、case 结果或失败日志")
+    elif transfer.get("profile") not in {None, "archive"}:
+        raise ValueError("archive handoff 的传输 profile 非法")
     if set(indexed) != set(data) | set(omitted):
         raise ValueError("原文/缺项未完整覆盖已登记文件，或包含未登记文件")
     for path, record in indexed.items():
@@ -305,6 +343,7 @@ def restore(payload: dict[str, Any], output_root: Path) -> Path:
             handle.write(content)
     receipt = {
         "handoff_format_version": payload["handoff_format_version"],
+        "handoff_profile": payload.get("handoff_profile", "archive"),
         "payload_sha256": payload["payload_sha256"],
         "restored_files": len(data),
         "source_run_dir": payload["source_run_dir"],

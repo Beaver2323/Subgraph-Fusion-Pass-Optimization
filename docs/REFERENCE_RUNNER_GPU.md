@@ -1,6 +1,6 @@
 # T-076 GPU/reference Runner 人工操作说明
 
-> 更新时间：2026-09-07 06:02 CST（UTC+08:00）
+> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
 > 状态：GPU 环境与文本 handoff 已复核；13/13 direct cases 均 passed 且 `reference_valid=true`。
 > 核心规则：先取得 direct 结果；没有 direct blocker 证据，不创建或运行 adapter。
 
@@ -206,9 +206,9 @@ sha256sum "${TEXT_HANDOFF}"
 wc -c "${TEXT_HANDOFF}"
 ```
 
-当前统一入口生成 1.2 压缩原文 handoff：包含完整环境、suite 摘要、逐 case 审核字段，以及
-inventory 登记的 UTF-8 FX、日志、生成代码和常见 IR。原文逐文件压缩并保留原始大小/SHA256，
-控制节点可以安全恢复；不修改原始 run。原始 run 仍须保留在 GPU 机器，供二进制工件追溯。
+当前统一入口生成 1.3 review handoff：包含环境、suite 摘要、逐 case 审核字段、FX、结果与
+benchmark；成功日志、生成代码、IR 和二进制只保留原始大小/SHA256。控制节点可以安全恢复评审
+正文；原始 run 仍须保留在 GPU 机器，深度排障时另导出 1.2 archive。
 
 ## 8. Direct blocker 与 adapter 决策
 

@@ -1,8 +1,8 @@
 # GPU 原文 handoff 导出、复制与恢复指南
 
-> 更新时间：2026-09-07 07:17 CST（UTC+08:00）
+> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
 > 适用任务：T-076～T-080 及后续复用统一 GPU reference runner 的任务
-> 目标：在 GPU 服务器不能直接推 Git、不能传二进制时，用一个可复制 JSON 回传可校验的 FX、日志、生成代码和 IR 原文
+> 目标：在 GPU 服务器不能直接推 Git、不能传二进制时，默认用短评审包回传可校验的摘要与 FX；完整文本归档按需导出
 
 ## 1. 默认行为
 
@@ -12,7 +12,7 @@
 bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 ```
 
-会在功能 reference 完成后自动生成 **1.2 压缩原文 handoff**：
+会在功能 reference 完成后自动生成 **1.3 压缩评审 handoff**：
 
 ```text
 /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
@@ -21,13 +21,14 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 不需要查找 `reference-<timestamp>`。`latest-text-handoff.json` 始终指向最后发布的一轮；控制台同时
 打印真实 `run_dir=`，用于审计并发运行。
 
-两种格式的边界如下：
+三种 profile 与历史格式的边界如下：
 
-| 格式 | 产生方式 | 内容 | 能否恢复 FX/日志正文 |
+| 格式/profile | 产生方式 | 内容 | 用途 |
 | --- | --- | --- | --- |
-| `1.0` | 手工调用导出器且不加 `--include-raw-text` | 环境、summary、逐 case 状态、文件大小和 SHA256 | 不能 |
-| `1.1` | 手工加 `--include-raw-text` | 1.0 全部字段，加已登记 UTF-8 原文和二进制缺项清单 | 能恢复，但文本较长 |
-| `1.2` | GPU 一键入口默认；或再加 `--compress-raw-text` | 与 1.1 相同的原文件，逐文件 zlib 压缩并 Base64 编码 | 能逐字节恢复，适合网页复制 |
+| `1.0 summary` | `--profile summary` | 环境、summary、逐 case 状态、文件大小和 SHA256 | 只看结论，不能查看 FX 正文 |
+| `1.3 review` | 一键入口默认；`--profile review` | 1.0 加 FX 前后、case 元数据、结果、benchmark、inventory；失败 case 加日志 | GPU/NPU 功能与性能评审，推荐网页回传 |
+| `1.2 archive` | `--profile archive` | 嵌入全部已登记 UTF-8 日志、生成代码和 IR | 深度排障/审计，通常较大 |
+| `1.1 archive` | 旧参数 `--include-raw-text` | 1.2 的未压缩兼容格式 | 仅兼容旧流程 |
 
 旧的 1.0 紧凑包仍可用于摘要复核，但不能据此查看 GPU 实际 FX 图、生成代码或完整日志；导入器会
 明确拒绝把 1.0 冒充可恢复证据。
@@ -71,41 +72,49 @@ handoff_validation=OK run_id=reference-... restorable_text_files=... code_execut
 
 ### 2.1 已有历史 run 不重跑 GPU
 
-如果完整 artifacts 仍在 GPU 服务器，可直接把旧 run 重新导出为 1.2，不会重新运行 GPU：
+如果完整 artifacts 仍在 GPU 服务器，可直接把旧 run 重新导出为 1.3 review，不会重新运行 GPU：
 
 ```bash
 export RUN_DIR="$(readlink -f /data/z50063656/tmp/t078-reference-results/latest)"
-export RAW_HANDOFF=/data/z50063656/tmp/t078-reference-handoff-v1.2.json
+export REVIEW_HANDOFF=/data/z50063656/tmp/t078-reference-handoff-review-v1.3.json
 
 cd /data/z50063656/tmp
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${RUN_DIR}" \
-  --include-raw-text \
-  --compress-raw-text \
+  --profile review \
   --compact \
-  --output "${RAW_HANDOFF}"
+  --output "${REVIEW_HANDOFF}"
 
 python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
-  --input "${RAW_HANDOFF}" \
+  --input "${REVIEW_HANDOFF}" \
   --validate-only
 ```
 
-1.2 只压缩传输表示，恢复后仍按 inventory 中原始字节数和 SHA256 校验；不会降低 FX、日志或
-生成代码的证据完整性。导出器使用“只新建、不覆盖”策略。`RAW_HANDOFF` 已存在时应换一个文件名或先人工保留旧文件；它
+review 包保留 FX 对照所需正文，并为未传输的成功日志、生成代码、IR 和二进制保留 inventory
+大小与 SHA256；完整文件仍留在 GPU 原 run。导出器使用“只新建、不覆盖”策略。输出已存在时应换一个文件名或先人工保留旧文件；它
 不会覆盖原始 run、已有 handoff、软链接或任何原证据。
+
+只有深度排障需要全部文本时才改用：
+
+```bash
+python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
+  --run-dir "${RUN_DIR}" \
+  --profile archive \
+  --compact \
+  --output /data/z50063656/tmp/t078-reference-handoff-archive-v1.2.json
+```
 
 ### 2.2 GitHub 网页不接受单个长文件
 
-如果网页提示 `File could not be edited`，不要截断单文件或手工拼 JSON。将同一 1.2 handoff 自动
+如果 review 包仍提示 `File could not be edited`，不要截断单文件或手工拼 JSON。将同一 handoff 自动
 拆为一个 manifest 和多个小 JSON；每个分片内部再将 Base64 按短行保存：
 
 ```bash
-export PARTS_DIR=/data/z50063656/tmp/t079-handoff-parts-v1.2
+export PARTS_DIR=/data/z50063656/tmp/t079-handoff-review-parts-v1.3
 
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${RUN_DIR}" \
-  --include-raw-text \
-  --compress-raw-text \
+  --profile review \
   --compact \
   --split-output-dir "${PARTS_DIR}"
 
@@ -137,7 +146,7 @@ python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
   --validate-only
 ```
 
-GPU 一键入口从 2026-09-07 起同时生成单文件与 `latest/text-handoff-parts/manifest.json`。已有旧 run
+GPU 一键入口同时生成 review 单文件与 `latest/text-handoff-parts/manifest.json`。已有旧 run
 可用上述命令补生成分片，无需重跑 GPU。
 
 ## 3. 通过文本复制上传 GitHub
@@ -185,37 +194,54 @@ python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
 ```
 
 第二条命令打印唯一的 `restored_run=`。恢复目录强制位于 tracker 仓库外，每次创建新目录，不覆盖
-既有文件。随后按实际 case 查看：
+既有文件。review 包按实际 case 查看 FX：
 
 ```bash
 export RESTORED_RUN=/home/z50063656/tmp/gpu-reference-imports/text-import-.../reference-...
 
 sed -n '1,240p' "${RESTORED_RUN}/cases/REF-addcdiv-fma-bitwise-native/fx_before.txt"
 sed -n '1,240p' "${RESTORED_RUN}/cases/REF-addcdiv-fma-bitwise-native/fx_after.txt"
+```
+
+仅当导入的是 archive 包时，才会恢复可查询的生成代码与 IR：
+
+```bash
 find "${RESTORED_RUN}/cases/REF-addcdiv-fma-bitwise-native" \
   -type f \( -name 'output_code.py' -o -name '*.ttir' -o -name '*.ttgir' -o -name '*.ptx' \) \
   -print
 ```
 
-恢复只是数据读取。导入器不会 `import`、`exec`、运行或编译回传的 `.py`、PTX、Triton IR；回执
+review 包默认不包含 `output_code.py`、PTX 或 Triton IR 正文；这些文件只保留 inventory 哈希，
+需要查看时从 GPU 原 run 取证或另导出 archive。恢复只是数据读取。导入器不会 `import`、`exec`、运行或编译任何回传正文；回执
 `import_receipt.json` 固定记录 `code_executed=false`。恢复成功也不自动把 case 判为 PASS，仍需按
 reference summary、测试数、skip、correctness、FX 和源码 revision 完成验收。
 
 ## 5. 包含内容与缺项
 
-1.1/1.2 都会嵌入 `artifact_inventory.json` 登记且后缀为下列类型的严格 UTF-8 原文：
+1.3 review 固定嵌入：
+
+```text
+environment.json, reference_summary.json；
+每个 case 的 artifact_inventory.json、benchmark.json、fx_before.txt、
+fx_after.txt、metadata.json、reference_result.json；
+失败或无效 case 的 stdout.log、stderr.log。
+```
+
+通过 case 的日志、生成代码、IR、缓存和所有二进制只登记原路径、字节数、SHA256 与
+`review-profile-hash-only` 原因。1.2 archive 才会继续嵌入 inventory 登记且后缀为下列类型的
+严格 UTF-8 原文：
 
 ```text
 json/jsonl, txt/log, py, csv, yaml/yml, ptx, ttir/ttgir, ll/mlir,
 dot, c/cpp/cu, h/hpp, s/asm, html, md
 ```
 
-因此 `fx_before.txt`、`fx_after.txt`、`stdout.log`、`stderr.log`、`reference_result.json`、
+archive 中的 `fx_before.txt`、`fx_after.txt`、`stdout.log`、`stderr.log`、`reference_result.json`、
 `output_code.py` 和常见 Triton/LLVM/PTX 文本可以离线恢复。非 UTF-8、含 NUL 或非文本后缀的文件
 不会塞进 JSON；它们保留在 `raw_text_transfer.omitted_files`，包括原路径、字节数、SHA256 和原因。
 
-`all_registered_artifacts_embedded=false` 通常只说明存在 cubin、so 等二进制，并不表示已嵌入文本
-不完整。这个 JSON 不是二进制 artifacts 的完整归档，也不能替代需要二进制反汇编或重新执行的
+review 的 `all_registered_artifacts_embedded=false` 是正常状态，表示评审范围外文件只保留哈希；
+archive 中该值为 false 通常说明存在 cubin、so 等二进制。handoff 不能替代需要二进制反汇编或重新执行的
 场景。原文总量上限为 64 MiB；超限时导出失败而不是静默截断。
 
 ## 6. 完整性和安全边界
