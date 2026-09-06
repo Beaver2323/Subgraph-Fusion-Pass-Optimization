@@ -1,6 +1,6 @@
 # GPU 原文 handoff 导出、复制与恢复指南
 
-> 更新时间：2026-09-07 06:02 CST（UTC+08:00）
+> 更新时间：2026-09-07 06:58 CST（UTC+08:00）
 > 适用任务：T-076～T-080 及后续复用统一 GPU reference runner 的任务
 > 目标：在 GPU 服务器不能直接推 Git、不能传二进制时，用一个可复制 JSON 回传可校验的 FX、日志、生成代码和 IR 原文
 
@@ -93,6 +93,51 @@ python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
 1.2 只压缩传输表示，恢复后仍按 inventory 中原始字节数和 SHA256 校验；不会降低 FX、日志或
 生成代码的证据完整性。导出器使用“只新建、不覆盖”策略。`RAW_HANDOFF` 已存在时应换一个文件名或先人工保留旧文件；它
 不会覆盖原始 run、已有 handoff、软链接或任何原证据。
+
+### 2.2 GitHub 网页不接受单个长文件
+
+如果网页提示 `File could not be edited`，不要截断单文件或手工拼 JSON。将同一 1.2 handoff 自动
+拆为一个 manifest 和多个小 JSON；每个分片内部再将 Base64 按短行保存：
+
+```bash
+export PARTS_DIR=/data/z50063656/tmp/t079-handoff-parts-v1.2
+
+python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
+  --run-dir "${RUN_DIR}" \
+  --include-raw-text \
+  --compress-raw-text \
+  --compact \
+  --split-output-dir "${PARTS_DIR}"
+
+python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
+  --input "${PARTS_DIR}/manifest.json" \
+  --validate-only
+
+find "${PARTS_DIR}" -maxdepth 1 -type f -printf '%f %s bytes\n' | sort
+```
+
+默认每片承载 192 KiB 原始 JSON；经 Base64 和 JSON 包装后通常约 260 KiB。将 `manifest.json` 和
+全部 `part-*.json` 原样创建到例如：
+
+```text
+results/incoming/T-079/text-handoff-parts/
+├── manifest.json
+├── part-0001.json
+├── part-0002.json
+└── ...
+```
+
+控制节点直接把 manifest 交给导入器；导入器会验证分片顺序、归属、偏移、逐片哈希、重建整包
+SHA256 和 handoff 内部全部证据，无需人工合并：
+
+```bash
+python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
+  --input "${TRACKER_ROOT}/results/incoming/T-079/text-handoff-parts/manifest.json" \
+  --validate-only
+```
+
+GPU 一键入口从 2026-09-07 起同时生成单文件与 `latest/text-handoff-parts/manifest.json`。已有旧 run
+可用上述命令补生成分片，无需重跑 GPU。
 
 ## 3. 通过文本复制上传 GitHub
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+from datetime import datetime
 import hashlib
 import json
 import sys
@@ -16,6 +17,11 @@ from typing import Any
 FORMAT_VERSION = "1.0"
 RAW_TEXT_FORMAT_VERSION = "1.1"
 COMPRESSED_RAW_TEXT_FORMAT_VERSION = "1.2"
+SPLIT_FORMAT_VERSION = "1.0"
+DEFAULT_SPLIT_PART_BYTES = 192 * 1024
+MIN_SPLIT_PART_BYTES = 16 * 1024
+MAX_SPLIT_PART_BYTES = 512 * 1024
+BASE64_LINE_CHARS = 4096
 TEXT_SUFFIXES = {
     ".asm",
     ".c",
@@ -130,6 +136,77 @@ def seal_payload(payload: dict[str, Any]) -> None:
     payload.pop("payload_sha256", None)
     canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     payload["payload_sha256"] = hashlib.sha256(canonical).hexdigest()
+
+
+def write_split_payload(
+    content: bytes,
+    output_dir: Path,
+    *,
+    payload_sha256: str,
+    part_bytes: int,
+) -> dict[str, Any]:
+    """将完整 handoff 序列化文本拆为多个可单独粘贴的 JSON 分片。"""
+    if not MIN_SPLIT_PART_BYTES <= part_bytes <= MAX_SPLIT_PART_BYTES:
+        raise ValueError(
+            f"--split-part-bytes 必须在 {MIN_SPLIT_PART_BYTES}～{MAX_SPLIT_PART_BYTES} 之间"
+        )
+    output_dir = output_dir.resolve()
+    if output_dir.exists() or output_dir.is_symlink():
+        raise ValueError(f"分片输出目录必须不存在：{output_dir}")
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir()
+    source_sha256 = hashlib.sha256(content).hexdigest()
+    chunks = [
+        content[offset : offset + part_bytes]
+        for offset in range(0, len(content), part_bytes)
+    ]
+    if not chunks:
+        chunks = [b""]
+    records = []
+    for index, raw in enumerate(chunks, start=1):
+        name = f"part-{index:04d}.json"
+        encoded = base64.b64encode(raw).decode("ascii")
+        part = {
+            "split_format_version": SPLIT_FORMAT_VERSION,
+            "source_sha256": source_sha256,
+            "index": index,
+            "part_count": len(chunks),
+            "source_offset": (index - 1) * part_bytes,
+            "payload_bytes": len(raw),
+            "payload_sha256": hashlib.sha256(raw).hexdigest(),
+            "encoding": "base64",
+            "data": [
+                encoded[offset : offset + BASE64_LINE_CHARS]
+                for offset in range(0, len(encoded), BASE64_LINE_CHARS)
+            ],
+        }
+        part_content = json.dumps(part, ensure_ascii=False, indent=2) + "\n"
+        with (output_dir / name).open("x", encoding="utf-8") as handle:
+            handle.write(part_content)
+        records.append(
+            {
+                "path": name,
+                "index": index,
+                "source_offset": part["source_offset"],
+                "payload_bytes": len(raw),
+                "payload_sha256": part["payload_sha256"],
+                "transport_file_bytes": len(part_content.encode("utf-8")),
+            }
+        )
+    manifest = {
+        "split_format_version": SPLIT_FORMAT_VERSION,
+        "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "source_name": "text-handoff.json",
+        "source_bytes": len(content),
+        "source_sha256": source_sha256,
+        "payload_sha256": payload_sha256,
+        "part_payload_bytes": part_bytes,
+        "part_count": len(records),
+        "parts": records,
+    }
+    with (output_dir / "manifest.json").open("x", encoding="utf-8") as handle:
+        handle.write(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+    return manifest
 
 
 def include_raw_text(
@@ -355,6 +432,17 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="仅允许在 run 内新建保留文件 text-handoff.json；不覆盖原证据",
     )
+    parser.add_argument(
+        "--split-output-dir",
+        type=Path,
+        help="将 handoff 拆成 manifest.json 和多个小 JSON；可与 --output 同用",
+    )
+    parser.add_argument(
+        "--split-part-bytes",
+        type=int,
+        default=DEFAULT_SPLIT_PART_BYTES,
+        help=f"每个分片承载的原始 JSON 字节数，默认 {DEFAULT_SPLIT_PART_BYTES}",
+    )
     return parser.parse_args()
 
 
@@ -371,6 +459,16 @@ def main() -> int:
                 args.allow_derived_output and output == reserved
             ):
                 raise ValueError("文本 handoff 必须写在原始 run 目录外")
+        if args.split_output_dir is not None:
+            split_output_dir = args.split_output_dir.resolve()
+            reserved_split = run_dir / "text-handoff-parts"
+            if (
+                split_output_dir == run_dir
+                or split_output_dir.is_relative_to(run_dir)
+            ) and not (
+                args.allow_derived_output and split_output_dir == reserved_split
+            ):
+                raise ValueError("文本 handoff 分片必须写在原始 run 目录外")
         payload = build_payload(run_dir)
         if args.compress_raw_text and not args.include_raw_text:
             raise ValueError("--compress-raw-text 必须与 --include-raw-text 同时使用")
@@ -380,9 +478,22 @@ def main() -> int:
         content = json.dumps(
             payload, ensure_ascii=False, sort_keys=True, indent=indent
         ) + "\n"
-        if args.output is None:
+        wrote_output = False
+        if args.split_output_dir is not None:
+            manifest = write_split_payload(
+                content.encode("utf-8"),
+                args.split_output_dir,
+                payload_sha256=payload["payload_sha256"],
+                part_bytes=args.split_part_bytes,
+            )
+            print(f"split_manifest={(args.split_output_dir / 'manifest.json').resolve()}")
+            print(f"parts={manifest['part_count']}")
+            print(f"source_bytes={manifest['source_bytes']}")
+            print(f"source_sha256={manifest['source_sha256']}")
+            wrote_output = True
+        if args.output is None and not wrote_output:
             sys.stdout.write(content)
-        else:
+        elif args.output is not None:
             args.output.parent.mkdir(parents=True, exist_ok=True)
             with args.output.open("x", encoding="utf-8") as handle:
                 handle.write(content)

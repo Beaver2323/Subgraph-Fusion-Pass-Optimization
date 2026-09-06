@@ -251,6 +251,7 @@ if [[ -z "${run_dir}" || ! -d "${run_dir}" ]]; then
 fi
 
 text_handoff="${run_dir}/text-handoff.json"
+text_handoff_parts="${run_dir}/text-handoff-parts"
 set +e
 "${PYTHON}" "${tracker_root}/scripts/export_reference_text.py" \
     --run-dir "${run_dir}" \
@@ -258,7 +259,8 @@ set +e
     --compress-raw-text \
     --compact \
     --allow-derived-output \
-    --output "${text_handoff}"
+    --output "${text_handoff}" \
+    --split-output-dir "${text_handoff_parts}"
 export_status=$?
 set -e
 
@@ -272,6 +274,8 @@ echo "latest_run=${result_root}/latest"
 if ((export_status == 0)); then
     echo "text_handoff=${text_handoff}"
     echo "latest_text_handoff=${result_root}/latest-text-handoff.json"
+    echo "text_handoff_parts=${text_handoff_parts}"
+    echo "latest_text_handoff_manifest=${result_root}/latest/text-handoff-parts/manifest.json"
     sha256sum "${text_handoff}"
 else
     echo "警告：本轮 artifacts 不完整，文本 handoff 导出失败（状态 ${export_status}）。" >&2

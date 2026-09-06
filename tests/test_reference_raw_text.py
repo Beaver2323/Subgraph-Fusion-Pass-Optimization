@@ -254,6 +254,90 @@ class RawTextTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("code_executed=false", result.stdout)
 
+    def test_split_cli_round_trip_and_tampering_rejected(self):
+        case = self.run / "cases/case"
+        (case / "cache/large.log").write_text(
+            "".join(
+                hashlib.sha256(str(index).encode()).hexdigest() + "\n"
+                for index in range(5000)
+            )
+        )
+        excluded = {"artifact_inventory.json", "reference_result.json"}
+        inventory = [
+            exporter.file_record(path, case)
+            for path in sorted(case.rglob("*"))
+            if path.is_file() and path.name not in excluded
+        ]
+        self.write("cases/case/artifact_inventory.json", inventory)
+        parts = self.root / "handoff-parts"
+        export = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/export_reference_text.py"),
+                "--run-dir",
+                str(self.run),
+                "--include-raw-text",
+                "--compress-raw-text",
+                "--compact",
+                "--split-output-dir",
+                str(parts),
+                "--split-part-bytes",
+                str(exporter.MIN_SPLIT_PART_BYTES),
+            ],
+            cwd=WORK,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(export.returncode, 0, export.stderr)
+        manifest = json.loads((parts / "manifest.json").read_text())
+        self.assertGreater(manifest["part_count"], 1)
+        validation = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/import_reference_text.py"),
+                "--input",
+                str(parts / "manifest.json"),
+                "--validate-only",
+            ],
+            cwd=WORK,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(validation.returncode, 0, validation.stdout)
+        restored = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/import_reference_text.py"),
+                "--input",
+                str(parts / "manifest.json"),
+                "--output-root",
+                str(self.root / "split-imports"),
+            ],
+            cwd=WORK,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(restored.returncode, 0, restored.stdout)
+
+        first_path = parts / manifest["parts"][0]["path"]
+        first = json.loads(first_path.read_text())
+        first["data"][0] = "A" + first["data"][0][1:]
+        first_path.write_text(json.dumps(first))
+        rejected = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/import_reference_text.py"),
+                "--input",
+                str(parts / "manifest.json"),
+                "--validate-only",
+            ],
+            cwd=WORK,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(rejected.returncode, 2)
+        self.assertIn("不一致", rejected.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

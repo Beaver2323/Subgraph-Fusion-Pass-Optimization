@@ -1,6 +1,6 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-07 06:02 CST（UTC+08:00）
+> 更新时间：2026-09-07 06:58 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
 > 当前任务：`T-076`、`T-077`、`T-078`、`T-079`、`T-080`
 
@@ -134,6 +134,16 @@ GPU 侧只有文本复制条件时，打印本轮完整 JSON：
 ```bash
 cat /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
 ```
+
+若 GitHub 网页提示 `File could not be edited`，使用一键运行同时生成的固定分片入口：
+
+```text
+/data/z50063656/tmp/t078-reference-results/latest/text-handoff-parts/manifest.json
+```
+
+将该目录的 `manifest.json` 与全部 `part-*.json` 分别复制到对应任务的
+`results/incoming/T-078/text-handoff-parts/`；不要截断单文件。历史 run 补生成分片和控制节点直接
+校验 manifest 的命令见[GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)。
 
 复制从开头 `{` 到最后 `}` 的完整 JSON 文本，不复制软链接本身，也不要混入提示符或启动日志。
 将内容保存到当前 NPU 控制节点（Agent 能访问的机器）的对应任务目录：

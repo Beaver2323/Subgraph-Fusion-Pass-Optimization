@@ -3666,3 +3666,16 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   重新导出，无需重跑 GPU。1.0 仍只作摘要，不能恢复 FX/日志正文。
 - 新增压缩往返、损坏拒绝与一键入口回归；统一零设备门禁 85 项测试通过。历史再认证状态仍为
   `pending=41`、显式关闭免测 `exempt=3`，未因改变传输格式自动升级结论。
+
+### E-229：GitHub 网页文本分片交接（2026-09-07）
+
+- 登记时间：2026-09-07 06:58 CST（UTC+08:00）。实际 1.2 T-079 handoff 为 727467 字节，GitHub
+  网页仍返回 `File could not be edited`；已上传的 T-076/T-079 长文件分别在第 1001/603 行形成
+  无法解析的截断 JSON，不能进入验收。
+- 导出器新增 `--split-output-dir`，默认按 192 KiB 原始 JSON 拆分；每片使用独立 JSON、Base64
+  短行、索引、偏移、字节数与 SHA256。manifest 绑定全部分片、重建整包 SHA256 和 handoff
+  `payload_sha256`。
+- 导入器可直接读取 manifest，验证并重建内存中的 handoff，再沿用 1.2 的原文、inventory 和整包
+  校验；用户不需要手工拼接。缺片、错序、跨轮混片、内容修改和截断都会失败。
+- GPU 一键入口同时生成单文件与 `latest/text-handoff-parts/manifest.json`；历史 run 可以只补导出
+  分片，无需重跑 GPU。新增真实多分片往返及篡改拒绝回归，统一门禁预期为 86 项测试。

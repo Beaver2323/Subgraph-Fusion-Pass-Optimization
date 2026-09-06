@@ -1,6 +1,6 @@
 # GPU handoff 接收目录
 
-> 更新时间：2026-09-07 06:02 CST（UTC+08:00）
+> 更新时间：2026-09-07 06:58 CST（UTC+08:00）
 
 此目录用于接收 GPU 回传文本，尚不是已验收的正式结果。
 仓库通过 `.gitkeep` 保留 T-076～T-080 目录，clone/pull 后无需再次创建。
@@ -15,6 +15,18 @@ results/incoming/
 ├── T-079/text-handoff.json
 └── T-080/text-handoff.json
 ```
+
+若 GitHub 网页不接受单个长文件，可在对应任务下改用分片目录：
+
+```text
+results/incoming/T-079/text-handoff-parts/
+├── manifest.json
+├── part-0001.json
+└── ...
+```
+
+manifest 和全部分片共同构成一份 handoff；缺一片、错序、复制截断或混入其他轮次都会校验失败。
+控制节点直接读取 manifest，无需人工拼接。
 
 上面的 JSON 是待保存的文件名，不是仓库提供的空 JSON 模板。例如 T-078 保存为：
 

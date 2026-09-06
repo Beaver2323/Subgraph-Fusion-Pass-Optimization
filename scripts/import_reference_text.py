@@ -13,7 +13,15 @@ import zlib
 from pathlib import Path
 from typing import Any
 
-from export_reference_text import MAX_TEXT_BYTES, safe_relative_path, seal_payload
+from export_reference_text import (
+    MAX_TEXT_BYTES,
+    SPLIT_FORMAT_VERSION,
+    safe_relative_path,
+    seal_payload,
+)
+
+
+MAX_HANDOFF_TRANSPORT_BYTES = 128 * 1024 * 1024
 
 
 def require_mapping(value: Any, label: str) -> dict[str, Any]:
@@ -42,6 +50,95 @@ def validate_record(value: Any, label: str) -> dict[str, Any]:
     ):
         raise ValueError(f"{label}.sha256 必须是小写 SHA256")
     return record
+
+
+def load_split_payload(manifest_path: Path, manifest: dict[str, Any]) -> dict[str, Any]:
+    """读取网页文本分片并重建原 handoff；只解析数据，不执行任何内容。"""
+    if manifest.get("split_format_version") != SPLIT_FORMAT_VERSION:
+        raise ValueError("未知的文本分片格式")
+    parts = require_list(manifest.get("parts"), "split.parts")
+    part_count = manifest.get("part_count")
+    source_bytes = manifest.get("source_bytes")
+    source_sha256 = manifest.get("source_sha256")
+    if (
+        isinstance(part_count, bool)
+        or not isinstance(part_count, int)
+        or part_count <= 0
+        or part_count != len(parts)
+        or isinstance(source_bytes, bool)
+        or not isinstance(source_bytes, int)
+        or source_bytes < 0
+        or source_bytes > MAX_HANDOFF_TRANSPORT_BYTES
+        or not isinstance(source_sha256, str)
+        or len(source_sha256) != 64
+    ):
+        raise ValueError("文本分片 manifest 统计字段非法")
+    root = manifest_path.resolve().parent
+    assembled = bytearray()
+    seen_paths, seen_indices = set(), set()
+    for expected_index, value in enumerate(parts, start=1):
+        record = require_mapping(value, f"split.parts[{expected_index - 1}]")
+        relative = safe_relative_path(record.get("path"))
+        if len(relative.parts) != 1 or str(relative) in seen_paths:
+            raise ValueError("文本分片路径必须是唯一的同目录文件名")
+        seen_paths.add(str(relative))
+        part_path = root / relative
+        if part_path.is_symlink() or not part_path.is_file():
+            raise ValueError(f"文本分片不存在或是软链接：{relative}")
+        part = require_mapping(
+            json.loads(part_path.read_text(encoding="utf-8")), str(relative)
+        )
+        index = part.get("index")
+        if (
+            part.get("split_format_version") != SPLIT_FORMAT_VERSION
+            or part.get("source_sha256") != source_sha256
+            or index != expected_index
+            or index in seen_indices
+            or part.get("part_count") != part_count
+            or part.get("source_offset") != len(assembled)
+            or part.get("encoding") != "base64"
+        ):
+            raise ValueError(f"文本分片顺序或归属不一致：{relative}")
+        seen_indices.add(index)
+        data = require_list(part.get("data"), f"{relative}.data")
+        if not data or any(not isinstance(chunk, str) for chunk in data):
+            raise ValueError(f"文本分片 Base64 数据非法：{relative}")
+        try:
+            raw = base64.b64decode("".join(data), validate=True)
+        except (ValueError, binascii.Error) as error:
+            raise ValueError(f"文本分片 Base64 无法解析：{relative}") from error
+        if (
+            len(raw) != part.get("payload_bytes")
+            or hashlib.sha256(raw).hexdigest() != part.get("payload_sha256")
+            or any(
+                part.get(key) != record.get(key)
+                for key in ("index", "source_offset", "payload_bytes", "payload_sha256")
+            )
+        ):
+            raise ValueError(f"文本分片大小、哈希或 manifest 绑定不一致：{relative}")
+        assembled.extend(raw)
+        if len(assembled) > MAX_HANDOFF_TRANSPORT_BYTES:
+            raise ValueError("文本分片重建结果超过上限")
+    content = bytes(assembled)
+    if (
+        len(content) != source_bytes
+        or hashlib.sha256(content).hexdigest() != source_sha256
+    ):
+        raise ValueError("文本分片重建后的整包大小或 SHA256 不一致")
+    try:
+        payload = require_mapping(json.loads(content.decode("utf-8")), "handoff")
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("文本分片重建结果不是有效 UTF-8 JSON") from error
+    if payload.get("payload_sha256") != manifest.get("payload_sha256"):
+        raise ValueError("文本分片与 handoff payload SHA256 声明不一致")
+    return payload
+
+
+def load_input(path: Path) -> dict[str, Any]:
+    outer = require_mapping(json.loads(path.read_text(encoding="utf-8")), "input")
+    if "split_format_version" in outer and "parts" in outer:
+        return load_split_payload(path, outer)
+    return outer
 
 
 def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
@@ -232,7 +329,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     try:
-        payload = json.loads(args.input.read_text(encoding="utf-8"))
+        payload = load_input(args.input)
         if args.validate_only:
             run_id, data = validate_payload(payload)
             print(

@@ -259,6 +259,12 @@ print('artifacts=' + str(root))
         self.assertEqual(payload["handoff_format_version"], "1.2")
         self.assertEqual(payload["raw_text_transfer"]["omitted_files"], [])
         self.assertEqual(len(payload["raw_text_files"]), 4)
+        self.assertTrue(
+            (
+                self.data
+                / "tmp/t078-reference-results/latest/text-handoff-parts/manifest.json"
+            ).is_file()
+        )
 
     def test_exclusive_flag_blocks_busy_gpu_before_runner(self):
         result = self.run_launcher("--exclusive")
