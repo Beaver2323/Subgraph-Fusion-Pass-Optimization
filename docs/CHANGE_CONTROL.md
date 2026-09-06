@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-06 02:21 CST（UTC+08:00）
+> 日志校准时间：2026-09-06 07:21 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3622,3 +3622,18 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 新增中文长期操作指南，覆盖 GPU 一键/历史 run 重导出、GitHub 网页文本复制、控制节点校验恢复、
   FX 查看、1.0/1.1 边界和失败处置。T-078 现有 12/12 紧凑摘要保留为 1.0 历史证据，仍需 1.1
   原文包补齐正文复核。
+
+### E-226：当前矩阵与历史 registration 矩阵分层（2026-09-06）
+
+- 登记时间：2026-09-06 07:21 CST（UTC+08:00）。确认 `report/pass_src_20260820/` 的 251 行
+  是项目转为 compatibility tracker 前的 registration/inventory 与多 backend 历史全景，不是当前
+  acceptance-unit 真值表；保留 upstream pre/joint/post-grad 条目和 GPU reference
+  `inductor-default` 均属预期，旧 NPU default/DVM/MLIR/custom 结论不得迁移。
+- 旧目录和 Markdown 增加 `historical-non-counting` 边界，CSV 原始 251 行保持不变；修正 GUIDE
+  将旧矩阵称为“当前矩阵”的误导表述及 220/3 的历史统计口径。
+- 新增由 T-076～T-080 manifest、`results/current/` 与逐任务性能计划/汇总生成的当前矩阵：21 个
+  活动单元中 10 个已冻结并形成 NPU/comparison，11 个等待完整 GPU reference；性能为 10 个已处置、
+  11 个计划态。
+- 生成器分别记录 GPU reference backend、要求的 NPU backend 与实际观测 NPU backend；任何当前
+  NPU result、正式性能汇总或计划不是 `triton_experimental` 都直接校验失败。新增零设备回归，
+  并接入统一门禁；81 项测试通过。不导入 torch，不运行 GPU/NPU，不改写任何既有动态证据。

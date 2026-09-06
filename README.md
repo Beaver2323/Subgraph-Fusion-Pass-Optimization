@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-06 06:43 CST（UTC+08:00）
+> 文档更新时间：2026-09-06 07:21 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -100,6 +100,8 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | --- | --- |
 | [TODO.md](TODO.md) | 当前优先级、任务状态与完成标准 |
 | [WORKFLOW.md](WORKFLOW.md) | 双机执行流程、schema、判定与修复状态机 |
+| [report/current_acceptance_unit_matrix.md](report/current_acceptance_unit_matrix.md) | 当前 21 个 acceptance units 的 reference、NPU、comparison、修复与性能状态；NPU backend 强校验为 `triton_experimental` |
+| [report/current_acceptance_unit_matrix.csv](report/current_acceptance_unit_matrix.csv) | 上述当前矩阵的机器可读版本与证据路径 |
 | [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) | 2026-08-31 校准结论、T-074 边界与下一任务 |
 | [docs/SCOPE_AND_CODE_MAP.md](docs/SCOPE_AND_CODE_MAP.md) | 任务范围、Inductor 调用链和源码入口 |
 | [docs/TASK_BACKLOG.md](docs/TASK_BACKLOG.md) | T-081～T-113 草案批次；完整单元列表、非计数记录及 lowering/template 覆盖边界 |

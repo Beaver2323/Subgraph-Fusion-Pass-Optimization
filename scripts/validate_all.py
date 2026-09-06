@@ -32,6 +32,11 @@ def commands(root, pytorch_root):
     yield "unit_tests", [python, "-m", "unittest", "discover", "-s", str(root / "tests")]
     for script in ("validate_tracker_data.py", "validate_comparison_data.py", "validate_prepared_tasks.py"):
         yield script, [python, str(root / "scripts" / script)]
+    yield "current_acceptance_matrix", [
+        python,
+        str(root / "scripts/generate_current_acceptance_matrix.py"),
+        "--check",
+    ]
     yield "task_backlog", [python, str(root / "scripts/build_task_backlog.py"), "--check"]
     for task in ("", "t077_", "t078_", "t079_", "t080_"):
         yield f"{task}reference_plan", ["bash", str(root / f"scripts/run_{task}reference_all.sh"), "--pytorch-root", str(pytorch_root), "--validate-only"]

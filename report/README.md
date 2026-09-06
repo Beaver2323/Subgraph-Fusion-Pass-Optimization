@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-06 02:55 CST（UTC+08:00）
+> 索引更新时间：2026-09-06 07:21 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -8,6 +8,7 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
+| [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 从活动 manifest、current results 与性能数据生成的逐 acceptance-unit 真值入口 | 21 units；10 个已闭环、11 个等待 reference；现有 NPU 动态结果 backend 全为 `triton_experimental` |
 | [t076_t077_history_reaudit_20260906.md](t076_t077_history_reaudit_20260906.md) | 逐单元历史复核、规则版本与统一检查入口 | 10 份 NPU 记录检查通过；历史原始证据仍 pending，原始 verdict 不改写 |
 | [tracker_validation_hardening_20260906.md](tracker_validation_hardening_20260906.md) | 验收校验、失败落盘与 latest 一致性修复 | 零设备回归；不重写既有 GPU/NPU 实测结果 |
 | [t076_t077_performance_20260903.md](t076_t077_performance_20260903.md) | 两批性能处置、backend 门禁、B2B capability 与四项 experimental OFF/ON 实测 | T-076 2测/3显式关闭免测；T-077 5/5 已处置、pending=0 |
@@ -37,7 +38,7 @@
 
 | 阶段 | 文件范围 | 说明 |
 | --- | --- | --- |
-| 初始 inventory/P0 | `pass_inventory*`、`pass_src_20260820/`、`p0_*` | default-backend 早期清单和基线 |
+| 初始 inventory/P0 | `pass_inventory*`、`pass_src_20260820/`、`p0_*` | default-backend 早期清单和基线；`pass_src_20260820/README.md` 已明确标为非计数历史证据 |
 | MM/pad 第一批 | `t012_*`～`t025_t026_*` | mm_plus_mm、pad family 和替代方案证据 |
 | torch_npu custom pass | `t027_*`～`t043_t046_*` | B2 结构、语义、alias 和性能 |
 | DVM/MLIR/attention | `t047_*`～`t054_*` | B3/B4 历史结果 |

@@ -1,6 +1,6 @@
 # PyTorch Feature 设计与实现分析
 
-> 更新时间：2026-09-06（补充 experimental lowering fallback 与 kernel 模板机制）
+> 更新时间：2026-09-06 07:21 CST（UTC+08:00；拆分当前 acceptance-unit 矩阵与历史 registration 矩阵）
 > 定位：机制与历史案例指南。当前 tracker 主线、术语和执行顺序以仓库根目录
 > `README.md`、`TODO.md`、`WORKFLOW.md` 及 [CURRENT_STATUS.md](CURRENT_STATUS.md) 为准。
 
@@ -24,6 +24,12 @@
 > [T-057 int→float→int 报告](../report/t057_int_float_int_boundary_20260826.md)：前者说明为什么 A/B
 > 必须 fresh process，后者用 generated code 展示“删掉 kernel”如何同时造成数值和 alias 错误。
 
+当前逐单元状态统一从
+[当前 acceptance-unit 矩阵](../report/current_acceptance_unit_matrix.md) 阅读，机器处理使用
+[CSV](../report/current_acceptance_unit_matrix.csv)。它由 T-076～T-080 的 manifest、
+`results/current/` 和性能计划/汇总生成，并分别展示 GPU reference backend 与实际 NPU backend。
+`report/pass_src_20260820/` 下的 251 行矩阵仅是历史 registration/inventory 与机制案例索引。
+
 ## 模块设计目标与背景
 
 ### 1. 先把任务翻译成工程问题
@@ -43,7 +49,11 @@ contract，NPU 侧记录命中、正确性、generated code/runtime path、性�
 6. pass-on 相对同 backend 的 pass-off 是否有稳定收益？
 7. 若不支持或回退，应修改 gate、lowering、kernel 还是编译器？
 
-这七个问题对应评估矩阵中的动态字段。矩阵说明见 [pass_evaluation_matrix.md](../report/pass_src_20260820/pass_evaluation_matrix.md)，机器可填写版本见 [pass_evaluation_matrix.csv](../report/pass_src_20260820/pass_evaluation_matrix.csv)。
+这七个问题对应当前 acceptance-unit 矩阵中的动态字段。当前状态见
+[current_acceptance_unit_matrix.md](../report/current_acceptance_unit_matrix.md)，机器可读版本见
+[current_acceptance_unit_matrix.csv](../report/current_acceptance_unit_matrix.csv)。旧
+[pass_evaluation_matrix.md](../report/pass_src_20260820/pass_evaluation_matrix.md) 只用于理解早期字段设计和
+历史案例，不是当前 verdict。
 
 ### 2. 必须先掌握的术语
 
@@ -78,9 +88,11 @@ contract，NPU 侧记录命中、正确性、generated code/runtime path、性�
 
 三者的修改位置不同。没有定位层级就直接写 Triton，通常会修错地方。
 
-### 4. 当前项目已经做到哪里
+### 4. 历史阶段截至 2026-08-28 做到哪里
 
-当前事实以 [当前状态文档](CURRENT_STATUS.md) 和两份 P0 报告为准：
+本节保留旧阶段案例，不能替代当前矩阵。活动事实以
+[当前状态文档](CURRENT_STATUS.md) 和
+[当前 acceptance-unit 矩阵](../report/current_acceptance_unit_matrix.md) 为准：
 
 - experimental T-055 三种入口 12/12 编译、数值和 wrapper marker 通过；同进程回切 default
   暴露 erfc decomposition 重入失败。P-014 单行 cleanup 已通过 source registrar 和
@@ -117,7 +129,12 @@ contract，NPU 侧记录命中、正确性、generated code/runtime path、性�
 - B4 已完成 8 个代表 attention family 的精确 matcher、数值和 codegen smoke。pattern 1 的 fp16 静态 inference P50/P99 改善 46.70%/44.26%，task 4→1、allocated peak 减少 87.31%，成为首条 B4 `supported-beneficial`。T-052 还确认 5/21/29 是 additive float-mask 安全 math fallback，无 mask pattern 30 直接走 vendor attention。
 - pattern 13 同样落到 vendor attention，但 P50 只改善 0.99%；task 3→1、首次编译改善 91.37%、allocated peak 减少 87.31%，所以是 `supported-neutral-resource-beneficial`。
 - pattern 5 展示另一类结论：matcher 后因 float mask 重展开，P50 反而回退 103.23%、task 3→8。P-013 不写完整 attention，而是在 NPU 精确关闭该 entry；新 wheel P50 改善 50.28%、task 恢复 8→3。
-- 当前矩阵总计 221 条 <code>not-run</code>、2 条 <code>not-applicable</code>、4 条 <code>unsupported</code>、9 条 <code>supported-beneficial</code>、1 条 <code>conditional-supported-beneficial</code>、9 条 <code>supported-neutral</code>、3 条 <code>supported-neutral-resource-beneficial</code>、2 条 <code>supported-pass-disabled-performance-rejected</code>。
+- 截至 2026-08-26 的旧矩阵总计 220 条 <code>not-run</code>、2 条
+  <code>not-applicable</code>、4 条 <code>unsupported</code>、9 条
+  <code>supported-beneficial</code>、1 条 <code>conditional-supported-beneficial</code>、9 条
+  <code>supported-neutral</code>、3 条 <code>supported-neutral-resource-beneficial</code>、3 条
+  <code>supported-pass-disabled-performance-rejected</code>。这些统计不是当前
+  acceptance-unit 分母。
 
 ### 5. 从头阅读现有文档的路线
 
@@ -132,7 +149,7 @@ contract，NPU 侧记录命中、正确性、generated code/runtime path、性�
 4. [p0_case_design.md](archive/plans/p0_case_design.md)：学习如何为一个 pass 设计正例、负例和 gate。
 5. [p0_gate_first_run_20260820.md](../report/p0_gate_first_run_20260820.md)：学习如何区分“编译成功”和“目标 pass 触发”。
 6. [p0_ab_first_shape_20260820.md](../report/p0_ab_first_shape_20260820.md)：学习单 pass paired A/B。
-7. [pass_evaluation_matrix.md](../report/pass_src_20260820/pass_evaluation_matrix.md)：理解矩阵字段和批次。
+7. [current_acceptance_unit_matrix.md](../report/current_acceptance_unit_matrix.md)：查看当前 21 个活动单元、backend 与证据状态；旧 [pass_evaluation_matrix.md](../report/pass_src_20260820/pass_evaluation_matrix.md) 只用于学习历史字段和批次。
 8. [T-023 集成报告](../report/t023_mmplus_different_k_integration_20260821.md) 与 [T-024 workspace 审计](../report/t024_mmplus_different_k_workspace_20260821.md)：学习如何在性能收益和显存代价冲突时形成条件性结论。
 9. [B2 alias/性能报告](../report/t029_t030_b2_alias_fix_performance_20260824.md)：学习为什么数值正确仍可能失败，以及正确方案也可能因性能被否决。
 10. [T-032 结构/NPU 报告](../report/t032_b2_redundancy_compile_20260824.md) 与 [T-033 fold_cat 性能报告](../report/t033_fold_cat_performance_20260824.md)：学习如何把“前序已消除”的中性结果与“目标 pass 真正带来收益”分开。
@@ -156,8 +173,9 @@ contract，NPU 侧记录命中、正确性、generated code/runtime path、性�
 25. [p1_batch_design.md](archive/plans/p1_batch_design.md)：查看 attention 全批设计和剩余覆盖。
 25. [change_control.md](CHANGE_CONTROL.md)：任何功能源码修改前，先登记证据、修改点、验证和回退。
 
-根目录旧 <code>report/pass_inventory.md</code> 属于历史诊断；当前静态基线是
-<code>report/pass_src_20260820/</code>，当前动态环境由
+根目录旧 <code>report/pass_inventory.md</code> 与 <code>report/pass_src_20260820/</code>
+都属于历史诊断；当前静态合同在 <code>upstream/*manifest.yaml</code>，当前动态结果在
+<code>results/current/</code>，汇总入口为 <code>report/current_acceptance_unit_matrix.*</code>。当前动态环境由
 <code>/home/z50063656/Pass/activate_pass.sh</code> 启动 Conda <code>Pass</code>。旧
 Benchmark/独立 venv 结论必须保留原环境标签。T-022/T-023 还要求区分 runtime 已可用与 fresh
 Triton host launcher 编译合同是否完整。

@@ -1,8 +1,10 @@
 # 成果、失败与中性尝试索引
 
-> 索引更新时间：2026-08-31 17:50 CST（UTC+08:00）。
-> 这里汇总 2026-08-29 前已执行的动态工作，不代表 251 条 registration/inventory 记录全部完成；逐条状态
-> 仍以 `report/pass_src_20260820/pass_evaluation_matrix.csv` 为准。
+> 索引更新时间：2026-09-06 07:21 CST（UTC+08:00）。
+> 这里汇总 2026-08-29 前已执行的动态工作，不代表 251 条 registration/inventory 记录全部完成；
+> 旧阶段逐条状态可追溯 `report/pass_src_20260820/pass_evaluation_matrix.csv`，该文件不计入当前
+> verdict。当前逐 acceptance-unit 状态以
+> [current_acceptance_unit_matrix.md](../report/current_acceptance_unit_matrix.md) 为准。
 > P-013/default 工作已归档；用户随后恢复任务并将目标切换到
 > `triton_experimental`。2026-08-29 起新测试的唯一主环境是 Conda `Pass`，所有测试从
 > `/home/z50063656/tmp` 发起；旧 Benchmark/独立 venv 结果保留真实环境标签。
