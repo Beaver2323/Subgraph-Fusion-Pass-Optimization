@@ -255,6 +255,8 @@ set +e
 "${PYTHON}" "${tracker_root}/scripts/export_reference_text.py" \
     --run-dir "${run_dir}" \
     --include-raw-text \
+    --compress-raw-text \
+    --compact \
     --allow-derived-output \
     --output "${text_handoff}"
 export_status=$?

@@ -1,6 +1,6 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-06 09:50 CST（UTC+08:00）
+> 更新时间：2026-09-07 06:02 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
 > 当前阶段：T-076～T-078 已形成 14 份正式结果；T-078 完成修复验证、性能处置和产品门禁；T-079/T-080 等待 GPU reference；T-081～T-113 为草案；T-077 MM 与 T-078 产品改动尚未合入。
@@ -206,7 +206,8 @@ T-079/T-080 性能 worker 尚未实现，需先完成代码与静态验证；之
 
 - NPU 新测试从 `/home/z50063656/tmp` 发起；GPU T-076 从 `/data/z50063656/tmp` 发起；
 - GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077|T-078|T-079|T-080 --gpu ID`，脚本自动进入
-  工作目录、激活环境、校验、运行、导出文本并维护 `latest`，不再人工查找 timestamp；
+  工作目录、激活环境、校验、运行、导出 1.2 压缩原文 handoff 并维护 `latest`，不再人工查找
+  timestamp；压缩包可恢复原始 FX/日志并逐文件校验 SHA256；
 - NPU 控制节点动态任务使用 `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`；GPU
   reference 使用 `z00824525`/sudo、A100/R550、CUDA 12.6.3、pip venv Python 3.12 和与冻结
   PyTorch commit 一致的 `/data/z50063656/envs/PassGPURef`；compat 当前未启用；

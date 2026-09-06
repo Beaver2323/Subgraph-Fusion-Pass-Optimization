@@ -4,9 +4,12 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import hashlib
 import json
 import tempfile
+import zlib
 from pathlib import Path
 from typing import Any
 
@@ -48,8 +51,9 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
     seal_payload(copied)
     if expected != copied["payload_sha256"]:
         raise ValueError("handoff 整包 SHA256 不一致，可能复制不完整或被修改")
-    if payload.get("handoff_format_version") != "1.1":
-        raise ValueError("不是带原文的 1.1 handoff；紧凑 1.0 不能恢复 FX 正文")
+    format_version = payload.get("handoff_format_version")
+    if format_version not in {"1.1", "1.2"}:
+        raise ValueError("不是带原文的 1.1/1.2 handoff；摘要 1.0 不能恢复 FX 正文")
     raw_text_files = require_list(payload.get("raw_text_files"), "raw_text_files")
     summary = require_mapping(payload.get("reference_summary"), "reference_summary")
     run_id = summary.get("run_id")
@@ -59,13 +63,49 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
     for index, value in enumerate(raw_text_files):
         item = validate_record(value, f"raw_text_files[{index}]")
         relative = item["path"]
-        if (
-            relative in data
-            or item.get("encoding") != "utf-8"
-            or not isinstance(item.get("text"), str)
-        ):
-            raise ValueError("原文存在重复路径或编码错误")
-        content = item["text"].encode("utf-8")
+        if relative in data:
+            raise ValueError("原文存在重复路径")
+        if format_version == "1.1":
+            if item.get("encoding") != "utf-8" or not isinstance(
+                item.get("text"), str
+            ):
+                raise ValueError("1.1 原文编码错误")
+            content = item["text"].encode("utf-8")
+        else:
+            compressed_bytes = item.get("compressed_bytes")
+            encoded = item.get("data")
+            if (
+                item.get("encoding") != "zlib+base64"
+                or isinstance(compressed_bytes, bool)
+                or not isinstance(compressed_bytes, int)
+                or compressed_bytes < 0
+                or compressed_bytes > MAX_TEXT_BYTES
+                or not isinstance(encoded, str)
+                or "text" in item
+            ):
+                raise ValueError("1.2 压缩原文编码错误")
+            try:
+                compressed = base64.b64decode(encoded, validate=True)
+            except (ValueError, binascii.Error) as error:
+                raise ValueError("1.2 Base64 无法解析") from error
+            if len(compressed) != compressed_bytes:
+                raise ValueError("1.2 压缩字节数不一致")
+            decoder = zlib.decompressobj()
+            try:
+                content = decoder.decompress(compressed, item["bytes"] + 1)
+            except zlib.error as error:
+                raise ValueError("1.2 zlib 无法解析") from error
+            if (
+                len(content) > item["bytes"]
+                or decoder.unconsumed_tail
+                or decoder.unused_data
+                or not decoder.eof
+            ):
+                raise ValueError("1.2 解压长度或数据流不合法")
+            try:
+                content.decode("utf-8")
+            except UnicodeDecodeError as error:
+                raise ValueError("1.2 解压结果不是 UTF-8") from error
         total += len(content)
         if total > MAX_TEXT_BYTES:
             raise ValueError("原文总量超过 64 MiB")
@@ -95,6 +135,16 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
     transfer = require_mapping(payload.get("raw_text_transfer"), "raw_text_transfer")
     if transfer["embedded_files"] != len(data) or transfer["embedded_bytes"] != total:
         raise ValueError("原文数量/字节统计不一致")
+    if format_version == "1.2":
+        if transfer.get("transport_encoding") != "zlib+base64-per-file":
+            raise ValueError("原文传输编码声明不一致")
+        compressed_total = sum(item["compressed_bytes"] for item in raw_text_files)
+        if transfer.get("compressed_bytes") != compressed_total:
+            raise ValueError("压缩字节统计不一致")
+    elif transfer.get("transport_encoding") not in {None, "utf-8-json-string"}:
+        raise ValueError("原文传输编码声明不一致")
+    elif transfer.get("compressed_bytes", total) != total:
+        raise ValueError("原文字节统计不一致")
     # 结构化摘要与原始 JSON 也必须一致，不能用另一轮的正文冒充本轮摘要。
     for name in ("environment", "reference_summary"):
         if json.loads(data[f"{name}.json"]) != payload[name]:
@@ -157,6 +207,7 @@ def restore(payload: dict[str, Any], output_root: Path) -> Path:
         with path.open("xb") as handle:
             handle.write(content)
     receipt = {
+        "handoff_format_version": payload["handoff_format_version"],
         "payload_sha256": payload["payload_sha256"],
         "restored_files": len(data),
         "source_run_dir": payload["source_run_dir"],

@@ -4,15 +4,18 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import json
 import sys
+import zlib
 from pathlib import Path, PurePosixPath
 from typing import Any
 
 
 FORMAT_VERSION = "1.0"
 RAW_TEXT_FORMAT_VERSION = "1.1"
+COMPRESSED_RAW_TEXT_FORMAT_VERSION = "1.2"
 TEXT_SUFFIXES = {
     ".asm",
     ".c",
@@ -129,7 +132,9 @@ def seal_payload(payload: dict[str, Any]) -> None:
     payload["payload_sha256"] = hashlib.sha256(canonical).hexdigest()
 
 
-def include_raw_text(payload: dict[str, Any], run_dir: Path) -> None:
+def include_raw_text(
+    payload: dict[str, Any], run_dir: Path, *, compress: bool = False
+) -> None:
     """嵌入已登记文件的 UTF-8 原文；二进制只列缺项，不编码伪装成文本。"""
     records = {item["path"]: item for item in payload["evidence_files"]}
     for case in payload["case_audit"]:
@@ -152,7 +157,7 @@ def include_raw_text(payload: dict[str, Any], run_dir: Path) -> None:
             if path in records and records[path] != record:
                 raise ValueError(f"文件与 inventory 哈希不一致：{path}")
             records[path] = record
-    embedded, omitted, total = [], [], 0
+    embedded, omitted, total, compressed_total = [], [], 0, 0
     for relative, record in sorted(records.items()):
         path = checked_file(run_dir, relative)
         if path.stat().st_size != record["bytes"]:
@@ -179,24 +184,46 @@ def include_raw_text(payload: dict[str, Any], run_dir: Path) -> None:
         if "\x00" in content:
             omitted.append(dict(record, reason="contains-nul"))
             continue
-        embedded.append(dict(record, encoding="utf-8", text=content))
+        if compress:
+            compressed = zlib.compress(raw, level=9)
+            embedded.append(
+                dict(
+                    record,
+                    encoding="zlib+base64",
+                    compressed_bytes=len(compressed),
+                    data=base64.b64encode(compressed).decode("ascii"),
+                )
+            )
+            compressed_total += len(compressed)
+        else:
+            embedded.append(dict(record, encoding="utf-8", text=content))
         total += record["bytes"]
     required = {item["path"] for item in payload["evidence_files"]}
     if not required <= {item["path"] for item in embedded}:
         raise ValueError("必需摘要/FX/日志文件不能作为 UTF-8 原文回传，停止导出")
+    transfer = {
+        "embedded_files": len(embedded),
+        "embedded_bytes": total,
+        "omitted_files": omitted,
+        "all_registered_artifacts_embedded": not omitted,
+        "boundary": (
+            "包含原文供离线复核；未执行任何回传代码。缺失二进制只保留哈希，"
+            "不宣称完整二进制归档或重新运行通过。"
+        ),
+    }
+    if compress:
+        transfer.update(
+            transport_encoding="zlib+base64-per-file",
+            compressed_bytes=compressed_total,
+        )
     payload.update(
-        handoff_format_version=RAW_TEXT_FORMAT_VERSION,
+        handoff_format_version=(
+            COMPRESSED_RAW_TEXT_FORMAT_VERSION
+            if compress
+            else RAW_TEXT_FORMAT_VERSION
+        ),
         raw_text_files=embedded,
-        raw_text_transfer={
-            "embedded_files": len(embedded),
-            "embedded_bytes": total,
-            "omitted_files": omitted,
-            "all_registered_artifacts_embedded": not omitted,
-            "boundary": (
-                "包含原文供离线复核；未执行任何回传代码。缺失二进制只保留哈希，"
-                "不宣称完整二进制归档或重新运行通过。"
-            ),
-        },
+        raw_text_transfer=transfer,
     )
     seal_payload(payload)
 
@@ -319,6 +346,11 @@ def parse_args() -> argparse.Namespace:
         help="嵌入 FX、生成代码、IR、日志与 JSON 原文；不重新运行 GPU，不包含二进制",
     )
     parser.add_argument(
+        "--compress-raw-text",
+        action="store_true",
+        help="将原文逐文件 zlib 压缩并 Base64 编码为 1.2 handoff；须与 --include-raw-text 同用",
+    )
+    parser.add_argument(
         "--allow-derived-output",
         action="store_true",
         help="仅允许在 run 内新建保留文件 text-handoff.json；不覆盖原证据",
@@ -340,8 +372,10 @@ def main() -> int:
             ):
                 raise ValueError("文本 handoff 必须写在原始 run 目录外")
         payload = build_payload(run_dir)
+        if args.compress_raw_text and not args.include_raw_text:
+            raise ValueError("--compress-raw-text 必须与 --include-raw-text 同时使用")
         if args.include_raw_text:
-            include_raw_text(payload, run_dir)
+            include_raw_text(payload, run_dir, compress=args.compress_raw_text)
         indent = None if args.compact else 2
         content = json.dumps(
             payload, ensure_ascii=False, sort_keys=True, indent=indent

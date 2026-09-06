@@ -1,6 +1,6 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-06 06:43 CST（UTC+08:00）
+> 更新时间：2026-09-07 06:02 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
 > 当前任务：`T-076`、`T-077`、`T-078`、`T-079`、`T-080`
 
@@ -106,7 +106,7 @@ sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
 其中：
 
 - `latest` 指向本轮实际 `reference-<timestamp>` 目录；
-- `latest-text-handoff.json` 固定指向 `latest/text-handoff.json`；正常为本轮可恢复原文的 1.1 文本交接文件；
+- `latest-text-handoff.json` 固定指向 `latest/text-handoff.json`；正常为本轮可恢复原文的 1.2 压缩文本交接文件；
 - 控制台仍打印真实 `run_dir=` 和 `text_handoff=`，便于审计；
 - 新一轮执行会原子更新软链接，不删除旧的带时间戳结果。
 
@@ -155,7 +155,7 @@ cat /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
 mkdir -p /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/incoming/T-078
 ```
 
-保存后应在控制节点运行 1.1 完整性校验，而不只检查 JSON 语法：
+保存后应在控制节点运行 1.1/1.2 完整性校验，而不只检查 JSON 语法：
 
 ```bash
 cd /home/z50063656/tmp
@@ -171,7 +171,8 @@ run ID 的文件。保存后告知 Agent 任务号、路径和 commit，由 Agen
 不要用它覆盖 `results/current/` 的正式结果，
 也不要把 GPU 回传文件放进 `results/audits/`（该目录存放控制节点生成的复核记录）。
 
-当前一键入口默认生成 1.1 原文 handoff，可恢复已登记的 UTF-8 FX、日志、生成代码和常见 IR；
+当前一键入口默认生成 1.2 压缩原文 handoff，可恢复已登记的 UTF-8 FX、日志、生成代码和常见 IR；
+压缩只缩短需要复制的 JSON，恢复后的文件仍逐字节匹配原始大小和 SHA256。1.1 未压缩包继续兼容；
 二进制只登记哈希和缺项原因。旧版 1.0 紧凑 handoff 只有摘要与哈希，不能恢复 FX 正文。
 导出、复制、接收端校验、安全恢复和 FX 查看命令见
 [GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)。

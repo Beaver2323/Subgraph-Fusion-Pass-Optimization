@@ -1,6 +1,6 @@
 # GPU 原文 handoff 导出、复制与恢复指南
 
-> 更新时间：2026-09-06 06:43 CST（UTC+08:00）
+> 更新时间：2026-09-07 06:02 CST（UTC+08:00）
 > 适用任务：T-076～T-080 及后续复用统一 GPU reference runner 的任务
 > 目标：在 GPU 服务器不能直接推 Git、不能传二进制时，用一个可复制 JSON 回传可校验的 FX、日志、生成代码和 IR 原文
 
@@ -12,7 +12,7 @@
 bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 ```
 
-会在功能 reference 完成后自动生成 **1.1 原文 handoff**：
+会在功能 reference 完成后自动生成 **1.2 压缩原文 handoff**：
 
 ```text
 /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
@@ -26,7 +26,8 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 | 格式 | 产生方式 | 内容 | 能否恢复 FX/日志正文 |
 | --- | --- | --- | --- |
 | `1.0` | 手工调用导出器且不加 `--include-raw-text` | 环境、summary、逐 case 状态、文件大小和 SHA256 | 不能 |
-| `1.1` | GPU 一键入口默认；或手工加 `--include-raw-text` | 1.0 全部字段，加已登记 UTF-8 原文和二进制缺项清单 | 能恢复文本原文 |
+| `1.1` | 手工加 `--include-raw-text` | 1.0 全部字段，加已登记 UTF-8 原文和二进制缺项清单 | 能恢复，但文本较长 |
+| `1.2` | GPU 一键入口默认；或再加 `--compress-raw-text` | 与 1.1 相同的原文件，逐文件 zlib 压缩并 Base64 编码 | 能逐字节恢复，适合网页复制 |
 
 旧的 1.0 紧凑包仍可用于摘要复核，但不能据此查看 GPU 实际 FX 图、生成代码或完整日志；导入器会
 明确拒绝把 1.0 冒充可恢复证据。
@@ -70,16 +71,18 @@ handoff_validation=OK run_id=reference-... restorable_text_files=... code_execut
 
 ### 2.1 已有历史 run 不重跑 GPU
 
-如果完整 artifacts 仍在 GPU 服务器，可直接把旧 run 重新导出为 1.1，不会重新运行 GPU：
+如果完整 artifacts 仍在 GPU 服务器，可直接把旧 run 重新导出为 1.2，不会重新运行 GPU：
 
 ```bash
 export RUN_DIR="$(readlink -f /data/z50063656/tmp/t078-reference-results/latest)"
-export RAW_HANDOFF=/data/z50063656/tmp/t078-reference-handoff-v1.1.json
+export RAW_HANDOFF=/data/z50063656/tmp/t078-reference-handoff-v1.2.json
 
 cd /data/z50063656/tmp
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${RUN_DIR}" \
   --include-raw-text \
+  --compress-raw-text \
+  --compact \
   --output "${RAW_HANDOFF}"
 
 python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
@@ -87,7 +90,8 @@ python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
   --validate-only
 ```
 
-导出器使用“只新建、不覆盖”策略。`RAW_HANDOFF` 已存在时应换一个文件名或先人工保留旧文件；它
+1.2 只压缩传输表示，恢复后仍按 inventory 中原始字节数和 SHA256 校验；不会降低 FX、日志或
+生成代码的证据完整性。导出器使用“只新建、不覆盖”策略。`RAW_HANDOFF` 已存在时应换一个文件名或先人工保留旧文件；它
 不会覆盖原始 run、已有 handoff、软链接或任何原证据。
 
 ## 3. 通过文本复制上传 GitHub
@@ -152,7 +156,7 @@ reference summary、测试数、skip、correctness、FX 和源码 revision 完�
 
 ## 5. 包含内容与缺项
 
-1.1 会嵌入 `artifact_inventory.json` 登记且后缀为下列类型的严格 UTF-8 原文：
+1.1/1.2 都会嵌入 `artifact_inventory.json` 登记且后缀为下列类型的严格 UTF-8 原文：
 
 ```text
 json/jsonl, txt/log, py, csv, yaml/yml, ptx, ttir/ttgir, ll/mlir,

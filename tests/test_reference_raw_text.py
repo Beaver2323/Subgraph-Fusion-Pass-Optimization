@@ -86,9 +86,9 @@ class RawTextTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data, ensure_ascii=False) + "\n")
 
-    def payload(self):
+    def payload(self, *, compress=False):
         payload = exporter.build_payload(self.run)
-        exporter.include_raw_text(payload, self.run)
+        exporter.include_raw_text(payload, self.run, compress=compress)
         return payload
 
     def test_round_trip_restores_exact_text_not_binary_and_never_executes(self):
@@ -110,6 +110,26 @@ class RawTextTests(unittest.TestCase):
     def test_compact_handoff_does_not_pretend_to_restore_fx(self):
         with self.assertRaisesRegex(ValueError, "1.1"):
             importer.validate_payload(exporter.build_payload(self.run))
+
+    def test_compressed_round_trip_restores_exact_text(self):
+        payload = self.payload(compress=True)
+        self.assertEqual(payload["handoff_format_version"], "1.2")
+        self.assertTrue(
+            all(item["encoding"] == "zlib+base64" for item in payload["raw_text_files"])
+        )
+        restored = importer.restore(payload, self.root / "compressed-imports")
+        for item in payload["raw_text_files"]:
+            self.assertEqual(
+                (restored / item["path"]).read_bytes(),
+                (self.run / item["path"]).read_bytes(),
+            )
+
+    def test_compressed_payload_tampering_is_rejected(self):
+        payload = self.payload(compress=True)
+        payload["raw_text_files"][0]["data"] += "!"
+        exporter.seal_payload(payload)
+        with self.assertRaisesRegex(ValueError, "Base64"):
+            importer.validate_payload(payload)
 
     def test_packet_and_individual_text_tampering_rejected(self):
         payload = self.payload()
@@ -193,6 +213,8 @@ class RawTextTests(unittest.TestCase):
                 "--run-dir",
                 str(self.run),
                 "--include-raw-text",
+                "--compress-raw-text",
+                "--compact",
                 "--output",
                 str(output),
             ],
@@ -201,6 +223,7 @@ class RawTextTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(export.returncode, 0, export.stderr)
+        self.assertEqual(json.loads(output.read_text())["handoff_format_version"], "1.2")
         validation = subprocess.run(
             [
                 sys.executable,
