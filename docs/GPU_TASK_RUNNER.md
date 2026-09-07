@@ -107,7 +107,8 @@ sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
 其中：
 
 - `latest` 指向本轮实际 `reference-<timestamp>` 目录；
-- `latest-text-handoff.json` 固定指向 `latest/text-handoff.json`；正常为本轮可恢复关键评审正文的 1.3 review 文件；
+- `latest-text-handoff.json` 固定指向 `latest/text-handoff.json`；正常为本轮可恢复关键评审正文的
+  1.3 review 文件，并默认使用缩进和换行方便阅读与复制；
 - 控制台仍打印真实 `run_dir=` 和 `text_handoff=`，便于审计；
 - 新一轮执行会原子更新软链接，不删除旧的带时间戳结果。
 

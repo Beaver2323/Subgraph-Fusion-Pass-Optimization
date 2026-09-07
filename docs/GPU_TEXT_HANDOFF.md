@@ -1,6 +1,6 @@
 # GPU 原文 handoff 导出、复制与恢复指南
 
-> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
+> 更新时间：2026-09-07 07:50 CST（UTC+08:00）
 > 适用任务：T-076～T-080 及后续复用统一 GPU reference runner 的任务
 > 目标：在 GPU 服务器不能直接推 Git、不能传二进制时，默认用短评审包回传可校验的摘要与 FX；完整文本归档按需导出
 
@@ -17,6 +17,9 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 ```text
 /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
 ```
+
+该 JSON 默认使用缩进和换行，便于网页查看、文本复制和人工定位字段；统一入口不再添加
+`--compact`。这里的“压缩评审”指减少正文范围并压缩嵌入的 FX 文本，不表示把整个 JSON 写成单行。
 
 不需要查找 `reference-<timestamp>`。`latest-text-handoff.json` 始终指向最后发布的一轮；控制台同时
 打印真实 `run_dir=`，用于审计并发运行。
@@ -82,13 +85,34 @@ cd /data/z50063656/tmp
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${RUN_DIR}" \
   --profile review \
-  --compact \
   --output "${REVIEW_HANDOFF}"
 
 python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
   --input "${REVIEW_HANDOFF}" \
   --validate-only
 ```
+
+T-076/T-077 已完成正式结论，但需补齐 1.3 review 学习/审计正文。旧 runner 没有 `latest` 软链接时，
+直接使用已知 run 目录；以下命令只导出，不重跑 GPU，并生成多行 JSON：
+
+```bash
+export T076_RUN=/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800
+export T077_RUN=/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800
+
+python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
+  --run-dir "${T076_RUN}" \
+  --profile review \
+  --output /data/z50063656/tmp/t076-handoff-review-v1.3.json
+
+python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
+  --run-dir "${T077_RUN}" \
+  --profile review \
+  --output /data/z50063656/tmp/t077-handoff-review-v1.3.json
+```
+
+分别校验后，完整复制到 `results/incoming/T-076/text-handoff.json` 和
+`results/incoming/T-077/text-handoff.json`。T-076 当前仓库文件在第 1001 行截断，必须整体替换；
+T-077 当前没有 handoff 文件。若上述 run 已被清理，才需要重新执行对应 GPU 任务。
 
 review 包保留 FX 对照所需正文，并为未传输的成功日志、生成代码、IR 和二进制保留 inventory
 大小与 SHA256；完整文件仍留在 GPU 原 run。导出器使用“只新建、不覆盖”策略。输出已存在时应换一个文件名或先人工保留旧文件；它
@@ -100,7 +124,6 @@ review 包保留 FX 对照所需正文，并为未传输的成功日志、生成
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${RUN_DIR}" \
   --profile archive \
-  --compact \
   --output /data/z50063656/tmp/t078-reference-handoff-archive-v1.2.json
 ```
 
@@ -115,7 +138,6 @@ export PARTS_DIR=/data/z50063656/tmp/t079-handoff-review-parts-v1.3
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${RUN_DIR}" \
   --profile review \
-  --compact \
   --split-output-dir "${PARTS_DIR}"
 
 python "${TRACKER_ROOT}/scripts/import_reference_text.py" \

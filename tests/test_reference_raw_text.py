@@ -111,7 +111,7 @@ class RawTextTests(unittest.TestCase):
         self.assertNotEqual(again, restored)
         self.assertTrue((restored / "cases/case/fx_before.txt").exists())
 
-    def test_compact_handoff_does_not_pretend_to_restore_fx(self):
+    def test_summary_handoff_does_not_pretend_to_restore_fx(self):
         with self.assertRaisesRegex(ValueError, "1.1"):
             importer.validate_payload(exporter.build_payload(self.run))
 
@@ -253,7 +253,6 @@ class RawTextTests(unittest.TestCase):
                 str(self.run),
                 "--profile",
                 "review",
-                "--compact",
                 "--output",
                 str(output),
             ],
@@ -262,7 +261,9 @@ class RawTextTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(export.returncode, 0, export.stderr)
-        self.assertEqual(json.loads(output.read_text())["handoff_format_version"], "1.3")
+        output_text = output.read_text()
+        self.assertGreater(output_text.count("\n"), 2)
+        self.assertEqual(json.loads(output_text)["handoff_format_version"], "1.3")
         validation = subprocess.run(
             [
                 sys.executable,
@@ -317,7 +318,6 @@ class RawTextTests(unittest.TestCase):
                 str(self.run),
                 "--include-raw-text",
                 "--compress-raw-text",
-                "--compact",
                 "--split-output-dir",
                 str(parts),
             ],

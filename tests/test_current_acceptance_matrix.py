@@ -49,10 +49,13 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
         self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 14)
         self.assertEqual(
-            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 14
+            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 18
         )
         self.assertEqual(
-            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 7
+            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 3
+        )
+        self.assertEqual(
+            sum(row["current_phase"] == "awaiting-npu" for row in rows), 4
         )
         self.assertEqual(
             sum(

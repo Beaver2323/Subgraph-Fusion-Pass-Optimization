@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
+> 更新时间：2026-09-07 07:50 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076～T-078 已形成 14 份正式结果；T-078 完成修复验证、性能处置和产品门禁；T-079/T-080 等待 GPU reference；T-081～T-113 为草案；T-077 MM 与 T-078 产品改动尚未合入。
+> 当前阶段：T-076～T-078 已形成 14 份正式结果；T-079 的 4 个 GPU reference 单元已冻结、等待 NPU；T-080 等待 GPU reference；T-081～T-113 为草案；T-077 MM 与 T-078 产品改动尚未合入。
 
 ## 1. 总结
 
@@ -195,11 +195,15 @@ torch_npu，并用同一六变体合同做安装态回归。
 T-078：12/12 GPU reference、4/4 NPU comparison、条件 repair、候选性能和最终产品 gate 已闭环；
 后续只做同合同回归和 source drift 检查，不再绕过显式门禁补测。
 
-T-079/T-080 后续批次：7 个单元的 manifest/reference/performance plan 和 guide 已完成；GPU 分别
-执行 4 cases/14 variants 与 13 cases/13 variants。T-080 保存 const-scatter CrossEntropy 和
+T-079 已完成 4 cases/14 variants 的 GPU review 复核并冻结，下一步为 NPU `triton_experimental`
+功能/命中验证；T-080 的 3 个单元仍等待 13 cases/13 variants GPU reference。T-080 保存 const-scatter CrossEntropy 和
 prepare-softmax 的社区 benchmark；T-078/T-079 无社区独立 benchmark，明确从社区功能正例派生。
 T-079/T-080 性能 worker 尚未实现，需先完成代码与静态验证；之后只有 NPU
 `triton_experimental` 功能与命中门禁通过，才允许目标级 OFF/ON 性能。
+
+T-076/T-077 的正式 GPU、NPU、comparison 与性能结论无需重跑；但新 1.3 review 证据规范尚未补齐：
+仓库内 T-076 文本为截断 JSON，T-077 尚无 review 文件。若 GPU 原 run 仍在，只需重新导出多行
+review 包并上传，用于补齐逐行 FX 学习/审计证据，不改变既有冻结和闭环状态。
 ```
 
 ## 8. 当前环境边界
@@ -207,7 +211,8 @@ T-079/T-080 性能 worker 尚未实现，需先完成代码与静态验证；之
 - NPU 新测试从 `/home/z50063656/tmp` 发起；GPU T-076 从 `/data/z50063656/tmp` 发起；
 - GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077|T-078|T-079|T-080 --gpu ID`，脚本自动进入
   工作目录、激活环境、校验、运行、导出 1.3 review handoff 与备用网页分片并维护 `latest`，
-  不再人工查找 timestamp；评审包恢复摘要/FX/关键 case 正文，其余 artifacts 保留 SHA256；
+  不再人工查找 timestamp；默认 handoff 是缩进、多行可读 JSON，评审包恢复摘要/FX/关键 case 正文，
+  其余 artifacts 保留 SHA256；
 - NPU 控制节点动态任务使用 `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`；GPU
   reference 使用 `z00824525`/sudo、A100/R550、CUDA 12.6.3、pip venv Python 3.12 和与冻结
   PyTorch commit 一致的 `/data/z50063656/envs/PassGPURef`；compat 当前未启用；

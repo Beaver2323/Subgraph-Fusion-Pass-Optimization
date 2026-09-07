@@ -478,7 +478,11 @@ def parse_args() -> argparse.Namespace:
         "--run-dir", required=True, type=Path, help="reference-<timestamp> 目录"
     )
     parser.add_argument("--output", type=Path, help="输出文件；省略时写到 stdout")
-    parser.add_argument("--compact", action="store_true", help="输出单行 JSON")
+    parser.add_argument(
+        "--compact",
+        action="store_true",
+        help="兼容旧流程的单行 JSON；统一 runner 和新 handoff 不使用",
+    )
     parser.add_argument(
         "--include-raw-text",
         action="store_true",

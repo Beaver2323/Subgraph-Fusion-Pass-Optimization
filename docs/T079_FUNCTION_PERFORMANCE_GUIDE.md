@@ -1,7 +1,7 @@
 # T-079 功能与性能测例讲解
 
-> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
-> 状态：GPU 已报告 4/4 cases、14/14 variants 通过，等待 1.3 review handoff 导入复核；性能 worker 尚未实现。
+> 更新时间：2026-09-07 07:50 CST（UTC+08:00）
+> 状态：GPU 1.3 review 已复核，4/4 cases、14/14 variants 有效并冻结；NPU/性能 worker 尚未执行。
 > NPU 固定后端：`triton_experimental`；其他后端历史数据不计入 verdict。
 
 ## 1. batch=1 的 bmm 降为 mm（`AU-joint-graph-bmm-to-mm`）
@@ -19,6 +19,10 @@ def bmm_to_mm(match, mat1, mat2):
 
 功能测例 `test_bmm_to_mm` 使用 `[1,16,8]@[1,8,32]` 验证正例生成 `mm`，再用 batch=3 验证
 仍保留 `bmm`。它同时说明 pass 的边界：这里只消除“虚假的 batch 维”，不是把任意 bmm 改成 mm。
+
+GPU 实测：原生方法 1/1 通过。batch=1 的可读 FX 已是 `squeeze→mm→unsqueeze`，batch=3 仍为
+`aten.bmm`。由于该改写发生在 joint graph，当前 debug 的 readable/transformed 捕获点都在改写之后，
+所以正例前后签名相同不是“未生效”；命中结论还由社区方法对生成代码中 `mm/bmm` 的断言共同支撑。
 
 社区没有性能 benchmark。性能主测先原样复用小 shape；考虑小算子易受 launch 噪声影响，可增加
 batch 始终为 1、仅放大 M/N/K 的 sensitivity 网格，但必须和社区 shape 分栏，不能冒充社区数据。
@@ -43,6 +47,11 @@ def cat_slice_cat(match, cat_input, size, dim=1):
 性能从合法社区正例派生，测 compiled 端到端，并记录 cat 数、kernel/task 数和中间写入；两个
 fallback 分支只做功能性 guard。
 
+GPU 实测：原生方法 1/1 通过，三个分支都从 `cat→slice→cat` 变为
+`torch__inductor_fx_passes_post_grad_cat_slice_cat(...)` handler 节点；合法分支使用 first width=32、
+`size=19`，两个 guard 分支分别是 first width=8、`size=19` 和 `size=-1`。FX 说明结构进入 handler，
+真正是否折叠由 handler guard 与社区断言判定，不能把三个 handler 节点都记成优化生效。
+
 ## 3. split_with_sizes→cat 消除（`AU-post-grad-splitwithsizes-cat-replace`）
 
 代码位置：`torch/_inductor/fx_passes/post_grad.py:1731`。
@@ -58,6 +67,10 @@ cat 维不同或 getitem 重排都会改变结果，必须拒绝消除。
 
 性能没有社区 benchmark，复用正例做端到端 OFF/ON；重点不是某个 kernel 变快，而是 split/cat 图
 节点与中间量消失，因此 Event、kernel/task 数和内存需要一起看。
+
+GPU 实测：原生方法 1/1 通过。完整同序正例的 `split/getitem/cat` 被替换为
+`splitwithsizes_cat_replace(input_=arg0)`；缺片、异维和重排三个分支在 transformed FX 中仍保留
+原始 `split_with_sizes/getitem/cat`，正负例边界清晰。
 
 ## 4. cat→split_with_sizes 消除（`AU-post-grad-cat-splitwithsizes-replace`）
 
@@ -75,6 +88,10 @@ def cat_splitwithsizes_replace(match, input_):
 性能从正例派生，测整个编译图并核对 alias/stride；负例不参与性能。它与上一单元方向相反、guard
 不同，不能合并成一个 acceptance unit 或共用一个“命中”结论。
 
+GPU 实测：原生方法 1/1 通过。同边界、同维且 cat 单用户的正例变为
+`cat_splitwithsizes_replace(input_=[arg0,arg1,arg2])`；cat 多用户、异维、异数量、异边界四个负例均保留
+`cat/split_with_sizes`。这 5 张图与社区计数/数值断言共同覆盖 5 个 variants。
+
 ## 5. 结果判读
 
 | 证据 | 回答的问题 |
@@ -87,3 +104,7 @@ def cat_splitwithsizes_replace(match, input_):
 
 机器可读细节见 `upstream/t079_performance_plan.yaml`。正式性能结论只能来自 fresh-process、同源码、
 同输入、同 `triton_experimental` backend 的目标级 OFF/ON。
+
+本次 GPU handoff 的逐 case 复核、环境指纹和证据边界见
+`report/t079_gpu_reference_review_20260907.md`。NPU 尚未运行，因此本页不提前填写 GPU/NPU 行为对比；
+下一步必须在 fresh process 中选择 `triton_experimental` 后端，再补 NPU 命中、正确性、差异和性能。

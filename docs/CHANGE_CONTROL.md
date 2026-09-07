@@ -3702,3 +3702,17 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   结论。导入器校验 profile/格式绑定、review 必需文件、hash-only 缺项和 inventory 全覆盖，且
   不执行回传代码。分片作为 review 单文件仍超网页限制时的备用传输，不再作为默认首选交付。
 - 新增 review 正常路径、失败日志自动携带和一键入口回归；统一零设备门禁 88 项测试通过。
+
+### E-232：T-079 reference 冻结与多行 handoff（2026-09-07）
+
+- 登记时间：2026-09-07 07:50 CST（UTC+08:00）。拉取并校验 T-079 的 1.3 review handoff：
+  PyTorch commit `8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`、4/4 direct cases、14/14 variants
+  全部有效，无 skip、失败或 GPU adapter；4 个 acceptance units 冻结，NPU 仍为未运行。
+- 恢复并逐项复核 26 份关键正文：bmm batch=1 改为 squeeze/mm/unsqueeze、batch=3 保留 bmm；
+  两个 split/cat 正例被 replacement 消除且负例保留；cat-slice-cat 的 FX 只证明进入 handler，
+  不能把两个 fallback 分支误记为优化生效。
+- 有效 handoff 归位为 `results/incoming/T-079/text-handoff.json`；删除缺少 12/15 分片且文件名不符的
+  旧失败上传，Git 历史仍可恢复。T-079 的正式复核见 `report/t079_gpu_reference_review_20260907.md`。
+- 统一 GPU 一键入口不再传 `--compact`，后续 review/archive 默认输出缩进、多行 JSON；分片仍只在
+  网页单文件上限阻断时使用。T-076/T-077 既有结论无需重跑，但仍需从旧 run 补导出 1.3 review，
+  以补齐逐行 FX 学习/审计正文。

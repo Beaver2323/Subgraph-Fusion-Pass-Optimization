@@ -256,7 +256,6 @@ set +e
 "${PYTHON}" "${tracker_root}/scripts/export_reference_text.py" \
     --run-dir "${run_dir}" \
     --profile review \
-    --compact \
     --allow-derived-output \
     --output "${text_handoff}" \
     --split-output-dir "${text_handoff_parts}"

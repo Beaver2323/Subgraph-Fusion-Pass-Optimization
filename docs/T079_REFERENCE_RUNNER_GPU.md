@@ -1,7 +1,7 @@
 # T-079 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
-> 状态：GPU 已报告 4/4 direct cases、14/14 variants 通过；等待 1.3 review handoff 导入复核后冻结
+> 更新时间：2026-09-07 07:50 CST（UTC+08:00）
+> 状态：1.3 review handoff 已导入复核；GPU 4/4 direct cases、14/14 variants 有效并已冻结
 > 原则：只运行冻结 PyTorch commit 的原生社区方法；失败原样回传，不在 GPU 机器临时修改测试
 
 ## 一键执行
@@ -46,7 +46,7 @@ REF-splitwithsizes-cat-native
 REF-cat-splitwithsizes-native
 ```
 
-单 case 通过 `--case CASE_ID` 选择。完整运行后复制：
+单 case 通过 `--case CASE_ID` 选择。完整运行后复制默认生成的多行可读 JSON：
 
 ```bash
 cat /data/z50063656/tmp/t079-reference-results/latest-text-handoff.json
@@ -56,6 +56,7 @@ cat /data/z50063656/tmp/t079-reference-results/latest-text-handoff.json
 `/data/z50063656/tmp/t079-reference-results/latest/text-handoff-parts/` 中的 manifest 和分片；
 已有旧 run 可按[GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)直接补生成，无需重新执行 GPU。
 
-只有 4/4 cases 均 `passed` 且 `reference_valid=true` 才能冻结 T-079。
+本轮已满足 4/4 cases 均 `passed` 且 `reference_valid=true`，无需重复执行 GPU；只有源码、环境或
+输入合同漂移时才重跑。
 一键入口默认生成可恢复 FX 与关键 case 正文的 1.3 review handoff；复制、校验和恢复见
 [GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)。

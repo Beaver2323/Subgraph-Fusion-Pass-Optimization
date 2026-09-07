@@ -250,7 +250,11 @@ print('artifacts=' + str(root))
     def test_shared_default_reaches_runner_and_exports_mode(self):
         result = self.run_launcher()
         self.assertEqual(result.returncode, 0, result.stderr)
-        payload = json.loads((self.data / "tmp/t078-reference-results/latest-text-handoff.json").read_text())
+        handoff_text = (
+            self.data / "tmp/t078-reference-results/latest-text-handoff.json"
+        ).read_text()
+        self.assertGreater(handoff_text.count("\n"), 2)
+        payload = json.loads(handoff_text)
         env = payload["environment"]["runtime"]["selected_environment"]
         self.assertEqual(env["PASS_GPU_EXECUTION_MODE"], "shared")
         self.assertEqual(env["PASS_GPU_COMPUTE_MODE"], "DEFAULT")
