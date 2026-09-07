@@ -1,6 +1,6 @@
 # NPU 功能验证、诊断与最小修复实操指南
 
-> 更新时间：2026-09-07 09:50 CST（UTC+08:00）
+> 更新时间：2026-09-07 11:20 CST（UTC+08:00）
 >
 > 适用范围：本仓库 acceptance unit 在 Ascend NPU 上的功能验证、差异分类、最小修复和回归
 >
@@ -107,7 +107,9 @@ T-076/T-077 多数入口受上游 `HAS_GPU`、`GPU_TYPE` 或动态测试类生�
 - 使用 default、DVM、MLIR 的结果替代 `triton_experimental`；
 - CPU fallback 后只看输出正确就称 NPU 图模式 PASS。
 
-已有适配器以 case 为单位放在 `issues/<case-id>/npu_adapter.py`。例如：
+已有适配器以 case 为单位放在 `issues/<case-id>/npu_adapter.py`，并强制配套
+`issues/<case-id>/适配报告.md`。统一字段、代码框、调用链和边界要求见
+[NPU 最小适配报告规范](ADAPTER_REPORT_STANDARD.md)。例如：
 
 ```bash
 python /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/\
@@ -232,7 +234,8 @@ left-grad 和 right-grad。修复只通过原失败点而没有跑负例/邻近�
   correctness、adapter 与修复信息；
 - `results/current/<acceptance-unit>/comparison_result.json`：逐 variant 的 GPU/NPU 行为、首个分歧与
   verdict；
-- `issues/<case-id>/复现报告.md`：可复现命令、原始阻断、最小适配、证据解释；
+- `issues/<case-id>/复现报告.md`：可复现命令、原始阻断和动态证据；
+- `issues/<case-id>/适配报告.md`：最小偏差、代码框、必要调用链、社区合同保持性与适配边界；
 - 若修源码，再补 `根因分析.md`、`修复验证报告.md` 和 `代码合入描述.md`；
 - task 级 report/guide：汇总每个 pattern 的代码意图、GPU/NPU 对照与性能处置。
 

@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-07 10:35 CST（UTC+08:00）
+> 索引更新时间：2026-09-07 11:20 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -11,6 +11,7 @@
 | [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 从活动 manifest、current results 与性能数据生成的逐 acceptance-unit 真值入口 | 21 units 全部冻结；14 个已闭环、T-079/T-080 的 7 个等待 NPU；现有 NPU 动态结果 backend 全为 `triton_experimental` |
 | [t076_t077_history_reaudit_20260906.md](t076_t077_history_reaudit_20260906.md) | 逐单元历史复核、规则版本与统一检查入口 | 10 份 NPU 记录检查通过；历史原始证据仍 pending，原始 verdict 不改写 |
 | [tracker_validation_hardening_20260906.md](tracker_validation_hardening_20260906.md) | 验收校验、失败落盘与 latest 一致性修复 | 零设备回归；不重写既有 GPU/NPU 实测结果 |
+| [NPU 最小适配报告规范](../docs/ADAPTER_REPORT_STANDARD.md) | T-076～T-078 共 28 个实际 adapter 的逐 case 报告入口、代码框、调用链与审计合同 | 28/28 已补齐；adapter 不能代替产品修复或 comparison verdict |
 | [t076_t077_performance_20260903.md](t076_t077_performance_20260903.md) | 两批性能处置、backend 门禁、B2B capability 与四项 experimental OFF/ON 实测 | T-076 2测/3显式关闭免测；T-077 5/5 已处置、pending=0 |
 | [t076_npu_completion_20260902.md](t076_npu_completion_20260902.md) | T-076 五个单元的 NPU/comparison 闭环及 addmm 运行态纠偏 | 正式闭环 5/5；1 个行为一致、4 个预期产品分歧 |
 | [T-076 P-018 gate 分析](../issues/REF-addmm-contract-native/根因分析.md) / [候选验证](../issues/REF-addmm-contract-native/修复验证报告.md) | 社区 pattern、安装态 gate、必要调用链、live opt-out 与验证矩阵 | capability 候选已验证；正式安装态仍关闭 |

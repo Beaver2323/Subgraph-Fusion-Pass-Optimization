@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-07 10:35 CST（UTC+08:00）
+> 日志校准时间：2026-09-07 11:20 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3781,3 +3781,17 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   保留；删除 T-076～T-080 非空目录中的冗余 `.gitkeep`。上述删除均可从 Git 历史恢复。
 - 新增仓库结构回归，阻止旧报告重新散落到 `report/` 一级、活动文件重新引用旧位置，或在非空
   incoming 任务目录恢复占位文件。
+
+### E-238：逐 case 最小适配报告合同与历史补齐（2026-09-07）
+
+- 登记时间：2026-09-07 11:20 CST（UTC+08:00）。此前最小适配代码与结果存在，但内容散落在
+  `复现报告.md`、批次汇总和 `npu_adapter.py` 中，没有独立、统一的适配报告，难以区分测试入口
+  适配与产品源码修复。
+- 新增 `docs/ADAPTER_REPORT_STANDARD.md`，强制记录原生阻断、community nodeid、最小偏差、保持的
+  shape/dtype/dynamic/正负例合同、带路径代码框、必要调用链、backend、产品 gate 和正式 verdict。
+- 为 T-076 的 12 个、T-077 的 5 个、T-078 的 11 个实际 adapter 全部补齐同目录
+  `适配报告.md`。报告复述必要的复现、根因、修复和 comparison 内容以便独立阅读，同时链接原始
+  证据；没有 adapter 的 direct/免测 case 不创建空报告。
+- 新增 `tests/test_adapter_reports.py`：仓库当前 28 个 `npu_adapter.py` 必须逐一有中文报告、北京时间
+  时间戳、`triton_experimental`、代码框、必要调用链和 `product_gate_bypassed=false`。后续新增
+  adapter 而漏写报告将直接使统一门禁失败。

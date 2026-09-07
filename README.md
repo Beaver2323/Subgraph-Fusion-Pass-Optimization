@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-07 10:35 CST（UTC+08:00）
+> 文档更新时间：2026-09-07 11:20 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -140,6 +140,7 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU 一键运行（默认共享、可选独占、快速等卡）、固定 latest 与 results/incoming/ JSON 接收路径 |
 | [docs/GPU_TEXT_HANDOFF.md](docs/GPU_TEXT_HANDOFF.md) | summary、默认 1.3 review、1.2 archive 及网页分片，覆盖复制、校验、安全恢复与 FX 查看 |
 | [docs/NPU_FUNCTION_REPAIR_WORKFLOW.md](docs/NPU_FUNCTION_REPAIR_WORKFLOW.md) | NPU 原生入口、最小适配、命中/生效分层、根因定位、最小修复、回归和性能解锁教程 |
+| [docs/ADAPTER_REPORT_STANDARD.md](docs/ADAPTER_REPORT_STANDARD.md) | 最小适配与产品修复的边界、适配报告强制字段及 T-076～T-078 覆盖索引 |
 | [docs/T079_T080_NPU_FUNCTION_REPAIR_PLAN.md](docs/T079_T080_NPU_FUNCTION_REPAIR_PLAN.md) | T-079/T-080 七个单元逐项 NPU 功能证据、潜在分歧层、修复边界和交付物 |
 | [T-076 P-018 gate 分析](issues/REF-addmm-contract-native/根因分析.md) / [候选验证](issues/REF-addmm-contract-native/修复验证报告.md) | addmm 社区 pattern、安装态 gate、必要调用栈、live opt-out 和候选验证矩阵 |
 | [T-077 small-MM 根因](issues/REF-decompose-mm-native/根因分析.md) / [修复验证](issues/REF-decompose-mm-native/修复验证报告.md) | 数值回归的触发代码、必要调用栈、首个 lowering 分歧、修复前后生成路径与六变体验证 |

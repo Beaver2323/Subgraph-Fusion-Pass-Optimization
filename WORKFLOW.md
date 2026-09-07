@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-07 09:05 CST（UTC+08:00）
+> 更新时间：2026-09-07 11:20 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -152,7 +152,10 @@ schema、mapping、runner 静态校验和已知历史证据整理，但不能给
 ├── issues/
 │   └── REF-*/
 │       ├── npu_adapter.py
-│       └── 复现报告.md
+│       ├── 复现报告.md
+│       ├── 适配报告.md
+│       ├── 根因分析.md
+│       └── 修复验证报告.md
 ├── results/current/
 │   └── <acceptance-unit>/
 │       ├── npu_result.json
@@ -211,7 +214,9 @@ T-079/T-080 仍遵守该前置门禁。
 | `extracted` | 原测试与框架强耦合，无法直接运行 | 最小镜像；必须记录提取原因和偏离 |
 
 选择优先级固定为 `direct > adapter > extracted`。upstream source/test 改变后，adapter 和
-extracted case 必须重新审查。
+extracted case 必须重新审查。只要实际落盘 `npu_adapter.py`，同目录就必须有 `适配报告.md`；报告
+合同见 [NPU 最小适配报告规范](docs/ADAPTER_REPORT_STANDARD.md)。没有 adapter 的 direct/免测 case
+不得创建空报告充数。
 
 ## 8. Acceptance-unit manifest
 
