@@ -260,11 +260,11 @@ def validate_contract(
         test_key = (unit_id, case["source_test"])
         if test_key not in manifest_tests:
             raise ValueError(f"case 不是 manifest community test: {case_id}")
-        if test_key in seen_tests:
-            raise ValueError(f"community test 被重复执行: {test_key}")
-        seen_tests.add(test_key)
-
         mode = case["tracking_mode"]
+        if mode == "direct":
+            if test_key in seen_tests:
+                raise ValueError(f"community test 被重复执行: {test_key}")
+            seen_tests.add(test_key)
         if "native_observer" in case:
             if case["native_observer"] is not True or mode != "direct":
                 raise ValueError(f"{case_id} native_observer 只允许 direct 且显式 true")
@@ -276,11 +276,11 @@ def validate_contract(
                 "test/inductor/test_torchinductor_dynamic_shapes.py",
             }:
                 raise ValueError(f"{case_id} native_observer 未审核该源码")
-        if mode not in {"direct", "adapter", "extracted"}:
+        if mode not in {"direct", "adapter", "extracted", "derived"}:
             raise ValueError(f"{case_id} tracking_mode 非法: {mode}")
-        if mode != units[unit_id]["tracking"]["reference_mode"]:
+        if mode != "derived" and mode != units[unit_id]["tracking"]["reference_mode"]:
             raise ValueError(f"{case_id} 与 manifest reference_mode 不一致")
-        if mode != "direct":
+        if mode in {"adapter", "extracted"}:
             if not case.get("entrypoint") or not case.get("direct_blocker"):
                 raise ValueError(
                     f"{case_id} 进入 {mode} 前必须记录 entrypoint/direct_blocker"
@@ -289,6 +289,19 @@ def validate_contract(
             required = {"direct_case_id", "artifact_ref", "classification"}
             if required - blocker.keys():
                 raise ValueError(f"{case_id} direct_blocker 字段不完整")
+        if mode == "derived":
+            if not case.get("entrypoint"):
+                raise ValueError(f"{case_id} derived case 必须记录 entrypoint")
+            derivation = case.get("derivation")
+            required = {"basis", "changed_dimensions", "preserved_contract"}
+            if not isinstance(derivation, dict) or required - derivation.keys():
+                raise ValueError(f"{case_id} derived case 的 derivation 字段不完整")
+            if derivation["basis"] != "community-test-dtype-extension":
+                raise ValueError(f"{case_id} derived case 只允许已审核的 dtype 扩展")
+            if derivation["changed_dimensions"] != ["dtype"]:
+                raise ValueError(f"{case_id} derived case 只能改变 dtype")
+            if not derivation["preserved_contract"]:
+                raise ValueError(f"{case_id} derived case 必须声明保持的社区合同")
         if mode != "direct" and case.get("direct_args"):
             raise ValueError(f"{case_id} 非 direct case 不得设置 direct_args")
         if set(case["required_artifacts"]) != {"fx-before", "fx-after"}:
@@ -301,7 +314,9 @@ def validate_contract(
         if not isinstance(timeout, int) or timeout <= 0:
             raise ValueError(f"{case_id} timeout 必须为正整数")
         known_variants = {
-            variant["variant_id"] for variant in units[unit_id]["variants"]
+            variant["variant_id"]
+            for group in ("variants", "pending_variants")
+            for variant in units[unit_id].get(group, [])
         }
         for variant_id in case["variant_ids"]:
             key = (unit_id, variant_id)
@@ -341,7 +356,9 @@ def validate_contract(
         if unit_id not in units:
             raise ValueError(f"non-executed variant 引用了未知 unit: {unit_id}")
         known_variants = {
-            variant["variant_id"] for variant in units[unit_id]["variants"]
+            variant["variant_id"]
+            for group in ("variants", "pending_variants")
+            for variant in units[unit_id].get(group, [])
         }
         if item["variant_id"] not in known_variants:
             raise ValueError(f"non-executed variant 不存在: {key}")
@@ -352,7 +369,8 @@ def validate_contract(
     all_variants = {
         (unit_id, variant["variant_id"])
         for unit_id, unit in units.items()
-        for variant in unit["variants"]
+        for group in ("variants", "pending_variants")
+        for variant in unit.get(group, [])
     }
     accounted = covered_variants | dispositions
     if accounted != all_variants:
@@ -749,8 +767,14 @@ def case_command(
         return [sys.executable, str(pytorch_root / relative), "-v", qualname]
     entrypoint = (repo_root / case["entrypoint"]).resolve()
     if not entrypoint.is_file() or not is_relative_to(entrypoint, repo_root):
-        raise FileNotFoundError(f"adapter/extracted entrypoint 非法: {entrypoint}")
-    return [sys.executable, str(entrypoint), "--source-test", case["source_test"]]
+        raise FileNotFoundError(f"adapter/extracted/derived entrypoint 非法: {entrypoint}")
+    return [
+        sys.executable,
+        str(entrypoint),
+        "--source-test",
+        case["source_test"],
+        *case.get("entrypoint_args", []),
+    ]
 
 
 def run_case(
@@ -786,6 +810,8 @@ def run_case(
         "expected_assertions": case["expected_assertions"],
         "pytorch_commit": expected_commit,
     }
+    if case["tracking_mode"] == "derived":
+        metadata["derivation"] = case["derivation"]
     write_json(case_dir / "metadata.json", metadata)
 
     env = os.environ.copy()
@@ -857,6 +883,8 @@ def run_case(
         correctness_status = (
             "not-asserted-codegen-only"
             if case.get("correctness_evidence") == "codegen-only"
+            else "derived-assertion-passed"
+            if case["tracking_mode"] == "derived"
             else "community-assertion-passed"
         )
     else:
@@ -868,13 +896,18 @@ def run_case(
         adapter_decision = "adapter-valid-after-recorded-direct-blocker"
     elif reference_valid and case["tracking_mode"] == "extracted":
         adapter_decision = "extracted-valid-after-recorded-direct-blocker"
+    elif reference_valid and case["tracking_mode"] == "derived":
+        adapter_decision = "derived-valid-after-community-contract"
     else:
         adapter_decision = "review-direct-blocker-before-adapter"
 
     benchmark = {
         "status": "not-configured",
         "functional_gate": (
-            "passed" if reference_valid and correctness_status == "community-assertion-passed"
+            "passed"
+            if reference_valid
+            and correctness_status
+            in {"community-assertion-passed", "derived-assertion-passed"}
             else "not-passed"
         ),
         "reason": (
@@ -924,7 +957,9 @@ def run_case(
             "assertion_status": assertion_status,
             "observed_count": None,
             "evidence_method": (
-                "原生 community test 内部实际存在的 counter/FileCheck/correctness 断言；"
+                "社区合同派生入口内显式执行 correctness/counter/codegen 断言"
+                if case["tracking_mode"] == "derived"
+                else "原生 community test 内部实际存在的 counter/FileCheck/correctness 断言；"
                 "runner 不伪造未打印的原始计数"
             ),
         },
@@ -934,6 +969,8 @@ def run_case(
             "evidence_method": (
                 "社区入口仅断言 codegen；不能据此宣称数值正确，性能前须补充数值门禁"
                 if case.get("correctness_evidence") == "codegen-only"
+                else "社区合同派生 dtype 测例的 eager/compiled 与 codegen 断言"
+                if case["tracking_mode"] == "derived"
                 else "原生 community test eager/compiled 断言"
             ),
         },
@@ -941,6 +978,8 @@ def run_case(
         "adapter_decision": adapter_decision,
         "reference_valid": reference_valid,
     }
+    if case["tracking_mode"] == "derived":
+        result["case"]["derivation"] = case["derivation"]
     write_json(case_dir / "reference_result.json", result)
     write_json(case_dir / "artifact_inventory.json", artifact_inventory(case_dir))
     return result
@@ -964,40 +1003,45 @@ def build_variant_summary(
     summary = []
     for unit in manifest["acceptance_units"]:
         unit_id = unit["acceptance_unit_id"]
-        for variant in unit["variants"]:
-            key = (unit_id, variant["variant_id"])
-            case_ids = cases_by_variant.get(key, [])
-            if key in dispositions:
-                item = dispositions[key]
-                status = item["disposition"]
-                reason = item["reason"]
-            elif not case_ids:
-                status = "not-selected"
-                reason = "本轮过滤未执行关联 case。"
-            else:
-                selected_results = [
-                    results_by_case[case_id]
-                    for case_id in case_ids
-                    if case_id in results_by_case
-                ]
-                if len(selected_results) != len(case_ids):
+        for group in ("variants", "pending_variants"):
+            for variant in unit.get(group, []):
+                key = (unit_id, variant["variant_id"])
+                case_ids = cases_by_variant.get(key, [])
+                if key in dispositions:
+                    item = dispositions[key]
+                    status = item["disposition"]
+                    reason = item["reason"]
+                elif not case_ids:
                     status = "not-selected"
-                    reason = "本轮只执行了 reference plan 子集。"
-                elif all(result["reference_valid"] for result in selected_results):
-                    status = "valid-reference"
-                    reason = "所有关联原生 community tests 与必需 artifacts 均有效。"
+                    reason = "本轮过滤未执行关联 case。"
                 else:
-                    status = "direct-blocked-or-invalid"
-                    reason = "至少一个关联原生 community test 或 artifact gate 未通过。"
-            summary.append(
-                {
-                    "acceptance_unit_id": unit_id,
-                    "variant_id": variant["variant_id"],
-                    "case_ids": case_ids,
-                    "status": status,
-                    "reason": reason,
-                }
-            )
+                    selected_results = [
+                        results_by_case[case_id]
+                        for case_id in case_ids
+                        if case_id in results_by_case
+                    ]
+                    if len(selected_results) != len(case_ids):
+                        status = "not-selected"
+                        reason = "本轮只执行了 reference plan 子集。"
+                    elif all(result["reference_valid"] for result in selected_results):
+                        status = "valid-reference"
+                        reason = (
+                            "所有关联社区合同派生测例与必需 artifacts 均有效。"
+                            if group == "pending_variants"
+                            else "所有关联原生 community tests 与必需 artifacts 均有效。"
+                        )
+                    else:
+                        status = "direct-blocked-or-invalid"
+                        reason = "至少一个关联测例或 artifact gate 未通过。"
+                summary.append(
+                    {
+                        "acceptance_unit_id": unit_id,
+                        "variant_id": variant["variant_id"],
+                        "case_ids": case_ids,
+                        "status": status,
+                        "reason": reason,
+                    }
+                )
     return summary
 
 

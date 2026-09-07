@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-07 22:26 CST（UTC+08:00）
+> 更新时间：2026-09-08 06:07 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -213,9 +213,11 @@ reference；单 rank 通信测例只证明其实际断言的结构/数值合同�
 | `direct` | community test/helper 可直接调用 | 只做 runner 参数和 artifacts 采集 |
 | `adapter` | 测试不能直接 import，但核心图可复用 | device/backend/input 注入和薄封装 |
 | `extracted` | 原测试与框架强耦合，无法直接运行 | 最小镜像；必须记录提取原因和偏离 |
+| `derived` | direct 已有效，但源码允许的重要 dtype/shape 分支没有社区动态 case | 必须只改变已声明维度，逐项记录保持的社区图、输入与断言合同 |
 
-选择优先级固定为 `direct > adapter > extracted`。upstream source/test 改变后，adapter 和
-extracted case 必须重新审查。只要实际落盘 `npu_adapter.py`，同目录就必须有 `适配报告.md`；报告
+选择优先级固定为 `direct > adapter > extracted`；`derived` 不是 direct 失败后的替代入口，只用于
+已确认的覆盖扩展，且不得冒充 community test。upstream source/test 改变后，adapter、extracted 和
+derived case 必须重新审查。只要实际落盘 `npu_adapter.py`，同目录就必须有 `适配报告.md`；报告
 合同见 [NPU 最小适配报告规范](docs/ADAPTER_REPORT_STANDARD.md)。没有 adapter 的 direct/免测 case
 不得创建空报告充数。
 
@@ -239,6 +241,8 @@ extracted case 必须重新审查。只要实际落盘 `npu_adapter.py`，同目
   variants:
     - variant_id: same_k
     - variant_id: different_k
+  pending_variants:
+    - variant_id: newly-discovered-dtype
   tracking_mode: direct
   review_status: mapped
   denominator_eligible: pending
@@ -246,6 +250,10 @@ extracted case 必须重新审查。只要实际落盘 `npu_adapter.py`，同目
 
 `pass_map.yaml` 保存 registration/pattern/test/acceptance unit 的多对多关系；manifest 只保留已审核
 的 contracts。T-074 candidate CSV 作为 inventory 输入，不直接等价于 manifest。
+
+已冻结单元后来发现源码可达、但社区原生测例没有动态覆盖的重要分支时，先登记到
+`pending_variants`。已有 variants、原始结果和哈希证据不回滚；矩阵必须同时显示已验证数与 pending
+数，既有 correctness/repair/performance 只标为 existing-variants 范围，补证完成前禁止外推。
 
 T-075 已在 `upstream/` 落盘首批 5 个审核单元，共 20 个 variants、13 个 community test 引用。
 T-076 的 13 个 GPU direct cases 全部有效后，它们已更新为 `frozen`/`yes-frozen`，构成首版
@@ -357,6 +365,11 @@ FX before/after 已捕获；全部 skip、未发现测试或缺失必需 artifac
 `reference_plan.yaml` 若增加 `adapter` 或 `extracted` case，必须同时登记原 direct blocker 和新
 entrypoint。当前没有 direct GPU artifacts，因此 `adapters/` 不创建。人工命令和回传合同见
 [`docs/REFERENCE_RUNNER_GPU.md`](docs/REFERENCE_RUNNER_GPU.md)。
+
+若增加 `derived` case，必须绑定已登记的社区 source test，记录 `changed_dimensions` 与
+`preserved_contract`，并保留独立 case id。派生测例失败不得用社区 direct 通过覆盖；涉及低精度
+数值差异时，先在 reference 上执行，再在 NPU `triton_experimental` 中以 fresh process 做目标
+OFF、原分解路径和目标重写三臂同输入归因，正确性未闭环前不得运行性能。
 
 baseline 先比较 previous reference 与 current reference：match、FX signature 或行为变化时标记
 `UPSTREAM_CHANGED`。reference invalid、missing 或 mapping broken 时，NPU 结果只能保留为运行证据，

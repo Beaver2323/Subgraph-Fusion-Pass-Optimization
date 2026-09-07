@@ -234,7 +234,7 @@ from pathlib import Path
 root = Path(sys.argv[sys.argv.index('--output-root') + 1]) / 'reference-fixture'
 root.mkdir()
 keys = ('PASS_GPU_EXECUTION_MODE', 'PASS_GPU_COMPUTE_MODE', 'PASS_GPU_MIN_FREE_MEMORY_MIB', 'CUDA_VISIBLE_DEVICES')
-environment = {'runtime': {'selected_environment': {key: os.environ.get(key) for key in keys}}, 'cwd': os.getcwd()}
+environment = {'runtime': {'selected_environment': {key: os.environ.get(key) for key in keys}}, 'cwd': os.getcwd(), 'argv': sys.argv[1:]}
 for name, value in {'environment': environment, 'reference_summary': {'run_id': root.name, 'cases': []}, 'manifest_snapshot': {}, 'reference_plan_snapshot': {}}.items():
     (root / (name + '.json')).write_text(json.dumps(value))
 print('artifacts=' + str(root))
@@ -287,6 +287,25 @@ print('artifacts=' + str(root))
         self.assertTrue(manifest.is_file())
         self.assertIn("handoff_upload_mode=split", result.stdout)
         self.assertIn(str(manifest), result.stdout)
+
+    def test_multiple_cases_are_forwarded_to_reference_runner(self):
+        result = self.run_launcher(
+            "--case",
+            "REF-addcdiv-fma-fp16-derived",
+            "--case",
+            "REF-addcdiv-fma-bfloat16-derived",
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        handoff = json.loads(
+            (
+                self.data
+                / "tmp/t078-reference-results/latest-text-handoff.json"
+            ).read_text()
+        )
+        argv = handoff["environment"]["argv"]
+        self.assertEqual(argv.count("--case"), 2)
+        self.assertIn("REF-addcdiv-fma-fp16-derived", argv)
+        self.assertIn("REF-addcdiv-fma-bfloat16-derived", argv)
 
     def test_invalid_handoff_threshold_is_rejected(self):
         self.env["PASS_GPU_HANDOFF_SINGLE_FILE_BYTES"] = "0"

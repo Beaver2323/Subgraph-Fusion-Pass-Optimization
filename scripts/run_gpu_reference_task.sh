@@ -6,7 +6,7 @@ tracker_root="${TRACKER_ROOT:-${repo_root}}"
 data_root="${PASS_GPU_DATA_ROOT:-/data/z50063656}"
 task_id=""
 gpu_id="${CUDA_VISIBLE_DEVICES:-}"
-case_id=""
+case_ids=()
 validate_only=0
 wait_gpu=0
 wait_timeout=0
@@ -32,7 +32,7 @@ usage() {
   --task T-076|T-077|T-078|T-079|T-080|T-081|T-082|T-083   必填
   T-083 原生功能例使用 world_size=1，只需1卡；不证明跨rank通信收益。
   --gpu ID             实际运行时使用的物理 GPU 编号；也可预先设置 CUDA_VISIBLE_DEVICES
-  --case CASE_ID       可选，只运行指定 case
+  --case CASE_ID       可选，只运行指定 case；可重复指定多个 case
   --validate-only      只做零设备静态校验
   --exclusive          可选独占策略：启动时无计算进程；默认 shared，允许已有进程
   --min-free-memory-mib MIB  最低空闲显存，默认 1024 MiB；0 取消显存门槛，不保证无 OOM
@@ -65,7 +65,7 @@ while (($#)); do
             shift 2
             ;;
         --case)
-            case_id="${2:-}"
+            case_ids+=("${2:-}")
             shift 2
             ;;
         --validate-only)
@@ -221,9 +221,9 @@ echo "python=${PYTHON}"
 cd "${work_dir}"
 
 validate_args=(--pytorch-root "${pytorch_root}" --validate-only)
-if [[ -n "${case_id}" ]]; then
+for case_id in "${case_ids[@]}"; do
     validate_args+=(--case "${case_id}")
-fi
+done
 bash "${task_runner}" "${validate_args[@]}"
 
 if ((validate_only)); then
@@ -246,9 +246,9 @@ export CUDA_VISIBLE_DEVICES="${gpu_id}"
 
 launcher_log="$(mktemp "${work_dir}/${task_id,,}-gpu-launch.XXXXXX.log")"
 run_args=(--pytorch-root "${pytorch_root}" --output-root "${result_root}")
-if [[ -n "${case_id}" ]]; then
+for case_id in "${case_ids[@]}"; do
     run_args+=(--case "${case_id}")
-fi
+done
 
 set +e
 bash "${task_runner}" "${run_args[@]}" 2>&1 | tee "${launcher_log}"

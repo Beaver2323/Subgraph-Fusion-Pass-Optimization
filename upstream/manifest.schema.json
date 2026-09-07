@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/Beaver2323/Subgraph-Fusion-Pass-Optimization/main/upstream/manifest.schema.json",
   "title": "Inductor Acceptance Unit Manifest",
-  "$comment": "更新时间：2026-08-31 18:34 CST；registration inventory 不能直接作为 acceptance-unit 分母。",
+  "$comment": "更新时间：2026-09-08 06:07 CST；registration inventory 不能直接作为 acceptance-unit 分母；pending_variants 不得冒充已验证 variants。",
   "type": "object",
   "required": [
     "schema_version",
@@ -188,6 +188,11 @@
           "items": {"$ref": "#/$defs/community_test"}
         },
         "variants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/variant"}
+        },
+        "pending_variants": {
           "type": "array",
           "minItems": 1,
           "items": {"$ref": "#/$defs/variant"}

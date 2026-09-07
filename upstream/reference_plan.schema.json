@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/Beaver2323/Subgraph-Fusion-Pass-Optimization/main/upstream/reference_plan.schema.json",
   "title": "GPU Reference Execution Plan",
-  "$comment": "更新时间：2026-09-06 02:21 CST；原生优先。支持性能方案导航、codegen-only 证据与适配入口预期执行数，不以缺失数值断言冒充性能门禁通过。",
+  "$comment": "更新时间：2026-09-08 06:07 CST；原生优先。derived 只允许对已审核社区合同做显式覆盖扩展，不得冒充社区原生测例。",
   "type": "object",
   "required": [
     "schema_version",
@@ -90,7 +90,7 @@
         "case_id": {"type": "string", "pattern": "^REF-"},
         "acceptance_unit_id": {"type": "string", "pattern": "^AU-"},
         "source_test": {"type": "string"},
-        "tracking_mode": {"enum": ["direct", "adapter", "extracted"]},
+        "tracking_mode": {"enum": ["direct", "adapter", "extracted", "derived"]},
         "correctness_evidence": {"enum": ["community-numerical-assertion", "codegen-only"]},
         "expected_tests": {"type": "integer", "minimum": 1},
         "variant_ids": {
@@ -122,7 +122,8 @@
             "not-configured-regression",
             "community-benchmark-source-functional-default",
             "community-e2e-benchmark-source-functional-default",
-            "community-functional-default"
+            "community-functional-default",
+            "forbidden-until-gpu-and-npu-correctness-close"
           ]
         },
         "timeout_seconds": {"type": "integer", "minimum": 1},
@@ -134,6 +135,11 @@
         "evidence_scope": {"type": "string"},
         "correctness_evidence": {"type": "string"},
         "entrypoint": {"type": "string"},
+        "entrypoint_args": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "derivation": {"$ref": "#/$defs/derivation"},
         "direct_blocker": {"$ref": "#/$defs/direct_blocker"}
       },
       "additionalProperties": false,
@@ -145,8 +151,30 @@
             }
           },
           "then": {"required": ["entrypoint", "direct_blocker"]}
+        },
+        {
+          "if": {
+            "properties": {"tracking_mode": {"const": "derived"}}
+          },
+          "then": {"required": ["entrypoint", "entrypoint_args", "derivation"]}
         }
       ]
+    },
+    "derivation": {
+      "type": "object",
+      "required": ["basis", "changed_dimensions", "preserved_contract"],
+      "properties": {
+        "basis": {"const": "community-test-dtype-extension"},
+        "changed_dimensions": {
+          "const": ["dtype"]
+        },
+        "preserved_contract": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": false
     },
     "direct_blocker": {
       "type": "object",

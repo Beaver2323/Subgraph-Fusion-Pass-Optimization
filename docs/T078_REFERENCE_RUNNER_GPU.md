@@ -1,7 +1,13 @@
 # T-078 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
-> 状态：已收到 12/12 通过的 1.0 紧凑摘要；尚需 1.3 review handoff 完成 GPU FX 正文复核
+> 更新时间：2026-09-08 06:07 CST（UTC+08:00）
+> 状态：原 12/12 community direct reference 有效；新增 addcdiv FP16/BF16 两条派生 reference 待运行
+
+覆盖修订：上游 addcdiv guard 允许全部 floating dtype，而原生社区 case 实际只使用默认 FP32。
+当前一键入口因此执行 14 条 case、处置 22 个 variants，其中新增两条会明确标成 `derived`，不会
+冒充社区原生测例。背景、代码与 NPU 三臂后续见
+[addcdiv 低精度覆盖说明](T078_ADDCDIV_LOWP_COVERAGE.md)。
+
 > 原则：先运行冻结 PyTorch commit 中的原生社区测例；direct 失败只回传证据，不在 GPU 机器临时写 adapter
 
 2026-09-04 已按 PyTorch `copy_tests` 的真实命名规则，将两个 addcdiv 执行入口纠正为带
@@ -23,7 +29,7 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 将 `2` 替换为所选物理 GPU 编号；功能 reference 默认共享，允许已有计算进程。
 加 `--wait-gpu` 每 1 秒检查启动条件，加 `--exclusive` 才要求启动时无计算进程。
 入口会自动进入 `/data/z50063656/tmp`、激活 `PassGPURef`、检查 PyTorch commit/工作树、
-按所选策略检查 GPU、执行 12 个 fresh-process cases，并生成 1.3 review handoff。
+按所选策略检查 GPU、执行 14 个 fresh-process cases，并生成 1.3 review handoff。
 显存门槛、等卡超时和固定结果入口见[通用一键说明](GPU_TASK_RUNNER.md)。
 
 ## 2. 预期静态校验
@@ -39,8 +45,8 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 预期：
 
 ```text
-prepared_task_validation=OK task=T-078 units=4 cases=12 variants=20 performance_units=4 guide=valid
-reference_plan_validation=OK acceptance_units=4 cases=12 community_tests=12 variants=20 executed_variants=20 non_executed_variants=0
+prepared_task_validation=OK task=T-078 units=4 cases=14 variants=22 performance_units=4 guide=valid
+reference_plan_validation=OK acceptance_units=4 cases=14 community_tests=12 variants=22 executed_variants=22 non_executed_variants=0
 torch_imported=0 gpu_executed=0
 gpu_task_validation=OK task=T-078
 ```
@@ -65,6 +71,8 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 ```text
 REF-addcdiv-fma-bitwise-native
 REF-addcdiv-fma-codegen-native
+REF-addcdiv-fma-fp16-derived
+REF-addcdiv-fma-bfloat16-derived
 REF-partial-reuse-positive-native
 REF-partial-reuse-negative-native
 REF-unfuse-addmm-core-native
@@ -88,8 +96,9 @@ python -m json.tool "${TEXT_HANDOFF}" >/dev/null
 sha256sum "${TEXT_HANDOFF}"
 ```
 
-请复制 `latest-text-handoff.json` 的完整文本。12/12 cases 均 `passed` 且 `reference_valid=true` 才能
-冻结 T-078；失败、skip、no-tests 或 FX artifacts 缺失都必须原样保留，不能记作 PASS。
+请复制 `latest-text-handoff.json` 的完整文本。原 12/12 direct case 的冻结结论不回滚；新增低精度
+两条只有均为 `passed` 且 `reference_valid=true` 才能关闭 dtype 扩展。失败、skip、no-tests 或 FX
+artifacts 缺失都必须原样保留，不能记作 PASS。
 新版一键入口默认携带可恢复的 FX、日志、生成代码和常见 IR 原文；旧 1.0 文件不能恢复正文。
 完整校验、手工重导出旧 run、GitHub 文本复制与恢复说明见
 [GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)。

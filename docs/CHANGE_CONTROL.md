@@ -1,9 +1,15 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-08 03:17 CST（UTC+08:00）
+> 日志校准时间：2026-09-08 06:07 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
+
+- 2026-09-08 06:07 CST：纠正 T-078 addcdiv dtype 覆盖统计。上游 guard/lowering 接受 floating
+  dtype，GPU 原生两条 case 实际仅覆盖默认 FP32；原 3 个 variants、NPU FP32 修复与
+  `PERF_NEUTRAL` 继续有效，但不外推至 FP16/BF16。新增 2 个 `pending_variants`、社区合同 dtype
+  派生 runner、14-case 一键 GPU 计划和矩阵 pending 列。GPU 通过后再做 NPU
+  `triton_experimental` OFF/分解/重融合三臂同输入精度归因；此前禁止低精度性能测试。
 
 - 2026-09-08 03:17 CST：T-081～T-083 在冻结 GPU reference 后，使用固定 PyTorch commit、
   Ascend 910B2/CANN 9.0.1 和 `triton_experimental` 完成 7/7 NPU 数值/命中/实际改图；T-083

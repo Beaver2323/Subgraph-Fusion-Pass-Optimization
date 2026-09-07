@@ -1,6 +1,11 @@
 # T-078 GPU reference、NPU 修复与性能处置闭环
 
 > 更新时间：2026-09-06 09:50 CST（UTC+08:00）
+
+> 2026-09-08 06:07 CST 覆盖修订：本文“闭环”仅适用于当时冻结的 20 个 variants，addcdiv
+> 社区 case 实际只有 FP32。上游 guard 允许 FP16/BF16，现已新增 2 个 pending dtype variants；
+> 在 GPU reference 与 NPU 三臂精度归因完成前，不得把本文 FP32 功能/性能结论外推至低精度。
+> 详见 `docs/T078_ADDCDIV_LOWP_COVERAGE.md`。
 > PyTorch：`8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > torch_npu 基线：`83cc452480c3546fd5cccf853bfe3a360ce9dbfc`；本文涉及的产品改动仍在共享工作树，尚未由本报告宣称已合入。
 > GPU reference 后端：`inductor-default`；NPU 动态验证与性能后端：`triton_experimental`。

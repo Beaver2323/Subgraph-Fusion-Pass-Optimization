@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-06T09:40:00+08:00",
-  "status": "t078-reference-npu-performance-and-product-gate-complete",
+  "generated_at": "2026-09-08T06:07:40+08:00",
+  "status": "t078-addcdiv-lowp-coverage-extension-awaiting-gpu-reference",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -31,7 +31,8 @@
     "corrections": [
       "_fuse_addcdiv_to_fma 从 no-test-found 纠正为两条 direct CUDA/Triton community tests",
       "unfuse addmm 与 unfuse baddbmm 拆成两个独立 replacement contracts，不复用彼此的测试充数",
-      "partial reduction reuse 同时纳入大输入正例与小/动态负例"
+      "partial reduction reuse 同时纳入大输入正例与小/动态负例",
+      "addcdiv 上游 guard 实际允许所有 floating dtype；原 12-case reference 只执行默认 FP32，新增 FP16/BF16 派生 reference，避免把 FP32 闭环误写成全 dtype 闭环"
     ],
     "rejected_mapping": {
       "acceptance_unit_id": "AU-joint-graph-pointless-view",
@@ -52,10 +53,12 @@
     "primary_fact_source": "PyTorch community test plus GPU/reference baseline",
     "inventory_role": "registration candidate only for discovery and coverage",
     "tracking_key": "human-reviewed upstream optimization contract acceptance unit",
-    "denominator_rule": "12/12 direct GPU cases 有效后冻结 4 个 acceptance units；NPU comparison 与产品门禁均已闭环",
+    "denominator_rule": "原 12/12 direct GPU cases 继续作为 4 个 acceptance units 的冻结分母；addcdiv 新发现的 FP16/BF16 dtype 扩展另列 pending_variants，GPU/NPU 未验证前不得计为已闭环覆盖",
     "current_manifest_units": 4,
     "current_frozen_denominator_units": 4,
-    "current_formally_closed_units": 4
+    "current_formally_closed_units": 4,
+    "current_fully_covered_units": 3,
+    "current_units_with_pending_extension": 1
   },
   "acceptance_units": [
     {
@@ -77,6 +80,10 @@
         {"variant_id": "scaled-value-bitwise-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "value=2 的 addcdiv 重融合且与 eager bitwise 一致", "expected_counter": "addcdiv_fma_fused=1 in codegen contract", "reference_status": "valid-reference", "npu_status": "supported-source-fixed-perf-neutral"},
         {"variant_id": "fma-div-rn-codegen-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "最终 Triton codegen 使用 tl.fma 与 div_rn", "expected_counter": "inductor.addcdiv_fma_fused=1", "reference_status": "valid-reference", "npu_status": "supported-source-fixed-perf-neutral"}
       ],
+      "pending_variants": [
+        {"variant_id": "fp16-value2-fma-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "仅将社区 value=2、64x64 合同的 dtype 扩展为 FP16；要求 compiled/eager 位级一致且生成 FMA/div_rn", "expected_counter": "addcdiv_fma_fused=1", "reference_status": "pending-gpu-reference", "npu_status": "capability-pending-precision"},
+        {"variant_id": "bfloat16-value2-fma-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "仅将社区 value=2、64x64 合同的 dtype 扩展为 BF16；要求 compiled/eager 位级一致且生成 FMA/div_rn", "expected_counter": "addcdiv_fma_fused=1", "reference_status": "pending-gpu-reference", "npu_status": "capability-pending-precision"}
+      ],
       "tracking": {
         "reference_mode": "direct",
         "npu_mode": "adapter",
@@ -84,7 +91,7 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 value 分支", "放宽 bitwise 合同", "删除 tl.fma/div_rn 代码断言"]
       },
-      "npu_control": {"status": "complete-source-fixed", "next_action": "保留 FP32 窄能力、位级/codegen 回归和 PERF_NEUTRAL 基线；FP16/BF16 不扩围"},
+      "npu_control": {"status": "fp32-complete-lowp-capability-pending", "next_action": "保留 FP32 窄能力、位级/codegen 回归和 PERF_NEUTRAL 基线；先执行 FP16/BF16 GPU 派生 reference，再在 triton_experimental 上做 OFF/分解/重融合三臂同输入精度归因；正确性未闭环前禁止低精度性能测试"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {

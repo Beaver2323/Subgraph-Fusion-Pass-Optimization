@@ -68,6 +68,9 @@ FIELDNAMES = [
     "review_status",
     "denominator_eligible",
     "variant_count",
+    "verified_variant_count",
+    "pending_variant_count",
+    "coverage_status",
     "community_test_count",
     "reference_backend",
     "reference_status",
@@ -122,11 +125,16 @@ def performance_backend(plan: dict, item: dict) -> str:
 def reference_status(unit: dict, reference_contract: dict) -> str:
     eligible = str(unit.get("denominator_eligible", ""))
     if eligible == "yes-frozen":
-        return str(reference_contract.get("suite_status") or "frozen-reference-valid")
+        status = str(reference_contract.get("suite_status") or "frozen-reference-valid")
+        if unit.get("pending_variants"):
+            return status + "-with-pending-extension"
+        return status
     return eligible or "unknown"
 
 
 def phase(row: dict) -> str:
+    if row["pending_variant_count"]:
+        return "coverage-extension-awaiting-gpu-reference"
     if row["comparison_result_path"]:
         return "functional-comparison-closed"
     if row["npu_result_path"]:
@@ -273,6 +281,18 @@ def build_rows(generated_at: str) -> list[dict]:
                 performance_verdict = str(perf_item.get("verdict") or "unknown")
                 source_times.append(str(summary.get("generated_at") or ""))
 
+            if unit.get("pending_variants"):
+                if correctness not in {"not-run", "unknown"}:
+                    correctness += "-for-existing-variants"
+                if comparison_verdict not in {"not-run", "unknown"}:
+                    comparison_verdict += "-for-existing-variants"
+                if repair_status not in {"not-run", "unknown"}:
+                    repair_status += "-for-existing-variants"
+                if performance_status not in {"not-run", "unknown"}:
+                    performance_status += "-verified-variants-only"
+                if performance_verdict not in {"planned", "unknown"}:
+                    performance_verdict += "-for-existing-variants"
+
             row = {
                 "matrix_generated_at": generated_at,
                 "task_id": task_id,
@@ -282,7 +302,20 @@ def build_rows(generated_at: str) -> list[dict]:
                 "manifest_status": str(manifest.get("status") or ""),
                 "review_status": str(unit.get("review_status") or ""),
                 "denominator_eligible": str(unit.get("denominator_eligible") or ""),
-                "variant_count": len(unit.get("variants", [])),
+                "variant_count": len(unit.get("variants", []))
+                + len(unit.get("pending_variants", [])),
+                "verified_variant_count": len(unit.get("variants", [])),
+                "pending_variant_count": len(unit.get("pending_variants", [])),
+                "coverage_status": (
+                    "verified="
+                    + str(len(unit.get("variants", [])))
+                    + "; pending="
+                    + ",".join(
+                        item["variant_id"] for item in unit.get("pending_variants", [])
+                    )
+                    if unit.get("pending_variants")
+                    else "fully-covered"
+                ),
                 "community_test_count": len(unit.get("community_tests", [])),
                 "reference_backend": REFERENCE_BACKEND,
                 "reference_status": reference_status(unit, reference_contract),
@@ -337,7 +370,7 @@ def md(value: object) -> str:
 
 def render_markdown(rows: list[dict], generated_at: str) -> str:
     frozen = sum(row["denominator_eligible"] == "yes-frozen" for row in rows)
-    pending = sum(row["reference_status"].startswith("pending") for row in rows)
+    pending = sum(bool(row["pending_variant_count"]) for row in rows)
     compared = sum(bool(row["comparison_result_path"]) for row in rows)
     measured_or_disposed = sum(
         row["performance_evidence_path"].startswith("results/current/") for row in rows
@@ -357,14 +390,15 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
         "",
         f"- 活动 acceptance units：**{len(rows)}**；已冻结 reference：**{frozen}**；等待 GPU reference：**{pending}**。",
         f"- 已形成 NPU/comparison：**{compared}**；已有正式性能处置：**{measured_or_disposed}**；其余为性能计划态。",
+        "- `comparison`/性能处置数量只说明已登记 variants；存在 pending extension 的单元必须以“覆盖”和“当前阶段”列为准，不能外推为全域闭环。",
         f"- 当前 NPU 结果实际观测 backend：`{', '.join(observed) if observed else '无'}`。",
         "- 本表汇总已登记结论，不代表严格历史再认证通过；T-076/T-077 的独立补证状态见 [最新审计](../results/audits/latest.json)。",
         "- `npu_execution_status=failed` 不自动表示数值错误；例如产品 gate 关闭时，目标命中失败可与原图 correctness 通过同时成立，应结合 comparison verdict 阅读。",
         "",
         "## 单元矩阵",
         "",
-        "| T | Acceptance unit | Stage | Reference | NPU backend | NPU 执行 | Correctness | Comparison | Repair | 性能处置 | 当前阶段 |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| T | Acceptance unit | Stage | 覆盖 | Reference | NPU backend | NPU 执行 | Correctness | Comparison | Repair | 性能处置 | 当前阶段 |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in rows:
         performance = f"{row['performance_status']} / {row['performance_verdict']}"
@@ -376,6 +410,7 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
                     row["task_id"],
                     row["acceptance_unit_id"],
                     row["stage"],
+                    row["coverage_status"],
                     row["reference_status"],
                     row["observed_npu_backend"] or f"待测（要求 {REQUIRED_NPU_BACKEND}）",
                     row["npu_execution_status"],

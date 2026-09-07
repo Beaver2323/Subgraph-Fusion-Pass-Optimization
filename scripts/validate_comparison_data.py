@@ -633,12 +633,21 @@ def validate(repo_root: Path) -> None:
             "manifest current_formally_closed_units 与 comparison 结果数不一致: "
             f"{expected_closed} != {formally_closed}"
         )
+    coverage_pending_units = sum(
+        bool(unit.get("pending_variants")) for unit in units.values()
+    )
+    coverage_pending_variants = sum(
+        len(unit.get("pending_variants", [])) for unit in units.values()
+    )
     print("comparison_data_validation=OK")
     print(f"comparison_units={len(comparison_paths) + len(compact_closed)}")
     print(f"legacy_comparison_units={len(comparison_paths)}")
     print(f"compact_functional_closed_units={len(compact_closed)}")
     print(f"comparison_variants={variant_count}")
     print(f"formally_closed_units={formally_closed}")
+    print(f"fully_covered_units={len(units) - coverage_pending_units}")
+    print(f"coverage_pending_units={coverage_pending_units}")
+    print(f"coverage_pending_variants={coverage_pending_variants}")
     print(f"open_or_inconclusive_units={expected_closed - formally_closed}")
     print("torch_imported=0")
 

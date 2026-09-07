@@ -111,6 +111,36 @@ class ReferenceTests(unittest.TestCase):
         ])
         self.assertTrue(all(item["status"] == "direct-blocked-or-invalid" for item in summaries))
 
+    def test_t078_derived_dtype_cases_preserve_direct_community_coverage(self):
+        manifest = json.loads((ROOT / "upstream/t078_manifest.yaml").read_text())
+        plan = json.loads((ROOT / "upstream/t078_reference_plan.yaml").read_text())
+        derived = [case for case in plan["cases"] if case["tracking_mode"] == "derived"]
+        self.assertEqual(len(derived), 2)
+        for case in derived:
+            command = reference.case_command(case, ROOT, ROOT)
+            self.assertIn("--source-test", command)
+            self.assertIn("--dtype", command)
+            self.assertEqual(case["derivation"]["changed_dimensions"], ["dtype"])
+
+        unit = next(
+            item
+            for item in manifest["acceptance_units"]
+            if item["acceptance_unit_id"] == "AU-post-grad-fuse-addcdiv-to-fma"
+        )
+        self.assertEqual(len(unit["variants"]), 3)
+        self.assertEqual(len(unit["pending_variants"]), 2)
+
+    def test_derived_case_cannot_change_more_than_dtype(self):
+        manifest = json.loads((ROOT / "upstream/t078_manifest.yaml").read_text())
+        plan = json.loads((ROOT / "upstream/t078_reference_plan.yaml").read_text())
+        derived = next(
+            case for case in plan["cases"] if case["tracking_mode"] == "derived"
+        )
+        derived["derivation"]["changed_dimensions"] = ["dtype", "shape"]
+        with self.assertRaisesRegex(ValueError, "只能改变 dtype"):
+            with patch.object(reference, "git_output", return_value=manifest["source_baselines"]["pytorch"]["commit"]):
+                reference.validate_contract(manifest, plan, ROOT.parent / "src/pytorch")
+
 
 class ComparisonTests(unittest.TestCase):
     def setUp(self):
@@ -285,7 +315,7 @@ class PreparationTests(unittest.TestCase):
                 "entrypoint": "runners/missing_worker.py",
             }
 
-        self.assertEqual(self.validate_changed(valid), (4, 12, 20))
+        self.assertEqual(self.validate_changed(valid), (4, 14, 22))
         with self.assertRaisesRegex(ValueError, "实际文件"):
             self.validate_changed(missing)
 

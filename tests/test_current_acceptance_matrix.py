@@ -60,7 +60,15 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
         )
         self.assertEqual(
             sum(row["current_phase"] == "functional-comparison-closed" for row in rows),
-            28,
+            27,
+        )
+        self.assertEqual(
+            sum(
+                row["current_phase"]
+                == "coverage-extension-awaiting-gpu-reference"
+                for row in rows
+            ),
+            1,
         )
         self.assertEqual(
             sum(
@@ -68,6 +76,24 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                 for row in rows
             ),
             28,
+        )
+
+    def test_t078_addcdiv_lowp_gap_is_visible(self):
+        rows = matrix.build_rows("2026-09-08T06:07:40+08:00")
+        row = next(
+            item
+            for item in rows
+            if item["acceptance_unit_id"]
+            == "AU-post-grad-fuse-addcdiv-to-fma"
+        )
+        self.assertEqual(row["variant_count"], 5)
+        self.assertEqual(row["verified_variant_count"], 3)
+        self.assertEqual(row["pending_variant_count"], 2)
+        self.assertIn("fp16-value2-fma-positive", row["coverage_status"])
+        self.assertIn("bfloat16-value2-fma-positive", row["coverage_status"])
+        self.assertEqual(
+            row["current_phase"],
+            "coverage-extension-awaiting-gpu-reference",
         )
 
     def test_t081_t083_results_bind_backend_and_learning_evidence(self):
