@@ -3860,3 +3860,15 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 增加默认开启、NPU-only、可逆且幂等的 `disable_scatter_upon_const_tensor` 门禁；静态 2/2 与真实
   NPU default-disabled/gate-disabled 双臂均 PASS。正式结果、逐 variant GPU/NPU 对照、pattern 代码框、
   适配/根因/修复/合入报告全部落盘；当前矩阵应为 21/21 comparison 与 21/21 性能处置。
+
+### E-241：T-078 FP16/BF16 GPU 补证与 review 正文扩展（2026-09-08）
+
+- 登记时间：2026-09-08 07:12 CST（UTC+08:00）。拉取并验签低精度 partial handoff：PyTorch
+  commit 为 `8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`，A100/CUDA 12.6，FP16 与 BF16 两条
+  派生 case 均为 `passed`、`reference_valid=true`；FX 均从 `div → mul → add` 改写为
+  `aten.addcdiv(value=2)`，位级一致、counter=1、FMA/div_rn 断言通过。
+- 初次 1.3 review 包仅嵌入合并 FX，原始 FX、前后 IR、`output_code.py` 与通过日志只保留哈希，
+  不足以满足修复代码独立审计。扩展 review 导出白名单，在不携带大体积 structured trace 和
+  `fx_graph_runnable.py` 的前提下嵌入这些小型关键正文；历史 1.3 包继续可校验，不修改既有结果。
+- 本次只需从 GPU 已有 run 重新导出，不重跑用例。关键正文补回后进入 NPU
+  `triton_experimental` 三臂同输入精度归因；三臂完成前不把 FP16/BF16 计入 NPU 闭环或性能结论。

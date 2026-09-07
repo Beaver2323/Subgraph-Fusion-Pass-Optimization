@@ -1,7 +1,7 @@
 # T-078 addcdiv FP16/BF16 覆盖修订与验证步骤
 
-> 更新时间：2026-09-08 06:07 CST（UTC+08:00）
-> 当前状态：FP32 修复与性能结论有效；FP16/BF16 等待 GPU reference，NPU 为 `capability-pending-precision`。
+> 更新时间：2026-09-08 07:12 CST（UTC+08:00）
+> 当前状态：FP32 修复与性能结论有效；FP16/BF16 GPU reference 已通过，等待补导出关键代码/IR 正文并进入 NPU 三臂归因。
 
 ## 1. 为什么需要补测
 
@@ -119,3 +119,16 @@ torch.compile
 - FP16/BF16：不是产品显式 disable；当前是能力与精度待判定。
 - 当前矩阵显示 5 个覆盖 variants：3 个已验证、2 个 pending；不会再显示成全 dtype 已闭环。
 - 低精度正确性闭环后，若 NPU 合法启用，才按 T-078 现有 fresh-process OFF/ON 合同补性能。
+
+## 6. 2026-09-08 GPU 回传复核
+
+本轮只选择两条低精度派生 case，suite 因而正确标记为 partial；所选范围为 2/2 passed、2/2
+`reference_valid=true`。两条 case 均在 PyTorch `8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`、
+CUDA 12.6、A100 上执行：
+
+- FP16：FX 从 `div → mul(value=2) → add` 变为 `aten.addcdiv(value=2)`；位级一致、counter=1、
+  `tl.fma` 与 `div_rn` 断言均通过。
+- BF16：同一结构改写与同一组断言通过。
+
+初次上传的 1.3 review 包只携带合并 FX，原始 FX、前后 IR、`output_code.py` 和日志仅有哈希。
+这不推翻 GPU pass，但不满足独立代码审计。导出规则已修正；从现有 run 补导出即可，不需要重跑 GPU。

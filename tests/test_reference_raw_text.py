@@ -128,27 +128,28 @@ class RawTextTests(unittest.TestCase):
                 (self.run / item["path"]).read_bytes(),
             )
 
-    def test_review_profile_keeps_fx_and_hashes_large_artifacts(self):
+    def test_review_profile_keeps_audit_text_and_hashes_large_artifacts(self):
         payload = self.payload(compress=True, profile="review")
         self.assertEqual(payload["handoff_format_version"], "1.3")
         self.assertEqual(payload["handoff_profile"], "review")
         embedded = {item["path"] for item in payload["raw_text_files"]}
         self.assertIn("cases/case/fx_before.txt", embedded)
         self.assertIn("cases/case/fx_after.txt", embedded)
-        self.assertNotIn("cases/case/stderr.log", embedded)
-        self.assertNotIn("cases/case/cache/output_code.py", embedded)
+        self.assertIn("cases/case/stderr.log", embedded)
+        self.assertIn("cases/case/stdout.log", embedded)
+        self.assertIn("cases/case/cache/output_code.py", embedded)
         omitted = {
             item["path"]: item["reason"]
             for item in payload["raw_text_transfer"]["omitted_files"]
         }
         self.assertEqual(
-            omitted["cases/case/cache/output_code.py"],
+            omitted["cases/case/cache/kernel.cubin"],
             "review-profile-hash-only",
         )
         restored = importer.restore(payload, self.root / "review-imports")
         self.assertTrue((restored / "cases/case/fx_before.txt").is_file())
-        self.assertFalse((restored / "cases/case/stderr.log").exists())
-        self.assertFalse((restored / "cases/case/cache/output_code.py").exists())
+        self.assertTrue((restored / "cases/case/stderr.log").is_file())
+        self.assertTrue((restored / "cases/case/cache/output_code.py").is_file())
 
     def test_review_profile_includes_failure_logs(self):
         result_path = self.run / "cases/case/reference_result.json"

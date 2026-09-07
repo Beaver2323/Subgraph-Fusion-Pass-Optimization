@@ -32,8 +32,9 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 5. 按共享/独占策略检查指定物理 GPU；指定 `--wait-gpu` 时等待条件满足；
 6. 执行任务对应的原生 community suite；
 7. 自动取得本轮 `reference-<timestamp>` 目录；
-8. 自动生成 1.3 review handoff：包含摘要、FX、case 结果和 benchmark；成功日志、生成代码、IR
-   只保留哈希，同时建立不含时间戳的 `latest` 入口和备用网页分片。
+8. 自动生成 1.3 review handoff：包含摘要、FX、case 结果、benchmark、日志，以及已登记的原始
+   FX、前后 IR 和 `output_code.py`；大体积 structured trace 只保留哈希，同时建立不含时间戳的
+   `latest` 入口和备用网页分片。
 
 脚本不会安装或升级驱动、CUDA、Python、PyTorch，也不会修改 GPU 上的源码。
 本入口只运行 GPU 功能 reference，不自动运行 NPU 或性能测试。
@@ -191,8 +192,8 @@ run ID 的文件。保存后告知 Agent 任务号、路径和 commit，由 Agen
 不要用它覆盖 `results/current/` 的正式结果，
 也不要把 GPU 回传文件放进 `results/audits/`（该目录存放控制节点生成的复核记录）。
 
-当前一键入口默认生成 1.3 review handoff，可恢复摘要、FX、case 元数据、结果和 benchmark；通过
-case 的日志、生成代码、IR 与二进制只登记哈希。需要完整文本时用 `--profile archive` 另行导出
+当前一键入口默认生成 1.3 review handoff，可恢复摘要、FX、case 元数据、结果、benchmark、日志、
+生成代码与 Inductor 前后 IR；structured trace、其他缓存与二进制只登记哈希。需要完整文本时用 `--profile archive` 另行导出
 1.2；1.1 未压缩包继续兼容，旧版 1.0 只有摘要与哈希，不能恢复 FX 正文。
 导出、复制、接收端校验、安全恢复和 FX 查看命令见
 [GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)。

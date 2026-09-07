@@ -77,6 +77,17 @@ REVIEW_CASE_FILES = frozenset(
         "reference_result.json",
     )
 )
+REVIEW_AUDIT_BASENAMES = frozenset(
+    (
+        "fx_graph_readable.py",
+        "fx_graph_transformed.py",
+        "ir_post_fusion.txt",
+        "ir_pre_fusion.txt",
+        "output_code.py",
+        "stderr.log",
+        "stdout.log",
+    )
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -222,21 +233,23 @@ def write_split_payload(
     return manifest
 
 
-def review_text_paths(payload: dict[str, Any]) -> set[str]:
-    """返回功能/性能评审必需正文；通过用例的大日志与生成代码仅保留哈希。"""
+def review_text_paths(
+    payload: dict[str, Any], records: dict[str, dict[str, Any]]
+) -> set[str]:
+    """返回评审正文；保留小型图/IR/代码证据，省略大 trace 与 runnable。"""
     selected = set(REVIEW_ROOT_FILES)
     for case in payload["case_audit"]:
         case_id = case["case_id"]
         selected.update(
             f"cases/{case_id}/{name}" for name in REVIEW_CASE_FILES
         )
-        if (
-            case.get("status") != "passed"
-            or case.get("reference_valid") is not True
-        ):
-            selected.update(
-                (f"cases/{case_id}/stderr.log", f"cases/{case_id}/stdout.log")
-            )
+        case_prefix = f"cases/{case_id}/"
+        selected.update(
+            path
+            for path in records
+            if path.startswith(case_prefix)
+            and PurePosixPath(path).name in REVIEW_AUDIT_BASENAMES
+        )
     return selected
 
 
@@ -273,7 +286,7 @@ def include_raw_text(
             if path in records and records[path] != record:
                 raise ValueError(f"文件与 inventory 哈希不一致：{path}")
             records[path] = record
-    selected = review_text_paths(payload) if profile == "review" else None
+    selected = review_text_paths(payload, records) if profile == "review" else None
     if selected is not None and not selected <= set(records):
         missing = ", ".join(sorted(selected - set(records)))
         raise ValueError(f"review profile 缺少必需文件：{missing}")

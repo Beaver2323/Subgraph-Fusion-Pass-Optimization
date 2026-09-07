@@ -30,7 +30,7 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 | 格式/profile | 产生方式 | 内容 | 用途 |
 | --- | --- | --- | --- |
 | `1.0 summary` | `--profile summary` | 环境、summary、逐 case 状态、文件大小和 SHA256 | 只看结论，不能查看 FX 正文 |
-| `1.3 review` | 一键入口默认；`--profile review` | 1.0 加 FX 前后、case 元数据、结果、benchmark、inventory；失败 case 加日志 | GPU/NPU 功能与性能评审，推荐网页回传 |
+| `1.3 review` | 一键入口默认；`--profile review` | 1.0 加 FX 前后、case 元数据、结果、benchmark、inventory；若 artifacts 已登记，则同时带日志、原始 FX、前后 IR 与 `output_code.py` | GPU/NPU 功能、修复与性能评审，推荐网页回传 |
 | `1.2 archive` | `--profile archive` | 嵌入全部已登记 UTF-8 日志、生成代码和 IR | 深度排障/审计，通常较大 |
 | `1.1 archive` | 旧参数 `--include-raw-text` | 1.2 的未压缩兼容格式 | 仅兼容旧流程 |
 
@@ -118,8 +118,9 @@ python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
 `results/incoming/T-077/text-handoff.json`。T-076 当前仓库文件在第 1001 行截断，必须整体替换；
 T-077 当前没有 handoff 文件。若上述 run 已被清理，才需要重新执行对应 GPU 任务。
 
-review 包保留 FX 对照所需正文，并为未传输的成功日志、生成代码、IR 和二进制保留 inventory
-大小与 SHA256；完整文件仍留在 GPU 原 run。导出器使用“只新建、不覆盖”策略。输出已存在时应换一个文件名或先人工保留旧文件；它
+review 包保留 FX 对照、成功/失败日志、生成代码与 Inductor 前后 IR，并为未传输的 structured
+trace、runnable、其他缓存和二进制保留 inventory 大小与 SHA256；完整文件仍留在 GPU 原 run。
+导出器使用“只新建、不覆盖”策略。输出已存在时应换一个文件名或先人工保留旧文件；它
 不会覆盖原始 run、已有 handoff、软链接或任何原证据。
 
 只有深度排障需要全部文本时才改用：
@@ -246,7 +247,8 @@ find "${RESTORED_RUN}/cases/REF-addcdiv-fma-bitwise-native" \
   -print
 ```
 
-review 包默认不包含 `output_code.py`、PTX 或 Triton IR 正文；这些文件只保留 inventory 哈希，
+review 包包含已登记的 `output_code.py` 与 Inductor 前后 IR，但不包含 PTX、Triton IR、
+`fx_graph_runnable.py` 或 structured trace 正文；这些较大或非必要文件只保留 inventory 哈希，
 需要查看时从 GPU 原 run 取证或另导出 archive。恢复只是数据读取。导入器不会 `import`、`exec`、运行或编译任何回传正文；回执
 `import_receipt.json` 固定记录 `code_executed=false`。恢复成功也不自动把 case 判为 PASS，仍需按
 reference summary、测试数、skip、correctness、FX 和源码 revision 完成验收。
@@ -259,10 +261,11 @@ reference summary、测试数、skip、correctness、FX 和源码 revision 完�
 environment.json, reference_summary.json；
 每个 case 的 artifact_inventory.json、benchmark.json、fx_before.txt、
 fx_after.txt、metadata.json、reference_result.json；
-失败或无效 case 的 stdout.log、stderr.log。
+已登记的 stdout.log、stderr.log、fx_graph_readable.py、fx_graph_transformed.py、
+ir_pre_fusion.txt、ir_post_fusion.txt、output_code.py。
 ```
 
-通过 case 的日志、生成代码、IR、缓存和所有二进制只登记原路径、字节数、SHA256 与
+structured trace、`fx_graph_runnable.py`、其他缓存和所有二进制只登记原路径、字节数、SHA256 与
 `review-profile-hash-only` 原因。1.2 archive 才会继续嵌入 inventory 登记且后缀为下列类型的
 严格 UTF-8 原文：
 

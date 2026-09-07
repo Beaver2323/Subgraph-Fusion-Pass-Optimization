@@ -206,8 +206,9 @@ sha256sum "${TEXT_HANDOFF}"
 wc -c "${TEXT_HANDOFF}"
 ```
 
-当前统一入口生成 1.3 review handoff：包含环境、suite 摘要、逐 case 审核字段、FX、结果与
-benchmark；成功日志、生成代码、IR 和二进制只保留原始大小/SHA256。控制节点可以安全恢复评审
+当前统一入口生成 1.3 review handoff：包含环境、suite 摘要、逐 case 审核字段、FX、结果、
+benchmark、日志、生成代码与 Inductor 前后 IR；structured trace、其他缓存和二进制只保留原始
+大小/SHA256。控制节点可以安全恢复评审
 正文；原始 run 仍须保留在 GPU 机器，深度排障时另导出 1.2 archive。
 
 ## 8. Direct blocker 与 adapter 决策
