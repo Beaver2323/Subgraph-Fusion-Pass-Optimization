@@ -17,6 +17,11 @@ import runpy
 import sys
 
 
+def current_graph_code(gm) -> str:
+    """直接渲染当前 Graph，避免 GraphModule.code 的重编译缓存掩盖改图。"""
+    return gm.graph.python_code(root_module="self").src
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, required=True)
@@ -38,10 +43,14 @@ def main() -> None:
         index += 1
         destination = root / f"pid-{os.getpid()}-graph-{index:04d}"
         destination.mkdir(parents=True)
-        (destination / "fx_graph_readable.py").write_text(gm.code, encoding="utf-8")
+        (destination / "fx_graph_readable.py").write_text(
+            current_graph_code(gm), encoding="utf-8"
+        )
         result = original(gm, *call_args, **kwargs)
         output = result if isinstance(result, torch.fx.GraphModule) else gm
-        (destination / "fx_graph_transformed.py").write_text(output.code, encoding="utf-8")
+        (destination / "fx_graph_transformed.py").write_text(
+            current_graph_code(output), encoding="utf-8"
+        )
         metadata = {
             "capture_scope": "joint_graph_passes-entry-exit",
             "test_body_modified": False,

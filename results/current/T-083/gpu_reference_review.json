@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-083",
+  "generated_at": "2026-09-08T00:33:56+08:00",
+  "review_status": "accepted-single-rank-reference-only",
+  "source_handoff": "results/incoming/T-083/text-handoff.json",
+  "run_id": "reference-20260907T162312+0800-8lgd6yen",
+  "payload_sha256": "11919158a529eb104b26af1706acc0a3ad18905282d9fc66425b01ef3125e51f",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "backend": "inductor-default",
+  "device": "NVIDIA A100-SXM4-80GB sm80",
+  "distributed_world_size": 1,
+  "acceptance_units": [
+    "AU-post-grad-bucket-all-gathers",
+    "AU-post-grad-bucket-all-reduce",
+    "AU-post-grad-bucket-reduce-scatters"
+  ],
+  "suite": {
+    "cases": 4,
+    "valid_cases": 4,
+    "variants": 6,
+    "tests_ran": 5,
+    "tests_skipped": 0,
+    "adapters_used": 0
+  },
+  "evidence_scope": {
+    "single_rank_numerical_cases": 2,
+    "structure_only_cases": 2,
+    "structure_only_case_ids": [
+      "REF-all-gather-copy-cat-native",
+      "REF-all-gather-dependency-native"
+    ],
+    "cross_rank_numerical_proven": false,
+    "cross_rank_performance_allowed": false
+  },
+  "review_notes": [
+    "all-gather copy-cat与依赖保护case是world_size=1真实CUDA/NCCL codegen结构证据，不含数值oracle。",
+    "all-reduce与reduce-scatter原生case通过world_size=1 eager/compiled正确性，FX显示多collective分桶为单collective。",
+    "单rank不能证明跨rank语义、通信量或性能；不得用于解锁正式通信性能。"
+  ],
+  "next_action": "使用triton_experimental与真实HCCL两rank完成NPU功能、分桶计数和跨rank数值门禁；通过后才运行两rank性能worker。"
+}

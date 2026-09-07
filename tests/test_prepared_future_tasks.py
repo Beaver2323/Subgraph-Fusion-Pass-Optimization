@@ -34,11 +34,15 @@ class FutureReferenceTests(unittest.TestCase):
         self.plan = json.loads((ROOT / "upstream/t081_reference_plan.yaml").read_text())
 
     def test_all_native_entrypoints_resolve_without_torch(self):
+        frozen_counts = {81: 2, 82: 2, 83: 3}
         for task in (81, 82, 83):
             manifest = json.loads((ROOT / f"upstream/t0{task}_manifest.yaml").read_text())
             plan = json.loads((ROOT / f"upstream/t0{task}_reference_plan.yaml").read_text())
             reference.validate_contract(manifest, plan, PYTORCH)
-            self.assertEqual(manifest["counting_policy"]["current_frozen_denominator_units"], 0)
+            self.assertEqual(
+                manifest["counting_policy"]["current_frozen_denominator_units"],
+                frozen_counts[task],
+            )
 
     def test_observer_rejects_non_boolean_or_unreviewed_task(self):
         for value in (False, 1, "true"):
@@ -56,6 +60,11 @@ class FutureReferenceTests(unittest.TestCase):
         self.assertEqual(command[1], str(ROOT / "runners/native_fx_observer.py"))
         self.assertEqual(command[command.index("--") + 1:], case["direct_args"])
         self.assertNotIn("--adapter", command)
+
+    def test_observer_renders_current_graph_without_recompile_side_effect(self):
+        source = (ROOT / "runners/native_fx_observer.py").read_text()
+        self.assertIn('gm.graph.python_code(root_module="self").src', source)
+        self.assertNotIn("output.recompile()", source)
 
     def test_parameter_name_typo_or_missing_variant_fails(self):
         for mutation in (lambda names: names.pop(), lambda names: names.__setitem__(0, names[0] + "_typo")):
@@ -146,6 +155,29 @@ class FuturePerformanceGateTests(unittest.TestCase):
                 launcher.run_arm(["owned-test"], self.directory, None, None, timeout=1)
             self.assertTrue(start.call_args.kwargs["start_new_session"])
             kill.assert_called_once_with(child.pid, launcher.signal.SIGTERM)
+
+    def test_formal_launcher_serializes_tracker_performance(self):
+        source = (ROOT / "scripts/run_t081_t083_performance.sh").read_text()
+        self.assertIn("pass-tracker-npu-performance.lock", source)
+        self.assertIn("flock -n 9", source)
+
+    def test_committed_functional_and_performance_summaries_are_complete(self):
+        expected = {"T-081": 2, "T-082": 2, "T-083": 3}
+        for task, count in expected.items():
+            root = ROOT / "results/current" / task
+            functional = json.loads((root / "npu_functional_summary.json").read_text())
+            performance = json.loads((root / "performance_summary.json").read_text())
+            self.assertEqual(functional["backend"], "triton_experimental")
+            self.assertEqual(performance["backend"], "triton_experimental")
+            self.assertEqual(len(functional["units"]), count)
+            self.assertTrue(
+                all(
+                    unit["status"] == "functional-passed-performance-gate-signed"
+                    for unit in functional["units"]
+                )
+            )
+            self.assertEqual(performance["completion"]["acceptance_units"], count)
+            self.assertEqual(performance["completion"]["pending_units"], 0)
 
 
 if __name__ == "__main__":

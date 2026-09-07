@@ -1,0 +1,186 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T03:12:20.732994+08:00",
+  "task_id": "T-081",
+  "status": "performance-disposition-complete",
+  "backend": "triton_experimental",
+  "measurement_contract": {
+    "order": "OFF1-ON1-ON2-OFF2-OFF3-ON3",
+    "process_isolation": "fresh-process-per-arm-and-round",
+    "tracker_concurrency": "exclusive-global-lock",
+    "warmup": 10,
+    "runs": 100,
+    "timing": "同步NPU Event与host wall clock p50/p99",
+    "scope": "社区功能正例派生的目标子图一次compiled调用；不是完整模型端到端"
+  },
+  "completion": {
+    "acceptance_units": 2,
+    "measured_units": 2,
+    "pending_units": 0
+  },
+  "verdict_counts": {
+    "PERF_IMPROVED": 1,
+    "PERF_NEUTRAL": 1
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-constant-fold-uniform-value",
+      "unit": "constant-fold",
+      "pattern_explanation": {
+        "intent": "把动态图中的均匀full常量传播到add/sub/mul，并在恒等情形删除设备kernel。",
+        "source": [
+          "torch/_inductor/fx_passes/joint_graph.py:501",
+          "torch/_inductor/fx_passes/joint_graph.py:727"
+        ],
+        "gpu_behavior": "A100原生动态形状与自指shape社区case通过；旧观察器显示缓存问题已单独修复。",
+        "npu_behavior": "Ascend910B2上OFF不进入handler；ON命中并改图，最终由1个Triton kernel变为直接返回输入。"
+      },
+      "performance_status": "measured-improved",
+      "verdict": "PERF_IMPROVED",
+      "product_action": "保留现状；若默认关闭，仅作为后续模型级启用候选",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 0.37638505455106497,
+            "on": 0.30398007947951555,
+            "improvement_percent": 19.23694211448188
+          },
+          "p99": {
+            "off": 0.4472540970891748,
+            "on": 0.3685966413468155,
+            "improvement_percent": 17.586749065973635
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.26308999955654144,
+            "on": 0.18569999933242798,
+            "improvement_percent": 29.415789408400283
+          },
+          "p99": {
+            "off": 0.2891730019450188,
+            "on": 0.21524340689182284,
+            "improvement_percent": 25.565870449846628
+          }
+        }
+      },
+      "memory": {
+        "allocated": {
+          "off": 2048,
+          "on": 1024
+        },
+        "reserved": {
+          "off": 2097152,
+          "on": 2097152
+        }
+      },
+      "codegen": {
+        "off": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "429a19218bb9bb03bcb21867944c6e9eeb2e0f9b3e66282e9e77f483b1781e7e"
+          ],
+          "triton_kernels": 1,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        },
+        "on": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "05174c169d26680afaec7a2e8de2485a90dec78eaab5b610a2d42ccf8f93b9d8"
+          ],
+          "triton_kernels": 0,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        }
+      },
+      "raw_summary": "/home/z50063656/tmp/t081-performance-results/constant-fold-20260908T014054-bbzlc8gu/performance_summary.json",
+      "raw_summary_sha256": "8aa494a1fc627ea87d6c77cabbe498a4c096ae383499ae402e0a0ab92f968b8d",
+      "gate_sha256": "127f4c73d106a1441e1e297a910091f3de3a7eae4b9023deea4f3d1d29a00b75"
+    },
+    {
+      "acceptance_unit_id": "AU-joint-graph-pointless-convert",
+      "unit": "convert",
+      "pattern_explanation": {
+        "intent": "在浮点精度与舍入保护允许时，把连续两次dtype转换收敛为一次最终转换。",
+        "source": [
+          "torch/_inductor/fx_passes/joint_graph.py:830",
+          "torch/_inductor/fx_passes/joint_graph.py:842"
+        ],
+        "gpu_behavior": "A100执行社区五组结构合同，正负转换链均按预期保留或折叠。",
+        "npu_behavior": "Ascend910B2数值与目标改图通过；OFF/ON最终均为单个融合转换Triton kernel。"
+      },
+      "performance_status": "measured-neutral",
+      "verdict": "PERF_NEUTRAL",
+      "product_action": "不因微小差异改变产品配置",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 0.3586049424484372,
+            "on": 0.35957503132522106,
+            "improvement_percent": -0.2705174307304295
+          },
+          "p99": {
+            "off": 0.4768613353371655,
+            "on": 0.4229088267311493,
+            "improvement_percent": 11.314087473220908
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.2516700029373169,
+            "on": 0.2517800033092499,
+            "improvement_percent": -0.043708177633065406
+          },
+          "p99": {
+            "off": 0.2724678134918213,
+            "on": 0.27022101134061816,
+            "improvement_percent": 0.8246119504572587
+          }
+        }
+      },
+      "memory": {
+        "allocated": {
+          "off": 2048,
+          "on": 2048
+        },
+        "reserved": {
+          "off": 2097152,
+          "on": 2097152
+        }
+      },
+      "codegen": {
+        "off": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "620391ff52b9c2ffd5ff6845273b6f9d5fc0dfd35c0a301b1b8a068352960fea"
+          ],
+          "triton_kernels": 1,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        },
+        "on": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "1cb5a7703ec8991c60c25445245ba8198cd8828f554819ccf0fef6dae55a008c"
+          ],
+          "triton_kernels": 1,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        }
+      },
+      "raw_summary": "/home/z50063656/tmp/t081-performance-results/convert-20260908T022846-01dul9vj/performance_summary.json",
+      "raw_summary_sha256": "1638d78dfef3a02923430200e29ced7b02bc98c9d68272830d9513672e1a3290",
+      "gate_sha256": "0ba9ced77ebed3178fbdcbfe7c3dd865420a24a7fa275121850d5528137e3166"
+    }
+  ],
+  "limitations": [
+    "社区没有这些单元的独立pass性能benchmark；本轮复用社区功能图、shape和dtype后增加OFF/ON计时。",
+    "collective默认none；目标子图收益不能直接替代真实模型、拓扑和消息规模复核。",
+    "失败的并发预跑及NPU 0一次HDC/TSD启动超时均未纳入本正式汇总。"
+  ]
+}

@@ -1,19 +1,19 @@
 # 后续批次与覆盖边界
 
-> 更新时间：2026-09-07T22:36:49+08:00
+> 更新时间：2026-09-08T03:02:03+08:00
 
 机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。
 
 T-074 的 188 个 provisional 单元中，活动 manifest 已接入 28 个；
 未接入的 130 个候选中，7 个留在已审批次延期，其余保留 30 个草案批次；另有 30 条非计数结构记录待审。
 
-T-081～T-083 的已选7单元已具备原生GPU入口，仍不进入冻结分母；7个原候选明确延期。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-084及以后编号。
+T-081～T-083 的已选7单元已完成原生GPU reference、NPU triton_experimental功能验证与性能处置；7个原候选明确延期。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-084及以后编号。
 
 | 草案任务 | 源码 family | 暂列单元数 | 状态 |
 | --- | --- | ---: | --- |
-| T-081 | `joint_graph` | 5 | 已准备2，延期3；等GPU |
-| T-082 | `joint_graph` | 4 | 已准备2，延期2；等GPU |
-| T-083 | `post_grad` | 5 | 已准备3，延期2；等GPU |
+| T-081 | `joint_graph` | 5 | 已闭环2，延期3 |
+| T-082 | `joint_graph` | 4 | 已闭环2，延期2 |
+| T-083 | `post_grad` | 5 | 已闭环3，延期2 |
 | T-084 | `post_grad` | 5 | 功能映射、性能来源与worker待准备 |
 | T-085 | `post_grad` | 5 | 功能映射、性能来源与worker待准备 |
 | T-086 | `post_grad` | 5 | 功能映射、性能来源与worker待准备 |

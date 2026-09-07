@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-082",
+  "generated_at": "2026-09-08T01:33:28.778398+08:00",
+  "backend": "triton_experimental",
+  "source_run_dir": "/home/z50063656/tmp/t082-npu-functional-results/functional-20260908T012136+0800",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "permute",
+      "acceptance_unit_id": "AU-joint-graph-pointless-permute-pair",
+      "status": "functional-passed-performance-gate-signed",
+      "gate": "results/current/T-082/performance_gates/permute.json",
+      "functional_evidence": "results/current/T-082/functional/permute-on.json"
+    },
+    {
+      "unit": "view",
+      "acceptance_unit_id": "AU-joint-graph-pointless-view-pair",
+      "status": "functional-passed-performance-gate-signed",
+      "gate": "results/current/T-082/performance_gates/view.json",
+      "functional_evidence": "results/current/T-082/functional/view-on.json"
+    }
+  ]
+}

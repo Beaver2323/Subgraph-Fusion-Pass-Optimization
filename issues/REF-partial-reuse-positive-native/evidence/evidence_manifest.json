@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T02:04:47.650166+08:00",
+  "issue": "REF-partial-reuse-positive-native",
+  "evidence_kind": "npu-torch-compile-debug-before-after",
+  "stages": [
+    {
+      "stage": "修复前",
+      "source_root": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s",
+      "models": 3,
+      "files": [
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 541,
+          "sha256": "3114412a5fc457c51109546962b3c5a279c0c94d1b84e80881750207ffb5dc60"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 579,
+          "sha256": "492cff478ba3d817ff76d2e282ae585fe0895be0041b4860541cb478cf224282"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 2315,
+          "sha256": "b22b70591a0dcec76d8b4144afd988e47bfd3fd9bd54c8aa57c45b8b0adf4a7f"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 2318,
+          "sha256": "6a7f0515a6bd22ef4484c2602d167ad87258dd07efd18571456275b26a64c0f8"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 12774,
+          "sha256": "9b78b79bf77489e27e6b036dcdf64384f5740c24f2ef029f988809df3a423c5a"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__1_inference_1.1/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+          "bytes": 538,
+          "sha256": "696152616a1042ccd52e3ecd47f3669070cdf4134be8e0d577022c7cfbe70696"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__1_inference_1.1/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+          "bytes": 572,
+          "sha256": "9217a57d2a968b5671af421417434e5818556bb94a4e553c24d2a14b0201f5cf"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__1_inference_1.1/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+          "bytes": 1738,
+          "sha256": "b39183ff89df35bfb8f8ef17264d77844b2d972ffce7f7d6bc03247072d57da4"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__1_inference_1.1/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+          "bytes": 1740,
+          "sha256": "ca533fe98b70795c439fedd4db4fcb53d3a680b7575b8a433c6c8fdaf05c5019"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__1_inference_1.1/output_code.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__1_inference_1.1/output_code.py",
+          "bytes": 8584,
+          "sha256": "0b6b2b0c31d1423fb764b69b3c0f2a7786b15443f6fa1a862708a7c505cfc654"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__2_inference_2.2/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__2_inference_2.2/fx_graph_readable.py",
+          "bytes": 536,
+          "sha256": "eaca05e96c99c1f169e243fb500401e459ad640a613ee6239dd4ad10d87685f0"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__2_inference_2.2/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__2_inference_2.2/fx_graph_transformed.py",
+          "bytes": 570,
+          "sha256": "eeaf29e04592f809644139c6cf36b477082c53aa8e38b67f336b1b68e992b6c0"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__2_inference_2.2/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__2_inference_2.2/ir_pre_fusion.txt",
+          "bytes": 2296,
+          "sha256": "18a96a89aa3fbd4e166b454582ecd712ec23b52a2e4c13355c5c70c8439cd10f"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__2_inference_2.2/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__2_inference_2.2/ir_post_fusion.txt",
+          "bytes": 2299,
+          "sha256": "b258e137fddf74cfd7d3a3842ebc33cf68cf8b1e92a6610480c0defe6feead52"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_07_36_42_142441-pid_172735/model__2_inference_2.2/output_code.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/adapter-vu9xnf5s/debug/torch_compile_debug/run_2026_09_06_07_36_42_142441-pid_172735/torchinductor/model__2_inference_2.2/output_code.py",
+          "bytes": 12732,
+          "sha256": "566e5b68b0e0dd387992b613499067f9549ca27eccd1bbd80b78169e946b0fc3"
+        }
+      ]
+    },
+    {
+      "stage": "修复后",
+      "source_root": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7",
+      "models": 3,
+      "files": [
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 541,
+          "sha256": "3114412a5fc457c51109546962b3c5a279c0c94d1b84e80881750207ffb5dc60"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 579,
+          "sha256": "492cff478ba3d817ff76d2e282ae585fe0895be0041b4860541cb478cf224282"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 2315,
+          "sha256": "b22b70591a0dcec76d8b4144afd988e47bfd3fd9bd54c8aa57c45b8b0adf4a7f"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 2318,
+          "sha256": "6a7f0515a6bd22ef4484c2602d167ad87258dd07efd18571456275b26a64c0f8"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 12780,
+          "sha256": "b69de0b0cb2dce334dcd17a4f0ab503f2d5243392625cb92b1c7622243a63902"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__1_inference_1.1/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+          "bytes": 538,
+          "sha256": "696152616a1042ccd52e3ecd47f3669070cdf4134be8e0d577022c7cfbe70696"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__1_inference_1.1/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+          "bytes": 572,
+          "sha256": "9217a57d2a968b5671af421417434e5818556bb94a4e553c24d2a14b0201f5cf"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__1_inference_1.1/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+          "bytes": 1738,
+          "sha256": "b39183ff89df35bfb8f8ef17264d77844b2d972ffce7f7d6bc03247072d57da4"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__1_inference_1.1/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+          "bytes": 1740,
+          "sha256": "ca533fe98b70795c439fedd4db4fcb53d3a680b7575b8a433c6c8fdaf05c5019"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__1_inference_1.1/output_code.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__1_inference_1.1/output_code.py",
+          "bytes": 8587,
+          "sha256": "82c09de8d166e6be8b257c322363dbfcd8d0ea64e47dabdbe719a1c349628d8b"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__2_inference_2.2/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__2_inference_2.2/fx_graph_readable.py",
+          "bytes": 536,
+          "sha256": "eaca05e96c99c1f169e243fb500401e459ad640a613ee6239dd4ad10d87685f0"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__2_inference_2.2/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__2_inference_2.2/fx_graph_transformed.py",
+          "bytes": 570,
+          "sha256": "eeaf29e04592f809644139c6cf36b477082c53aa8e38b67f336b1b68e992b6c0"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__2_inference_2.2/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__2_inference_2.2/ir_pre_fusion.txt",
+          "bytes": 2296,
+          "sha256": "18a96a89aa3fbd4e166b454582ecd712ec23b52a2e4c13355c5c70c8439cd10f"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__2_inference_2.2/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__2_inference_2.2/ir_post_fusion.txt",
+          "bytes": 2299,
+          "sha256": "b258e137fddf74cfd7d3a3842ebc33cf68cf8b1e92a6610480c0defe6feead52"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_42_06_501761-pid_229301/model__2_inference_2.2/output_code.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/debug/torch_compile_debug/run_2026_09_06_07_42_06_501761-pid_229301/torchinductor/model__2_inference_2.2/output_code.py",
+          "bytes": 12738,
+          "sha256": "2acbac6f6317c166139cbe6e291b2a76f561cb42b5f6f4ee6bd5d46433d75055"
+        }
+      ]
+    }
+  ]
+}

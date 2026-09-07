@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-081",
+  "generated_at": "2026-09-08T01:33:28.148491+08:00",
+  "backend": "triton_experimental",
+  "source_run_dir": "/home/z50063656/tmp/t081-npu-functional-results/functional-20260908T011814+0800",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "constant-fold",
+      "acceptance_unit_id": "AU-joint-graph-constant-fold-uniform-value",
+      "status": "functional-passed-performance-gate-signed",
+      "gate": "results/current/T-081/performance_gates/constant-fold.json",
+      "functional_evidence": "results/current/T-081/functional/constant-fold-on.json"
+    },
+    {
+      "unit": "convert",
+      "acceptance_unit_id": "AU-joint-graph-pointless-convert",
+      "status": "functional-passed-performance-gate-signed",
+      "gate": "results/current/T-081/performance_gates/convert.json",
+      "functional_evidence": "results/current/T-081/functional/convert-on.json"
+    }
+  ]
+}

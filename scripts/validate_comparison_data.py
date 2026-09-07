@@ -518,6 +518,55 @@ def is_formally_closed(comparison: dict[str, Any]) -> bool:
     )
 
 
+def validate_compact_functional_results(
+    repo_root: Path,
+    units: dict[str, dict[str, Any]],
+    comparison_unit_ids: set[str],
+) -> set[str]:
+    """校验 T-081 起使用的逐任务功能汇总，并返回正式闭环 unit IDs。"""
+    closed: set[str] = set()
+    for summary_path in sorted(
+        (repo_root / "results/current").glob("T-*/npu_functional_summary.json")
+    ):
+        summary = load_object(summary_path)
+        if summary.get("backend") != REQUIRED_NPU_BACKEND:
+            raise ValueError(f"{summary_path} backend 必须为 {REQUIRED_NPU_BACKEND}")
+        if summary.get("status") != "functional-passed-performance-gates-signed":
+            raise ValueError(f"{summary_path} 尚未完成正式功能复核")
+        records = summary.get("units")
+        if not isinstance(records, list) or not records:
+            raise ValueError(f"{summary_path}.units 必须是非空列表")
+        for record in records:
+            unit_id = record.get("acceptance_unit_id")
+            if unit_id not in units:
+                raise ValueError(f"{summary_path} unit 不在 manifest: {unit_id}")
+            if unit_id in comparison_unit_ids or unit_id in closed:
+                raise ValueError(f"正式功能结果重复覆盖 acceptance unit: {unit_id}")
+            if record.get("status") != "functional-passed-performance-gate-signed":
+                raise ValueError(f"{summary_path} unit 尚未签发性能门禁: {unit_id}")
+            evidence_path = repo_root / record.get("functional_evidence", "")
+            gate_path = repo_root / record.get("gate", "")
+            if not evidence_path.is_file() or not gate_path.is_file():
+                raise FileNotFoundError(f"{summary_path} 缺少功能原件或gate: {unit_id}")
+            evidence = load_object(evidence_path)
+            gate = load_object(gate_path)
+            for payload, label in ((evidence, "functional"), (gate, "gate")):
+                if payload.get("acceptance_unit_id") != unit_id:
+                    raise ValueError(f"{summary_path} {label} unit绑定不一致: {unit_id}")
+                if payload.get("backend") != REQUIRED_NPU_BACKEND:
+                    raise ValueError(f"{summary_path} {label} backend非法: {unit_id}")
+                if payload.get("correctness") != "passed":
+                    raise ValueError(f"{summary_path} {label} correctness未通过: {unit_id}")
+                if payload.get("target_rewrite") != "confirmed":
+                    raise ValueError(f"{summary_path} {label} 未确认实际改图: {unit_id}")
+                if payload.get("graph_breaks") != 0 or payload.get("fallbacks") != 0:
+                    raise ValueError(f"{summary_path} {label} 存在graph break/fallback: {unit_id}")
+            if evidence.get("numerical_execution") is not True:
+                raise ValueError(f"{summary_path} 缺少NPU数值执行: {unit_id}")
+            closed.add(unit_id)
+    return closed
+
+
 def validate(repo_root: Path) -> None:
     manifest_paths = [repo_root / "upstream/manifest.yaml", *sorted(
         (repo_root / "upstream").glob("t*_manifest.yaml")
@@ -548,6 +597,7 @@ def validate(repo_root: Path) -> None:
 
     formally_closed = 0
     variant_count = 0
+    comparison_unit_ids: set[str] = set()
     for comparison_path in comparison_paths:
         comparison = load_object(comparison_path)
         unit_id = comparison["acceptance_unit_id"]
@@ -567,6 +617,12 @@ def validate(repo_root: Path) -> None:
         )
         variant_count += len(comparison["variant_comparisons"])
         formally_closed += is_formally_closed(comparison)
+        comparison_unit_ids.add(unit_id)
+
+    compact_closed = validate_compact_functional_results(
+        repo_root, units, comparison_unit_ids
+    )
+    formally_closed += len(compact_closed)
 
     expected_closed = sum(
         manifest["counting_policy"]["current_formally_closed_units"]
@@ -578,10 +634,12 @@ def validate(repo_root: Path) -> None:
             f"{expected_closed} != {formally_closed}"
         )
     print("comparison_data_validation=OK")
-    print(f"comparison_units={len(comparison_paths)}")
+    print(f"comparison_units={len(comparison_paths) + len(compact_closed)}")
+    print(f"legacy_comparison_units={len(comparison_paths)}")
+    print(f"compact_functional_closed_units={len(compact_closed)}")
     print(f"comparison_variants={variant_count}")
     print(f"formally_closed_units={formally_closed}")
-    print(f"open_or_inconclusive_units={len(comparison_paths) - formally_closed}")
+    print(f"open_or_inconclusive_units={expected_closed - formally_closed}")
     print("torch_imported=0")
 
 

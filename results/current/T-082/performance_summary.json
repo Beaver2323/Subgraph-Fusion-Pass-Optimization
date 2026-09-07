@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T03:12:20.793441+08:00",
+  "task_id": "T-082",
+  "status": "performance-disposition-complete",
+  "backend": "triton_experimental",
+  "measurement_contract": {
+    "order": "OFF1-ON1-ON2-OFF2-OFF3-ON3",
+    "process_isolation": "fresh-process-per-arm-and-round",
+    "tracker_concurrency": "exclusive-global-lock",
+    "warmup": 10,
+    "runs": 100,
+    "timing": "同步NPU Event与host wall clock p50/p99",
+    "scope": "社区功能正例派生的目标子图一次compiled调用；不是完整模型端到端"
+  },
+  "completion": {
+    "acceptance_units": 2,
+    "measured_units": 2,
+    "pending_units": 0
+  },
+  "verdict_counts": {
+    "PERF_NEUTRAL": 2
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-pointless-permute-pair",
+      "unit": "permute",
+      "pattern_explanation": {
+        "intent": "两次互逆permute复合为恒等映射，直接返回原tensor并保持alias/stride。",
+        "source": [
+          "torch/_inductor/fx_passes/joint_graph.py:948",
+          "torch/_inductor/fx_passes/joint_graph.py:957"
+        ],
+        "gpu_behavior": "A100原生2D/3D互逆与中间用户保护结构case通过。",
+        "npu_behavior": "Ascend910B2命中、数值、alias和stride通过；OFF/ON下游最终都消成零kernel恒等代码。"
+      },
+      "performance_status": "measured-neutral",
+      "verdict": "PERF_NEUTRAL",
+      "product_action": "不因微小差异改变产品配置",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 0.3548149252310395,
+            "on": 0.3144349902868271,
+            "improvement_percent": 11.380562674447486
+          },
+          "p99": {
+            "off": 0.4207274294458399,
+            "on": 0.4682223964482579,
+            "improvement_percent": -11.288773604558155
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.21491999924182892,
+            "on": 0.20680000633001328,
+            "improvement_percent": 3.7781467245768003
+          },
+          "p99": {
+            "off": 0.2534541952610016,
+            "on": 0.23069440469145783,
+            "improvement_percent": 8.979843693692361
+          }
+        }
+      },
+      "memory": {
+        "allocated": {
+          "off": 512,
+          "on": 512
+        },
+        "reserved": {
+          "off": 2097152,
+          "on": 2097152
+        }
+      },
+      "codegen": {
+        "off": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "740724aa99fbb0424ddc669cd7105b03723eeb5b69e425764e1fdc6b42c369ec"
+          ],
+          "triton_kernels": 0,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        },
+        "on": {
+          "output_code_files": 0,
+          "output_code_sha256": [],
+          "triton_kernels": 0,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        }
+      },
+      "raw_summary": "/home/z50063656/tmp/t082-performance-results/permute-20260908T023303-r0e2x2oq/performance_summary.json",
+      "raw_summary_sha256": "4a17b581bdb42bc0d89345a8031b3b2b04b3424f028bc4d49bc3ed87fdaab5cd",
+      "gate_sha256": "c4cfe73ddc79bfb1821bb3d41e713a5b3648ab61f93c26615c74b06459ea1d52"
+    },
+    {
+      "acceptance_unit_id": "AU-joint-graph-pointless-view-pair",
+      "unit": "view",
+      "pattern_explanation": {
+        "intent": "当第二个view恢复原shape时删除view-pair，直接复用原tensor。",
+        "source": [
+          "torch/_inductor/fx_passes/joint_graph.py:927",
+          "torch/_inductor/fx_passes/joint_graph.py:936"
+        ],
+        "gpu_behavior": "A100原生静态结构与动态数值社区case通过。",
+        "npu_behavior": "Ascend910B2命中、数值、alias和stride通过；OFF/ON下游最终都消成零kernel恒等代码。"
+      },
+      "performance_status": "measured-neutral",
+      "verdict": "PERF_NEUTRAL",
+      "product_action": "不因微小差异改变产品配置",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 0.31589996069669724,
+            "on": 0.30794995836913586,
+            "improvement_percent": 2.516620233199192
+          },
+          "p99": {
+            "off": 0.38150529144332146,
+            "on": 0.3901548497378864,
+            "improvement_percent": -2.2672184340724812
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.21066999435424805,
+            "on": 0.19939999282360077,
+            "improvement_percent": 5.349599768677273
+          },
+          "p99": {
+            "off": 0.2417866058647633,
+            "on": 0.251591788828373,
+            "improvement_percent": -4.055304440269109
+          }
+        }
+      },
+      "memory": {
+        "allocated": {
+          "off": 512,
+          "on": 512
+        },
+        "reserved": {
+          "off": 2097152,
+          "on": 2097152
+        }
+      },
+      "codegen": {
+        "off": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "740724aa99fbb0424ddc669cd7105b03723eeb5b69e425764e1fdc6b42c369ec"
+          ],
+          "triton_kernels": 0,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        },
+        "on": {
+          "output_code_files": 0,
+          "output_code_sha256": [],
+          "triton_kernels": 0,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        }
+      },
+      "raw_summary": "/home/z50063656/tmp/t082-performance-results/view-20260908T024200-56yl89zv/performance_summary.json",
+      "raw_summary_sha256": "3f96e6635ef15a4abfc9337492b43bb47ac9147b63dc8168492390ef0ed1904b",
+      "gate_sha256": "7d61760ad6ae305e6d70ad987f68298c75d9ada762fd7e883a6aeb53b56b33ac"
+    }
+  ],
+  "limitations": [
+    "社区没有这些单元的独立pass性能benchmark；本轮复用社区功能图、shape和dtype后增加OFF/ON计时。",
+    "collective默认none；目标子图收益不能直接替代真实模型、拓扑和消息规模复核。",
+    "失败的并发预跑及NPU 0一次HDC/TSD启动超时均未纳入本正式汇总。"
+  ]
+}

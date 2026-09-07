@@ -1,0 +1,262 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T02:04:47.612250+08:00",
+  "issue": "REF-addmm-contract-native",
+  "evidence_kind": "npu-torch-compile-debug-before-after",
+  "stages": [
+    {
+      "stage": "修复前",
+      "source_root": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800",
+      "models": 5,
+      "files": [
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 653,
+          "sha256": "84ea43083264672b6ecd5339de0ebfde692cd18a90b74c05ef89aa961197f1ef"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 653,
+          "sha256": "84ea43083264672b6ecd5339de0ebfde692cd18a90b74c05ef89aa961197f1ef"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 3632,
+          "sha256": "aff0e89ac57fc0629102d21cf28447521eebbe17f74b1301115df2eb451bb8da"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 4412,
+          "sha256": "0b29865f2cbc3ce6faa63017a6934793fe92deb63d13bbbe41fc62679da2f55d"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 8785,
+          "sha256": "137cf66a780d4b66a6297ee86ad1352f12512fbc39e26ce6ad0d44fef6c64c8f"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__1_inference_1.1/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+          "bytes": 643,
+          "sha256": "b82b463b1b897d1a9f46eb494981f3a4be979ecfe37e8f309742abe8b3dc98f1"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__1_inference_1.1/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+          "bytes": 643,
+          "sha256": "b82b463b1b897d1a9f46eb494981f3a4be979ecfe37e8f309742abe8b3dc98f1"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__1_inference_1.1/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+          "bytes": 3598,
+          "sha256": "b56f02875826b27706d965a40b455940869f30b9ab2855acdcc8d69e653d1cde"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__1_inference_1.1/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+          "bytes": 4429,
+          "sha256": "17423d3ac557e40b937337abf7a5063874aad59bb0770a8007072e05d4844fde"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__1_inference_1.1/output_code.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__1_inference_1.1/output_code.py",
+          "bytes": 9512,
+          "sha256": "47ec9608ed6e02c1f911e162532009cb748970740c8331df7568e95eb63ba9f1"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__2_inference_2.2/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__2_inference_2.2/fx_graph_readable.py",
+          "bytes": 650,
+          "sha256": "a5a5385d321d19cdacc71ad3ddd526132a0f23d720f5b07bfdc221ac4ce256a5"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__2_inference_2.2/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__2_inference_2.2/fx_graph_transformed.py",
+          "bytes": 650,
+          "sha256": "a5a5385d321d19cdacc71ad3ddd526132a0f23d720f5b07bfdc221ac4ce256a5"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__2_inference_2.2/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__2_inference_2.2/ir_pre_fusion.txt",
+          "bytes": 3646,
+          "sha256": "8454fa3c1238338ad0ebce67c610d4cd878030633f3c7f8c2b35d69ff5ad29f1"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__2_inference_2.2/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__2_inference_2.2/ir_post_fusion.txt",
+          "bytes": 4474,
+          "sha256": "5ddb76cc8595137bebc1966b8f9a4e556021eac84b22d77d23d3fe9f811d832d"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__2_inference_2.2/output_code.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__2_inference_2.2/output_code.py",
+          "bytes": 9679,
+          "sha256": "ac845a90d3591c8d9a9eebda0cfb74645180f688e74acca8b89ee181add888e8"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__3_inference_3.3/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__3_inference_3.3/fx_graph_readable.py",
+          "bytes": 662,
+          "sha256": "792d9f01ea03c550489ac036a1013b7a276d755eabe2db3371e9c772d4722b53"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__3_inference_3.3/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__3_inference_3.3/fx_graph_transformed.py",
+          "bytes": 662,
+          "sha256": "792d9f01ea03c550489ac036a1013b7a276d755eabe2db3371e9c772d4722b53"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__3_inference_3.3/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__3_inference_3.3/ir_pre_fusion.txt",
+          "bytes": 3680,
+          "sha256": "d7b4cae2c78c6e1bfabdd679a01daf429ddc36469ae4082cf118cd2218401c6b"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__3_inference_3.3/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__3_inference_3.3/ir_post_fusion.txt",
+          "bytes": 4476,
+          "sha256": "438f14d22fb4773af5839c11d33aa43672a8ae879893a8eabd54c7dbe666319f"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__3_inference_3.3/output_code.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__3_inference_3.3/output_code.py",
+          "bytes": 8917,
+          "sha256": "ea9fc16c4782980041b0af3aad2d772c335c6817f5d76c9141d38f93e2b5acbe"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__4_inference_4.4/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__4_inference_4.4/fx_graph_readable.py",
+          "bytes": 611,
+          "sha256": "0f64d4a43a0fa32c3bb36b4b05e846f80e52bfa9fb015f0fb62be3b84116a1a9"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__4_inference_4.4/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__4_inference_4.4/fx_graph_transformed.py",
+          "bytes": 611,
+          "sha256": "0f64d4a43a0fa32c3bb36b4b05e846f80e52bfa9fb015f0fb62be3b84116a1a9"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__4_inference_4.4/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__4_inference_4.4/ir_pre_fusion.txt",
+          "bytes": 3284,
+          "sha256": "143186a2fb94438254bb2ea654840cf0a334faa9783d81ba42625c377cb09aff"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__4_inference_4.4/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__4_inference_4.4/ir_post_fusion.txt",
+          "bytes": 3190,
+          "sha256": "d8aaa9d495806ff0d1d9a9b95e32d6af4cba3d9ccf37e308c7aa9cc373d3f5bd"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_02_05_08_46_942212-pid_3155837/model__4_inference_4.4/output_code.py",
+          "source": "/home/z50063656/tmp/t076-npu-results/REF-addmm-contract-native/adapter-20260902T051000+0800/debug/torch_compile_debug/run_2026_09_02_05_08_46_942212-pid_3155837/torchinductor/model__4_inference_4.4/output_code.py",
+          "bytes": 12208,
+          "sha256": "9f039044575dfcfe1e17fe119094dbdf52d0bdf907ea1ff4ba977b0f2bc1f07a"
+        }
+      ]
+    },
+    {
+      "stage": "修复后",
+      "source_root": "/home/z50063656/tmp/t076-p018-recheck/contract",
+      "models": 3,
+      "files": [
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 653,
+          "sha256": "84ea43083264672b6ecd5339de0ebfde692cd18a90b74c05ef89aa961197f1ef"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 553,
+          "sha256": "db6736f75a9bde84913b1bf747de1523df269aef70a8b4bc068a1072d34ae9b9"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 1150,
+          "sha256": "77bbc7f67d2abc4ea1dec3b0b82d6c4c34a55083fbf62dea9820ee9ab7b9649d"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 1150,
+          "sha256": "77bbc7f67d2abc4ea1dec3b0b82d6c4c34a55083fbf62dea9820ee9ab7b9649d"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 3750,
+          "sha256": "4594b25161abb870d0edc298c0738ec3dc1848385bfd88a9b0c630308d170b8b"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__1_inference_1.1/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+          "bytes": 643,
+          "sha256": "b82b463b1b897d1a9f46eb494981f3a4be979ecfe37e8f309742abe8b3dc98f1"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__1_inference_1.1/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+          "bytes": 545,
+          "sha256": "5f06616c555d9e9fe81af231ec74f9a19df232f0943efcf6d78702fb7a59f50d"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__1_inference_1.1/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+          "bytes": 1146,
+          "sha256": "78980790da11a0ce38038fccf9fca1fce26c7ca25945db6a94ac419ddc5a58e6"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__1_inference_1.1/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+          "bytes": 1146,
+          "sha256": "78980790da11a0ce38038fccf9fca1fce26c7ca25945db6a94ac419ddc5a58e6"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__1_inference_1.1/output_code.py",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__1_inference_1.1/output_code.py",
+          "bytes": 3739,
+          "sha256": "b6eca7abcf3da489194a40224ab78b3d1b6b7b89cc94f14ca28539581b1cd6d8"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__2_inference_2.2/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__2_inference_2.2/fx_graph_readable.py",
+          "bytes": 650,
+          "sha256": "a5a5385d321d19cdacc71ad3ddd526132a0f23d720f5b07bfdc221ac4ce256a5"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__2_inference_2.2/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__2_inference_2.2/fx_graph_transformed.py",
+          "bytes": 650,
+          "sha256": "a5a5385d321d19cdacc71ad3ddd526132a0f23d720f5b07bfdc221ac4ce256a5"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__2_inference_2.2/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__2_inference_2.2/ir_pre_fusion.txt",
+          "bytes": 3646,
+          "sha256": "8454fa3c1238338ad0ebce67c610d4cd878030633f3c7f8c2b35d69ff5ad29f1"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__2_inference_2.2/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__2_inference_2.2/ir_post_fusion.txt",
+          "bytes": 4474,
+          "sha256": "5ddb76cc8595137bebc1966b8f9a4e556021eac84b22d77d23d3fe9f811d832d"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_02_17_28_59_807520-pid_2837475/model__2_inference_2.2/output_code.py",
+          "source": "/home/z50063656/tmp/t076-p018-recheck/contract/debug/torch_compile_debug/run_2026_09_02_17_28_59_807520-pid_2837475/torchinductor/model__2_inference_2.2/output_code.py",
+          "bytes": 9645,
+          "sha256": "da5376946326d2e7142d493f97e37e2fa42b9885b6940a5d4ffda8c36c344983"
+        }
+      ]
+    }
+  ]
+}

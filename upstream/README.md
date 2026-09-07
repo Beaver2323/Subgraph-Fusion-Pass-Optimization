@@ -1,7 +1,7 @@
 # Upstream Contract 与 Acceptance Unit 数据
 
-> 更新时间：2026-09-07 20:41 CST（UTC+08:00）
-> 状态：T-076～T-080 共 21 units 已形成正式 GPU/NPU comparison 与性能处置。
+> 更新时间：2026-09-08 03:17 CST（UTC+08:00）
+> 状态：T-076～T-083共28 units已冻结GPU reference，并全部形成正式GPU/NPU comparison与性能处置。
 
 本目录保存 tracker 的活动数据入口：
 
@@ -17,6 +17,8 @@
 - `t078_reference_plan.yaml`：T-078 的 12 个 direct cases 与 20 个已验证 variants；
 - `t079_manifest.yaml`、`t079_reference_plan.yaml`：T-079 的 4 个矩阵/cat-split 单元、4 cases 与 14 variants；
 - `t080_manifest.yaml`、`t080_reference_plan.yaml`：T-080 的 3 个访存/softmax/constructor 单元、13 cases 与 13 variants；
+- `t081_manifest.yaml`～`t083_manifest.yaml`及对应reference/performance plan：7个已冻结GPU reference、
+  11 cases、24 variants，以及已完成`triton_experimental`功能和性能处置的合同；
 - `performance_plan.schema.json`：新批次性能准备合同的公共结构；
 - `t076_performance_plan.yaml`、`t077_performance_plan.yaml`：同 backend 性能实测、显式关闭免测、
   capability 评估与候选拒绝依据；
@@ -26,7 +28,7 @@
 - `../scripts/validate_prepared_tasks.py`：T-078～T-080 reference/performance/中文 guide 的零设备一致性检查；
 - `../scripts/validate_tracker_data.py`：零第三方依赖的一致性检查。
 - `../scripts/generate_current_acceptance_matrix.py`：从本目录 manifest、`results/current/` 和性能
-  数据生成/校验当前 21 单元矩阵；同时拒绝非 `triton_experimental` 的 NPU 动态结果。
+  数据生成/校验当前28单元矩阵；同时拒绝非`triton_experimental`的NPU动态结果。
 - `../schemas/npu_result.schema.json`、`../schemas/comparison_result.schema.json`：统一
   NPU 执行与 GPU/NPU comparison 合同；
 - `../scripts/validate_comparison_data.py`：统一结果与 manifest/hash 的零 torch 导入检查；
@@ -40,8 +42,8 @@ Python 标准库 `json` 解析，避免 GPU 机器额外安装 PyYAML。
 ## 计数边界
 
 - T-074 v1 的 207 行 candidate CSV 继续作为 inventory 输入；
-- 本目录五批 manifest 共包含 21 个已人工复核的 acceptance units；
-- 五批 21 个单元全部为 `yes-frozen`，并全部形成正式 NPU/comparison；
+- 本目录八批manifest共包含28个已人工复核并冻结GPU reference的acceptance units；
+- 28个单元均已形成正式NPU/comparison与性能处置；
 - T-076 已为 20 个 variants 中 14 个建立原生动态 case 映射；3 个 registration-only 和 3 个
   NPU-only gate 已显式列为 reference 非动态项；
 - 当前 GPU adapter/extracted case 数为 0；13 个 direct 均 valid，不再设计 GPU adapter；
@@ -55,6 +57,8 @@ Python 标准库 `json` 解析，避免 GPU 机器额外安装 PyYAML。
 - T-079 的 4 个单元已完成 GPU/NPU/性能与 bmm 产品门禁；T-080 的 3 个单元完成 13/13 GPU cases、
   13/13 NPU variants 与性能处置。T-080 const-scatter 复用社区完整 CrossEntropy benchmark，回退后
   默认关闭；prepare-softmax 产品 lowering 显式 fallback 免测；constructor mover 性能中性。
+- T-081～T-083已完成11/11原生GPU cases与24/24 variants；其中6个case具有社区数值断言，5个仅有
+  结构/codegen断言。NPU另补7/7数值/改图；T-083使用真实HCCL双rank，不沿用GPU world_size=1证据。
 - 性能处置不改变 denominator：T-076 为 2 measured + 3 exempt-explicitly-disabled；T-077 为
   4 measured + 1 capability-assessed-no-effective-template，pending=0。device guard 未包含 NPU
   没有被直接当成显式 disable，而是完成最小适配与收益评估；

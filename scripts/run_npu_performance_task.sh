@@ -15,6 +15,8 @@ usage() {
   bash scripts/run_npu_performance_task.sh --task T-076 --validate-only
   bash scripts/run_npu_performance_task.sh --task T-078 --validate-only
   bash scripts/run_npu_performance_task.sh --task T-078
+  bash scripts/run_npu_performance_task.sh --task T-081 --unit convert --npu 0
+  bash scripts/run_npu_performance_task.sh --task T-083 --unit all-reduce --npu 0,1
 
 说明：
   T-076 的性能阶段复用仓库内同冻结版本的既有三轮 A/B 证据；明确关闭的三类 pad 免测。
@@ -25,6 +27,8 @@ usage() {
   T-079 的 --unit 支持 bmm-to-mm、cat-slice-cat、split-cat、cat-split。
   T-080 已完成两项实测、一项显式免测及 Scatter 产品门禁；当前入口校验正式结果，
   不再绕过最终门禁重跑候选 Scatter ON。
+  T-081～T-083 自动使用 results/current/<T>/performance_gates 下的已复核门禁；
+  T-083 必须传入两个不同 NPU ID。
 EOF
 }
 
@@ -117,7 +121,21 @@ case "${task_id}" in
         echo "product_gate=${repo_root}/results/current/T-080/product_gate_verification.json"
         exit 0
         ;;
-    *) echo "错误：--task 必须是 T-076～T-080" >&2; exit 2 ;;
+    T-081|T081|T-082|T082|T-083|T083)
+        task_number="${task_id//-/}"
+        task_id="T-${task_number#T}"
+        if ((validate_only)); then
+            python "${repo_root}/scripts/run_prepared_performance.py" \
+                --task "${task_id}" \
+                --validate-only
+            exit 0
+        fi
+        exec bash "${repo_root}/scripts/run_t081_t083_performance.sh" \
+            --task "${task_id}" \
+            --unit "${unit}" \
+            --npu "${npu_id}"
+        ;;
+    *) echo "错误：--task 必须是 T-076～T-083" >&2; exit 2 ;;
 esac
 
 # 参数解析后 $# 已归零，再激活环境，避免 CANN set_env.sh 误收本脚本参数。

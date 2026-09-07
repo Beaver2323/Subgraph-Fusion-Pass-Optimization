@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
   "task_id": "T-082",
-  "generated_at": "2026-09-07T22:36:49+08:00",
-  "status": "prepared-awaiting-direct-gpu-execution",
+  "generated_at": "2026-09-08T03:02:03+08:00",
+  "status": "direct-gpu-reference-valid-and-reviewed",
   "performance_plan": {
     "path": "upstream/t082_performance_plan.yaml",
-    "status": "worker-implemented-awaiting-functional-gates"
+    "status": "runtime-validated-performance-disposition-complete"
   },
   "case_guide": {
     "path": "docs/T082_FUNCTION_PERFORMANCE_GUIDE.md",

@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-07 22:30 CST（UTC+08:00）
+> 更新时间：2026-09-08 03:17 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076～T-080 共 21 个 acceptance units 已登记闭环；T-076/T-077 严格再认证单列；T-081～T-083 新准备 7 个单元待 GPU，后续编号保留；产品改动尚未合入。
+> 当前阶段：T-076～T-083共28个acceptance units已冻结GPU reference，并全部完成NPU/comparison与性能处置；T-076/T-077严格再认证单列，后续编号保留；产品改动尚未合入。
 
 ## 1. 总结
 
@@ -214,9 +214,11 @@ T-078：12/12 GPU reference、4/4 NPU comparison、条件 repair、候选性能�
 
 T-079、T-080 均已正式闭环。T-080 保留 const-scatter CrossEntropy 的社区完整 benchmark；
 prepare-softmax 因产品显式 lowering fallback 免测；constructor mover 从社区功能正例派生性能图。
-T-081～T-083 已审核为 2/2/3 个可执行社区合同，进入 GPU 待运行队列，尚不能冻结。
+T-081～T-083已完成2/2/3个社区合同的GPU运行：11/11 cases、24/24 variants有效，7个单元已冻结；
+随后在`triton_experimental`完成7/7数值、命中和实际改图。T-083没有沿用world_size=1结论，另用真实
+双rank HCCL验证3→1/2→1 collective。7个单元均完成全局互斥下的六臂性能处置。
 CPU-only/fake-PG/间接覆盖或缺少直接测例的剩余候选按原批次保留 deferred。
-活动矩阵共 28 行，其中已冻结仍为 21，新准备 7 行；性能 worker 静态准备不计实测。
+活动矩阵共28行，28行均已完成GPU、NPU/comparison与性能处置。
 
 T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或同合同重验。新 1.3 review
 分别可恢复 80/68 份关键正文，用于逐项 FX 学习与审计，但不是完整历史 archive。

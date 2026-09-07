@@ -1,0 +1,89 @@
+op0: ExternKernelSchedulerNode(ExternKernelOut)
+op0.writes = [StarDep(name='buf0', mode=None)]
+op0.unmet_dependencies = []
+op0.met_dependencies = [StarDep(name='permute', mode=None), StarDep(name='tangents_1', mode=None)]
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: ExternKernelOut
+    buf0.layout = FixedLayout('npu:0', torch.float32, size=[2, 2], stride=[2, 1])
+    buf0.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op0.node.kernel = extern_kernels.mm
+
+
+op1: SchedulerNode(ComputedBuffer)
+op1.writes = [MemoryDep('buf1', c0, {c0: 8192})]
+op1.unmet_dependencies = []
+op1.met_dependencies = [MemoryDep('tangents_1', c0, {c0: 4096})]
+op1.min_input_distance = 0
+op1.max_input_distance = 0
+op1.outputs = [
+    buf1: ComputedBuffer
+    buf1.layout = FixedLayout('npu:0', torch.float32, size=[2048, 2, 2], stride=[4, 2, 1])
+    buf1.users = [NodeUser(node=SchedulerNode(name='op2'), can_inplace=False, is_weak=False)]
+]
+op1.group.device = npu:0
+op1.group.iteration = (8192, 1)
+op1.sizes = ((4096, 2), ())
+tangents_1_layout = FixedLayout('npu:0', torch.float32, size=[2048, 2], stride=[2, 1])
+buf1_layout = FixedLayout('npu:0', torch.float32, size=[2048, 2, 2], stride=[4, 2, 1])
+class op1_loop_body:
+    var_ranges = {p0: 4096, p1: 2}
+    index0 = p0
+    index1 = 2*p0 + p1
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('tangents_1', get_index)
+        get_index_1 = self.get_index('index1')
+        store = ops.store('buf1', get_index_1, load, None)
+        return store
+
+
+op2: SchedulerNode(ComputedBuffer)
+op2.writes = [MemoryDep('buf2', c0, {c0: 4096})]
+op2.unmet_dependencies = 
+    [   MemoryDep('buf1', 4*c0 + c1 + 2, {c0: 2048, c1: 2}),
+        MemoryDep('buf1', 4*c0 + c1, {c0: 2048, c1: 2})]
+op2.met_dependencies = 
+    [   MemoryDep('permute_1', 2*c1 + 1, {c0: 2048, c1: 2}),
+        MemoryDep('permute_1', 2*c1, {c0: 2048, c1: 2})]
+op2.min_input_distance = 1
+op2.max_input_distance = 1
+op2.outputs = [
+    buf2: ComputedBuffer
+    buf2.layout = FixedLayout('npu:0', torch.float32, size=[2048, 2], stride=[2, 1])
+    buf2.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op2.group.device = npu:0
+op2.group.iteration = (4096, 1)
+op2.sizes = ((2048, 2), ())
+buf1_layout = FixedLayout('npu:0', torch.float32, size=[2048, 2, 2], stride=[4, 2, 1])
+permute_1_layout = FixedLayout('npu:0', torch.float32, size=[2, 2], stride=[1, 2])
+buf1_layout = FixedLayout('npu:0', torch.float32, size=[2048, 2, 2], stride=[4, 2, 1])
+permute_1_layout = FixedLayout('npu:0', torch.float32, size=[2, 2], stride=[1, 2])
+buf2_layout = FixedLayout('npu:0', torch.float32, size=[2048, 2], stride=[2, 1])
+class op2_loop_body:
+    var_ranges = {p0: 2048, p1: 2}
+    index0 = 4*p0 + p1
+    index1 = 2*p1
+    index2 = 4*p0 + p1 + 2
+    index3 = 2*p1 + 1
+    index4 = 2*p0 + p1
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('buf1', get_index)
+        get_index_1 = self.get_index('index1')
+        load_1 = ops.load('permute_1', get_index_1)
+        mul = ops.mul(load, load_1)
+        get_index_2 = self.get_index('index2')
+        load_2 = ops.load('buf1', get_index_2)
+        get_index_3 = self.get_index('index3')
+        load_3 = ops.load('permute_1', get_index_3)
+        mul_1 = ops.mul(load_2, load_3)
+        add = ops.add(mul, mul_1)
+        get_index_4 = self.get_index('index4')
+        store = ops.store('buf2', get_index_4, add, None)
+        return store
+
+

@@ -1,0 +1,172 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T02:04:47.644827+08:00",
+  "issue": "REF-bmm-to-mm-native",
+  "evidence_kind": "npu-torch-compile-debug-before-after",
+  "stages": [
+    {
+      "stage": "修复前",
+      "source_root": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1",
+      "models": 4,
+      "files": [
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 711,
+          "sha256": "f1ef874138b629c4454cf701fbe787cff29259e2cf90ff083e3a4e8cb7ef7f79"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 711,
+          "sha256": "f1ef874138b629c4454cf701fbe787cff29259e2cf90ff083e3a4e8cb7ef7f79"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 513,
+          "sha256": "42f0eb0d98fded636c7b5fc7a48ac17bdbaa4276478060a3c35f968e6eb5c493"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 513,
+          "sha256": "42f0eb0d98fded636c7b5fc7a48ac17bdbaa4276478060a3c35f968e6eb5c493"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 3390,
+          "sha256": "3d4f223a4acac09ed79161f07e05ab6bd4699298a74dda7f52337a184ffc1c2e"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__1_inference_1.1/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+          "bytes": 715,
+          "sha256": "d525613956227078a6347ef5a06b53c191991590f6e9e35516f6ee0b07a81a90"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__1_inference_1.1/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+          "bytes": 715,
+          "sha256": "d525613956227078a6347ef5a06b53c191991590f6e9e35516f6ee0b07a81a90"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__1_inference_1.1/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+          "bytes": 513,
+          "sha256": "ba5ed7f70aac010ed3f80eb1485d02c15b846688cb61ad869a10fd92e87fa335"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__1_inference_1.1/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+          "bytes": 513,
+          "sha256": "ba5ed7f70aac010ed3f80eb1485d02c15b846688cb61ad869a10fd92e87fa335"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__1_inference_1.1/output_code.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__1_inference_1.1/output_code.py",
+          "bytes": 3399,
+          "sha256": "12fb7b0de2b2e267abe0364e982566d3182fa70295f3a704c8bf47586c8434d5"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__2_inference_2.2/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__2_inference_2.2/fx_graph_readable.py",
+          "bytes": 723,
+          "sha256": "5d78bfe5f5b37216dfc0c64e99dcb33f8cbe02e2a68eabef14288f562158ab18"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__2_inference_2.2/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__2_inference_2.2/fx_graph_transformed.py",
+          "bytes": 723,
+          "sha256": "5d78bfe5f5b37216dfc0c64e99dcb33f8cbe02e2a68eabef14288f562158ab18"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__2_inference_2.2/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__2_inference_2.2/ir_pre_fusion.txt",
+          "bytes": 516,
+          "sha256": "63db2e02a0c20960f6ce1dc5e05872a89f5aadf422f6038433463bc117a44148"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__2_inference_2.2/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__2_inference_2.2/ir_post_fusion.txt",
+          "bytes": 516,
+          "sha256": "63db2e02a0c20960f6ce1dc5e05872a89f5aadf422f6038433463bc117a44148"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__2_inference_2.2/output_code.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__2_inference_2.2/output_code.py",
+          "bytes": 3414,
+          "sha256": "6331fe97cbd4303fc63476003bf6289b48c4fc090456a416b93a083f13a21456"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__3_inference_3.3/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__3_inference_3.3/fx_graph_readable.py",
+          "bytes": 731,
+          "sha256": "8df6cea057040fb93938188cc5e8c4ea15a0c337a67657d41445326ea2d9ad66"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__3_inference_3.3/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__3_inference_3.3/fx_graph_transformed.py",
+          "bytes": 731,
+          "sha256": "8df6cea057040fb93938188cc5e8c4ea15a0c337a67657d41445326ea2d9ad66"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__3_inference_3.3/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__3_inference_3.3/ir_pre_fusion.txt",
+          "bytes": 517,
+          "sha256": "e730c6fd3468fd1f031e3fabd064b1442a10449f729c670c5e4c2c561f97ba63"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__3_inference_3.3/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__3_inference_3.3/ir_post_fusion.txt",
+          "bytes": 517,
+          "sha256": "e730c6fd3468fd1f031e3fabd064b1442a10449f729c670c5e4c2c561f97ba63"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_10_22_49_242499-pid_2624873/model__3_inference_3.3/output_code.py",
+          "source": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/workers/on1/debug/torch_compile_debug/run_2026_09_07_10_22_49_242499-pid_2624873/torchinductor/model__3_inference_3.3/output_code.py",
+          "bytes": 3426,
+          "sha256": "161bae99eac65fefd27b1121d7b6a90fc628d7bd93bc23b9e862ded8af2143bc"
+        }
+      ]
+    },
+    {
+      "stage": "修复后",
+      "source_root": "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800/default-disabled",
+      "models": 1,
+      "files": [
+        {
+          "path": "evidence/修复后/run_2026_09_07_18_41_13_564976-pid_529895/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_18_41_13_564976-pid_529895/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 371,
+          "sha256": "cec1d7b2c34d6bf5ff78fac900eab53ffaac3f654d9fe57cd7a2d57e46e33d69"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_07_18_41_13_564976-pid_529895/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_18_41_13_564976-pid_529895/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 371,
+          "sha256": "cec1d7b2c34d6bf5ff78fac900eab53ffaac3f654d9fe57cd7a2d57e46e33d69"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_07_18_41_13_564976-pid_529895/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_18_41_13_564976-pid_529895/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 522,
+          "sha256": "6040d18d7df8231da72828e30a27e8a7a10d32904898aa6f39287510dd2590ca"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_07_18_41_13_564976-pid_529895/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_18_41_13_564976-pid_529895/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 522,
+          "sha256": "6040d18d7df8231da72828e30a27e8a7a10d32904898aa6f39287510dd2590ca"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_07_18_41_13_564976-pid_529895/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_18_41_13_564976-pid_529895/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 3272,
+          "sha256": "1d57381e3a2075bc183fa0a1cdb6be277332e9f753c4411eaea35c3b1826ac3a"
+        }
+      ]
+    }
+  ]
+}

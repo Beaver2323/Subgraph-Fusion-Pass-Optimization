@@ -92,12 +92,42 @@ def build(repo_root: Path, generated_at: str) -> dict:
         original_ids = {unit["provisional_unit_id"] for unit in batch["units"]}
         if ready & deferred.keys() or ready | deferred.keys() != original_ids:
             raise ValueError(f"{batch['task_id']}准备/延期审核未完整覆盖原批次，禁止重编号")
-        batch.update(status="prepared-with-explicit-deferred-candidates", reference_ready=True,
-                     performance_readiness="worker-static-only-awaiting-functional-gates",
+        reference_frozen = (
+            manifest.get("reference_contract", {}).get("suite_status")
+            == "valid-reference-suite"
+        )
+        formally_closed = (
+            manifest.get("counting_policy", {}).get("current_formally_closed_units")
+            == len(ready)
+            and bool(ready)
+        )
+        batch.update(status=(
+                         "gpu-npu-functional-and-performance-complete"
+                         if formally_closed
+                         else
+                         "gpu-reference-frozen-with-explicit-deferred-candidates"
+                         if reference_frozen
+                         else "prepared-with-explicit-deferred-candidates"
+                     ), reference_ready=True, reference_frozen=reference_frozen,
+                     formally_closed=formally_closed,
+                     performance_readiness=(
+                         "runtime-validated-performance-disposition-complete"
+                         if formally_closed
+                         else "worker-static-only-awaiting-functional-gates"
+                     ),
                      ready_acceptance_units=sorted(ready), deferred_candidates=list(deferred.values()),
                      manifest=manifest_file.relative_to(repo_root).as_posix())
         for unit in batch["units"]:
-            unit["review_disposition"] = "prepared-awaiting-gpu" if unit["provisional_unit_id"] in ready else "deferred-not-counting"
+            unit["review_disposition"] = (
+                "gpu-npu-functional-and-performance-complete"
+                if formally_closed and unit["provisional_unit_id"] in ready
+                else
+                "reference-frozen-awaiting-npu"
+                if reference_frozen and unit["provisional_unit_id"] in ready
+                else "prepared-awaiting-gpu"
+                if unit["provisional_unit_id"] in ready
+                else "deferred-not-counting"
+            )
     return {
         "schema_version": "1.0", "generated_at": generated_at,
         "scope": "T-074 FX inventory 的剩余 provisional 单元；不是全 Inductor 分母",
@@ -129,10 +159,26 @@ def markdown(data: dict) -> str:
         "机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。", "",
         f"T-074 的 {counts['inventory_units']} 个 provisional 单元中，活动 manifest 已接入 {counts['selected_manifest_units']} 个；",
         f"未接入的 {counts['remaining_provisional_units']} 个候选中，{counts['deferred_review_units']} 个留在已审批次延期，其余保留 {counts['draft_batches']} 个草案批次；另有 {counts['non_counting_review_records']} 条非计数结构记录待审。", "",
-        "T-081～T-083 的已选7单元已具备原生GPU入口，仍不进入冻结分母；7个原候选明确延期。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-084及以后编号。", "",
+        "T-081～T-083 的已选7单元已完成原生GPU reference、NPU triton_experimental功能验证与性能处置；7个原候选明确延期。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-084及以后编号。", "",
         "| 草案任务 | 源码 family | 暂列单元数 | 状态 |", "| --- | --- | ---: | --- |"]
     for batch in data["batches"]:
-        status = f"已准备{len(batch.get('ready_acceptance_units', []))}，延期{len(batch.get('deferred_candidates', []))}；等GPU" if batch["reference_ready"] else "功能映射、性能来源与worker待准备"
+        if batch.get("formally_closed"):
+            status = (
+                f"已闭环{len(batch.get('ready_acceptance_units', []))}，"
+                f"延期{len(batch.get('deferred_candidates', []))}"
+            )
+        elif batch.get("reference_frozen"):
+            status = (
+                f"已冻结{len(batch.get('ready_acceptance_units', []))}，"
+                f"延期{len(batch.get('deferred_candidates', []))}；等NPU"
+            )
+        elif batch["reference_ready"]:
+            status = (
+                f"已准备{len(batch.get('ready_acceptance_units', []))}，"
+                f"延期{len(batch.get('deferred_candidates', []))}；等GPU"
+            )
+        else:
+            status = "功能映射、性能来源与worker待准备"
         lines.append(f"| {batch['task_id']} | `{batch['family']}` | {len(batch['units'])} | {status} |")
     lines += ["", "## 每批准备与验收标准", ""]
     lines += [f"- {item}。" for item in data["batch_acceptance"]]

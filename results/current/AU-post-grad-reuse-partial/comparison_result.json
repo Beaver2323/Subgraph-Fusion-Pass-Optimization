@@ -16,7 +16,7 @@
   },
   "npu": {
     "result_path": "results/current/AU-post-grad-reuse-partial/npu_result.json",
-    "result_sha256": "0cdfd873a343255c3c25113f34a18cd51122c6f07c2f0e4ddd3a85629f61aaa8",
+    "result_sha256": "3715aabe96987b998385718c5f62471015b1dbc392a73ef6eb06986c38a6b7ce",
     "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
     "tracking_mode": "adapter",
     "execution_success": true,

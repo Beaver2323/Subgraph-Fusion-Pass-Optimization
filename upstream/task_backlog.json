@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-07T22:36:49+08:00",
+  "generated_at": "2026-09-08T03:02:03+08:00",
   "scope": "T-074 FX inventory 的剩余 provisional 单元；不是全 Inductor 分母",
   "source_inventory": {
     "path": "report/upstream_pass_test_index_20260829/acceptance_units.csv",
@@ -84,9 +84,9 @@
     {
       "task_id": "T-081",
       "family": "joint_graph",
-      "status": "prepared-with-explicit-deferred-candidates",
+      "status": "gpu-npu-functional-and-performance-complete",
       "reference_ready": true,
-      "performance_readiness": "worker-static-only-awaiting-functional-gates",
+      "performance_readiness": "runtime-validated-performance-disposition-complete",
       "units": [
         {
           "provisional_unit_id": "AU-joint-graph-constant-fold-uniform-value",
@@ -97,7 +97,7 @@
             "test/inductor/test_torchinductor_dynamic_shapes.py::TestInductorDynamic.test_constant_fold_uniform_value_self_referential_shape"
           ],
           "coverage_hint": "direct-trigger-test",
-          "review_disposition": "prepared-awaiting-gpu"
+          "review_disposition": "gpu-npu-functional-and-performance-complete"
         },
         {
           "provisional_unit_id": "AU-joint-graph-div-softmax",
@@ -141,9 +141,11 @@
             "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_convert"
           ],
           "coverage_hint": "direct-trigger-test",
-          "review_disposition": "prepared-awaiting-gpu"
+          "review_disposition": "gpu-npu-functional-and-performance-complete"
         }
       ],
+      "reference_frozen": true,
+      "formally_closed": true,
       "ready_acceptance_units": [
         "AU-joint-graph-constant-fold-uniform-value",
         "AU-joint-graph-pointless-convert"
@@ -179,9 +181,9 @@
     {
       "task_id": "T-082",
       "family": "joint_graph",
-      "status": "prepared-with-explicit-deferred-candidates",
+      "status": "gpu-npu-functional-and-performance-complete",
       "reference_ready": true,
-      "performance_readiness": "worker-static-only-awaiting-functional-gates",
+      "performance_readiness": "runtime-validated-performance-disposition-complete",
       "units": [
         {
           "provisional_unit_id": "AU-joint-graph-pointless-permute-pair",
@@ -192,7 +194,7 @@
             "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_permute_pair"
           ],
           "coverage_hint": "direct-trigger-test",
-          "review_disposition": "prepared-awaiting-gpu"
+          "review_disposition": "gpu-npu-functional-and-performance-complete"
         },
         {
           "provisional_unit_id": "AU-joint-graph-pointless-view",
@@ -215,7 +217,7 @@
             "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_view_pair"
           ],
           "coverage_hint": "direct-trigger-test",
-          "review_disposition": "prepared-awaiting-gpu"
+          "review_disposition": "gpu-npu-functional-and-performance-complete"
         },
         {
           "provisional_unit_id": "AU-joint-graph-remove-noop-ops",
@@ -230,6 +232,8 @@
           "review_disposition": "deferred-not-counting"
         }
       ],
+      "reference_frozen": true,
+      "formally_closed": true,
       "ready_acceptance_units": [
         "AU-joint-graph-pointless-permute-pair",
         "AU-joint-graph-pointless-view-pair"
@@ -257,9 +261,9 @@
     {
       "task_id": "T-083",
       "family": "post_grad",
-      "status": "prepared-with-explicit-deferred-candidates",
+      "status": "gpu-npu-functional-and-performance-complete",
       "reference_ready": true,
-      "performance_readiness": "worker-static-only-awaiting-functional-gates",
+      "performance_readiness": "runtime-validated-performance-disposition-complete",
       "units": [
         {
           "provisional_unit_id": "AU-post-grad-bucket-all-gathers",
@@ -273,7 +277,7 @@
             "test/distributed/test_aten_comm_compute_reordering.py::TestManualOverlapBucketing.test_manual_bucketing_reordering_pass_all_reduce_single_bucket"
           ],
           "coverage_hint": "indirect-regression-test",
-          "review_disposition": "prepared-awaiting-gpu"
+          "review_disposition": "gpu-npu-functional-and-performance-complete"
         },
         {
           "provisional_unit_id": "AU-post-grad-bucket-all-reduce",
@@ -287,7 +291,7 @@
             "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_all_reduce_bucket"
           ],
           "coverage_hint": "indirect-regression-test",
-          "review_disposition": "prepared-awaiting-gpu"
+          "review_disposition": "gpu-npu-functional-and-performance-complete"
         },
         {
           "provisional_unit_id": "AU-post-grad-bucket-reduce-scatters",
@@ -298,7 +302,7 @@
             "test/distributed/test_aten_comm_compute_reordering.py::TestManualOverlapBucketing.test_manual_reduce_scatter_bucket_wait_stays_after_inputs"
           ],
           "coverage_hint": "direct-trigger-test",
-          "review_disposition": "prepared-awaiting-gpu"
+          "review_disposition": "gpu-npu-functional-and-performance-complete"
         },
         {
           "provisional_unit_id": "AU-post-grad-chain-random-ops-ordering",
@@ -319,6 +323,8 @@
           "review_disposition": "deferred-not-counting"
         }
       ],
+      "reference_frozen": true,
+      "formally_closed": true,
       "ready_acceptance_units": [
         "AU-post-grad-bucket-all-gathers",
         "AU-post-grad-bucket-all-reduce",

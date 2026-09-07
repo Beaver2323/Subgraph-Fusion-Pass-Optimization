@@ -21,7 +21,7 @@
   },
   "npu": {
     "result_path": "results/current/AU-joint-graph-bmm-to-mm/npu_result.json",
-    "result_sha256": "08fef46bdc32252f3bb1df292c9bfdedac9f1c1c9f8796beae71144361bdab55",
+    "result_sha256": "59114b9a5ba733d616ccaaf36eddd7c97fa37869f39ad32173df763e58aaa901",
     "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
     "tracking_mode": "adapter",
     "execution_success": true,

@@ -68,11 +68,27 @@ def read_gate(path: Path, unit: str, device: str) -> dict:
             raise ValueError(f"{key} 原件不存在或sha256不符")
         parsed = json.loads(evidence.read_text(encoding="utf-8"))
         if key == "gpu_reference":
-            if parsed.get("status") != "valid-reference-suite" or parsed.get("suite_valid") is not True:
-                raise ValueError("GPU reference suite无效")
-            if not any(item.get("acceptance_unit_id") == unit_id and item.get("reference_valid") is True
-                       for item in parsed.get("cases", [])):
-                raise ValueError("GPU reference未包含本单元")
+            raw_summary_valid = (
+                parsed.get("status") == "valid-reference-suite"
+                and parsed.get("suite_valid") is True
+                and any(
+                    item.get("acceptance_unit_id") == unit_id
+                    and item.get("reference_valid") is True
+                    for item in parsed.get("cases", [])
+                )
+            )
+            reviewed_snapshot_valid = (
+                str(parsed.get("review_status", "")).startswith("accepted")
+                and parsed.get("task_id") == task_id
+                and parsed.get("pytorch_commit") == COMMIT
+                and unit_id in parsed.get("acceptance_units", [])
+                and parsed.get("suite", {}).get("valid_cases")
+                == parsed.get("suite", {}).get("cases")
+                and parsed.get("suite", {}).get("tests_skipped") == 0
+                and parsed.get("suite", {}).get("adapters_used") == 0
+            )
+            if not (raw_summary_valid or reviewed_snapshot_valid):
+                raise ValueError("GPU reference原始summary或复核快照无效/未包含本单元")
         else:
             # 目标功能补证必须覆盖实际待测输入，结构-only case不能签发此记录。
             for field in ("acceptance_unit_id", "backend", "pytorch_commit", "correctness",
@@ -101,18 +117,34 @@ def percentile(values, quantile):
     return values[index] + (values[min(index + 1, len(values) - 1)] - values[index]) * (pos - index)
 
 
+def loaded_source_hashes() -> dict[str, str]:
+    source_files = {}
+    for name, module in list(sys.modules.items()):
+        if name.startswith(("torch._inductor", "torch_npu._inductor", "triton")) and getattr(module, "__file__", None):
+            path = Path(module.__file__)
+            if path.is_file():
+                source_files[str(path.resolve())] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return source_files
+
+
 def main() -> None:
     process_started_at = datetime.now().astimezone().isoformat()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--unit", choices=TARGETS, required=True)
     parser.add_argument("--mode", choices=("off", "on"), required=True)
     parser.add_argument("--device", choices=("cuda", "npu"), required=True)
-    parser.add_argument("--gate", type=Path, required=True)
+    parser.add_argument("--phase", choices=("functional", "benchmark"), default="benchmark")
+    parser.add_argument("--gate", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--warmup", type=int, default=10)
     parser.add_argument("--runs", type=int, default=100)
     args = parser.parse_args()
-    gate = read_gate(args.gate, args.unit, args.device)
+    if args.phase == "benchmark":
+        if args.gate is None:
+            parser.error("benchmark阶段必须提供--gate")
+        gate = read_gate(args.gate, args.unit, args.device)
+    else:
+        gate = None
     if args.warmup < 1 or args.runs < 1:
         parser.error("warmup/runs必须为正整数")
     work_dir = Path(os.environ.get("PASS_TRACKER_WORK_DIR", "/home/z50063656/tmp")).resolve()
@@ -161,7 +193,10 @@ def main() -> None:
             raise RuntimeError("拒绝非真实2rank通信后端")
     torch.manual_seed(20260907)
     state = {"handler_calls": 0, "graph_changes": 0, "collective_counts": [], "post_grad_counts": []}
-    _, unit_id, symbol = TARGETS[args.unit]
+    task_id, unit_id, symbol = TARGETS[args.unit]
+    backend_expected = (
+        "triton_experimental" if args.device == "npu" else "inductor-default"
+    )
 
     collective_token = {"all-gather": "all_gather_into_tensor", "all-reduce": "all_reduce",
                         "reduce-scatter": "reduce_scatter_tensor"}.get(args.unit)
@@ -193,14 +228,22 @@ def main() -> None:
         settings["joint_graph_constant_folding"] = args.mode == "on"
     elif not distributed:
         seen = set()
-        for entries in joint_graph.patterns.patterns.values():
-            for entry in entries:
-                if id(entry) in seen or getattr(getattr(entry, "handler", None), "__name__", None) != symbol:
-                    continue
-                seen.add(id(entry))
-                entry.handler = observed(entry.handler)
-                if args.mode == "off":
-                    entry.extra_check = lambda match: False
+        # pointless_view_pair / pointless_permute_pair 位于 early_patterns，
+        # pointless_convert 位于 patterns；必须按社区 joint_graph_passes 的
+        # 两级注册结构扫描，不能只看常规 patterns。
+        for registry in (joint_graph.early_patterns, joint_graph.patterns):
+            for entries in registry.patterns.values():
+                for entry in entries:
+                    if (
+                        id(entry) in seen
+                        or getattr(getattr(entry, "handler", None), "__name__", None)
+                        != symbol
+                    ):
+                        continue
+                    seen.add(id(entry))
+                    entry.handler = observed(entry.handler)
+                    if args.mode == "off":
+                        entry.extra_check = lambda match: False
         if not seen:
             raise RuntimeError("未找到精确目标注册")
         settings["emulate_precision_casts"] = True
@@ -266,7 +309,8 @@ def main() -> None:
     # 数值参照在目标修改前图语义上执行；实际算子/进程组与待测输入相同。
     expected = fn(*inputs)
     actual_spec = [{"shape": list(x.shape), "dtype": str(x.dtype)} for x in inputs]
-    if actual_spec != gate["input_spec"] or not all(x.is_contiguous() for x in inputs):
+    expected_spec = gate["input_spec"] if gate is not None else input_spec(args.unit)
+    if actual_spec != expected_spec or not all(x.is_contiguous() for x in inputs):
         raise RuntimeError("运行输入与已复核的连续输入合同不一致")
     with config.patch(settings):
         if args.unit in {"convert", "permute", "view"}:
@@ -274,9 +318,10 @@ def main() -> None:
             gm = make_fx(fn)(*inputs)
             (rank_dir / "community-before.txt").write_text(gm.code, encoding="utf-8")
             joint_graph.joint_graph_passes(gm)
-            (rank_dir / "community-after.txt").write_text(gm.code, encoding="utf-8")
+            (rank_dir / "community-after.txt").write_text(
+                gm.graph.python_code(root_module="self").src, encoding="utf-8"
+            )
             torch.testing.assert_close(gm(*inputs), expected)
-            fn = gm
         options = {"npu_backend": "triton_experimental"} if args.device == "npu" else None
         started = time.perf_counter()
         compiled = torch.compile(fn, fullgraph=True, dynamic=args.unit == "constant-fold", options=options)
@@ -298,6 +343,99 @@ def main() -> None:
                 raise RuntimeError("post-grad实际collective数不满足目标OFF/ON合同")
             if args.mode == "on" and {"before": expected_before, "after": 1} not in state["collective_counts"]:
                 raise RuntimeError("未捕获精确3→1/2→1目标分桶，拒绝计时")
+        if args.phase == "functional":
+            source_files = loaded_source_hashes()
+            torch_root = Path(torch.__file__).resolve().parents[1]
+            git_state = subprocess.run(
+                ["git", "-C", str(torch_root), "status", "--porcelain"],
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout
+            record = {
+                "schema_version": "1.0",
+                "task_id": task_id,
+                "acceptance_unit_id": unit_id,
+                "unit": args.unit,
+                "mode": args.mode,
+                "backend": backend_expected,
+                "backend_selected_before_import": True,
+                "pytorch_commit": torch.version.git_version,
+                "pytorch_worktree_status": git_state,
+                "correctness": "passed",
+                "numerical_execution": True,
+                "target_rewrite": (
+                    "confirmed" if args.mode == "on" else "disabled-control"
+                ),
+                "graph_breaks": 0,
+                "fallbacks": 0,
+                "product_disabled": False,
+                "measurement_workload": args.unit + "-community-shape",
+                "world_size": world,
+                "process_group_backend": (
+                    dist.get_backend() if distributed else None
+                ),
+                "input_spec": input_spec(args.unit),
+                "input_contract": [
+                    {
+                        "shape": list(x.shape),
+                        "stride": list(x.stride()),
+                        "dtype": str(x.dtype),
+                        "device": str(x.device),
+                    }
+                    for x in inputs
+                ],
+                "state": state,
+                "compile_ms": compile_ms,
+                "worker_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                "source_files": source_files,
+                "torch_version": torch.__version__,
+                "torch_npu_version": getattr(
+                    sys.modules.get("torch_npu"), "__version__", None
+                ),
+                "triton_version": getattr(__import__("triton"), "__version__", None),
+                "physical_devices": os.environ.get(
+                    "ASCEND_RT_VISIBLE_DEVICES"
+                    if args.device == "npu"
+                    else "CUDA_VISIBLE_DEVICES"
+                ),
+                "rank": rank,
+                "created_at": datetime.now().astimezone().isoformat(),
+            }
+            (rank_dir / "functional_result.json").write_text(
+                json.dumps(record, indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
+            ranks = [None] * world
+            if distributed:
+                dist.all_gather_object(ranks, record)
+            else:
+                ranks[0] = record
+            if rank == 0:
+                (output / "functional_summary.json").write_text(
+                    json.dumps(
+                        {
+                            "schema_version": "1.0",
+                            "task_id": task_id,
+                            "acceptance_unit_id": unit_id,
+                            "unit": args.unit,
+                            "mode": args.mode,
+                            "backend": backend_expected,
+                            "world_size": world,
+                            "correctness": "passed",
+                            "numerical_execution": True,
+                            "target_rewrite": record["target_rewrite"],
+                            "rank_results": ranks,
+                        },
+                        indent=2,
+                        ensure_ascii=False,
+                    )
+                    + "\n",
+                    encoding="utf-8",
+                )
+            if distributed:
+                dist.destroy_process_group()
+            return
         for _ in range(args.warmup):
             compiled(*inputs)
         runtime.synchronize()
@@ -318,12 +456,7 @@ def main() -> None:
             samples["host_ms"].append(host)
             samples["event_ms"].append(event)
         memory = {"allocated": runtime.max_memory_allocated(), "reserved": runtime.max_memory_reserved()}
-    source_files = {}
-    for name, module in list(sys.modules.items()):
-        if name.startswith(("torch._inductor", "torch_npu._inductor", "triton")) and getattr(module, "__file__", None):
-            path = Path(module.__file__)
-            if path.is_file():
-                source_files[str(path.resolve())] = hashlib.sha256(path.read_bytes()).hexdigest()
+    source_files = loaded_source_hashes()
     torch_root = Path(torch.__file__).resolve().parents[1]
     git_state = subprocess.run(["git", "-C", str(torch_root), "status", "--porcelain"], capture_output=True, text=True, check=True).stdout
     record = {

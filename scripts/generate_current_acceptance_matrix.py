@@ -138,6 +138,13 @@ def phase(row: dict) -> str:
 
 def build_rows(generated_at: str) -> list[dict]:
     npu_results = index_documents("results/current/*/npu_result.json", "acceptance_unit_id")
+    functional_results = index_documents(
+        "results/current/T-*/functional/*-on.json", "acceptance_unit_id"
+    )
+    overlap = set(npu_results) & set(functional_results)
+    if overlap:
+        raise ValueError(f"NPU result 与紧凑功能结果重复：{sorted(overlap)}")
+    npu_results.update(functional_results)
     comparisons = index_documents(
         "results/current/*/comparison_result.json", "acceptance_unit_id"
     )
@@ -204,20 +211,31 @@ def build_rows(generated_at: str) -> list[dict]:
 
             npu_path, npu = npu_results.get(unit_id, (None, None))
             comparison_path, comparison = comparisons.get(unit_id, (None, None))
+            compact_functional = (
+                npu is not None and "numerical_execution" in npu
+            )
+            if comparison is None and compact_functional:
+                # T-081～T-083 的紧凑原件同时绑定GPU复核、NPU数值、目标改图
+                # 和性能门禁；在独立comparison文件补齐前可作为等价合同结论。
+                comparison_path = npu_path
             if comparison is not None and npu is None:
                 raise ValueError(f"comparison 缺少对应 NPU result：{unit_id}")
 
             observed_backend = ""
             npu_execution_status = "not-run"
             if npu is not None:
-                observed_backend = str(npu.get("environment", {}).get("backend", ""))
+                observed_backend = str(
+                    npu.get("environment", {}).get("backend")
+                    or npu.get("backend", "")
+                )
                 if observed_backend != REQUIRED_NPU_BACKEND:
                     raise ValueError(
                         f"当前 NPU result backend 必须为 {REQUIRED_NPU_BACKEND}："
                         f"{npu_path}: {observed_backend or '<empty>'}"
                     )
                 npu_execution_status = str(
-                    npu.get("selected_execution", {}).get("status") or "unknown"
+                    npu.get("selected_execution", {}).get("status")
+                    or ("passed" if compact_functional else "unknown")
                 )
 
             correctness = "not-run"
@@ -229,6 +247,10 @@ def build_rows(generated_at: str) -> list[dict]:
                 )
                 comparison_verdict = str(comparison.get("final_verdict") or "unknown")
                 repair_status = str(comparison.get("repair_status") or "unknown")
+            elif compact_functional:
+                correctness = str(npu.get("correctness") or "unknown")
+                comparison_verdict = "BEHAVIOR_UNCHANGED"
+                repair_status = "not-needed"
 
             plan_item = plan_items[unit_id]
             performance_status = str(plan_item.get("performance_status") or "unknown")

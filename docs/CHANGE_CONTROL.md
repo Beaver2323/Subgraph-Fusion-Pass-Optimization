@@ -1,9 +1,26 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-07 22:47 CST（UTC+08:00）
+> 日志校准时间：2026-09-08 03:17 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
+
+- 2026-09-08 03:17 CST：T-081～T-083 在冻结 GPU reference 后，使用固定 PyTorch commit、
+  Ascend 910B2/CANN 9.0.1 和 `triton_experimental` 完成 7/7 NPU 数值/命中/实际改图；T-083
+  另以真实 HCCL 双 rank 验证 collective 3→1 或 2→1。全部单元完成
+  `OFF1→ON1→ON2→OFF2→OFF3→ON3` 正式性能处置；上游默认 `none` 的三个通信分桶配置未被
+  tracker 修改。tracker-only 修复包括读取 live FX Graph、同时扫描 `early_patterns/patterns`、
+  激活脚本后强校验环境，以及全局性能互斥锁。一次 T-082 HDC/TSD 启动失败发生于进入 pass 前，
+  原轮拒绝聚合并从 OFF1 完整重跑。活动矩阵现为 GPU/NPU/性能 28/28；产品仓库未新增修改。
+  状态：`gpu-npu-functional-comparison-and-performance-disposition-complete`。
+
+- 2026-09-08 00:43 CST：拉取用户上传的T-081～T-083 GPU handoff；分片/整包SHA256、
+  11/11 cases、24/24 variants、PyTorch commit、clean tree、A100/CUDA环境与原生无adapter路径均通过。
+  按证据范围冻结新增7个单元，活动矩阵变为28个GPU reference冻结、21个NPU/comparison闭环、
+  7个等待NPU。T-081旧观察器读取`GraphModule.code`缓存，常量折叠入口before/after显示相同；
+  同run compile-debug post-pass图及社区数值断言证明变换生效。tracker观察器最小改为直接渲染当前
+  `Graph`，不改测试体或PyTorch。T-083全部是world_size=1，明确不解锁跨rank性能。状态：
+  `gpu-reference-reviewed-awaiting-triton-experimental-npu`。
 
 - 2026-09-07 22:22 CST：用户授权两个并行线程，分别核验 T-076/T-077 与准备
   T-081～T-083。允许修改 tracker 的审计、任务计划、GPU 入口、零设备测试和学习报告；

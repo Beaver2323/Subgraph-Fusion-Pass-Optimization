@@ -1,0 +1,264 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T03:12:20.868003+08:00",
+  "task_id": "T-083",
+  "status": "performance-disposition-complete",
+  "backend": "triton_experimental",
+  "measurement_contract": {
+    "order": "OFF1-ON1-ON2-OFF2-OFF3-ON3",
+    "process_isolation": "fresh-process-per-arm-and-round",
+    "tracker_concurrency": "exclusive-global-lock",
+    "warmup": 10,
+    "runs": 100,
+    "timing": "同步NPU Event与host wall clock p50/p99",
+    "scope": "社区功能正例派生的目标子图一次compiled调用；不是完整模型端到端"
+  },
+  "completion": {
+    "acceptance_units": 3,
+    "measured_units": 3,
+    "pending_units": 0
+  },
+  "verdict_counts": {
+    "PERF_REGRESSED": 1,
+    "PERF_IMPROVED": 1,
+    "PERF_MIXED": 1
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-bucket-all-gathers",
+      "unit": "all-gather",
+      "pattern_explanation": {
+        "intent": "把多个独立all-gather打包为一次collective，再切分恢复各输出。",
+        "source": [
+          "torch/_inductor/fx_passes/bucketing.py:394",
+          "torch/_inductor/fx_passes/post_grad.py:380"
+        ],
+        "gpu_behavior": "A100原生world_size=1结构合同通过，只作为reference，不授权跨rank性能。",
+        "npu_behavior": "Ascend910B2真实HCCL双rank数值通过，collective 3→1；打包/拆包引入额外Triton kernel。"
+      },
+      "performance_status": "measured-regressed",
+      "verdict": "PERF_REGRESSED",
+      "product_action": "保持上游默认none",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 0.8710101246833801,
+            "on": 0.9408249752596021,
+            "improvement_percent": -8.015389097985544
+          },
+          "p99": {
+            "off": 1.0754603845998656,
+            "on": 1.5173397515900435,
+            "improvement_percent": -41.08746108343014
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.6896799802780151,
+            "on": 0.7822999954223633,
+            "improvement_percent": -13.429419120881589
+          },
+          "p99": {
+            "off": 0.850252013206482,
+            "on": 0.8958577805757536,
+            "improvement_percent": -5.363794105853685
+          }
+        }
+      },
+      "memory": {
+        "allocated": {
+          "off": 10752,
+          "on": 12800
+        },
+        "reserved": {
+          "off": 2097152,
+          "on": 2097152
+        }
+      },
+      "codegen": {
+        "off": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "7adcf153a4989f5cfe4000c0c024eb231df6c195cc0336ee3d43a8ac1a51557d"
+          ],
+          "triton_kernels": 0,
+          "all_gather_calls": 3,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        },
+        "on": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "e3fdd4648f9169b54fd47b5c6698e755de3d012809d859f37e88c8c86f58fc8e"
+          ],
+          "triton_kernels": 4,
+          "all_gather_calls": 1,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 0
+        }
+      },
+      "raw_summary": "/home/z50063656/tmp/t083-performance-results/all-gather-20260908T014858-579pa6dw/performance_summary.json",
+      "raw_summary_sha256": "32e9bd10eb1caea1bfa45fc40a0401441182c922c65f9ed5b4023c2546ac82d6",
+      "gate_sha256": "50b1603d0bc89bfd0e1ff956a85da49321aa44940e7857b32a03d87472f479d8"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-bucket-all-reduce",
+      "unit": "all-reduce",
+      "pattern_explanation": {
+        "intent": "把多个独立all-reduce拼接后合并成一次collective，再按原shape切分。",
+        "source": [
+          "torch/_inductor/fx_passes/bucketing.py:759",
+          "torch/_inductor/fx_passes/post_grad.py:366"
+        ],
+        "gpu_behavior": "A100原生单rank eager/compiled数值与2→1结构通过。",
+        "npu_behavior": "Ascend910B2真实HCCL双rank数值通过，collective 2→1，并保留并行mm结果。"
+      },
+      "performance_status": "measured-improved",
+      "verdict": "PERF_IMPROVED",
+      "product_action": "保持上游默认none；作为同shape模型级复核后启用的候选",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 0.9092349791899323,
+            "on": 0.7373649859800935,
+            "improvement_percent": 18.902703607263717
+          },
+          "p99": {
+            "off": 1.0689100110903385,
+            "on": 0.8907780027948482,
+            "improvement_percent": 16.664827389331606
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.7313199937343597,
+            "on": 0.574720025062561,
+            "improvement_percent": 21.413330691555128
+          },
+          "p99": {
+            "off": 0.8408635967969914,
+            "on": 0.6921129745245143,
+            "improvement_percent": 17.690220249645296
+          }
+        }
+      },
+      "memory": {
+        "allocated": {
+          "off": 5542400,
+          "on": 5541376
+        },
+        "reserved": {
+          "off": 6291456,
+          "on": 25165824
+        }
+      },
+      "codegen": {
+        "off": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "2f64b6378568fdb07c9a28301c388edcbf79f82553ff0524ddabe2b66e113621"
+          ],
+          "triton_kernels": 0,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 2,
+          "reduce_scatter_calls": 0
+        },
+        "on": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "46e5a90b8e3b5cfb830c266310facb3eeab58ae158dc2f6ba885b8ae00aad4a1"
+          ],
+          "triton_kernels": 0,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 1,
+          "reduce_scatter_calls": 0
+        }
+      },
+      "raw_summary": "/home/z50063656/tmp/t083-performance-results/all-reduce-20260908T024445-5hwqb8uh/performance_summary.json",
+      "raw_summary_sha256": "49dd1046a383be86a2fb085f8b595877b7c2b428a7cbf1017b2cfb1a71fbbf7d",
+      "gate_sha256": "cc95ac10c89a8ac4c62a2790b83f5af601c61f575642ee63f7a6ce5ffb615b36"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-bucket-reduce-scatters",
+      "unit": "reduce-scatter",
+      "pattern_explanation": {
+        "intent": "把多个独立reduce-scatter输入打包成一次collective，再切分为原输出。",
+        "source": [
+          "torch/_inductor/fx_passes/bucketing.py:412",
+          "torch/_inductor/fx_passes/post_grad.py:348"
+        ],
+        "gpu_behavior": "A100原生单rank eager/compiled数值与2→1结构通过。",
+        "npu_behavior": "Ascend910B2真实HCCL双rank数值通过，collective 2→1；打包与切分增加中间显存。"
+      },
+      "performance_status": "measured-mixed",
+      "verdict": "PERF_MIXED",
+      "product_action": "保持上游默认none",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 1.008664956316352,
+            "on": 0.9376798989251256,
+            "improvement_percent": 7.037525884756023
+          },
+          "p99": {
+            "off": 1.1264017270877966,
+            "on": 1.2751250830478973,
+            "improvement_percent": -13.20340269227131
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.8296599984169006,
+            "on": 0.7794899940490723,
+            "improvement_percent": 6.047055958291261
+          },
+          "p99": {
+            "off": 0.9200563734769822,
+            "on": 1.0150500416755681,
+            "improvement_percent": -10.32476606184419
+          }
+        }
+      },
+      "memory": {
+        "allocated": {
+          "off": 3174400,
+          "on": 3764224
+        },
+        "reserved": {
+          "off": 6291456,
+          "on": 6291456
+        }
+      },
+      "codegen": {
+        "off": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "9222733abb13a4c400744a306a329ab6b44fa40225dc27f25c7498d68e224170"
+          ],
+          "triton_kernels": 2,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 2
+        },
+        "on": {
+          "output_code_files": 1,
+          "output_code_sha256": [
+            "ce40dd054171c45174294d68b81bd2569abbf8e726fc357516e47eba522b96c3"
+          ],
+          "triton_kernels": 2,
+          "all_gather_calls": 0,
+          "all_reduce_calls": 0,
+          "reduce_scatter_calls": 1
+        }
+      },
+      "raw_summary": "/home/z50063656/tmp/t083-performance-results/reduce-scatter-20260908T025123-m01yuvoz/performance_summary.json",
+      "raw_summary_sha256": "5a40637f41c8d969d85a3456e6a8cba56b0f6c3237b5f1392edd2f53b62810e1",
+      "gate_sha256": "e75d1370d80d36d0c5aecf6a6feee808ceb71a4ca78ee129bf33944741cd621d"
+    }
+  ],
+  "limitations": [
+    "社区没有这些单元的独立pass性能benchmark；本轮复用社区功能图、shape和dtype后增加OFF/ON计时。",
+    "collective默认none；目标子图收益不能直接替代真实模型、拓扑和消息规模复核。",
+    "失败的并发预跑及NPU 0一次HDC/TSD启动超时均未纳入本正式汇总。"
+  ]
+}

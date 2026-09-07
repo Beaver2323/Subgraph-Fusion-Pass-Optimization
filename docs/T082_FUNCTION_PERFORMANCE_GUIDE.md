@@ -1,7 +1,7 @@
 # T-082 功能与性能测例讲解
 
-> 更新时间：2026-09-07T22:36:49+08:00
-> 准备状态：源码合同已审核，GPU/NPU 均未执行；静态校验不是运行结果。
+> 更新时间：2026-09-08 03:17 CST（UTC+08:00）
+> 当前状态：GPU 原生 reference 4/4 cases、8/8 variants 有效；NPU `triton_experimental` 功能 2/2、正式性能处置 2/2 完成。
 
 本批从 4 个旧候选中准备 2 个可运行社区合同，其余逐项保留在文末。冻结 PyTorch：`8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`。
 NPU 全程采用 `triton_experimental`，导入 torch/torch_npu 前选后端。先原生 GPU，阻断后才评审最小适配；显式产品关闭免测。
@@ -21,6 +21,10 @@ bash /data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/run_gpu_refe
 原生 unittest 方法和参数不改写。`native_fx_observer.py` 只包装 joint_graph 入口以保存 before/after；图采集记录 scope、设备及 test_body_modified=false。参数化入口逐项固定，缺例/skip/xfail 不算成功。
 
 直接结构测试调用链是 `社区 test → make_fx → joint_graph_passes → 图节点断言`，不执行设备kernel。编译测试调用链是 `社区 test → torch.compile → AOTAutograd/joint_graph_passes → post_grad_passes → lowering → scheduler/codegen →（存在候选时）autotune`。图改写在lowering/autotune之前；无kernel的视图消除不能伪称内核加速。
+
+本轮run为`reference-20260907T162213+0800-l78yijaq`，环境指纹为
+`ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3`。4个原生unittest均执行，
+无skip、无adapter。逐case证据边界及FX对照见[GPU复核报告](../report/t081_t083_gpu_reference_review_20260908.md)。
 
 ## 互逆permute消除与中间用户保护
 
@@ -43,7 +47,9 @@ def f(x):
 
 意图与验证：互逆permute消除与中间用户保护。仅屏蔽pointless_permute_pair注册；先直接joint pass保存OFF2节点/ON0节点，再编译；检查输出stride、alias、数值
 
-GPU：等待原生运行，不预判命中。NPU：等待 `triton_experimental` 同合同验证；原始断言、图、设备实现差异将写回 result 与适配/修复报告。
+GPU：2D/3D正例均由两个permute变为直接返回输入；中间结果另有用户的负例保留两个节点。两case是结构
+断言，不含设备数值oracle。NPU：已在 `triton_experimental` 补齐数值、stride/alias 和目标改图，
+ON 将两个 permute 消除为直接返回输入。
 
 ### 性能测例
 
@@ -75,7 +81,9 @@ def f(x):
 
 意图与验证：互逆view消除、-1与unbacked动态形状。只屏蔽pointless_view_pair注册；pointless_view单节点handler不变；OFF/ON保存精确前后图、dtype/shape/stride/storage关系
 
-GPU：等待原生运行，不预判命中。NPU：等待 `triton_experimental` 同合同验证；原始断言、图、设备实现差异将写回 result 与适配/修复报告。
+GPU：static、`-1`正例消除两个view，中间用户负例保留；dynamic/unbacked case通过compiled/eager
+正确性并记录counter=1。NPU：已在 `triton_experimental` 完成同合同数值补证，ON 将两个 view
+消除为直接返回输入，并保持 alias/stride。
 
 ### 性能测例
 
@@ -93,9 +101,12 @@ OFF/ON：只屏蔽pointless_view_pair注册；pointless_view单节点handler不�
 
 Deferred 项不放入 acceptance_units，不自动重排后续 T 编号，也不进入 GPU suite 分母。其功能/性能阻断都在 manifest 留档，获得新证据后再审核。
 
-## 性能执行准备边界
+## NPU 功能与性能最终结果
 
-性能命令、原件绑定字段和2rank要求见[性能复核门禁](PREPARED_PERFORMANCE_GATE.md)。
+两个单元均已通过数值、目标改图、零 graph-break/fallback 门禁，并完成六臂独立进程实测。
+permute 的 NPU Event p50/p99 改善 3.78%/8.98%，view 为 5.35%/-4.06%；但 OFF/ON
+在更下游均为零设备 kernel，差异不能归因于目标 pass，正式结论均为 `PERF_NEUTRAL`。
 
-`runners/t081_t083_performance_worker.py` 提供目标级工作负载、OFF/ON控制、数值/图门禁和原始计时采集。`scripts/run_prepared_performance.py` 检查每单元经复核的功能门禁记录后启动6个独立进程；当前没有该记录，因此拒绝正式性能测量。
-门禁记录必须绑定 acceptance_unit_id、backend、PyTorch commit、功能报告sha256、GPU与NPU通过状态、显式disable处置、fallback/graph-break以及待测输入。未提供/不一致时停在准备状态。
+完整调用栈、代码框、GPU/NPU 对照、一次 HDC/TSD 启动失败及完整重跑处置见
+[T-081～T-083 NPU 功能、适配与性能报告](../report/t081_t083_npu_function_performance_20260908.md)。
+可复现实测命令和 gate 规则见[性能复核门禁](PREPARED_PERFORMANCE_GATE.md)。

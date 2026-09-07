@@ -164,7 +164,7 @@
   "artifacts": [
     {"role": "positive-adapter", "path": "issues/REF-partial-reuse-positive-native/npu_adapter.py", "sha256": "4a44b1c51a69264f16bdb891d7988be3dea49aa0f5a96522003039e7187d73bf", "availability": "repository"},
     {"role": "negative-adapter", "path": "issues/REF-partial-reuse-negative-native/npu_adapter.py", "sha256": "ed914311e7e02d674de1b0f2d4eb880285c672e14c2cef5f1862a491cc36e40d", "availability": "repository"},
-    {"role": "repair-verification-report", "path": "issues/REF-partial-reuse-positive-native/修复验证报告.md", "sha256": "2141b5d18569031acf5fd9c6f9e195b0a93a2af5436d5963fc4d6df9915b07c4", "availability": "repository"},
+    {"role": "repair-verification-report", "path": "issues/REF-partial-reuse-positive-native/修复验证报告.md", "sha256": "0e7a4b2e685be60b5e8563796d3ac5cf6e71585b3e7e25379e982cd7577447e6", "availability": "repository"},
     {"role": "performance-summary", "path": "results/current/T-078/performance_summary.json", "sha256": "bd7f0c33c83f17edc78d31822bbd8bc230bad45ae488c62f93184ac3e563c297", "availability": "repository"},
     {"role": "positive-source-fix-result", "path": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-positive-native/source-fix-ml54e1y7/adapter_result.json", "sha256": "e9ded434f2c1727cacc1cd7bd3b84df4c001c0b4fce2b79575efc51ac3c6c7bf", "availability": "external-run-root"},
     {"role": "negative-adapter-result", "path": "/home/z50063656/tmp/t078-npu-results/REF-partial-reuse-negative-native/adapter-my8wfs22/adapter_result.json", "sha256": "cede8b8e5ab74e88a479b3f07539411d1950e385e2117203a1bbfb1243b5d660", "availability": "external-run-root"}

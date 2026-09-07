@@ -16,7 +16,7 @@
   },
   "npu": {
     "result_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/npu_result.json",
-    "result_sha256": "f9858119f6c2f0d2580b065a601cd6e803f36fdf18d35cb6a0d210b1533e0874",
+    "result_sha256": "867d84966fd197058488a851101c69b558d406bf1ac8c4cb6d32568aab762132",
     "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
     "tracking_mode": "adapter",
     "execution_success": true,

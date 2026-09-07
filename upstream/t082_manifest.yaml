@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-07T22:36:49+08:00",
-  "status": "prepared-awaiting-native-gpu-reference",
+  "generated_at": "2026-09-08T03:02:03+08:00",
+  "status": "gpu-npu-functional-comparison-and-performance-disposition-complete",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -26,12 +26,21 @@
     "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
     "minimum_gpus": 1,
     "distributed_world_size": null,
-    "scope": "原生GPU社区方法；make_fx-only方法按结构证据标记"
+    "scope": "原生GPU社区方法；make_fx-only方法按结构证据标记",
+    "device_identity": "8x-NVIDIA-A100-SXM4-80GB-sm80; selected CUDA_VISIBLE_DEVICES=2",
+    "runtime_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "suite_status": "valid-reference-suite",
+    "run_id": "reference-20260907T162213+0800-l78yijaq",
+    "payload_sha256": "d2a28b931aba37d3257bd58ebb693e4a2305db34c8a765d827939ce3745ee05c",
+    "case_count": 4,
+    "valid_case_count": 4,
+    "variant_count": 8,
+    "review_record": "results/current/T-082/gpu_reference_review.json"
   },
   "counting_policy": {
     "current_manifest_units": 2,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0,
+    "current_frozen_denominator_units": 2,
+    "current_formally_closed_units": 2,
     "denominator_rule": "全部直接GPU合同有效并人工复核后才能冻结；结构合同不得冒充数值门禁"
   },
   "acceptance_units": [
@@ -39,8 +48,8 @@
       "acceptance_unit_id": "AU-joint-graph-pointless-permute-pair",
       "contract_name": "互逆permute消除与中间用户保护",
       "stage": "joint_graph",
-      "review_status": "human-reviewed-awaiting-native-gpu-reference",
-      "denominator_eligible": "pending-gpu-reference",
+      "review_status": "closed-gpu-npu-performance-reviewed",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/joint_graph.py",
@@ -68,8 +77,8 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "原生GPU make_fx图2→0节点；中间permute另有输出时保留2节点",
           "expected_counter": "原生GPU make_fx图2→0节点；中间permute另有输出时保留2节点",
-          "reference_status": "pending-gpu-reference",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-triton-experimental"
         },
         {
           "variant_id": "intermediate-user-2d-negative",
@@ -77,8 +86,8 @@
           "expected_reference_match": false,
           "expected_behavior": "原生GPU make_fx图2→0节点；中间permute另有输出时保留2节点",
           "expected_counter": "原生GPU make_fx图2→0节点；中间permute另有输出时保留2节点",
-          "reference_status": "pending-gpu-reference",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-triton-experimental"
         },
         {
           "variant_id": "inverse-3d-positive",
@@ -86,8 +95,8 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "三维同样消除互逆置换、保留多用户",
           "expected_counter": "三维同样消除互逆置换、保留多用户",
-          "reference_status": "pending-gpu-reference",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-triton-experimental"
         },
         {
           "variant_id": "intermediate-user-3d-negative",
@@ -95,13 +104,13 @@
           "expected_reference_match": false,
           "expected_behavior": "三维同样消除互逆置换、保留多用户",
           "expected_counter": "三维同样消除互逆置换、保留多用户",
-          "reference_status": "pending-gpu-reference",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-triton-experimental"
         }
       ],
       "tracking": {
         "reference_mode": "direct",
-        "npu_mode": "pending-native-reference",
+        "npu_mode": "triton-experimental-functional-and-performance-reviewed",
         "allowed_local_deviation": [
           "只读FX观察，保留原生测试体/参数/断言",
           "NPU原生阻断后单独审核device/backend适配"
@@ -114,8 +123,8 @@
         ]
       },
       "npu_control": {
-        "status": "pending-triton-experimental-functional-validation",
-        "next_action": "先GPU原生reference，再NPU最小适配审核/功能与性能门禁"
+        "status": "passed-triton-experimental-functional-and-performance",
+        "next_action": "功能正确、最终零kernel且性能中性；保留当前实现"
       },
       "historical_evidence": []
     },
@@ -123,8 +132,8 @@
       "acceptance_unit_id": "AU-joint-graph-pointless-view-pair",
       "contract_name": "互逆view消除、-1与unbacked动态形状",
       "stage": "joint_graph",
-      "review_status": "human-reviewed-awaiting-native-gpu-reference",
-      "denominator_eligible": "pending-gpu-reference",
+      "review_status": "closed-gpu-npu-performance-reviewed",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/joint_graph.py",
@@ -152,8 +161,8 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "2→0节点，保留中间用户2节点，[-1,7]也消除",
           "expected_counter": "2→0节点，保留中间用户2节点，[-1,7]也消除",
-          "reference_status": "pending-gpu-reference",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-triton-experimental"
         },
         {
           "variant_id": "intermediate-user-negative",
@@ -161,8 +170,8 @@
           "expected_reference_match": false,
           "expected_behavior": "2→0节点，保留中间用户2节点，[-1,7]也消除",
           "expected_counter": "2→0节点，保留中间用户2节点，[-1,7]也消除",
-          "reference_status": "pending-gpu-reference",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-triton-experimental"
         },
         {
           "variant_id": "inferred-minus-one-positive",
@@ -170,8 +179,8 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "2→0节点，保留中间用户2节点，[-1,7]也消除",
           "expected_counter": "2→0节点，保留中间用户2节点，[-1,7]也消除",
-          "reference_status": "pending-gpu-reference",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-triton-experimental"
         },
         {
           "variant_id": "unbacked-dynamic-positive",
@@ -179,13 +188,13 @@
           "expected_reference_match": "not-directly-asserted",
           "expected_behavior": "mark_unbacked首维，compiled输出相等，removed_pointless_view_pair=1",
           "expected_counter": "mark_unbacked首维，compiled输出相等，removed_pointless_view_pair=1",
-          "reference_status": "pending-gpu-reference",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-triton-experimental"
         }
       ],
       "tracking": {
         "reference_mode": "direct",
-        "npu_mode": "pending-native-reference",
+        "npu_mode": "triton-experimental-functional-and-performance-reviewed",
         "allowed_local_deviation": [
           "只读FX观察，保留原生测试体/参数/断言",
           "NPU原生阻断后单独审核device/backend适配"
@@ -198,8 +207,8 @@
         ]
       },
       "npu_control": {
-        "status": "pending-triton-experimental-functional-validation",
-        "next_action": "先GPU原生reference，再NPU最小适配审核/功能与性能门禁"
+        "status": "passed-triton-experimental-functional-and-performance",
+        "next_action": "功能正确、最终零kernel且性能中性；保留当前实现"
       },
       "historical_evidence": []
     }

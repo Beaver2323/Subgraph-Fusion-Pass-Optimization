@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-07 22:30 CST（UTC+08:00）
-> 状态：T-076～T-080 共 21 个 acceptance units 已登记 GPU reference、`triton_experimental` NPU 功能对照和性能处置；T-076/T-077 严格再认证单列。T-081～T-083 新准备 7 个单元，等待 GPU；T-084～T-113 保留草案编号。产品改动仍待独立产品仓评审/合入。
+> 更新时间：2026-09-08 03:17 CST（UTC+08:00）
+> 状态：T-076～T-083 共28个acceptance units已冻结GPU reference，并全部完成`triton_experimental` NPU功能对照和性能处置。T-076/T-077严格再认证单列，T-084～T-113保留草案编号。产品改动仍待独立产品仓评审/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -11,8 +11,8 @@
 - acceptance unit 是跟踪、比较和 verdict 的基本单位；
 - 一个 registration 可以展开多个 pattern/variant，也可能与其他 registration 共同服务一个 contract；
 - 只有人工审核并冻结的 acceptance unit 才能进入完成率分母；
-- T-074 当前 188/158 均为 provisional；T-076～T-080 冻结单元共 21 个，正式 NPU/comparison
-  结果 21 份；T-078～T-080 的产品改动合入状态单列。
+- T-074 当前 188/158 均为 provisional；T-076～T-083 冻结单元共28个，正式 NPU/comparison
+  与性能处置均为 28 份；产品改动合入状态单列。
 
 ## 当前门禁补强与历史复核
 
@@ -233,8 +233,10 @@ T-077 GPU 准备：
 - [x] T-078 内完整执行 reference → NPU → compare → 条件 repair → performance → final product gate；
 - [x] T-079/T-080 分别完成 reference → NPU → compare → 条件 repair → performance → 产品处置；
 - [x] T-081～T-083 人工审核后分别准备 2/2/3 个单元，功能计划、性能 worker、GPU 入口与中文讲解齐备；
-- [ ] GPU 执行 T-081/T-082/T-083，并回传本批固定 latest handoff；未执行前不冻结新增 7 个单元；
-- [ ] T-083 多 rank 数值/通信功能审核通过后才开放真实多卡性能，不以 world_size=1 原生测试代替；
+- [x] GPU执行T-081/T-082/T-083并回传固定handoff；11/11 cases、24/24 variants有效，新增7个单元已按证据范围冻结；
+- [x] 使用`triton_experimental`完成T-081/T-082逐单元数值/改图功能门禁，以及T-083真实HCCL 2 rank门禁；
+- [x] T-083 仅在真实多 rank 数值/通信功能审核通过后开放性能，未以 world_size=1 原生测试代替；
+- [x] T-081～T-083 共7个单元完成全局互斥下的六臂正式性能处置，并保存逐单元源码/生成代码解释；
 - [ ] 建立 upstream source/test/mapping drift 检测；
 - [x] 支持一条命令运行 T-079/T-080 NPU suite；
 - [x] 支持一条命令生成 comparison report；T-079/T-080 分别由 `finalize_t079_results.py`、`finalize_t080_results.py` 生成正式结果；
@@ -243,7 +245,7 @@ T-077 GPU 准备：
 
 ## 立即执行顺序
 
-2026-09-06 当前队列（以下历史步骤保留为已完成事实）：
+2026-09-08 当前队列（以下历史步骤保留为已完成事实）：
 
 - [x] 修复部分 skip/expected failure/测试数缺口误算有效 reference，隔离功能入口的 DO_PERF_TEST/USE_LARGE_INPUT；
 - [x] 强制 NPU 结果 backend；允许数值失败证据落盘，并禁止计为功能通过、性能收益或已修复闭环；
@@ -253,6 +255,7 @@ T-077 GPU 准备：
 - [x] 将 T-081～T-113 草案及每批完整 ID 写入 `upstream/task_backlog.json`，覆盖范围见 `docs/TASK_BACKLOG.md`；
 - [x] 实现并动态验证 T-079/T-080 目标级性能 worker；
 - [x] GPU 依次执行 T-079/T-080 reference，NPU 按原生优先完成最小适配审核、功能与命中后再测性能；
+- [x] T-081～T-083 完成 GPU reference、NPU `triton_experimental` 功能/改图、T-083 双 rank HCCL 与7/7性能处置；
 - [ ] 按草案从 T-084 继续审核后续 T；T-081～T-083 deferred 保留原任务归属，不凑数或重编号；独立 lowering/template 清单另补后去重；
 - [ ] MM 产品修复经独立评审后推送/合入（本轮未操作产品仓库）。
 

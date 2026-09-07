@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T02:04:47.616528+08:00",
+  "issue": "REF-scatter-const-cross-entropy-e2e-native",
+  "evidence_kind": "npu-torch-compile-debug-before-after",
+  "stages": [
+    {
+      "stage": "修复前",
+      "source_root": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/gate-disabled",
+      "models": 1,
+      "files": [
+        {
+          "path": "evidence/修复前/run_2026_09_07_20_39_03_727083-pid_2505787/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/gate-disabled/debug/torch_compile_debug/run_2026_09_07_20_39_03_727083-pid_2505787/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 1411,
+          "sha256": "d39661bfdc0da21ea675cfd5b0a7cb709d9c20d9960de4595acb17295153f237"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_20_39_03_727083-pid_2505787/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/gate-disabled/debug/torch_compile_debug/run_2026_09_07_20_39_03_727083-pid_2505787/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 1414,
+          "sha256": "6f20cc3f50bcb143ed14614a83263c2c72770048553df1b2f73287a09d3516b8"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_20_39_03_727083-pid_2505787/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/gate-disabled/debug/torch_compile_debug/run_2026_09_07_20_39_03_727083-pid_2505787/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 2776,
+          "sha256": "3df3192291ab82b35e87da7fc2fb3f59bc38ce5b8bce13ca802418ff015dad6e"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_20_39_03_727083-pid_2505787/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/gate-disabled/debug/torch_compile_debug/run_2026_09_07_20_39_03_727083-pid_2505787/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 2661,
+          "sha256": "0a76ebad749637cdc87ae11f105222118908e74960517d26a92eb5e2fae7ff16"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_07_20_39_03_727083-pid_2505787/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/gate-disabled/debug/torch_compile_debug/run_2026_09_07_20_39_03_727083-pid_2505787/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 12692,
+          "sha256": "a394245ef0196286eae982b9852d4f7d6a0bef5b1394017997a419e648897d58"
+        }
+      ]
+    },
+    {
+      "stage": "修复后",
+      "source_root": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/default-disabled",
+      "models": 1,
+      "files": [
+        {
+          "path": "evidence/修复后/run_2026_09_07_20_38_26_085238-pid_2495153/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_20_38_26_085238-pid_2495153/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 786,
+          "sha256": "12423ef04bbbac9b44a655e2f28ac2a78b796212c4d5ef019a1d707bc670b34c"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_07_20_38_26_085238-pid_2495153/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_20_38_26_085238-pid_2495153/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 786,
+          "sha256": "12423ef04bbbac9b44a655e2f28ac2a78b796212c4d5ef019a1d707bc670b34c"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_07_20_38_26_085238-pid_2495153/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_20_38_26_085238-pid_2495153/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 1525,
+          "sha256": "037d2ed041ee1357c5494dde99b123f975893314419ed0e7faaf5b3513388386"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_07_20_38_26_085238-pid_2495153/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_20_38_26_085238-pid_2495153/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 1446,
+          "sha256": "ea9ea18a235e53fcbd9d8bccbf14f5c5e5bbc49ab6c935c54d75828d3ac7bfec"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_07_20_38_26_085238-pid_2495153/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_20_38_26_085238-pid_2495153/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 7643,
+          "sha256": "aed3f7c593051fa1d6c7aab82c36612b29ee2ff99241c8c0a2d45df7c93e19ab"
+        }
+      ]
+    }
+  ]
+}

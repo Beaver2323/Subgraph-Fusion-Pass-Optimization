@@ -1,7 +1,7 @@
 # T-083 功能与性能测例讲解
 
-> 更新时间：2026-09-07T22:36:49+08:00
-> 准备状态：源码合同已审核，GPU/NPU 均未执行；静态校验不是运行结果。
+> 更新时间：2026-09-08 03:17 CST（UTC+08:00）
+> 当前状态：GPU 原生 reference 4/4 cases、6/6 variants 有效；NPU `triton_experimental` 真实 HCCL 双 rank 功能 3/3、正式性能处置 3/3 完成。
 
 本批从 5 个旧候选中准备 3 个可运行社区合同，其余逐项保留在文末。冻结 PyTorch：`8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`。
 NPU 全程采用 `triton_experimental`，导入 torch/torch_npu 前选后端。先原生 GPU，阻断后才评审最小适配；显式产品关闭免测。
@@ -23,6 +23,11 @@ bash /data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/run_gpu_refe
 本批保留原生unittest直接入口，使用原生TORCH_COMPILE_DEBUG采集，没有启用joint入口观察器。参数化入口逐项固定，缺例/skip/xfail不算成功；结合world_size=1解释通信证据。
 
 直接结构测试调用链是 `社区 test → make_fx → joint_graph_passes → 图节点断言`，不执行设备kernel。编译测试调用链是 `社区 test → torch.compile → AOTAutograd/joint_graph_passes → post_grad_passes → lowering → scheduler/codegen →（存在候选时）autotune`。图改写在lowering/autotune之前；无kernel的视图消除不能伪称内核加速。
+
+本轮run为`reference-20260907T162312+0800-8lgd6yen`，环境指纹为
+`ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3`。5个原生unittest均执行，
+无skip、无adapter；全部为真实CUDA/NCCL但仅`world_size=1`。逐case边界及FX对照见
+[GPU复核报告](../report/t081_t083_gpu_reference_review_20260908.md)。
 
 ## post-grad独立all-gather分桶及依赖保护
 
@@ -48,7 +53,9 @@ def func(ag_0, ag_1, ag_2, *, group_size):
 
 意图与验证：post-grad独立all-gather分桶及依赖保护。只切bucket_all_gathers_fx none/all，其他两类bucket=none，overlap=false；记录collective调用次数3→1及FX。World_size=1功能证据不授予2rank性能门禁。
 
-GPU：等待原生运行，不预判命中。NPU：等待 `triton_experimental` 同合同验证；原始断言、图、设备实现差异将写回 result 与适配/修复报告。
+GPU：copy-cat正例与依赖负例均通过原生codegen断言；前者证明可合桶，后者保留两次wait。这两项无数值
+oracle且仅单rank。NPU：已用 `triton_experimental` 真实 HCCL 双 rank 完成逐 rank 数值与依赖验证，
+collective 数量从 3 降为 1。
 
 ### 性能测例
 
@@ -82,7 +89,8 @@ def func(x, w, ar_0, ar_1, group):
 
 意图与验证：post-grad独立all-reduce分桶。只切bucket_all_reduces_fx none/all；另两类bucket=none，overlap=false；编译后计数2→1，所有rank正确且没有fallback/graph break
 
-GPU：等待原生运行，不预判命中。NPU：等待 `triton_experimental` 同合同验证；原始断言、图、设备实现差异将写回 result 与适配/修复报告。
+GPU：world_size=1 eager/compiled正确性通过；FX由两个all-reduce改为打平、cat、一次all-reduce、split/view。
+NPU：必须用`triton_experimental`真实HCCL 2 rank复核，单rank不解锁性能。
 
 ### 性能测例
 
@@ -116,7 +124,8 @@ return torch.mm(x, w), wait(a), wait(b)
 
 意图与验证：post-grad reduce-scatter分桶与输出cast。只切bucket_reduce_scatters_fx none/all与固定bucket_mode=default；另两类bucket=none，overlap=false；2→1collective及正确性后计时
 
-GPU：等待原生运行，不预判命中。NPU：等待 `triton_experimental` 同合同验证；原始断言、图、设备实现差异将写回 result 与适配/修复报告。
+GPU：default/custom两个原生方法正确性通过；FX将两个bf16输入拼接后只保留一次reduce-scatter并拆回。
+NPU：已用 `triton_experimental` 真实 HCCL 双 rank复核跨 rank 数值、2→1计数与无 fallback。
 
 ### 性能测例
 
@@ -134,9 +143,16 @@ OFF/ON：只切bucket_reduce_scatters_fx none/all与固定bucket_mode=default；
 
 Deferred 项不放入 acceptance_units，不自动重排后续 T 编号，也不进入 GPU suite 分母。其功能/性能阻断都在 manifest 留档，获得新证据后再审核。
 
-## 性能执行准备边界
+## NPU 功能与性能最终结果
 
-性能命令、原件绑定字段和2rank要求见[性能复核门禁](PREPARED_PERFORMANCE_GATE.md)。
+三个单元均已通过真实 HCCL 双 rank 数值、目标改图、collective 数量和零 graph-break/fallback
+门禁，并在全局互斥锁下完成六臂独立进程实测：
 
-`runners/t081_t083_performance_worker.py` 提供目标级工作负载、OFF/ON控制、数值/图门禁和原始计时采集。`scripts/run_prepared_performance.py` 检查每单元经复核的功能门禁记录后启动6个独立进程；当前没有该记录，因此拒绝正式性能测量。
-门禁记录必须绑定 acceptance_unit_id、backend、PyTorch commit、功能报告sha256、GPU与NPU通过状态、显式disable处置、fallback/graph-break以及待测输入。未提供/不一致时停在准备状态。
+- all-gather：Event p50/p99 回退 13.43%/5.36%，`PERF_REGRESSED`；
+- all-reduce：Event p50/p99 改善 21.41%/17.69%，`PERF_IMPROVED`；
+- reduce-scatter：Event p50 改善 6.05%、p99 回退 10.32%，`PERF_MIXED`。
+
+三项仍保持上游默认 `none`；all-reduce 只进入真实模型/更多消息规模候选复核，不凭单点结果全局开启。
+完整调用栈、代码框、GPU/NPU 对照和证据路径见
+[T-081～T-083 NPU 功能、适配与性能报告](../report/t081_t083_npu_function_performance_20260908.md)。
+可复现实测命令和 gate 规则见[性能复核门禁](PREPARED_PERFORMANCE_GATE.md)。

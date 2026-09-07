@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T02:04:47.642229+08:00",
+  "issue": "REF-addcdiv-fma-codegen-native",
+  "evidence_kind": "npu-torch-compile-debug-before-after",
+  "stages": [
+    {
+      "stage": "修复前",
+      "source_root": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/adapter-i6uo737w",
+      "models": 1,
+      "files": [
+        {
+          "path": "evidence/修复前/run_2026_09_06_06_52_03_659429-pid_3916758/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/adapter-i6uo737w/debug/torch_compile_debug/run_2026_09_06_06_52_03_659429-pid_3916758/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 558,
+          "sha256": "7d45e4b1a5aa4ce1c8eb5be0e1180f28494def22487bf371a1225918c87bf2ad"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_06_52_03_659429-pid_3916758/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/adapter-i6uo737w/debug/torch_compile_debug/run_2026_09_06_06_52_03_659429-pid_3916758/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 558,
+          "sha256": "7d45e4b1a5aa4ce1c8eb5be0e1180f28494def22487bf371a1225918c87bf2ad"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_06_52_03_659429-pid_3916758/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/adapter-i6uo737w/debug/torch_compile_debug/run_2026_09_06_06_52_03_659429-pid_3916758/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 1684,
+          "sha256": "a26e75ee289f0a29383371bbf108d5e610a7396e542dbe80f6b5736efb05e72c"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_06_52_03_659429-pid_3916758/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/adapter-i6uo737w/debug/torch_compile_debug/run_2026_09_06_06_52_03_659429-pid_3916758/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 1613,
+          "sha256": "8f36e86ed03b4d65e5b1dadefef34d7a75a69e19a41783cc9046810c474b4eb8"
+        },
+        {
+          "path": "evidence/修复前/run_2026_09_06_06_52_03_659429-pid_3916758/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/adapter-i6uo737w/debug/torch_compile_debug/run_2026_09_06_06_52_03_659429-pid_3916758/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 8503,
+          "sha256": "f94e7960fb49ef4472f6dcb5aa6de0698d4343200a79215445e90aba0575ee7e"
+        }
+      ]
+    },
+    {
+      "stage": "修复后",
+      "source_root": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n",
+      "models": 2,
+      "files": [
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__0_inference_0.0/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 558,
+          "sha256": "7d45e4b1a5aa4ce1c8eb5be0e1180f28494def22487bf371a1225918c87bf2ad"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__0_inference_0.0/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 449,
+          "sha256": "f49d5397139d6b88d173bf12e22972f55335a224d7a752a766d640c2ea4f61cc"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__0_inference_0.0/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "bytes": 1654,
+          "sha256": "4755e11ff01ff9b31e389633f8694165303c17e4f515969524f8c3afd0ce6fef"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__0_inference_0.0/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "bytes": 1583,
+          "sha256": "413607a92bcd43ed8b2519c5c91dfa182367df7cb7ed120ce4de7e320def11ef"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__0_inference_0.0/output_code.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__0_inference_0.0/output_code.py",
+          "bytes": 8150,
+          "sha256": "7ae41936b9ec124216e542c4085512ec7830868431d9ae34aef9836446ca9842"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__1_inference_1.1/fx_graph_readable.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+          "bytes": 616,
+          "sha256": "3d619ef49b63696f84c1429b1ccc904d55fcc4f23d116e917a40cf2d1d7fc246"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__1_inference_1.1/fx_graph_transformed.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+          "bytes": 507,
+          "sha256": "800d394d4f4205da2bd07a19e5203bb3a68b0c84d9d4523d89af281da4dd8415"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__1_inference_1.1/ir_pre_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+          "bytes": 1654,
+          "sha256": "4755e11ff01ff9b31e389633f8694165303c17e4f515969524f8c3afd0ce6fef"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__1_inference_1.1/ir_post_fusion.txt",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+          "bytes": 1583,
+          "sha256": "413607a92bcd43ed8b2519c5c91dfa182367df7cb7ed120ce4de7e320def11ef"
+        },
+        {
+          "path": "evidence/修复后/run_2026_09_06_07_21_54_615790-pid_20451/model__1_inference_1.1/output_code.py",
+          "source": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/debug/torch_compile_debug/run_2026_09_06_07_21_54_615790-pid_20451/torchinductor/model__1_inference_1.1/output_code.py",
+          "bytes": 8149,
+          "sha256": "444d4c0ae1d3cc8f66f4cbec81aff55e378da4fa89039dd5b973db391e14dbf4"
+        }
+      ]
+    }
+  ]
+}

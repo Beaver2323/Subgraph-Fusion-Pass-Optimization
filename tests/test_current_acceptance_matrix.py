@@ -48,23 +48,46 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
 
     def test_dynamic_and_pending_evidence_are_not_conflated(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 21)
+        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 28)
         self.assertEqual(
-            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 21
+            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 28
         )
         self.assertEqual(
-            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 7
+            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 0
         )
         self.assertEqual(
             sum(row["current_phase"] == "awaiting-npu" for row in rows), 0
+        )
+        self.assertEqual(
+            sum(row["current_phase"] == "functional-comparison-closed" for row in rows),
+            28,
         )
         self.assertEqual(
             sum(
                 row["performance_evidence_path"].startswith("results/current/")
                 for row in rows
             ),
-            21,
+            28,
         )
+
+    def test_t081_t083_results_bind_backend_and_learning_evidence(self):
+        rows = matrix.build_rows("2026-09-08T03:17:00+08:00")
+        recent = [row for row in rows if row["task_id"] in {"T-081", "T-082", "T-083"}]
+        self.assertEqual(len(recent), 7)
+        for row in recent:
+            result = matrix.read_json(ROOT / row["comparison_result_path"])
+            self.assertEqual(result["backend"], "triton_experimental")
+            summary = matrix.read_json(ROOT / row["performance_evidence_path"])
+            unit = next(
+                item
+                for item in summary["acceptance_units"]
+                if item["acceptance_unit_id"] == row["acceptance_unit_id"]
+            )
+            explanation = unit["pattern_explanation"]
+            self.assertTrue(explanation["intent"])
+            self.assertTrue(explanation["source"])
+            self.assertTrue(explanation["gpu_behavior"])
+            self.assertTrue(explanation["npu_behavior"])
 
     def test_t080_results_include_learning_evidence(self):
         rows = matrix.build_rows("2026-09-07T20:50:00+08:00")
