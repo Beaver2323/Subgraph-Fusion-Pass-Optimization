@@ -1,6 +1,6 @@
 # Inductor Pass NPU 调研任务与代码地图
 
-> 更新时间：2026-09-06 02:21 CST（UTC+08:00）
+> 更新时间：2026-09-07 10:35 CST（UTC+08:00）
 > 当前主线以 community test 定义 upstream contract，以 acceptance unit 组织 GPU/reference 与
 > NPU `triton_experimental` 验收。本文中 T-054 以前的大段案例保留为历史源码导航。
 
@@ -181,7 +181,7 @@ safe cohort 虽有 23.50%/43.90% P50 与显著 task 收益，却增加 peak/comp
 resource-beneficial。`fusion_attention_v3_pass` 先补 24→21 参数、7→6 返回、用户与 fake
 meta guard，再因 B2 P99 回退 31.72% 增加非 A5 no-op gate。`fused_matmul_relu_pass` 在当前
 910B2 正确不适用。源码修改仍集中在 torch_npu FX pass/runner 和结构测试，不涉及 PyTorch
-或 Triton 产品源码；详见 `report/t043_t046_b2_composite_passes_20260825.md`。
+或 Triton 产品源码；详见 `report/archive/legacy-20260820-0828/t043_t046_b2_composite_passes_20260825.md`。
 
 T-047/T-048 关闭 B3 八条 DVM/MLIR 记录。源码阅读要区分两条路径：
 `DvmGraphFusionPatch -> GraphFusionPartitioner -> dvm::fused_graph_*`，以及
@@ -190,7 +190,7 @@ T-047/T-048 关闭 B3 八条 DVM/MLIR 记录。源码阅读要区分两条路径
 新 wheel 通过 6/6 source/installed、15/15 graph-fusion、32/32 DVM backend。aggregate DVM
 相对 default 的 P50/P99 改善 24.20%/39.93%，显存不增。K=1 helper 被上游预分解，expand
 helper 被当前 capability list 排除，完整 MLIR 缺 `torch_mlir`；详见
-`report/t047_t048_b3_dvm_mlir_20260826.md`。这些缺口分别属于上游冗余、partition reachability
+`report/archive/legacy-20260820-0828/t047_t048_b3_dvm_mlir_20260826.md`。这些缺口分别属于上游冗余、partition reachability
 和环境依赖，不应直接写 Triton。
 
 T-049 至 T-054 已进入 B4 attention。源码阅读要继续区分
@@ -200,11 +200,11 @@ codegen：八个代表 family 都精确触发，但 5/21/29 因 float mask 展�
 task 4→1、allocated peak 减少 87.31%，证明现有 vendor kernel 已是正确替代，不需要重写
 Triton attention。pattern 13 的 P50 只改善 0.99%，但 task 3→1、首次编译改善 91.37%、
 allocated peak 减少 87.31%，说明同一 vendor kernel 的 latency verdict 也不能跨 family 外推。
-详见 `report/t049_t050_b4_attention_first_20260826.md` 与
-`report/t051_b4_attention_pattern13_performance_20260826.md`、
-`report/t052_b4_attention_float_mask_dispatch_20260826.md`。T-053/T-054 又证明 pattern 5 rewrite
+详见 `report/archive/legacy-20260820-0828/t049_t050_b4_attention_first_20260826.md` 与
+`report/archive/legacy-20260820-0828/t051_b4_attention_pattern13_performance_20260826.md`、
+`report/archive/legacy-20260820-0828/t052_b4_attention_float_mask_dispatch_20260826.md`。T-053/T-054 又证明 pattern 5 rewrite
 P50 回退 103.23%，P-013 exact guard 恢复原图后 P50 改善 50.28%、task 8→3；详见
-`report/t054_b4_attention_pattern5_guard_20260826.md`。
+`report/archive/legacy-20260820-0828/t054_b4_attention_pattern5_guard_20260826.md`。
 
 ## 测试和性能证据
 

@@ -17,7 +17,7 @@
     },
     "t074_candidate_index": {
       "path": "report/upstream_pass_test_index_20260829/candidate_test_index.csv",
-      "sha256": "7c79d4c586d34e8af5d77ea548f66307a7f64e62437e3659b98693a88f271da8",
+      "sha256": "f050b8c3edfe502d1eb583088ca53d3c9dcd654951ab19d95fdd2c3fda1f1d4e",
       "candidate_rows": 207,
       "preservation": "read-only-v1-input"
     }
@@ -137,11 +137,11 @@
         "caveat": "GPU 负例的 suite-global 1/2 来自非目标 add-mm pattern；正式 comparison 依目标 FX/codegen 未出现判定负向 gate，不把非目标 counter 差异误判为 NPU regression。"
       },
       "historical_evidence": [
-        "report/p0_gate_first_run_20260820.md",
-        "report/p0_sweep_function_matrix_20260820.md",
-        "report/p0_sweep_performance_20260820.md",
-        "report/p0_semantic_matrix_20260821.md",
-        "report/t023_mmplus_different_k_integration_20260821.md",
+        "report/archive/legacy-20260820-0828/p0_gate_first_run_20260820.md",
+        "report/archive/legacy-20260820-0828/p0_sweep_function_matrix_20260820.md",
+        "report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md",
+        "report/archive/legacy-20260820-0828/p0_semantic_matrix_20260821.md",
+        "report/archive/legacy-20260820-0828/t023_mmplus_different_k_integration_20260821.md",
         "report/t076_gpu_reference_20260901.md",
         "issues/REF-mm-plus-mm-native/复现报告.md"
       ]
@@ -270,7 +270,7 @@
         "diagnostic_gate_bypass": "separate-non-product-diagnostic-only"
       },
       "historical_evidence": [
-        "report/t025_t026_pad_family_20260821.md",
+        "report/archive/legacy-20260820-0828/t025_t026_pad_family_20260821.md",
         "report/t076_gpu_reference_20260901.md",
         "issues/REF-pad-mm-dynamic-m-native/复现报告.md"
       ]
@@ -388,7 +388,7 @@
         "repair_status": "not-needed"
       },
       "historical_evidence": [
-        "report/t025_t026_pad_family_20260821.md",
+        "report/archive/legacy-20260820-0828/t025_t026_pad_family_20260821.md",
         "report/t076_gpu_reference_20260901.md"
       ]
     },
@@ -514,7 +514,7 @@
         "repair_status": "not-needed"
       },
       "historical_evidence": [
-        "report/t025_t026_pad_family_20260821.md",
+        "report/archive/legacy-20260820-0828/t025_t026_pad_family_20260821.md",
         "report/t076_gpu_reference_20260901.md"
       ]
     },
@@ -625,7 +625,7 @@
         "candidate_enablement": "verified-P018-default-enabled-live-optout"
       },
       "historical_evidence": [
-        "report/t058_experimental_addmm_gate_20260826.md",
+        "report/archive/legacy-20260820-0828/t058_experimental_addmm_gate_20260826.md",
         "report/t076_gpu_reference_20260901.md"
       ]
     }

@@ -16,7 +16,7 @@ T-036 已在产品源码中加入保守保护，构建并以 `--no-deps` 安装�
 device-independent FX 测试及 6/6 个 fresh-process NPU worker 全部通过完整语义合同。
 T-036 关闭时两条 pass 的性能尚未测量，因此当时矩阵只登记功能可用；后续 T-037 已按
 本报告预留的 gate 完成三轮 paired，并将二者关闭为 `supported-beneficial`。性能数据见
-`report/t037_layout_pass_performance_20260825.md`，不能用 T-036 的首次 compile/run 代替。
+`report/archive/legacy-20260820-0828/t037_layout_pass_performance_20260825.md`，不能用 T-036 的首次 compile/run 代替。
 
 ## 修复内容
 

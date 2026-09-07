@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-07 09:50 CST（UTC+08:00）
+> 文档更新时间：2026-09-07 10:35 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -96,6 +96,28 @@ upstream change / community test discovery
 GPU 与 NPU 位于不同机器。GPU 机器没有 Agent，只执行仓库生成的批量脚本并回传结构化
 artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析、修复和回归。工作流不假设
 同一个 Agent 同时控制两台机器。
+
+## 仓库结构
+
+```text
+├── docs/                 # 当前规则、教程、任务计划及文档归档
+├── upstream/             # acceptance-unit manifest、GPU plan 与上游映射
+├── runners/              # GPU/NPU case worker
+├── scripts/              # 一键入口、导入导出、校验与矩阵生成
+├── issues/               # 按 case 保存复现、根因、修复和验证证据
+├── results/
+│   ├── current/          # 当前正式 NPU/comparison/performance 真值
+│   ├── incoming/         # GPU 文本 handoff 接收区
+│   └── audits/           # 带时间戳的不可回写审计快照
+├── report/               # T-074 之后的当前报告与生成矩阵
+│   └── archive/          # 2026-08-20～08-28 非计数历史报告
+├── regressions/          # 可复用回归输入
+├── TODO.md               # 当前任务状态
+└── WORKFLOW.md           # 端到端执行合同
+```
+
+一级目录只表达职责；历史报告不再与当前 T 批次并列。详细报告边界见
+[报告索引](report/README.md) 和 [历史报告归档](report/archive/README.md)。
 
 ## 文档入口
 

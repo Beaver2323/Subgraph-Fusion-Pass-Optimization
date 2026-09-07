@@ -127,4 +127,4 @@ unaligned current 三轮 p99 为 0.391930/0.304470/0.330510 ms，disabled 为 0.
 
 本报告完成的是两个正例 family 的代表性能网格，不替代语义覆盖。报告生成当时，addmm 仍需 `(M,N)`、`(1,N)` bias、dtype mismatch、训练/backward，mm_plus_mm 仍需不同 K、更多负例、训练/backward，因此当时只升级 performance status，final verdict 暂保持 `not-run`。
 
-后续状态（2026-08-21）：上述语义与 backward 覆盖已完成；T-011 关闭 torch_npu reduction `strict_sum` 接口 blocker 后，addmm 最终 verdict 已升级为 `supported-beneficial`。mm_plus_mm 因 default backend gate 仍保持 `not-run`。当前结论以 `report/p0_semantic_matrix_20260821.md` 和评估矩阵为准。
+后续状态（2026-08-21）：上述语义与 backward 覆盖已完成；T-011 关闭 torch_npu reduction `strict_sum` 接口 blocker 后，addmm 最终 verdict 已升级为 `supported-beneficial`。mm_plus_mm 因 default backend gate 仍保持 `not-run`。当前结论以 `report/archive/legacy-20260820-0828/p0_semantic_matrix_20260821.md` 和评估矩阵为准。

@@ -143,7 +143,7 @@ T-032/T-033 随后覆盖第二批 4 条，T-034/T-035 覆盖第三批 5 条，T-
 | `fusion_attention_v3_pass` | schema/users/meta 修复后 safe scope 正确；最终 B2 由 SoC gate 保持 legacy | B2 P50/P99 -4.85%/-31.72%；`supported-pass-disabled-performance-rejected` |
 
 B2 已完成，不再重复执行；完整末批证据见
-`report/t043_t046_b2_composite_passes_20260825.md`。当前继续 B4。
+`report/archive/legacy-20260820-0828/t043_t046_b2_composite_passes_20260825.md`。当前继续 B4。
 
 ## B3：8 个 DVM/MLIR 变换
 
@@ -180,7 +180,7 @@ T-047/T-048 最终结论：
 | `DvmMlirPostGradPass` | wrapper chaining/uuid 合同通过，DVM 部分可用 | `supported-neutral`；完整 MLIR backend 因当前环境缺 `torch_mlir` 暂未闭环 |
 | `fold_sum_cast_to_dtype` | fold 正例和多用户/dtype 负例通过 | `supported-neutral`；完整 MLIR backend 同受 `torch_mlir` 环境限制 |
 
-详细证据和性能方法见 `report/t047_t048_b3_dvm_mlir_20260826.md`。本批没有手写 Triton：
+详细证据和性能方法见 `report/archive/legacy-20260820-0828/t047_t048_b3_dvm_mlir_20260826.md`。本批没有手写 Triton：
 DVM 聚合已经显著提速；sum 是后端可用性的必要精度规约；K1 已被更早分解；expand 的问题是
 partition 可达性而非缺一个 elementwise kernel，现阶段强行补 Triton 都不能形成可信的单 pass 收益。
 

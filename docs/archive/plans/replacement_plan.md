@@ -16,7 +16,7 @@
 `benchmark-py311` 数据保留其历史标签。P1 B2/B3 已关闭；B4 八个代表 attention family 功能
 通过。pattern 1 latency-beneficial，pattern 13 resource-beneficial；5/21/29 因 additive float
 mask 不满足 vendor bool/None gate 而安全 math fallback，无 mask pattern 30 走 vendor。这里不用
-Triton 掩盖语义错误、环境依赖或 capability 分流。全量记录见 `report/pass_src_20260820/`。
+Triton 掩盖语义错误、环境依赖或 capability 分流。全量记录见 `report/archive/legacy-20260820-0828/pass_src_20260820/`。
 
 源码证据表明，当前后端已经存在若干明确的 NPU 约束：
 
@@ -85,7 +85,7 @@ Triton 掩盖语义错误、环境依赖或 capability 分流。全量记录见 
 python /home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py \
   --pytorch-root /home/z50063656/Pass/src/pytorch \
   --torch-npu-root /home/z50063656/Pass/src/torch_npu \
-  --output /home/z50063656/Pass/inductor_pass_npu_audit/report/pass_src_20260820
+  --output /home/z50063656/Pass/inductor_pass_npu_audit/report/archive/legacy-20260820-0828/pass_src_20260820
 
 python /home/z50063656/Pass/inductor_pass_npu_audit/run_npu_probe.py \
   --output /home/z50063656/Pass/inductor_pass_npu_audit/report \

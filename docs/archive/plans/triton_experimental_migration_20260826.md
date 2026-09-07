@@ -102,7 +102,7 @@ Inductor pass、experimental 自有 FX pass、codegen/loop rewrite 与显式关�
    因 erfc decomposition 重复注册失败；P-014 单行 cleanup 修复已完成 source overlay 双向切换
    1/1，installed wheel 复验待共享 `triton.py` diff 可安全隔离后执行。
 2. T-056：已按当前 2.14 源码建立 251 行 experimental route overlay、69 项 config 引用表和
-   35 个 feature family；静态结果见 `report/t056_triton_experimental_inventory_20260826.md`。
+   35 个 feature family；静态结果见 `report/archive/legacy-20260820-0828/t056_triton_experimental_inventory_20260826.md`。
 3. T-057：backend 全局状态串态、int-float-int 与 GELU approximate 已完成。前者登记 P-015
    设计阻断；int-float-int 由 Float32 ON/OFF 锁定数值错误和三 dtype alias 错误，P-016 已 source
    默认关闭；GELU installed-none 合同失败，P-017 current source 已通过 FP32/FP16/BF16、非法参数

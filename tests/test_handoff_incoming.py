@@ -20,12 +20,15 @@ class HandoffIncomingTests(unittest.TestCase):
         self.assertIn(result.returncode, (0, 1), result.stderr)
         return set(result.stdout.splitlines())
 
-    def test_task_placeholders_and_readme_exist_and_can_be_tracked(self):
-        paths = ["results/incoming/README.md"]
-        paths.extend(f"results/incoming/{task}/.gitkeep" for task in TASKS)
-        for relative in paths:
-            self.assertTrue((ROOT / relative).is_file(), relative)
-        self.assertEqual(self.ignored(paths), set())
+    def test_nonempty_task_directories_and_readme_exist(self):
+        readme = "results/incoming/README.md"
+        self.assertTrue((ROOT / readme).is_file(), readme)
+        self.assertEqual(self.ignored([readme]), set())
+        for task in TASKS:
+            task_dir = ROOT / "results/incoming" / task
+            self.assertTrue(task_dir.is_dir(), task)
+            self.assertTrue(any(task_dir.iterdir()), task)
+            self.assertFalse((task_dir / ".gitkeep").exists(), task)
 
     def test_handoff_logs_and_nested_payloads_remain_ignored(self):
         paths = ["results/incoming/text-handoff.json", "results/incoming/unknown/README.md"]

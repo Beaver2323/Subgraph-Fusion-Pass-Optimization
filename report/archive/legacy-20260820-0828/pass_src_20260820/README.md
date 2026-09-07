@@ -18,12 +18,12 @@ torch_npu custom pass、DVM、MLIR 和早期 `triton_experimental` 项。
 ## 当前应使用什么
 
 - 人工审核后的活动单元与当前状态：
-  [`../current_acceptance_unit_matrix.md`](../current_acceptance_unit_matrix.md)
+  [`report/current_acceptance_unit_matrix.md`](../../../current_acceptance_unit_matrix.md)
 - 机器可读当前矩阵：
-  [`../current_acceptance_unit_matrix.csv`](../current_acceptance_unit_matrix.csv)
-- 当前执行规则：[`../../WORKFLOW.md`](../../WORKFLOW.md)
-- 活动 manifest：[`../../upstream/`](../../upstream/)
-- 正式 NPU/comparison 结果：[`../../results/current/`](../../results/current/)
+  [`report/current_acceptance_unit_matrix.csv`](../../../current_acceptance_unit_matrix.csv)
+- 当前执行规则：[`WORKFLOW.md`](../../../../WORKFLOW.md)
+- 活动 manifest：[`upstream/`](../../../../upstream/)
+- 正式 NPU/comparison 结果：[`results/current/`](../../../../results/current/)
 
 `pass_evaluation_matrix.csv` 保持原始 251 行不变，以免改写历史证据；其 Markdown 说明已增加同样的
 历史边界提示。旧矩阵可用于学习字段设计、追溯早期实验和发现候选，不能作为当前完成分母。

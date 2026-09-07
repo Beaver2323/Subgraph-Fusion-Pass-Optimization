@@ -15,7 +15,7 @@
     },
     "t074_candidate_index": {
       "path": "report/upstream_pass_test_index_20260829/candidate_test_index.csv",
-      "sha256": "7c79d4c586d34e8af5d77ea548f66307a7f64e62437e3659b98693a88f271da8",
+      "sha256": "f050b8c3edfe502d1eb583088ca53d3c9dcd654951ab19d95fdd2c3fda1f1d4e",
       "candidate_rows": 207,
       "preservation": "read-only-v1-input"
     }

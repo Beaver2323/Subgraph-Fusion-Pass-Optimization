@@ -1,6 +1,7 @@
 # T-075 首批 Acceptance Unit 静态映射复核
 
-> 更新时间：2026-08-31 18:34 CST（UTC+08:00）
+> 原始复核时间：2026-08-31 18:34 CST（UTC+08:00）
+> 路径整理复核：2026-09-07 10:35 CST（UTC+08:00）
 > 状态：`completed-first-wave-static-mapping-await-gpu-reference`
 > 运行边界：本任务只做源码、community test 与数据结构复核；未运行 GPU、NPU、
 > `torch.compile` 或性能测试。
@@ -30,7 +31,7 @@ eligible 统计保持原样，没有覆盖或重生成 v1 CSV。
 | PyTorch | `release/2.14`，commit `8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b` |
 | torch_npu | `master`，commit `83cc452480c3546fd5cccf853bfe3a360ce9dbfc` |
 | T-074 candidate CSV | `report/upstream_pass_test_index_20260829/candidate_test_index.csv` |
-| candidate CSV SHA256 | `7c79d4c586d34e8af5d77ea548f66307a7f64e62437e3659b98693a88f271da8` |
+| candidate CSV SHA256 | `f050b8c3edfe502d1eb583088ca53d3c9dcd654951ab19d95fdd2c3fda1f1d4e` |
 | 主要事实源 | PyTorch community tests；后续由 GPU/reference baseline 固化运行预期 |
 | 辅助证据 | registration、源码 guard、历史 NPU runner/report |
 

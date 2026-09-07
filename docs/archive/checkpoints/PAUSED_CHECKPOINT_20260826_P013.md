@@ -129,8 +129,8 @@ snapshot 和 `change_control.md` 的 P-013 条目。
 
 ## 证据入口
 
-- [T-053 pattern 5 性能负结论](../../../report/t053_b4_attention_pattern5_performance_20260826.md)
-- [T-054 P-013 guard 闭环](../../../report/t054_b4_attention_pattern5_guard_20260826.md)
+- [T-053 pattern 5 性能负结论](../../../report/archive/legacy-20260820-0828/t053_b4_attention_pattern5_performance_20260826.md)
+- [T-054 P-013 guard 闭环](../../../report/archive/legacy-20260820-0828/t054_b4_attention_pattern5_guard_20260826.md)
 - [当前状态与背景](../../CURRENT_STATUS.md)
 - [成功/失败/中性结果索引](../../HISTORY.md)
 - [变更控制记录](../../CHANGE_CONTROL.md)

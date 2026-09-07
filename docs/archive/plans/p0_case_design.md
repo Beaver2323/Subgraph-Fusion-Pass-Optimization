@@ -121,7 +121,7 @@ bf16 使用 `rtol=atol=3e-2`，fp16 使用 `1e-2`，fp32 使用 `1e-4`；容差�
 
 ## 覆盖扩展与语义层结果
 
-截至 2026-08-21，非笛卡尔代表功能矩阵 16/16 正确且目标图确认；paired performance 主矩阵 96/96 正确，mm_plus_mm dynamic 高样本复核 6/6 正确。addmm/default 的 8 个代表配置全部超过 10% p50 收益；mm_plus_mm/experimental 有 6 个超过门槛，transposed 和 dynamic 分别为 6.4% 与 8.74%，记为功能可用但性能 neutral。详见 `report/p0_sweep_function_matrix_20260820.md` 和 `report/p0_sweep_performance_20260820.md`。
+截至 2026-08-21，非笛卡尔代表功能矩阵 16/16 正确且目标图确认；paired performance 主矩阵 96/96 正确，mm_plus_mm dynamic 高样本复核 6/6 正确。addmm/default 的 8 个代表配置全部超过 10% p50 收益；mm_plus_mm/experimental 有 6 个超过门槛，transposed 和 dynamic 分别为 6.4% 与 8.74%，记为功能可用但性能 neutral。详见 `report/archive/legacy-20260820-0828/p0_sweep_function_matrix_20260820.md` 和 `report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md`。
 
 代表网格证明了 dtype、shape、layout、dynamic 的基本能力，但不能替代语义测试。2026-08-21 已继续补齐以下正交用例，不重复性能笛卡尔积：
 
@@ -130,7 +130,7 @@ bf16 使用 `rtol=atol=3e-2`，fp16 使用 `1e-2`，fp32 使用 `1e-4`；容差�
 - mm_plus_mm same-K backward 的输出和 4 个输入梯度全部正确；addmm full-bias backward 的输出和 3 个输入梯度全部正确；
 - addmm vector-bias backward 最初被 torch_npu `make_reduction()` 缺少 `strict_sum` 参数阻断。T-011 补齐并透传该参数、重建并安装源码 wheel 后，该用例的输出与三个输入梯度均正确；这证明它是已关闭的通用 reduction lowering 接口问题，不是 addmm pass 数值失败。
 
-详细证据见 `report/p0_semantic_matrix_20260821.md`。reduction 接口兼容和 vector/row-bias backward 复测已经完成。T-012 的 mm_plus_mm different-K 当前/禁用 paired baseline 在 shape-A 与 unaligned 的 p50 变化为 -0.30%/+2.53%，结论为 neutral；T-013 profile 又确认两个 aclnnMm、一个 Triton add 和约 50–55 μs 步内 gap，理论上限为 17.68%/16.02%。现在只允许不接入源码的微原型，正式实现仍需真实 candidate 超过 10%。
+详细证据见 `report/archive/legacy-20260820-0828/p0_semantic_matrix_20260821.md`。reduction 接口兼容和 vector/row-bias backward 复测已经完成。T-012 的 mm_plus_mm different-K 当前/禁用 paired baseline 在 shape-A 与 unaligned 的 p50 变化为 -0.30%/+2.53%，结论为 neutral；T-013 profile 又确认两个 aclnnMm、一个 Triton add 和约 50–55 μs 步内 gap，理论上限为 17.68%/16.02%。现在只允许不接入源码的微原型，正式实现仍需真实 candidate 超过 10%。
 
 ## Gate 解除前置条件
 
@@ -141,4 +141,4 @@ bf16 使用 `rtol=atol=3e-2`，fp16 使用 `1e-2`，fp32 使用 `1e-4`；容差�
 - 失败时保持原 gate 的回退方式；
 - 正确性范围和 paired benchmark 方案。
 
-环境已于 2026-08-20 确认稳定，首轮 `default,triton_experimental` 共 20 个组合已经执行；结果见 `report/p0_gate_first_run_20260820.md`。本设计继续作为后续强制结构诊断和 paired benchmark 的验收合同。
+环境已于 2026-08-20 确认稳定，首轮 `default,triton_experimental` 共 20 个组合已经执行；结果见 `report/archive/legacy-20260820-0828/p0_gate_first_run_20260820.md`。本设计继续作为后续强制结构诊断和 paired benchmark 的验收合同。

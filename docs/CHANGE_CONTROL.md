@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-06 09:50 CST（UTC+08:00）
+> 日志校准时间：2026-09-07 10:35 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -111,7 +111,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 首个哨兵：从 `/home/z50063656/tmp` 启动 `run_p0_gate_probe.py`，先运行 `addmm_fusion_positive/default`，开启 debug、关闭 benchmark，仅验证 worker 隔离、编译正确性、observer/counter 和 debug artifact 能否形成证据。
 - 扩展条件：哨兵通过且证据字段完整后，再扩展到 10 个正/负 case 和 `default,triton_experimental` 两个 backend；首轮仍不加 `--benchmark`，因此结果只能用于可用性和 pass 触发判断，不能用于性能排名。
 - 结果目录：`results/p0_gate_smoke_20260820`；后续全量首轮使用独立目录，避免覆盖哨兵证据。
-- 首轮结果：`default,triton_experimental` × 10 个正/负 case 全部正确；default addmm fusion 正例触发、experimental 被 gate；experimental mm_plus_mm 正例触发 `_mm_plus_mm`、default 未触发目标；三个 pad family 在两个 backend 的正例都未观察到 pad/slice，其中 experimental 明确把 `shape_padding` 置 False。详见 `report/p0_gate_first_run_20260820.md`。
+- 首轮结果：`default,triton_experimental` × 10 个正/负 case 全部正确；default addmm fusion 正例触发、experimental 被 gate；experimental mm_plus_mm 正例触发 `_mm_plus_mm`、default 未触发目标；三个 pad family 在两个 backend 的正例都未观察到 pad/slice，其中 experimental 明确把 `shape_padding` 置 False。详见 `report/archive/legacy-20260820-0828/p0_gate_first_run_20260820.md`。
 
 ### E-005：pad family 强制结构诊断
 
@@ -145,7 +145,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 旧行为：schema 2 的 fp16/shape-A/contiguous/static 回归共 4 个正例，default/experimental 两 backend 全部 `compile-correct`，四条 generated graph 与 E-004 一致。
 - addmm 新配置：default、bf16、small、真实 transposed stride、dynamic；首 shape `(32,64)@(64,48)` 和 replay `(40,72)@(72,56)` 均正确，目标图保持符号化 `aten.addmm`。
 - mm_plus_mm 新配置：experimental、fp32、unaligned、真实 transposed stride、dynamic；首 shape `(191,255)@(255,319)` 和 replay `(199,263)@(263,327)` 均正确，目标图保持符号化 `_mm_plus_mm` extern。
-- 证据：`report/p0_sweep_smoke_20260820.md` 和 `results/p0_sweep_*_20260820/`；本轮未采性能，不升级 final verdict。
+- 证据：`report/archive/legacy-20260820-0828/p0_sweep_smoke_20260820.md` 和 `results/p0_sweep_*_20260820/`；本轮未采性能，不升级 final verdict。
 
 ### E-008：P0 代表覆盖功能矩阵
 
@@ -153,7 +153,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 规模：addmm/default 8 个配置，mm_plus_mm/experimental 8 个配置，共 16/16 `compile-correct`；8+8 份 output code 全部出现各自目标实现，未出现 graph-break counter。
 - 覆盖：fp16/bf16/fp32；small/shape-A/unaligned/large；contiguous/transposed；static/dynamic + 第二组 shape replay。
 - 精度：addmm fp16 最大绝对误差 0.0625，fp32 为 `1.1444091796875e-05`，bf16 为 0.5 但逐元素 `rtol=atol=3e-2` 通过；mm_plus_mm 最大绝对误差为 0。bf16 原始差值保留为后续精度边界。
-- 证据：`report/p0_sweep_function_matrix_20260820.md` 与 `results/p0_sweep_function_{addmm,mmplus}_*_20260820/`；本轮没有 disabled baseline，不写性能 verdict。
+- 证据：`report/archive/legacy-20260820-0828/p0_sweep_function_matrix_20260820.md` 与 `results/p0_sweep_function_{addmm,mmplus}_*_20260820/`；本轮没有 disabled baseline，不写性能 verdict。
 
 ### E-009：P0 扩展性能矩阵
 
@@ -170,7 +170,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - dynamic 复核：mm_plus_mm 使用 warmup 20、runs 300 再跑 current/disabled 三轮，p50/p99/mean 中位数分别改善 8.74%/5.80%/10.32%；按 p50 主门槛确认为 dynamic 配置的 `supported-neutral` 证据。
 - 网格结论：addmm 8/8 配置 p50 超过 10%；mm_plus_mm 6/8 超过 10%，transposed/dynamic 为 neutral，0 个 p50 回退。功能 16/16、主性能矩阵 96/96、复核 6/6 均正确。
 - 设备闭环：全部采样结束后再次检查，物理 NPU 2 无运行进程；外部任务未被终止或混入。
-- 证据：`report/p0_sweep_performance_20260820.md`，以及 `results/p0_sweep_perf_{addmm,mmplus}_{dtype,shape,layout}_20260820/`、`results/p0_sweep_perf_{addmm,mmplus}_dynamic_20260821/` 和 `results/p0_sweep_perf_mmplus_dynamic_retest300_20260821/`。
+- 证据：`report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md`，以及 `results/p0_sweep_perf_{addmm,mmplus}_{dtype,shape,layout}_20260820/`、`results/p0_sweep_perf_{addmm,mmplus}_dynamic_20260821/` 和 `results/p0_sweep_perf_mmplus_dynamic_retest300_20260821/`。
 
 ### E-010：P0 语义覆盖哨兵与矩阵
 
@@ -184,7 +184,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - inference 矩阵：addmm full/row bias 正例均生成单个 `aten.addmm`，mixed dtype 负例保留 mm + add；mm_plus_mm 不同 K 出现 marker 后安全 unfuse，M/N broadcast 两个负例均无 marker。6/6 正确。
 - backward 隔离：mm_plus_mm same-K 输出与 4 个输入梯度最大误差均为 0，forward 生成 `_mm_plus_mm`；addmm full-bias 输出与 3 个输入梯度最大误差均为 0，forward 生成 `aten.addmm`。这证明 pass 本身可进入 AOTAutograd，vector-bias 失败由通用 reduction 阻断。
 - 设备闭环：开始前物理 NPU 6 无运行进程；结束复查时出现非本轮 worker 的 PID 3579493。未终止该进程，也未在出现后继续执行 NPU 测试；本轮不采性能，不使用绝对耗时下性能结论。
-- 证据：`report/p0_semantic_matrix_20260821.md`、`results/p0_semantic_{addmm,mmplus}_matrix_20260821/` 和三个 backward 结果目录；受限环境记录位于 `results/p0_semantic_smoke_addmm_20260821/`。
+- 证据：`report/archive/legacy-20260820-0828/p0_semantic_matrix_20260821.md`、`results/p0_semantic_{addmm,mmplus}_matrix_20260821/` 和三个 backward 结果目录；受限环境记录位于 `results/p0_semantic_smoke_addmm_20260821/`。
 
 ### E-011：语义矩阵结束后的源码工作树复核
 
@@ -283,7 +283,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 性能：shape-A current/disabled 的 p50 三轮中位数为 `0.321445/0.320490 ms`，current 回退 0.30%；unaligned 为 `0.321665/0.330000 ms`，current 改善 2.53%。两者均低于 10% 门槛。shape-A current 第 2 轮 p50/p99 抖动到 `0.511125/1.682840 ms`，原始值保留并用三轮中位数汇总。
 - 编译/内存：shape-A current 首次编译+执行中位数慢 8.05%，unaligned 快 0.39%，没有一致方向；同 shape 下 current/disabled 峰值 allocator 完全相同。
 - 设备与图产物：功能哨兵前、性能采样前和性能采样后，物理 NPU 6 均无其他进程。哨兵成功，因此按图模式分流不展开成功 `output_code.py`；不同 K 安全 unfuse 采用既有源码和语义报告证据。
-- 结论：现有 different-K pattern 匹配没有形成稳定运行时收益，记为 neutral baseline。下一步必须先做 kernel profile 或不接入源码的候选微原型；本条不能直接证明手写 kernel 值得接入。证据见 `report/t012_mmplus_different_k_baseline_20260821.md`。
+- 结论：现有 different-K pattern 匹配没有形成稳定运行时收益，记为 neutral baseline。下一步必须先做 kernel profile 或不接入源码的候选微原型；本条不能直接证明手写 kernel 值得接入。证据见 `report/archive/legacy-20260820-0828/t012_mmplus_different_k_baseline_20260821.md`。
 
 ### E-025：T-013 disabled profiler backend 激活顺序阻断
 
@@ -299,7 +299,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - timeline：shape-A/current 三 kernel 计算合计 `10.912±0.489 μs`，两个步内 gap 合计 `55.153±3.876 μs`，首 mm 到 add 结束 span `66.075±3.631 μs`；unaligned/current 分别为 `13.724±0.416`、`49.591±6.274`、`63.300±6.154 μs`。
 - 可行性预算：结合 T-012 current p50，完全消除步内 gap+add 的端到端理论上限为 shape-A 17.68%、unaligned 16.02%。要达到 10% p50，假设其他开销不变，candidate 单 task 必须分别低于约 33.93/31.13 μs。
 - 设备：正式扩展前和全部结束后物理 NPU 6 均无其他进程。失败的初版 disabled 和 backend 修正前 current 哨兵目录保留，但不纳入正式四组。
-- 结论：profile 数据足以允许审计目录的 standalone 微原型，但不允许直接改功能源码或解除 size guard。详细报告为 `report/t013_mmplus_different_k_profile_20260821.md`。
+- 结论：profile 数据足以允许审计目录的 standalone 微原型，但不允许直接改功能源码或解除 size guard。详细报告为 `report/archive/legacy-20260820-0828/t013_mmplus_different_k_profile_20260821.md`。
 
 ### E-027：T-014 初版 split-store 正确性失败
 
@@ -384,7 +384,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 两 shape 结论：shape-A/unaligned p50 分别改善 `15.60%/17.12%`，p99 改善 `15.13%/15.67%`；T-015 又证明每调用一个 task且 kernel p50 为 `8.76/13.81 μs`。限定范围内 candidate 为稳定 beneficial。
 - 能力边界：当前只能记为 `standalone-fp16-contiguous-static-beneficial`；bf16/fp32、非连续 layout、dynamic、backward 和内存增长规律未验证，default backend gate 未解除，矩阵 final verdict 保持 `not-run`。
 - 图模式分流：两个成功 baseline 均不读取 `output_code.py`；失败历史只涉及直接 Triton candidate，已在 E-027/E-028 分流。
-- 报告：`report/t014_t016_mmplus_different_k_candidate_20260821.md`；原始证据位于 T-014/T-015/T-016 结果目录。
+- 报告：`report/archive/legacy-20260820-0828/t014_t016_mmplus_different_k_candidate_20260821.md`；原始证据位于 T-014/T-015/T-016 结果目录。
 
 ### E-036：T-017 功能覆盖设备重新路由
 
@@ -433,7 +433,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - candidate wrapper：两个 shape 的 standalone Triton forward output 与四个公式梯度最大/平均绝对误差也全部为 0。wrapper 只作 semantic diagnostic，不是正式 integration。
 - 源码结论：AOTAutograd 在 `compile_fx.py:_compile_fx_main()` 中先切分 forward/backward，然后 `fw_compiler`/`bw_compiler` 分别进入包含 `post_grad_passes()` 的编译流程。正式 forward fusion 应依赖独立 backward graph，不新增一个把所有梯度融合进 forward kernel 的伪方案。
 - 图模式分流：baseline 全部成功，不读取成功 `output_code.py`；debug forward/backward 路径保留供正式 integration 回归对照。
-- 证据：`results/t019_mmplus_different_k_backward_20260821/{shape_a,unaligned}/result.json`；覆盖报告为 `report/t017_t019_mmplus_different_k_coverage_20260821.md`。
+- 证据：`results/t019_mmplus_different_k_backward_20260821/{shape_a,unaligned}/result.json`；覆盖报告为 `report/archive/legacy-20260820-0828/t017_t019_mmplus_different_k_coverage_20260821.md`。
 - 闸门结论：功能覆盖已包含 dtype/layout/dynamic/backward；下一阶段优先做 bf16/fp32/transposed/large 的 paired 性能与内存，形成 capability gate 后才允许正式源码提案。
 
 ### S-001：Pass 项目源码基线发现
@@ -452,7 +452,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 范围：只允许修改 `/home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py`、README 和生成报告；禁止修改三个源码仓库。
 - 复核纠正：最初因相邻输出拼接误认为 pattern registry 分支重复传入 `path=path`；带行号复核确认源码只有一次传参，不存在该语法错误。本条保留纠正过程，避免将误判带入后续分析。
 - 原因：生成报告仍包含“本机无 NPU”和旧 `/Dynamo` 源码路径，需要迁移到新的项目源码基线。
-- 计划：先用 `py_compile` 验证脚本；将报告措辞改为“运行状态由动态探针单独记录”；从 `/home/z50063656/tmp` 对 `Pass/src` 执行静态扫描；结果写到 `report/pass_src_20260820/`，不覆盖旧报告。
+- 计划：先用 `py_compile` 验证脚本；将报告措辞改为“运行状态由动态探针单独记录”；从 `/home/z50063656/tmp` 对 `Pass/src` 执行静态扫描；结果写到 `report/archive/legacy-20260820-0828/pass_src_20260820/`，不覆盖旧报告。
 - 验证：`py_compile`、新清单生成成功、记录数与阶段/机制统计、旧清单差异摘要。该验证不导入 torch，不访问 NPU。
 
 ### T-002：逐 Pass 评估矩阵生成
@@ -462,7 +462,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 目标：把静态清单转换为后续可逐项填写的评估合同，至少包含适用性、触发、正确性、fallback/codegen、编译开销、稳态性能和替代方案状态。
 - 判定枚举：`not-run`、`not-applicable`、`environment-blocked`、`unsupported`、`supported-neutral`、`supported-beneficial`、`supported-regression`。
 - 原则：CPU/MKLDNN/CUDA 专用 pass 应判为 `not-applicable` 或设备 gate 正常，不能误记为 NPU 不支持；一个源码注册项只有在实际触发且 generated code 可验证时才能判定可用。
-- 输出：`report/pass_src_20260820/pass_evaluation_matrix.csv` 与矩阵说明文档；环境稳定前所有动态字段保持 `not-run`。
+- 输出：`report/archive/legacy-20260820-0828/pass_src_20260820/pass_evaluation_matrix.csv` 与矩阵说明文档；环境稳定前所有动态字段保持 `not-run`。
 
 ### T-003：DVM/MLIR 后端图变换纳入清单
 
@@ -667,7 +667,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 设计门禁：原有 same-K 行为不变；different-K candidate 只在 NPU、2D、同 dtype/device、可表示 stride 和已证明 dtype 下成为可选路径；dynamic 新 specialization、large/不稳定 shape、autotune 不可靠、编译或精度不满足时必须回到现有 fallback。不使用仅匹配测试 shape 的硬编码 whitelist 冒充通用能力。
 - 内存与性能：设计文档必须解释 standalone additional peak 可能来自哪一层，如何在正式 scheduler/wrapper 中复测；large 在 profiler/tile 闭环前不进入首批 gate。
 - 验证设计：需要列出 pattern 触发/不触发、generated graph/code、fallback 注入、三 dtype、contiguous/transposed、aligned/unaligned、dynamic first/replay、AOTAutograd forward/backward、空维/数值压力、paired p50/p99/内存和失败回滚。设计评审完成前不进入 implementation。
-- 产物：`report/t021_mmplus_different_k_integration_design_20260821.md`，并回填 P-005 的拟修文件、无需/需要 wheel 重建判断、回滚边界和 T-022 前置条件。
+- 产物：`report/archive/legacy-20260820-0828/t021_mmplus_different_k_integration_design_20260821.md`，并回填 P-005 的拟修文件、无需/需要 wheel 重建判断、回滚边界和 T-022 前置条件。
 - E-047（设计结论）：当前 pattern 的 `is_valid_mm_plus_mm()` 本身允许 K1!=K2，实际退回发生在 `kernel/mm_plus_mm.py:tuned_mm_plus_mm()` 的完整 size equality guard。上游 Triton template 没有独立 K2 loop，且 template heuristic 没有为 device type `npu` 注册；NPU 当前只获得 device-agnostic `aten_mm_plus_mm` extern choice。选定的首批方案是 torch_npu default backend 中默认关闭开关保护的 NPU-only/static/different-K duplicate pattern，调用新 `NPUTritonTemplate`，并始终保留支持 different K 的 `aten_mm_plus_mm` C++ composite extern 作为第一 fallback。不全局 monkeypatch 上游 handler，不在 lowering 中直调 eager Triton，不修 PyTorch/Triton Ascend/C++。拟修为 5 个 torch_npu Python 文件和新 UT；迭代不需重编 PyTorch，但当前正式环境最终验证必须重建 torch_npu wheel 并 `--no-deps` 安装。根据 T-020 风险，implementation 前先执行 T-022 large profiler/tile/内存分解。
 
 ### T-022：mm_plus_mm different-K large profiler、tile 与内存分解
@@ -1421,7 +1421,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   预登记后收紧为只接受 task 或显存明确下降，mask verdict 从中间态 resource-beneficial
   修正为 neutral。原始 18 个 worker 未重跑、未挑选。最终结果在
   `results/t039_dtype_index_mask_performance_20260825/*_aggregate_final/aggregate.json`，报告为
-  `report/t039_dtype_index_mask_performance_20260825.md`。
+  `report/archive/legacy-20260820-0828/t039_dtype_index_mask_performance_20260825.md`。
 
 ### T-040：剩余 dtype/mask/hamming 三 pass 语义与结构登记
 
@@ -1500,7 +1500,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   中性证据，不计 pass 失败。
 - 聚合结果为
   `results/t040_mask_hamming_compile_20260825/aggregate/aggregate.json`，详细报告为
-  `report/t040_mask_hamming_semantic_fix_20260825.md`。三条矩阵记录已更新到功能通过、性能
+  `report/archive/legacy-20260820-0828/t040_mask_hamming_semantic_fix_20260825.md`。三条矩阵记录已更新到功能通过、性能
   `not-run`；下一步必须另登记 T-041 单 pass paired 性能，优先 sign-Hamming，再测 masked
   add 与 bool-cast direct/view。功能通过不能提前写成 beneficial。
 
@@ -1531,7 +1531,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 物理 NPU1 运行前后均无其他进程；四 case 的三轮 baseline/candidate worker 全部完成，
   图门禁与测量前后完整语义均通过。结果位于
   `results/t041_mask_hamming_performance_20260825/`，报告为
-  `report/t041_mask_hamming_performance_20260825.md`。
+  `report/archive/legacy-20260820-0828/t041_mask_hamming_performance_20260825.md`。
 - masked-add p50/p99 `0.260785/0.295460→0.251115/0.266380 ms`，改善
   `3.71%/9.84%`；task 1→1、allocated peak不变，为 `supported-neutral`。
 - sign-Hamming p50/p99 `0.266480/0.290000→0.256770/0.274090 ms`，改善
@@ -1571,7 +1571,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - view candidate 代码未变，沿用 T-041 的 p50/p99 +36.30%/+39.90%；direct 现在等于同轮
   baseline，不再执行已证实回退的 where rewrite。因此 pass 最终 scope 为
   `supported-beneficial`（exact-zero integer/bool + non-empty single-user view chain）；不需
-  Triton replacement。详细报告为 `report/t042_bool_view_guard_integration_20260825.md`。
+  Triton replacement。详细报告为 `report/archive/legacy-20260820-0828/t042_bool_view_guard_integration_20260825.md`。
 
 ### T-043：B2 最后三条复合 pass 的结构与语义审计登记
 
@@ -1896,7 +1896,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 最终只把已直接覆盖的 `_sfdp_pattern_1` fp16 静态 inference 记为 `supported-beneficial`；关闭
   pattern 3 是防止等价 matcher 接管的隔离手段，不能据此关闭其 training/dropout 覆盖。B4 首条
   最终 verdict 使总矩阵变为 222 `not-run`、9 `supported-beneficial`，其余分类不变。证据见
-  `report/t049_t050_b4_attention_first_20260826.md` 与 T-050 aggregate JSON。
+  `report/archive/legacy-20260820-0828/t049_t050_b4_attention_first_20260826.md` 与 T-050 aggregate JSON。
 
 ### T-051：B4 pattern 13 三维 BMM attention 配对性能登记
 
@@ -1930,7 +1930,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 第一次正式批次启动把 `set -e` 放在共享 `env.sh` 之前而立即退出，未创建 worker/占用 NPU；
   作为中性命令错误保留说明，不计产品失败。矩阵变为 221 `not-run`、3
   `supported-neutral-resource-beneficial`，其余分类不变。详细证据见
-  `report/t051_b4_attention_pattern13_performance_20260826.md`。
+  `report/archive/legacy-20260820-0828/t051_b4_attention_pattern13_performance_20260826.md`。
 
 ### T-052：B4 float-mask re-expansion 根因与 pattern 30 对照登记
 
@@ -1961,7 +1961,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   仍 `not-run`。
 - pattern 30 第一次未设 fresh cache、第二次只开 debug 仍命中已有 cache，counter 证据无效；
   第三次独立 Inductor/Triton cache 才纳入结论。前两次作为中性审计方法记录保留。详细报告见
-  `report/t052_b4_attention_float_mask_dispatch_20260826.md`。
+  `report/archive/legacy-20260820-0828/t052_b4_attention_float_mask_dispatch_20260826.md`。
 
 ### T-053：B4 pattern 5 float-mask math fallback 配对性能登记
 
@@ -1997,7 +1997,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   完整 attention 复制已经更快的原图 math 路径。
 - 第一次 smoke 因审计脚本 final mkdir 与 debug 目录先创建冲突而未写 result；candidate 未启动。
   失败目录保留，修正只影响 audit 落盘，retry 与正式结果有效。详细证据见
-  `report/t053_b4_attention_pattern5_performance_20260826.md`。
+  `report/archive/legacy-20260820-0828/t053_b4_attention_pattern5_performance_20260826.md`。
 
 ### T-054：P-013 installed wheel 功能与配对性能验收登记
 
@@ -2037,7 +2037,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - P-013 状态升级为 `verified-pass-disabled-performance-rejected`：guard 本身为
   `supported-beneficial` 修复，但被守护的 pattern 5 rewrite 仍是性能负优化，矩阵按最终产品
   行为记 `supported-pass-disabled-performance-rejected`。详细证据见
-  `report/t054_b4_attention_pattern5_guard_20260826.md`。
+  `report/archive/legacy-20260820-0828/t054_b4_attention_pattern5_guard_20260826.md`。
 
 ### E-150：需求切换到 triton_experimental，环境保持不变（2026-08-26）
 
@@ -2070,7 +2070,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 根因是 `restore_inductor_baseline()` 不恢复 decomposition 表，而 default registrar 不可重入。
   不能把整个 registrar 标为 run-once，因为 experimental 的 gelu/dropout 等 override 后，default
   回切仍须重新应用自身状态。P-014 只允许把 erfc 纳入 registrar 既有 overload cleanup，再注册；
-  详细证据、失败目录与验收合同见 `report/t055_triton_experimental_enable_20260826.md`。
+  详细证据、失败目录与验收合同见 `report/archive/legacy-20260820-0828/t055_triton_experimental_enable_20260826.md`。
 
 ### E-152：T-056 experimental 独立静态 inventory（2026-08-26）
 
@@ -2085,8 +2085,8 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   静态 P0 风险包括：int→float→int 默认 pass 没有实现注释所需的 `|value|<2**24` 证明、GELU
   override 忽略 `approximate`、addmm/config/decomposition 可能跨 backend 泄漏、int64 boundary
   降为 int32；高收益候选是 addmm gate、permute-gather 与 outer rsplit。
-- 产物位于 `report/triton_experimental_20260826/`，说明见
-  `report/t056_triton_experimental_inventory_20260826.md`。这些是静态路由和测试优先级，不是
+- 产物位于 `report/archive/legacy-20260820-0828/triton_experimental_20260826/`，说明见
+  `report/archive/legacy-20260820-0828/t056_triton_experimental_inventory_20260826.md`。这些是静态路由和测试优先级，不是
   availability/performance verdict；T-057 先做状态快照与 correctness 边界，再做 paired 性能。
 
 ### E-153：T-057 backend 全局状态快照计划（2026-08-26）
@@ -2115,7 +2115,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - decomposition 回切 default 后，erfc由P-014安全重注册、GELU forward被清除，但 softmax
   backward、GELU backward、RMSNorm、native dropout forward/backward 仍为 experimental
   实现。pointwise marker 通过不能覆盖这些串态。
-- 详细报告：`report/t057_backend_state_isolation_20260826.md`。P-015 关闭前所有跨 backend
+- 详细报告：`report/archive/legacy-20260820-0828/t057_backend_state_isolation_20260826.md`。P-015 关闭前所有跨 backend
   对照必须独立 fresh process；P-014 保持单点崩溃修复，不扩张为完整 registry 恢复。
 
 ### E-155：T-057 int→float→int 值域验证计划（2026-08-26）
@@ -2145,7 +2145,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   NPU lowering/fallback：ON 在 lowering 前被 pass 消除；OFF 的 convert 进入 NPU override
   lowering，不是 ACLNN/CPU fallback。
 - verdict：`correctness-failed-default-on`。错误结果不进入性能测试，也不写重复 Triton；详细
-  报告为 `report/t057_int_float_int_boundary_20260826.md`，下一步按 P-016 先默认关闭。
+  报告为 `report/archive/legacy-20260820-0828/t057_int_float_int_boundary_20260826.md`，下一步按 P-016 先默认关闭。
 
 ### E-157：P-016 source gate 实施与验证（2026-08-26）
 
@@ -2183,7 +2183,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   tanh 只差 `4.768e-7/3.457e-6`。结论为 current-eager-compatible 但 upstream-contract-failed。
 - op-plugin 新 V2 路径携带 approximate，但兼容路径可调用无该参数的旧 ACLNN GELU，与本轮
   eager 结果一致。eager/CANN 问题另行路由；Inductor 侧仍登记 P-017 修复自身显式忽参。
-- 详细报告：`report/t057_gelu_approximate_20260826.md`。按图模式规范已检查两份
+- 详细报告：`report/archive/legacy-20260820-0828/t057_gelu_approximate_20260826.md`。按图模式规范已检查两份
   `output_code.py`/transformed FX；目标是 decomposition 后入 Triton kernel，不是 fallback。
 
 ### E-160：P-017 source 实施与六组 NPU 验证（2026-08-26）
@@ -2229,7 +2229,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   `20.66%/4.80%/18.84%`，中位数 `14.05%`。两侧 max allocated 均 `510,976 B`；首次编译+运行
   中位数 `19,628.63→925.31 ms`，因为 enabled 不再编译独立 Triton add。
 - 初版 runner 的二维误差索引错误和“激活后才改 config”的无效 enabled 均原样保留为中性尝试，
-  不纳入性能数据。详细报告为 `report/t058_experimental_addmm_gate_20260826.md`。
+  不纳入性能数据。详细报告为 `report/archive/legacy-20260820-0828/t058_experimental_addmm_gate_20260826.md`。
 - 当前 verdict 为 `representative-supported-beneficial-gate-shrink-coverage-pending`；登记 P-018，
   尚不改产品源码。下一步补 dtype/bias/layout/dynamic/backward 与合法负例。
 
@@ -2363,7 +2363,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 首轮使用 `rows=4096, groups=16, inner=128` 的 RMSNorm dweight 同构 sum，dynamic replay
   4097；OFF 预期 1 kernel/无 workspace，ON 预期 partial+combine 2 kernels/rsplit workspace。
 - 先 correctness/backend/generated code，后 paired performance；再补 r<2048、宽输出和非 sum/
-  welford negative。不修改源码，详细合同见 `report/t060_experimental_rsplit_outer_20260827.md`。
+  welford negative。不修改源码，详细合同见 `report/archive/legacy-20260820-0828/t060_experimental_rsplit_outer_20260827.md`。
 
 ### E-173：T-060 原生可达性与 hint 阻断（2026-08-27）
 
@@ -2443,7 +2443,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   当作有效 OFF 对照；动态探针必须记录真实 generated metadata，不能只读配置值。
 - 所有测试继续从 `/home/z50063656/tmp` 启动、per-compile 显式选择 `triton_experimental`、固定
   NPU 1，并保留 audit-only launcher shim 边界。完整合同见
-  `report/t061_experimental_int64_boundary_20260827.md`。
+  `report/archive/legacy-20260820-0828/t061_experimental_int64_boundary_20260827.md`。
 
 ### E-179：T-061 原生值域失败、fallback 方向与 memo UT（2026-08-27）
 
@@ -3625,7 +3625,7 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 
 ### E-226：当前矩阵与历史 registration 矩阵分层（2026-09-06）
 
-- 登记时间：2026-09-06 07:21 CST（UTC+08:00）。确认 `report/pass_src_20260820/` 的 251 行
+- 登记时间：2026-09-06 07:21 CST（UTC+08:00）。确认 `report/archive/legacy-20260820-0828/pass_src_20260820/` 的 251 行
   是项目转为 compatibility tracker 前的 registration/inventory 与多 backend 历史全景，不是当前
   acceptance-unit 真值表；保留 upstream pre/joint/post-grad 条目和 GPU reference
   `inductor-default` 均属预期，旧 NPU default/DVM/MLIR/custom 结论不得迁移。
@@ -3767,3 +3767,17 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 同步补齐 T-076 P-018：在 `issues/REF-addmm-contract-native/` 增加 gate 差异分析和候选验证，给出
   社区 addmm pattern、安装态不可逆关闭路径、P-018 live wrapper、必要调用链、精确社区正负合同与
   性能边界；明确它是已验证 capability 候选，不是安装态 correctness 回归或正式已启用功能。
+
+### E-237：远端文件树归并与历史报告收束（2026-09-07）
+
+- 登记时间：2026-09-07 10:35 CST（UTC+08:00）。`report/` 一级原有 82 个入口，旧 P0、T-012～T-072、
+  `pass_src_20260820/` 和 `triton_experimental_20260826/` 与当前 T-074～T-080 报告混排，当前事实源
+  和历史辅助证据不易区分。
+- 将 2026-08-20～08-28 报告整体移动到 `report/archive/legacy-20260820-0828/`，保留 Git 历史、
+  原始时间戳、backend 与结论；当前报告仍留在 `report/` 一级，并新增归档索引和根目录结构图。
+- 同步修正 docs、manifest、性能计划、脚本、生成矩阵与历史报告中的路径。审计快照保持生成时原貌，
+  不因目录整理回写历史内容。
+- 删除已确认截断且无法解析的 `results/incoming/T-076/text-handoff.json`，有效的 manifest 与五个分片
+  保留；删除 T-076～T-080 非空目录中的冗余 `.gitkeep`。上述删除均可从 Git 历史恢复。
+- 新增仓库结构回归，阻止旧报告重新散落到 `report/` 一级、活动文件重新引用旧位置，或在非空
+  incoming 任务目录恢复占位文件。

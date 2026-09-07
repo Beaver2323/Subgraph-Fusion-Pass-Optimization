@@ -1,8 +1,8 @@
 # 成果、失败与中性尝试索引
 
-> 索引更新时间：2026-09-06 07:21 CST（UTC+08:00）。
+> 索引更新时间：2026-09-07 10:35 CST（UTC+08:00）。
 > 这里汇总 2026-08-29 前已执行的动态工作，不代表 251 条 registration/inventory 记录全部完成；
-> 旧阶段逐条状态可追溯 `report/pass_src_20260820/pass_evaluation_matrix.csv`，该文件不计入当前
+> 旧阶段逐条状态可追溯 `report/archive/legacy-20260820-0828/pass_src_20260820/pass_evaluation_matrix.csv`，该文件不计入当前
 > verdict。当前逐 acceptance-unit 状态以
 > [current_acceptance_unit_matrix.md](../report/current_acceptance_unit_matrix.md) 为准。
 > P-013/default 工作已归档；用户随后恢复任务并将目标切换到
@@ -21,33 +21,33 @@
 
 | 对象 | 结果 | 当前状态 | 入口 |
 |---|---|---|---|
-| addmm fusion | 8/8 代表配置 p50 均超过 10%，训练 blocker 已修 | `supported-beneficial` | `report/p0_sweep_performance_20260820.md` |
-| different-K mm_plus_mm | 首批集成 p50 +15.29%/+18.04%，单 task | `conditional-supported-beneficial`，default-off | `report/t023_mmplus_different_k_integration_20260821.md` |
-| fold_cat | nested cat 2→1，p50/p99 +10.14%/+10.32%，allocated peak -2,097,664 B | `supported-beneficial` | `report/t033_fold_cat_performance_20260824.md` |
-| cat_to_view_pass | alias-safe，task 3→1，allocated peak -4,195,840 B | `supported-neutral-resource-beneficial` | `report/t029_t030_b2_alias_fix_performance_20260824.md` |
-| fold_expand | 正例删除 identity expand，负例保留广播 expand | 功能通过，性能待测 | `report/t028_p1_b2_npu_compile_20260821.md` |
-| repeat_to_expand_pass | broadcast-only repeat→expand，物理 copy 负例不改 | 功能通过，性能待测 | `report/t028_p1_b2_npu_compile_20260821.md` |
-| fold_sink_view/fold_squeeze/fold_redundant_ops | 正例真实改图，负例保持，完整 alias/对象身份合同通过 | 功能通过，性能待测 | `report/t034_b2_view_copy_compile_20260824.md` |
-| cat_slice_cat/pad_slice | 修复 alias/stride 后，p50 +24.00%/+31.35%，task 2→1/3→1，pad peak -10,485,248 B | 均为 `supported-beneficial` | `report/t036_b2_layout_alias_fix_20260825.md`、`report/t037_layout_pass_performance_20260825.md` |
-| dtype_optimal_pass | 仅比较闭包安全降宽；p50/p99 +52.06%/+50.48%，显存不增 | `supported-beneficial`（development/audit-shim） | `report/t038_dtype_index_mask_semantic_fix_20260825.md`、`report/t039_dtype_index_mask_performance_20260825.md` |
-| fold_iota_arithmetic_pass | 保留安全 iota 降宽并停用 Inf/overflow 不安全 cmp-sub；p50/p99 +55.78%/+54.51% | `supported-beneficial`（development/audit-shim） | `report/t038_dtype_index_mask_semantic_fix_20260825.md`、`report/t039_dtype_index_mask_performance_20260825.md` |
-| bool_cast_mul_to_where_pass | view-chain p50/p99 +36.30%/+39.90%；direct 性能负域已由 T-042 guard 停用 | `supported-beneficial`（exact-zero 整数/布尔 + 非空单用户 view chain） | `report/t041_mask_hamming_performance_20260825.md`、`report/t042_bool_view_guard_integration_20260825.md` |
-| batch_embedding_fusion_pass | 修复 step/dtype/alias；default/cat P50 +23.50%/+43.90%，tasks 9→3/13→3，但 peak/compile 增加 | `supported-neutral-resource-beneficial` | `report/t043_t046_b2_composite_passes_20260825.md` |
-| dvm_graph_fusion | 15/15 NPU；default→DVM P50/P99 +24.20%/+39.93%，首次编译 20.32→2.81 s，allocated peak 相同 | `supported-beneficial` | `report/t047_t048_b3_dvm_mlir_20260826.md` |
-| `_sfdp_pattern_1` | fp16 静态 inference 精确命中 vendor attention；P50/P99 +46.70%/+44.26%，task 4→1，allocated peak -87.31% | `supported-beneficial` | `report/t049_t050_b4_attention_first_20260826.md` |
-| `_sfdp_pattern_13` | 三维 BMM inference 落到 vendor attention；P50 仅 +0.99%，但 task 3→1、首次编译 +91.37%、allocated peak -87.31% | `supported-neutral-resource-beneficial` | `report/t051_b4_attention_pattern13_performance_20260826.md` |
-| P-013 pattern 5 NPU guard | 旧 rewrite P50 回退 103.23%、task 3→8；guard 后 P50 +50.28%、task 8→3、peak -1,054,720 B | guard `supported-beneficial`；rewrite 已停用 | `report/t053_b4_attention_pattern5_performance_20260826.md`、`report/t054_b4_attention_pattern5_guard_20260826.md` |
-| P-014 backend decomposition 重入 | 历史入口 12/12、切换 0/1；隔离 wheel 后 installed registrar 重入、原 T-055 13/13 与 default erfc 近邻回归通过 | `verified-installed-wheel` | `report/t055_triton_experimental_enable_20260826.md`、`issues/P014_backend_decomposition_reentry/修复验证报告.md` |
-| P-016 int→float→int 默认安全门禁 | Float32 ON/OFF 单点证明边界数值差 1；三 dtype ON 均破坏输出 alias；独立 wheel 默认关闭精确且不 alias，late opt-in 可达 | `verified-installed-wheel` | `report/t057_int_float_int_boundary_20260826.md`、`issues/P016_int_float_int_gate/修复验证报告.md` |
-| P-017 GELU approximate 合同 | installed P-013 把 none 固定成 tanh；独立 wheel 6/6 dtype/mode、非法参数 2/2、P-014 近邻 1/1 | `verified-installed-wheel` | `report/t057_gelu_approximate_20260826.md`、`issues/P017_gelu_approximate/修复验证报告.md` |
-| P-018 experimental addmm live gate | 独立 wheel 的 default/late-opt-out/restore、11/11 capability 通过；shape-A/unaligned host p50 +17.10%/+13.52%，Event device p50/p99 +19.87%/+19.10%，内存不增 | `verified-installed-wheel-beneficial-host-tail-monitor` | `report/t058_experimental_addmm_gate_20260826.md`、`issues/P018_addmm_gate/修复验证报告.md` |
-| T-059 experimental permute-gather | 安装态 6/6；代表 device p50/p99 +8.14%/+8.99%，但多 1 copy、peak +1,560,576 B 且有 host tail | `supported-beneficial-host-tail-memory-environment-monitor`，无源码修改 | `report/t059_experimental_permute_gather_20260826.md` |
-| P-019 experimental outer r-split | 独立 wheel target UT 5/5、NPU 9/9；三轮 device p50/p99 +32.67%/+28.58%，host p50 +26.20%，peak +393,728 B | `installed-wheel-verified-beneficial-device-host-p99-tail-monitor` | `report/t060_experimental_rsplit_outer_20260827.md`、`issues/P019_rsplit_default_gate/修复验证报告.md` |
-| P-020 experimental int64 dtype route | 原边界 4096/4096 mismatch；独立 wheel target UT 6/6、NPU 8/8 exact，FP32/embedding 控制组保持 | `installed-wheel-verified-correctness-restored-performance-characterized` | `report/t061_experimental_int64_boundary_20260827.md`、`issues/P020_experimental_int64_data_fallback/修复验证报告.md` |
-| T-062 experimental generate-list fallback | registry/keep 合同和功能 12/12；现有 fallback 正确，mixed audit-generate device p50/p99 +33.53%/+28.15% | `fallback-policy-verified-global-expansion-rejected`，无源码修改 | `report/t062_experimental_generate_list_20260828.md` |
-| T-063 experimental range-tree | 六项 AST/合成契约、NPU 14/14 配置和 18/18 对照通过；strided/root device p50 -2.14%/+0.08%，peak 不变 | `range-tree-contract-verified-defaults-retained-device-p99-host-tail-monitor`，无源码修改 | `report/t063_range_tree_20260828.md` |
-| T-065 experimental header tiling | 五项开关 10/10 正确性；input-stride device p50/p99 +27.81%/+24.23%，odometer +3.44%/+5.57%，align-8 中性 | `verified-active-defaults-retained-two-configs-ineffective-cleanup`，无源码修改 | `report/t065_header_tiling_20260828.md` |
-| T-071 recursive dict tag guard | 当前上游默认 False；两组 64-block NPU 训练 20/20 精确，三轮 CPU guard 关闭态 P50 开销中位 36.57% | `verified-upstream-default-false-safety-override-retained`，无源码修改 | `report/t071_recursive_guard_20260828.md` |
+| addmm fusion | 8/8 代表配置 p50 均超过 10%，训练 blocker 已修 | `supported-beneficial` | `report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md` |
+| different-K mm_plus_mm | 首批集成 p50 +15.29%/+18.04%，单 task | `conditional-supported-beneficial`，default-off | `report/archive/legacy-20260820-0828/t023_mmplus_different_k_integration_20260821.md` |
+| fold_cat | nested cat 2→1，p50/p99 +10.14%/+10.32%，allocated peak -2,097,664 B | `supported-beneficial` | `report/archive/legacy-20260820-0828/t033_fold_cat_performance_20260824.md` |
+| cat_to_view_pass | alias-safe，task 3→1，allocated peak -4,195,840 B | `supported-neutral-resource-beneficial` | `report/archive/legacy-20260820-0828/t029_t030_b2_alias_fix_performance_20260824.md` |
+| fold_expand | 正例删除 identity expand，负例保留广播 expand | 功能通过，性能待测 | `report/archive/legacy-20260820-0828/t028_p1_b2_npu_compile_20260821.md` |
+| repeat_to_expand_pass | broadcast-only repeat→expand，物理 copy 负例不改 | 功能通过，性能待测 | `report/archive/legacy-20260820-0828/t028_p1_b2_npu_compile_20260821.md` |
+| fold_sink_view/fold_squeeze/fold_redundant_ops | 正例真实改图，负例保持，完整 alias/对象身份合同通过 | 功能通过，性能待测 | `report/archive/legacy-20260820-0828/t034_b2_view_copy_compile_20260824.md` |
+| cat_slice_cat/pad_slice | 修复 alias/stride 后，p50 +24.00%/+31.35%，task 2→1/3→1，pad peak -10,485,248 B | 均为 `supported-beneficial` | `report/archive/legacy-20260820-0828/t036_b2_layout_alias_fix_20260825.md`、`report/archive/legacy-20260820-0828/t037_layout_pass_performance_20260825.md` |
+| dtype_optimal_pass | 仅比较闭包安全降宽；p50/p99 +52.06%/+50.48%，显存不增 | `supported-beneficial`（development/audit-shim） | `report/archive/legacy-20260820-0828/t038_dtype_index_mask_semantic_fix_20260825.md`、`report/archive/legacy-20260820-0828/t039_dtype_index_mask_performance_20260825.md` |
+| fold_iota_arithmetic_pass | 保留安全 iota 降宽并停用 Inf/overflow 不安全 cmp-sub；p50/p99 +55.78%/+54.51% | `supported-beneficial`（development/audit-shim） | `report/archive/legacy-20260820-0828/t038_dtype_index_mask_semantic_fix_20260825.md`、`report/archive/legacy-20260820-0828/t039_dtype_index_mask_performance_20260825.md` |
+| bool_cast_mul_to_where_pass | view-chain p50/p99 +36.30%/+39.90%；direct 性能负域已由 T-042 guard 停用 | `supported-beneficial`（exact-zero 整数/布尔 + 非空单用户 view chain） | `report/archive/legacy-20260820-0828/t041_mask_hamming_performance_20260825.md`、`report/archive/legacy-20260820-0828/t042_bool_view_guard_integration_20260825.md` |
+| batch_embedding_fusion_pass | 修复 step/dtype/alias；default/cat P50 +23.50%/+43.90%，tasks 9→3/13→3，但 peak/compile 增加 | `supported-neutral-resource-beneficial` | `report/archive/legacy-20260820-0828/t043_t046_b2_composite_passes_20260825.md` |
+| dvm_graph_fusion | 15/15 NPU；default→DVM P50/P99 +24.20%/+39.93%，首次编译 20.32→2.81 s，allocated peak 相同 | `supported-beneficial` | `report/archive/legacy-20260820-0828/t047_t048_b3_dvm_mlir_20260826.md` |
+| `_sfdp_pattern_1` | fp16 静态 inference 精确命中 vendor attention；P50/P99 +46.70%/+44.26%，task 4→1，allocated peak -87.31% | `supported-beneficial` | `report/archive/legacy-20260820-0828/t049_t050_b4_attention_first_20260826.md` |
+| `_sfdp_pattern_13` | 三维 BMM inference 落到 vendor attention；P50 仅 +0.99%，但 task 3→1、首次编译 +91.37%、allocated peak -87.31% | `supported-neutral-resource-beneficial` | `report/archive/legacy-20260820-0828/t051_b4_attention_pattern13_performance_20260826.md` |
+| P-013 pattern 5 NPU guard | 旧 rewrite P50 回退 103.23%、task 3→8；guard 后 P50 +50.28%、task 8→3、peak -1,054,720 B | guard `supported-beneficial`；rewrite 已停用 | `report/archive/legacy-20260820-0828/t053_b4_attention_pattern5_performance_20260826.md`、`report/archive/legacy-20260820-0828/t054_b4_attention_pattern5_guard_20260826.md` |
+| P-014 backend decomposition 重入 | 历史入口 12/12、切换 0/1；隔离 wheel 后 installed registrar 重入、原 T-055 13/13 与 default erfc 近邻回归通过 | `verified-installed-wheel` | `report/archive/legacy-20260820-0828/t055_triton_experimental_enable_20260826.md`、`issues/P014_backend_decomposition_reentry/修复验证报告.md` |
+| P-016 int→float→int 默认安全门禁 | Float32 ON/OFF 单点证明边界数值差 1；三 dtype ON 均破坏输出 alias；独立 wheel 默认关闭精确且不 alias，late opt-in 可达 | `verified-installed-wheel` | `report/archive/legacy-20260820-0828/t057_int_float_int_boundary_20260826.md`、`issues/P016_int_float_int_gate/修复验证报告.md` |
+| P-017 GELU approximate 合同 | installed P-013 把 none 固定成 tanh；独立 wheel 6/6 dtype/mode、非法参数 2/2、P-014 近邻 1/1 | `verified-installed-wheel` | `report/archive/legacy-20260820-0828/t057_gelu_approximate_20260826.md`、`issues/P017_gelu_approximate/修复验证报告.md` |
+| P-018 experimental addmm live gate | 独立 wheel 的 default/late-opt-out/restore、11/11 capability 通过；shape-A/unaligned host p50 +17.10%/+13.52%，Event device p50/p99 +19.87%/+19.10%，内存不增 | `verified-installed-wheel-beneficial-host-tail-monitor` | `report/archive/legacy-20260820-0828/t058_experimental_addmm_gate_20260826.md`、`issues/P018_addmm_gate/修复验证报告.md` |
+| T-059 experimental permute-gather | 安装态 6/6；代表 device p50/p99 +8.14%/+8.99%，但多 1 copy、peak +1,560,576 B 且有 host tail | `supported-beneficial-host-tail-memory-environment-monitor`，无源码修改 | `report/archive/legacy-20260820-0828/t059_experimental_permute_gather_20260826.md` |
+| P-019 experimental outer r-split | 独立 wheel target UT 5/5、NPU 9/9；三轮 device p50/p99 +32.67%/+28.58%，host p50 +26.20%，peak +393,728 B | `installed-wheel-verified-beneficial-device-host-p99-tail-monitor` | `report/archive/legacy-20260820-0828/t060_experimental_rsplit_outer_20260827.md`、`issues/P019_rsplit_default_gate/修复验证报告.md` |
+| P-020 experimental int64 dtype route | 原边界 4096/4096 mismatch；独立 wheel target UT 6/6、NPU 8/8 exact，FP32/embedding 控制组保持 | `installed-wheel-verified-correctness-restored-performance-characterized` | `report/archive/legacy-20260820-0828/t061_experimental_int64_boundary_20260827.md`、`issues/P020_experimental_int64_data_fallback/修复验证报告.md` |
+| T-062 experimental generate-list fallback | registry/keep 合同和功能 12/12；现有 fallback 正确，mixed audit-generate device p50/p99 +33.53%/+28.15% | `fallback-policy-verified-global-expansion-rejected`，无源码修改 | `report/archive/legacy-20260820-0828/t062_experimental_generate_list_20260828.md` |
+| T-063 experimental range-tree | 六项 AST/合成契约、NPU 14/14 配置和 18/18 对照通过；strided/root device p50 -2.14%/+0.08%，peak 不变 | `range-tree-contract-verified-defaults-retained-device-p99-host-tail-monitor`，无源码修改 | `report/archive/legacy-20260820-0828/t063_range_tree_20260828.md` |
+| T-065 experimental header tiling | 五项开关 10/10 正确性；input-stride device p50/p99 +27.81%/+24.23%，odometer +3.44%/+5.57%，align-8 中性 | `verified-active-defaults-retained-two-configs-ineffective-cleanup`，无源码修改 | `report/archive/legacy-20260820-0828/t065_header_tiling_20260828.md` |
+| T-071 recursive dict tag guard | 当前上游默认 False；两组 64-block NPU 训练 20/20 精确，三轮 CPU guard 关闭态 P50 开销中位 36.57% | `verified-upstream-default-false-safety-override-retained`，无源码修改 | `report/archive/legacy-20260820-0828/t071_recursive_guard_20260828.md` |
 
 ## 已否决或失败的尝试
 

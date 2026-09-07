@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-07 09:50 CST（UTC+08:00）
+> 索引更新时间：2026-09-07 10:35 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -36,18 +36,14 @@
 | [t074_upstream_pass_test_index_20260829.md](t074_upstream_pass_test_index_20260829.md) | T-074 registration candidate、community test 和 provisional unit 总结 | 静态 v1，不是冻结分母 |
 | [candidate_test_index.csv](upstream_pass_test_index_20260829/candidate_test_index.csv) | 207 条 candidate/control 行与测试映射 | inventory 输入，动态状态均未运行 |
 | [acceptance_units.csv](upstream_pass_test_index_20260829/acceptance_units.csv) | 188 个 heuristic 去重单元 | 158 eligible 仍为 provisional |
-| [t056_triton_experimental_inventory_20260826.md](t056_triton_experimental_inventory_20260826.md) | T-074 的静态路由来源 | candidate discovery 辅助证据 |
-| [triton_experimental_20260826/](triton_experimental_20260826/) | config、feature family 和 route CSV | previous inventory，不是任务分母 |
+| [t056_triton_experimental_inventory_20260826.md](archive/legacy-20260820-0828/t056_triton_experimental_inventory_20260826.md) | T-074 的静态路由来源 | candidate discovery 辅助证据 |
+| [triton_experimental_20260826/](archive/legacy-20260820-0828/triton_experimental_20260826/) | config、feature family 和 route CSV | previous inventory，不是任务分母 |
 
 ## 历史阶段导航
 
 | 阶段 | 文件范围 | 说明 |
 | --- | --- | --- |
-| 初始 inventory/P0 | `pass_inventory*`、`pass_src_20260820/`、`p0_*` | default-backend 早期清单和基线；`pass_src_20260820/README.md` 已明确标为非计数历史证据 |
-| MM/pad 第一批 | `t012_*`～`t025_t026_*` | mm_plus_mm、pad family 和替代方案证据 |
-| torch_npu custom pass | `t027_*`～`t043_t046_*` | B2 结构、语义、alias 和性能 |
-| DVM/MLIR/attention | `t047_*`～`t054_*` | B3/B4 历史结果 |
-| experimental feature family | `t055_*`～`t072_*` | backend 启用、lowering、codegen、autotune 等专项证据 |
+| 2026-08-20～2026-08-28 旧工作线 | [archive/legacy-20260820-0828/](archive/legacy-20260820-0828/) | P0、MM/pad、torch_npu custom pass、DVM/MLIR、attention 与 experimental feature-family 历史证据；原结论不改写 |
 
 ## 使用规则
 

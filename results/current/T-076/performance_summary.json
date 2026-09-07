@@ -11,7 +11,7 @@
       "performance_status": "measured",
       "verdict": "representative-beneficial-with-neutral-layouts",
       "backend_reuse_check": "passed",
-      "evidence": "report/p0_sweep_performance_20260820.md",
+      "evidence": "report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md",
       "result": "FP16/BF16/FP32 static contiguous 的 p50 分别改善 12.5%/16.5%/11.0%；transposed 6.4%、dynamic 高样本 8.74%，后两者为 neutral。"
     },
     {
@@ -40,7 +40,7 @@
       "performance_status": "measured",
       "verdict": "beneficial-with-host-tail-monitor",
       "backend_reuse_check": "passed",
-      "evidence": "report/t058_experimental_addmm_gate_20260826.md；installed 复核见 docs/CHANGE_CONTROL.md::E-167",
+      "evidence": "report/archive/legacy-20260820-0828/t058_experimental_addmm_gate_20260826.md；installed 复核见 docs/CHANGE_CONTROL.md::E-167",
       "result": "experimental OFF/ON 三轮代表 cohort 的 p50/p99 中位数改善 22.17%/14.05%，allocated 不增；P-018 installed 复核保留 unaligned host p99 长尾。"
     }
   ]

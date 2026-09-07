@@ -72,5 +72,5 @@ baseline 首次编译+执行为 `19906.98771 ms`，candidate 为 `5107.895 ms`�
 - [当前状态与背景](../../CURRENT_STATUS.md)
 - [变更控制与逐次证据](../../CHANGE_CONTROL.md)
 - [从头学习指南](../../GUIDE.md)
-- [T-012 paired baseline](../../../report/t012_mmplus_different_k_baseline_20260821.md)
-- [T-013 profiler 报告](../../../report/t013_mmplus_different_k_profile_20260821.md)
+- [T-012 paired baseline](../../../report/archive/legacy-20260820-0828/t012_mmplus_different_k_baseline_20260821.md)
+- [T-013 profiler 报告](../../../report/archive/legacy-20260820-0828/t013_mmplus_different_k_profile_20260821.md)

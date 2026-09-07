@@ -77,7 +77,7 @@ evidence, matrix workflow, and the next implementation stages.
 
 For the exact project scope and source edit map, read
 [task_scope_and_code_map.md](../../SCOPE_AND_CODE_MAP.md). The current source
-inventory is under `report/pass_src_20260820/`; the root-level report is the
+inventory is under `report/archive/legacy-20260820-0828/pass_src_20260820/`; the root-level report is the
 older `/Dynamo` snapshot and is retained for comparison.
 
 P0 gate cases are specified in [p0_case_design.md](../plans/p0_case_design.md). The next
@@ -99,15 +99,15 @@ source wheel with `--no-deps`, and closed vector/full-bias backward plus neighbo
 regressions. Addmm is now `supported-beneficial`; T-023 has moved different-K
 `mm_plus_mm` to `conditional-supported-beneficial` through a default-off NPU
 template with extern fallback. See
-[p0_sweep_function_matrix_20260820.md](../../../report/p0_sweep_function_matrix_20260820.md)
+[p0_sweep_function_matrix_20260820.md](../../../report/archive/legacy-20260820-0828/p0_sweep_function_matrix_20260820.md)
 and
-[p0_sweep_performance_20260820.md](../../../report/p0_sweep_performance_20260820.md), then
-[p0_semantic_matrix_20260821.md](../../../report/p0_semantic_matrix_20260821.md).
+[p0_sweep_performance_20260820.md](../../../report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md), then
+[p0_semantic_matrix_20260821.md](../../../report/archive/legacy-20260820-0828/p0_semantic_matrix_20260821.md).
 The different-K pass-on/pass-off baseline is in
-[t012_mmplus_different_k_baseline_20260821.md](../../../report/t012_mmplus_different_k_baseline_20260821.md):
+[t012_mmplus_different_k_baseline_20260821.md](../../../report/archive/legacy-20260820-0828/t012_mmplus_different_k_baseline_20260821.md):
 shape-A is -0.30% and unaligned is +2.53% at p50, so the current fallback is
 performance-neutral. The follow-up kernel breakdown is in
-[t013_mmplus_different_k_profile_20260821.md](../../../report/t013_mmplus_different_k_profile_20260821.md):
+[t013_mmplus_different_k_profile_20260821.md](../../../report/archive/legacy-20260820-0828/t013_mmplus_different_k_profile_20260821.md):
 two in-step gaps plus add leave a 17.68%/16.02% theoretical ceiling, which
 allows a standalone microprototype but not a source integration. T-014 through
 T-019 show that the 128³ candidate is one-task and covers fp16/bf16/fp32,
@@ -123,14 +123,14 @@ fallback. T-022 re-profiled three large tiles: device p50 is
 6.64%/6.97%/7.55%, so large is now `supported-neutral-hold`. Its steady memory
 decomposition shows candidate allocated peak exceeds baseline by one 655,360 B
 logical output; the older 5.90 MB value included long-lived first outputs. See the
-[T-014–T-016 report](../../../report/t014_t016_mmplus_different_k_candidate_20260821.md),
-[T-017–T-019 coverage report](../../../report/t017_t019_mmplus_different_k_coverage_20260821.md),
-the [T-020 extended benchmark](../../../report/t020_mmplus_different_k_extended_benchmark_20260821.md),
-the [T-021 integration design](../../../report/t021_mmplus_different_k_integration_design_20260821.md),
-the [T-022 large decomposition](../../../report/t022_mmplus_different_k_large_profile_20260821.md),
-the [T-023 integration report](../../../report/t023_mmplus_different_k_integration_20260821.md),
-the [T-024 workspace audit](../../../report/t024_mmplus_different_k_workspace_20260821.md),
-and the [T-025/T-026 pad audit](../../../report/t025_t026_pad_family_20260821.md).
+[T-014–T-016 report](../../../report/archive/legacy-20260820-0828/t014_t016_mmplus_different_k_candidate_20260821.md),
+[T-017–T-019 coverage report](../../../report/archive/legacy-20260820-0828/t017_t019_mmplus_different_k_coverage_20260821.md),
+the [T-020 extended benchmark](../../../report/archive/legacy-20260820-0828/t020_mmplus_different_k_extended_benchmark_20260821.md),
+the [T-021 integration design](../../../report/archive/legacy-20260820-0828/t021_mmplus_different_k_integration_design_20260821.md),
+the [T-022 large decomposition](../../../report/archive/legacy-20260820-0828/t022_mmplus_different_k_large_profile_20260821.md),
+the [T-023 integration report](../../../report/archive/legacy-20260820-0828/t023_mmplus_different_k_integration_20260821.md),
+the [T-024 workspace audit](../../../report/archive/legacy-20260820-0828/t024_mmplus_different_k_workspace_20260821.md),
+and the [T-025/T-026 pad audit](../../../report/archive/legacy-20260820-0828/t025_t026_pad_family_20260821.md).
 T-023 shape-A/unaligned integrated p50 improves 15.29%/18.04%, but candidate
 peak allocated is 270,336 B above baseline because Triton Ascend allocates
 65,536 B workspace for each of six blocks. T-024 found no configuration that
@@ -139,23 +139,23 @@ remains default-off with a 131072-element output cap; the formal matrix verdict
 is conditional until a matching no-shim launcher environment is verified.
 
 The first P1 B2 checkpoint is in
-[T-028](../../../report/t028_p1_b2_npu_compile_20260821.md) and the
-[T-029/T-030/T-031 closure report](../../../report/t029_t030_b2_alias_fix_performance_20260824.md).
+[T-028](../../../report/archive/legacy-20260820-0828/t028_p1_b2_npu_compile_20260821.md) and the
+[T-029/T-030/T-031 closure report](../../../report/archive/legacy-20260820-0828/t029_t030_b2_alias_fix_performance_20260824.md).
 The important distinction is explicit: `fold_reduce -> clone` was a correct but
 performance-regressed intermediate attempt; `cat_to_view -> clone` is retained
 as `supported-neutral-resource-beneficial`. Three other positives were removed
 before their target pass and remain reachability-neutral, not attributed wins.
 The second cohort is in the
-[T-032 compile report](../../../report/t032_b2_redundancy_compile_20260824.md) and
-[T-033 fold_cat performance report](../../../report/t033_fold_cat_performance_20260824.md).
+[T-032 compile report](../../../report/archive/legacy-20260820-0828/t032_b2_redundancy_compile_20260824.md) and
+[T-033 fold_cat performance report](../../../report/archive/legacy-20260820-0828/t033_fold_cat_performance_20260824.md).
 The third cohort is in the
-[T-034 compile report](../../../report/t034_b2_view_copy_compile_20260824.md) and
-[T-035 fold_where performance report](../../../report/t035_fold_where_performance_20260824.md).
+[T-034 compile report](../../../report/archive/legacy-20260820-0828/t034_b2_view_copy_compile_20260824.md) and
+[T-035 fold_where performance report](../../../report/archive/legacy-20260820-0828/t035_fold_where_performance_20260824.md).
 The fourth cohort's alias defects, conservative source fix, rebuilt wheel, and
 functional closure are in the
-[T-036 layout alias report](../../../report/t036_b2_layout_alias_fix_20260825.md); its
+[T-036 layout alias report](../../../report/archive/legacy-20260820-0828/t036_b2_layout_alias_fix_20260825.md); its
 three-round paired performance is in the
-[T-037 layout performance report](../../../report/t037_layout_pass_performance_20260825.md).
+[T-037 layout performance report](../../../report/archive/legacy-20260820-0828/t037_layout_pass_performance_20260825.md).
 
 ## 1. Generate the full source inventory
 
@@ -164,7 +164,7 @@ cd /home/z50063656/tmp
 python /home/z50063656/Pass/inductor_pass_npu_audit/audit_passes.py \
   --pytorch-root /home/z50063656/Pass/src/pytorch \
   --torch-npu-root /home/z50063656/Pass/src/torch_npu \
-  --output /home/z50063656/Pass/inductor_pass_npu_audit/report/pass_src_20260820
+  --output /home/z50063656/Pass/inductor_pass_npu_audit/report/archive/legacy-20260820-0828/pass_src_20260820
 ```
 
 The JSON contains one record per pipeline observer, pattern entry, registered
@@ -179,7 +179,7 @@ torch; each case/backend pair runs in a fresh worker:
 ```bash
 cd /home/z50063656/tmp
 python /home/z50063656/Pass/inductor_pass_npu_audit/run_p0_gate_probe.py \
-  --output /home/z50063656/Pass/inductor_pass_npu_audit/report/pass_src_20260820/p0_probe \
+  --output /home/z50063656/Pass/inductor_pass_npu_audit/report/archive/legacy-20260820-0828/pass_src_20260820/p0_probe \
   --backends default,triton_experimental --debug
 ```
 

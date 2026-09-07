@@ -317,7 +317,7 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
         f"> 生成时间：{generated_at}",
         "> 数据源：`upstream/*manifest.yaml`、`results/current/` 与逐任务性能计划/汇总。",
         "> 后端边界：GPU reference 固定为 `inductor-default`；NPU 动态验证、比较、修复验证与性能固定为 `triton_experimental`。",
-        "> 历史 251 行 registration 矩阵不参与本表 verdict；其用途与边界见 `report/pass_src_20260820/README.md`。",
+        "> 历史 251 行 registration 矩阵不参与本表 verdict；其用途与边界见 `report/archive/legacy-20260820-0828/pass_src_20260820/README.md`。",
         "",
         "## 状态摘要",
         "",

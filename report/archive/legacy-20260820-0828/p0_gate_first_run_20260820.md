@@ -66,7 +66,7 @@
 - 哨兵：`results/p0_gate_smoke_20260820/p0_gate_probe.json`
 - 首轮分 family JSON：`results/p0_gate_first_run_20260820/*/p0_gate_probe.json`
 - debug artifacts：各 family 目录下的 `debug/<backend>/<case>/torch_compile_debug/`
-- 对应矩阵：`report/pass_src_20260820/pass_evaluation_matrix.csv`
+- 对应矩阵：`report/archive/legacy-20260820-0828/pass_src_20260820/pass_evaluation_matrix.csv`
 
 ## 后续动作
 

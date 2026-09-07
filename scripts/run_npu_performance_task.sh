@@ -41,9 +41,9 @@ task_id="${task_id^^}"
 case "${task_id}" in
     T-076|T076)
         for path in \
-            report/p0_sweep_performance_20260820.md \
-            report/t025_t026_pad_family_20260821.md \
-            report/t058_experimental_addmm_gate_20260826.md; do
+            report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md \
+            report/archive/legacy-20260820-0828/t025_t026_pad_family_20260821.md \
+            report/archive/legacy-20260820-0828/t058_experimental_addmm_gate_20260826.md; do
             test -s "${repo_root}/${path}" || { echo "错误：缺少 ${path}" >&2; exit 2; }
         done
         echo "performance_task=T-076 status=disposition-complete-two-backend-aligned-measurements-three-explicitly-disabled-exemptions"

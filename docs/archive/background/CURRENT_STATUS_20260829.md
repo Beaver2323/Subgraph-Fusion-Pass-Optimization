@@ -112,7 +112,7 @@ T-057 第一项状态快照已完成并确认串态：34 个 addmm check、五�
 `should_fold` 与五个 decomposition 在回切 default 后没有完整恢复。当前只能把
 `triton_experimental` 作为 fresh-process 单 backend 使用；P-015 已登记为设计阻断，尚未实施。
 int-float-int 的详细边界和生成图分析见
-`report/t057_int_float_int_boundary_20260826.md`；FP16/BF16 pass-OFF 还暴露独立的
+`report/archive/legacy-20260820-0828/t057_int_float_int_boundary_20260826.md`；FP16/BF16 pass-OFF 还暴露独立的
 compute-type 上浮现象，已与 P-016 最小修复分开记录。
 
 当前 251 条矩阵 verdict 为 220 条 `not-run`、2 条 `not-applicable`、4 条 `unsupported`、9 条 `supported-beneficial`、1 条 `conditional-supported-beneficial`、9 条 `supported-neutral`、3 条 `supported-neutral-resource-beneficial`、3 条 `supported-pass-disabled-performance-rejected`。pattern 1 是第九个直接 beneficial 项；pattern 13 是第三个 resource-beneficial 项；pattern 5 rewrite 是第三个被性能证据停用的 pass。旧 `/Dynamo` 194 条清单只保留作历史对照。
@@ -193,9 +193,9 @@ launcher 仍需匹配 PyTorch C++20、Triton Ascend、torch_npu 与 CANN headers
 
 产物：
 
-- `report/pass_src_20260820/pass_inventory.json`：机器可读清单。
-- `report/pass_src_20260820/pass_inventory.md`：人工审阅索引。
-- `report/pass_src_20260820/pass_evaluation_matrix.csv`：251 条逐项验收合同；当前 220 条 `not-run`，另有 31 条已形成 verdict；B2/B3 已闭环，B4 已关闭 pattern 1、13、5 三条性能记录。
+- `report/archive/legacy-20260820-0828/pass_src_20260820/pass_inventory.json`：机器可读清单。
+- `report/archive/legacy-20260820-0828/pass_src_20260820/pass_inventory.md`：人工审阅索引。
+- `report/archive/legacy-20260820-0828/pass_src_20260820/pass_evaluation_matrix.csv`：251 条逐项验收合同；当前 220 条 `not-run`，另有 31 条已形成 verdict；B2/B3 已闭环，B4 已关闭 pattern 1、13、5 三条性能记录。
 - `audit_passes.py`：不导入 torch 的静态清单生成器。
 
 当前源码基线为 PyTorch `release/2.14@8e86e0a`、torch_npu `master@83cc452`、Triton Ascend `release/3.2.2@8bd9f38`。torch_npu 的 torchair/inductor-npu-ext 子模块未初始化，因此旧清单中的 5 条 npu-ext 记录没有冒充为当前源码可用项。
@@ -254,37 +254,37 @@ launcher 仍需匹配 PyTorch C++20、Triton Ascend、torch_npu 与 CANN headers
    `supported-neutral-resource-beneficial`。`fusion_attention_v3_pass` 修复 schema、输出用户、
    fake meta 和重复 PRE 调用后虽功能正确，B2 paired P50/P99 仍回退 4.85%/31.72%，最终
    非 A5 保持 legacy op。`fused_matmul_relu_pass` 在 910B2 正确 device-gated，不冒充 A5
-   结论。完整证据见 `report/t043_t046_b2_composite_passes_20260825.md`。
+   结论。完整证据见 `report/archive/legacy-20260820-0828/t043_t046_b2_composite_passes_20260825.md`。
 
    T-047/T-048 关闭 B3 八条。P-012 把 sum pre/post-cast 限制到 DVM 支持的低精度浮点域，
    并补齐 expand helper 的 meta/return/recompile 合同；新 wheel 通过 source/installed 6/6、
    graph-fusion 15/15 和 DVM backend 32/32。aggregate paired P50/P99 改善
    24.20%/39.93%，首次编译从 20.32 s 降到 2.81 s，显存不增，记 beneficial。K=1 helper
    在真实 compile 前已被上游分解，expand helper 则被当前 capability list 排除；完整 MLIR
-   backend 缺 `torch_mlir`。证据见 `report/t047_t048_b3_dvm_mlir_20260826.md`。
+   backend 缺 `torch_mlir`。证据见 `report/archive/legacy-20260820-0828/t047_t048_b3_dvm_mlir_20260826.md`。
 
    T-049/T-050 已进入 B4。七个代表 attention family 都有 exact matcher、数值和最终 codegen
    证据，但只有 1/13 直接落到无辅助 Triton 的 vendor FlashAttention；5/21/29 的 matcher 虽命中，
    最终仍是 BMM + Triton 数学路径。pattern 1 正式 paired 的 P50/P99 改善 46.70%/44.26%，
    首次编译改善 95.72%，additional allocated peak 减少 87.31%，关闭为 beneficial。scale 审计
    证明 positional/keyword 等价且沿用 legacy divisor 合同。证据见
-   `report/t049_t050_b4_attention_first_20260826.md`。
+   `report/archive/legacy-20260820-0828/t049_t050_b4_attention_first_20260826.md`。
 
    T-051 对 pattern 13 做相同隔离。P50 仅改善 0.99%，P99 回退 0.05%，未过 latency 门槛；
    但 task 3→1、首次编译改善 91.37%、allocated peak 减少 87.31%，因此关闭为
    `supported-neutral-resource-beneficial`。证据见
-   `report/t051_b4_attention_pattern13_performance_20260826.md`。
+   `report/archive/legacy-20260820-0828/t051_b4_attention_pattern13_performance_20260826.md`。
 
    T-052 证明 pattern 5/21/29 都因 float additive mask 落入 torch_npu SDPA math fallback；两个
    vendor branch 只接受 bool/None。无 mask pattern 30 exact 命中单个 vendor attention。一般 float
-   bias 不能无损转 bool，当前不扩大 gate。证据见 `report/t052_b4_attention_float_mask_dispatch_20260826.md`。
+   bias 不能无损转 bool，当前不扩大 gate。证据见 `report/archive/legacy-20260820-0828/t052_b4_attention_float_mask_dispatch_20260826.md`。
 
    T-053/T-054 关闭 pattern 5 性能负域。旧 rewrite 将原图 `2 BMM + 1 Triton` 重展开为
    `2 BMM + 6 Triton`，P50/P99 回退 103.23%/101.20%。P-013 只在 NPU default backend 精确
    停用 half-inference entry；新 wheel 同机 paired P50/P99 改善 50.28%/24.26%、task 8→3、
    allocated peak 减少 1,054,720 B，pattern 1/13/21 邻近回归通过。证据见
-   `report/t053_b4_attention_pattern5_performance_20260826.md` 与
-   `report/t054_b4_attention_pattern5_guard_20260826.md`。
+   `report/archive/legacy-20260820-0828/t053_b4_attention_pattern5_performance_20260826.md` 与
+   `report/archive/legacy-20260820-0828/t054_b4_attention_pattern5_guard_20260826.md`。
 
 所有产品修改都已先在 `change_control.md` 登记。addmm、different-K、pad family、B2 27 条
 与 B3 8 条均已有成功、失败、中性、到达性或环境/device-gated 证据；当前主线继续 B4，下一步
@@ -303,15 +303,15 @@ launcher 仍需匹配 PyTorch C++20、Triton Ascend、torch_npu 与 CANN headers
 
 该脚本尚未在稳定的任务环境中验证，不应直接作为正式 benchmark。
 
-另已新增 `run_p0_gate_probe.py`，专门覆盖 `mm_plus_mm`、`pad_mm`、`pad_bmm`、`pad_addmm`、`addmm fusion` 五个 P0 family，共 10 个正/负用例。它的主进程不导入 torch，每个 case/backend 使用独立 worker，并区分“编译与正确性通过”和“目标 pass 已确认触发”。首轮 `default,triton_experimental` 共 20 个 NPU 组合已全部 `compile-correct`；详细触发结论见 `report/p0_gate_first_run_20260820.md`。探针还提供测试侧 `--disable-target-pass`，用于 fresh-worker 单 pass A/B；首个 shape 的三轮结果见 `report/p0_ab_first_shape_20260820.md`。
+另已新增 `run_p0_gate_probe.py`，专门覆盖 `mm_plus_mm`、`pad_mm`、`pad_bmm`、`pad_addmm`、`addmm fusion` 五个 P0 family，共 10 个正/负用例。它的主进程不导入 torch，每个 case/backend 使用独立 worker，并区分“编译与正确性通过”和“目标 pass 已确认触发”。首轮 `default,triton_experimental` 共 20 个 NPU 组合已全部 `compile-correct`；详细触发结论见 `report/archive/legacy-20260820-0828/p0_gate_first_run_20260820.md`。探针还提供测试侧 `--disable-target-pass`，用于 fresh-worker 单 pass A/B；首个 shape 的三轮结果见 `report/archive/legacy-20260820-0828/p0_ab_first_shape_20260820.md`。
 
-2026-08-20 又完成 P0 覆盖扩展哨兵：旧 fp16/shape-A 行为 4/4 回归通过；default/addmm 在 bf16、small、真实转置 stride 和第二组动态 shape 上仍生成符号化 `aten.addmm`；experimental/mm_plus_mm 在 fp32、非对齐、真实转置 stride和第二组动态 shape 上仍生成符号化 `_mm_plus_mm`。本轮没有采性能，详细证据见 `report/p0_sweep_smoke_20260820.md`。
+2026-08-20 又完成 P0 覆盖扩展哨兵：旧 fp16/shape-A 行为 4/4 回归通过；default/addmm 在 bf16、small、真实转置 stride 和第二组动态 shape 上仍生成符号化 `aten.addmm`；experimental/mm_plus_mm 在 fp32、非对齐、真实转置 stride和第二组动态 shape 上仍生成符号化 `_mm_plus_mm`。本轮没有采性能，详细证据见 `report/archive/legacy-20260820-0828/p0_sweep_smoke_20260820.md`。
 
-随后完成 P0 非笛卡尔代表功能矩阵：addmm/default 与 mm_plus_mm/experimental 各 8 个配置，共 16/16 正确且 16/16 目标图确认，覆盖三 dtype、四个代表 shape、真实转置输入和动态 replay。addmm 的 bf16 最大绝对差 0.5，但逐元素 bf16 容差通过，已保留为后续精度边界。详细证据见 `report/p0_sweep_function_matrix_20260820.md`。
+随后完成 P0 非笛卡尔代表功能矩阵：addmm/default 与 mm_plus_mm/experimental 各 8 个配置，共 16/16 正确且 16/16 目标图确认，覆盖三 dtype、四个代表 shape、真实转置输入和动态 replay。addmm 的 bf16 最大绝对差 0.5，但逐元素 bf16 容差通过，已保留为后续精度边界。详细证据见 `report/archive/legacy-20260820-0828/p0_sweep_function_matrix_20260820.md`。
 
-相同 cohort 的 current/disabled paired benchmark 主矩阵 96/96 正确，另有 mm_plus_mm dynamic runs 300 复核 6/6 正确。addmm 8/8 配置的 p50 收益超过 10%；mm_plus_mm 6/8 超过 10%，transposed 6.4% 和 dynamic 8.74% 记为 `supported-neutral`，没有配置出现 p50 回退。全部采样使用开始和结束时均无进程的物理 NPU 2，未混用其他卡上的外部任务。详细证据见 `report/p0_sweep_performance_20260820.md`。结合后续语义和 T-011 回归，addmm 已关闭 final verdict；mm_plus_mm 仍受 default gate 限制。
+相同 cohort 的 current/disabled paired benchmark 主矩阵 96/96 正确，另有 mm_plus_mm dynamic runs 300 复核 6/6 正确。addmm 8/8 配置的 p50 收益超过 10%；mm_plus_mm 6/8 超过 10%，transposed 6.4% 和 dynamic 8.74% 记为 `supported-neutral`，没有配置出现 p50 回退。全部采样使用开始和结束时均无进程的物理 NPU 2，未混用其他卡上的外部任务。详细证据见 `report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md`。结合后续语义和 T-011 回归，addmm 已关闭 final verdict；mm_plus_mm 仍受 default gate 限制。
 
-P0 语义层先完成 6 个 inference case 和 3 个 forward/backward case。inference 6/6 正确并符合触发/不触发预期；mm_plus_mm same-K 与 addmm full-bias backward 的输出和所有输入梯度均正确。最初 addmm vector-bias backward 在 bias 梯度的 `aten.sum.dim_IntList` lowering 被 torch_npu `make_reduction()` 缺少 `strict_sum` 参数阻断；T-011 补齐接口后，最小 sum、原 vector-bias backward、full-bias backward、addmm inference 和 mm_plus_mm backward 全部通过。不同 K 的 mm_plus_mm 仍按源码设计安全 unfuse。详细证据见 `report/p0_semantic_matrix_20260821.md` 和 `change_control.md:E-023`。
+P0 语义层先完成 6 个 inference case 和 3 个 forward/backward case。inference 6/6 正确并符合触发/不触发预期；mm_plus_mm same-K 与 addmm full-bias backward 的输出和所有输入梯度均正确。最初 addmm vector-bias backward 在 bias 梯度的 `aten.sum.dim_IntList` lowering 被 torch_npu `make_reduction()` 缺少 `strict_sum` 参数阻断；T-011 补齐接口后，最小 sum、原 vector-bias backward、full-bias backward、addmm inference 和 mm_plus_mm backward 全部通过。不同 K 的 mm_plus_mm 仍按源码设计安全 unfuse。详细证据见 `report/archive/legacy-20260820-0828/p0_semantic_matrix_20260821.md` 和 `change_control.md:E-023`。
 
 ## 3. 已知运行环境事实
 
@@ -514,39 +514,39 @@ torch.compile(
 - `report/t074_upstream_pass_test_index_20260829.md`：T-074 第一版索引、首批回填与分母边界。
 - `run_npu_probe.py`：动态探针草案。
 - `run_p0_gate_probe.py`：P0 gate 当前行为的进程隔离探针（首轮 20 个 NPU 组合已执行）。
-- `report/p0_gate_first_run_20260820.md`：P0 首轮可用性、目标触发和 backend 分化报告。
-- `report/p0_ab_first_shape_20260820.md`：P0 两个已触发 pass 的首形状三轮 paired performance 报告。
-- `report/p0_sweep_smoke_20260820.md`：P0 dtype/layout/dynamic 扩展的旧行为回归与实机哨兵。
-- `report/p0_sweep_function_matrix_20260820.md`：P0 两个候选的 16 个代表配置功能与目标图矩阵。
-- `report/p0_sweep_performance_20260820.md`：P0 两个候选的 96-worker 主性能矩阵与 mm_plus_mm dynamic 高样本复核。
-- `report/p0_semantic_matrix_20260821.md`：P0 bias/shape guard、different-K fallback、forward/backward、`strict_sum` 根因与 T-011 修复闭环报告。
-- `report/t012_mmplus_different_k_baseline_20260821.md`：different-K current/disabled 两 shape、三轮 paired baseline 与后续 profile 闸门。
-- `report/t013_mmplus_different_k_profile_20260821.md`：different-K fallback 的 NPU kernel 组成、duration、步内 gap 与微原型性能预算。
-- `report/t014_t016_mmplus_different_k_candidate_20260821.md`：standalone candidate 的正确性演进、两 shape profiler、paired performance 和内存 trade-off。
-- `report/t017_t019_mmplus_different_k_coverage_20260821.md`：三 dtype、真实转置、dynamic replay 和 backward 语义。
-- `report/t020_mmplus_different_k_extended_benchmark_20260821.md`：扩展性能矩阵和 large 初次 hold 证据。
-- `report/t021_mmplus_different_k_integration_design_20260821.md`：正式 template/pattern/fallback 数据流与拟修文件。
-- `report/t022_mmplus_different_k_large_profile_20260821.md`：large 三 tile device profiler、paired 稳态、内存分解和环境限制。
-- `report/t023_mmplus_different_k_integration_20260821.md`：default-off wheel 接入、功能、集成 paired 性能、workspace 根因与条件性结论。
-- `report/t024_mmplus_different_k_workspace_20260821.md`：七种 workspace/tile/grouped-program 配置和停止结论。
-- `report/t025_t026_pad_family_20260821.md`：pad 三 family 的 capability 可用、性能失败与停止结论。
-- `report/t028_p1_b2_npu_compile_20260821.md`：B2 首批 7 pass 的 NPU 正负例、alias blocker 和最终闭环。
-- `report/t029_t030_b2_alias_fix_performance_20260824.md`：alias 修复、三轮性能、失败/中性尝试与 T-031 最终 wheel。
-- `report/t032_b2_redundancy_compile_20260824.md`：fold_cast/fold_cat/fold_clone/fold_detach 的结构、NPU 可达性和完整语义合同。
-- `report/t033_fold_cat_performance_20260824.md`：fold_cat 的三轮 paired 性能、task 与显存收益。
-- `report/t034_b2_view_copy_compile_20260824.md`：第三批五条 pass 的结构、NPU 拓扑、完整语义和中性门禁修正。
-- `report/t035_fold_where_performance_20260824.md`：fold_where 的三轮 paired 中性性能、task duration 与显存结论。
-- `report/t036_b2_layout_alias_fix_20260825.md`：cat-slice-cat/pad-slice 的零数值误差 alias 缺陷、源码 guard、wheel 与 NPU 闭环。
-- `report/t037_layout_pass_performance_20260825.md`：两条 layout pass 的三轮 paired 延迟、task、显存与 beneficial 结论。
-- `report/t038_dtype_index_mask_semantic_fix_20260825.md`：dtype/index/mask 的边界反例、保守 guard、67/67 测试、wheel 与 9/9 NPU 功能闭环。
-- `report/t039_dtype_index_mask_performance_20260825.md`：safe dtype/iota 的有益性能与 mask compression 的中性性能结论。
-- `report/t040_mask_hamming_semantic_fix_20260825.md`：mask arithmetic IEEE 反例、exact-zero dtype guard、76/76 测试、wheel 与 9/9 NPU 功能闭环。
-- `report/t041_mask_hamming_performance_20260825.md`：四个 safe-positive case 的 24/24 paired 性能与 direct/view 分流。
-- `report/t042_bool_view_guard_integration_20260825.md`：bool direct 性能 guard、新 wheel、76/76 与 3/3 NPU 安装态闭环。
-- `report/t047_t048_b3_dvm_mlir_20260826.md`：B3 8 条源码关系、P-012、47 条 NPU 测试、reachability 与 DVM aggregate paired 性能。
-- `report/t049_t050_b4_attention_first_20260826.md`：scale divisor 合同、7 个代表 matcher/codegen 与 pattern 1 paired 性能。
-- `report/t051_b4_attention_pattern13_performance_20260826.md`：三维 BMM family 的时延中性、task/编译/内存收益。
-- `report/t052_b4_attention_float_mask_dispatch_20260826.md`：float-mask math fallback 根因与无 mask pattern 30 对照。
+- `report/archive/legacy-20260820-0828/p0_gate_first_run_20260820.md`：P0 首轮可用性、目标触发和 backend 分化报告。
+- `report/archive/legacy-20260820-0828/p0_ab_first_shape_20260820.md`：P0 两个已触发 pass 的首形状三轮 paired performance 报告。
+- `report/archive/legacy-20260820-0828/p0_sweep_smoke_20260820.md`：P0 dtype/layout/dynamic 扩展的旧行为回归与实机哨兵。
+- `report/archive/legacy-20260820-0828/p0_sweep_function_matrix_20260820.md`：P0 两个候选的 16 个代表配置功能与目标图矩阵。
+- `report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md`：P0 两个候选的 96-worker 主性能矩阵与 mm_plus_mm dynamic 高样本复核。
+- `report/archive/legacy-20260820-0828/p0_semantic_matrix_20260821.md`：P0 bias/shape guard、different-K fallback、forward/backward、`strict_sum` 根因与 T-011 修复闭环报告。
+- `report/archive/legacy-20260820-0828/t012_mmplus_different_k_baseline_20260821.md`：different-K current/disabled 两 shape、三轮 paired baseline 与后续 profile 闸门。
+- `report/archive/legacy-20260820-0828/t013_mmplus_different_k_profile_20260821.md`：different-K fallback 的 NPU kernel 组成、duration、步内 gap 与微原型性能预算。
+- `report/archive/legacy-20260820-0828/t014_t016_mmplus_different_k_candidate_20260821.md`：standalone candidate 的正确性演进、两 shape profiler、paired performance 和内存 trade-off。
+- `report/archive/legacy-20260820-0828/t017_t019_mmplus_different_k_coverage_20260821.md`：三 dtype、真实转置、dynamic replay 和 backward 语义。
+- `report/archive/legacy-20260820-0828/t020_mmplus_different_k_extended_benchmark_20260821.md`：扩展性能矩阵和 large 初次 hold 证据。
+- `report/archive/legacy-20260820-0828/t021_mmplus_different_k_integration_design_20260821.md`：正式 template/pattern/fallback 数据流与拟修文件。
+- `report/archive/legacy-20260820-0828/t022_mmplus_different_k_large_profile_20260821.md`：large 三 tile device profiler、paired 稳态、内存分解和环境限制。
+- `report/archive/legacy-20260820-0828/t023_mmplus_different_k_integration_20260821.md`：default-off wheel 接入、功能、集成 paired 性能、workspace 根因与条件性结论。
+- `report/archive/legacy-20260820-0828/t024_mmplus_different_k_workspace_20260821.md`：七种 workspace/tile/grouped-program 配置和停止结论。
+- `report/archive/legacy-20260820-0828/t025_t026_pad_family_20260821.md`：pad 三 family 的 capability 可用、性能失败与停止结论。
+- `report/archive/legacy-20260820-0828/t028_p1_b2_npu_compile_20260821.md`：B2 首批 7 pass 的 NPU 正负例、alias blocker 和最终闭环。
+- `report/archive/legacy-20260820-0828/t029_t030_b2_alias_fix_performance_20260824.md`：alias 修复、三轮性能、失败/中性尝试与 T-031 最终 wheel。
+- `report/archive/legacy-20260820-0828/t032_b2_redundancy_compile_20260824.md`：fold_cast/fold_cat/fold_clone/fold_detach 的结构、NPU 可达性和完整语义合同。
+- `report/archive/legacy-20260820-0828/t033_fold_cat_performance_20260824.md`：fold_cat 的三轮 paired 性能、task 与显存收益。
+- `report/archive/legacy-20260820-0828/t034_b2_view_copy_compile_20260824.md`：第三批五条 pass 的结构、NPU 拓扑、完整语义和中性门禁修正。
+- `report/archive/legacy-20260820-0828/t035_fold_where_performance_20260824.md`：fold_where 的三轮 paired 中性性能、task duration 与显存结论。
+- `report/archive/legacy-20260820-0828/t036_b2_layout_alias_fix_20260825.md`：cat-slice-cat/pad-slice 的零数值误差 alias 缺陷、源码 guard、wheel 与 NPU 闭环。
+- `report/archive/legacy-20260820-0828/t037_layout_pass_performance_20260825.md`：两条 layout pass 的三轮 paired 延迟、task、显存与 beneficial 结论。
+- `report/archive/legacy-20260820-0828/t038_dtype_index_mask_semantic_fix_20260825.md`：dtype/index/mask 的边界反例、保守 guard、67/67 测试、wheel 与 9/9 NPU 功能闭环。
+- `report/archive/legacy-20260820-0828/t039_dtype_index_mask_performance_20260825.md`：safe dtype/iota 的有益性能与 mask compression 的中性性能结论。
+- `report/archive/legacy-20260820-0828/t040_mask_hamming_semantic_fix_20260825.md`：mask arithmetic IEEE 反例、exact-zero dtype guard、76/76 测试、wheel 与 9/9 NPU 功能闭环。
+- `report/archive/legacy-20260820-0828/t041_mask_hamming_performance_20260825.md`：四个 safe-positive case 的 24/24 paired 性能与 direct/view 分流。
+- `report/archive/legacy-20260820-0828/t042_bool_view_guard_integration_20260825.md`：bool direct 性能 guard、新 wheel、76/76 与 3/3 NPU 安装态闭环。
+- `report/archive/legacy-20260820-0828/t047_t048_b3_dvm_mlir_20260826.md`：B3 8 条源码关系、P-012、47 条 NPU 测试、reachability 与 DVM aggregate paired 性能。
+- `report/archive/legacy-20260820-0828/t049_t050_b4_attention_first_20260826.md`：scale divisor 合同、7 个代表 matcher/codegen 与 pattern 1 paired 性能。
+- `report/archive/legacy-20260820-0828/t051_b4_attention_pattern13_performance_20260826.md`：三维 BMM family 的时延中性、task/编译/内存收益。
+- `report/archive/legacy-20260820-0828/t052_b4_attention_float_mask_dispatch_20260826.md`：float-mask math fallback 根因与无 mask pattern 30 对照。
 - `t014_mmplus_different_k_triton.py`：不同 K standalone Triton 微原型。
 - `t015_mmplus_different_k_candidate_profile.py`：candidate-only NPU profiler。
 - `t016_mmplus_different_k_candidate_benchmark.py`：fallback/candidate 三轮 paired benchmark。
@@ -569,7 +569,7 @@ torch.compile(
 - `t022_launcher_cc_wrapper.sh`、`t022_cann_header_compat.h`：仅限审计的 fresh host launcher 编译垫片，不能进入产品。
 - `p0_case_design.md`：五个 P0 family 的触发条件、正负用例和验收边界。
 - `p1_batch_design.md`：66 条 P1 的分组、已有测试证据与动态验收顺序。
-- `report/pass_src_20260820/pass_inventory.md`：当前静态 pass 索引。
-- `report/pass_src_20260820/pass_inventory.json`：当前静态 pass 机器可读数据。
-- `report/pass_src_20260820/pass_evaluation_matrix.csv`：逐 pass 评估矩阵。
+- `report/archive/legacy-20260820-0828/pass_src_20260820/pass_inventory.md`：当前静态 pass 索引。
+- `report/archive/legacy-20260820-0828/pass_src_20260820/pass_inventory.json`：当前静态 pass 机器可读数据。
+- `report/archive/legacy-20260820-0828/pass_src_20260820/pass_evaluation_matrix.csv`：逐 pass 评估矩阵。
 - `report/npu_probe.json`：旧环境历史诊断，不能作为 baseline。

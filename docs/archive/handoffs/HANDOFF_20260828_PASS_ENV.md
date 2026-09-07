@@ -107,13 +107,13 @@
 
 相关证据：
 
-- `report/t056_triton_experimental_inventory_20260826.md`
-- `report/p0_gate_first_run_20260820.md`
-- `report/p0_sweep_function_matrix_20260820.md`
-- `report/p0_sweep_performance_20260820.md`
-- `report/p0_semantic_matrix_20260821.md`
-- `report/t025_t026_pad_family_20260821.md`
-- `report/t058_experimental_addmm_gate_20260826.md`
+- `report/archive/legacy-20260820-0828/t056_triton_experimental_inventory_20260826.md`
+- `report/archive/legacy-20260820-0828/p0_gate_first_run_20260820.md`
+- `report/archive/legacy-20260820-0828/p0_sweep_function_matrix_20260820.md`
+- `report/archive/legacy-20260820-0828/p0_sweep_performance_20260820.md`
+- `report/archive/legacy-20260820-0828/p0_semantic_matrix_20260821.md`
+- `report/archive/legacy-20260820-0828/t025_t026_pad_family_20260821.md`
+- `report/archive/legacy-20260820-0828/t058_experimental_addmm_gate_20260826.md`
 
 ### 4.2 有效的基础设施和后端支撑（不直接计入原生 pass 完成数）
 
@@ -152,7 +152,7 @@
   installed verdict。
 
 详细索引见 `current_status_and_background.md`、`outcome_index.md`、`change_control.md` 和
-`report/t055_triton_experimental_enable_20260826.md` 至 `report/t072_matmul_fold_20260828.md`。
+`report/archive/legacy-20260820-0828/t055_triton_experimental_enable_20260826.md` 至 `report/archive/legacy-20260820-0828/t072_matmul_fold_20260828.md`。
 
 ### 4.5 T-074 第一版静态索引（当前主线停点）
 
