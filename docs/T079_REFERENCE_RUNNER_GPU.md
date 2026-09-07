@@ -46,7 +46,8 @@ REF-splitwithsizes-cat-native
 REF-cat-splitwithsizes-native
 ```
 
-单 case 通过 `--case CASE_ID` 选择。完整运行后复制默认生成的多行可读 JSON：
+单 case 通过 `--case CASE_ID` 选择。完整运行后按控制台的 `handoff_upload_input` 选择单文件或分片；
+未超限时可复制：
 
 ```bash
 cat /data/z50063656/tmp/t079-reference-results/latest-text-handoff.json

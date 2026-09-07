@@ -1,6 +1,6 @@
 # GPU 原文 handoff 导出、复制与恢复指南
 
-> 更新时间：2026-09-07 07:50 CST（UTC+08:00）
+> 更新时间：2026-09-07 08:25 CST（UTC+08:00）
 > 适用任务：T-076～T-080 及后续复用统一 GPU reference runner 的任务
 > 目标：在 GPU 服务器不能直接推 Git、不能传二进制时，默认用短评审包回传可校验的摘要与 FX；完整文本归档按需导出
 
@@ -18,8 +18,9 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
 ```
 
-该 JSON 默认使用缩进和换行，便于网页查看、文本复制和人工定位字段；统一入口不再添加
-`--compact`。这里的“压缩评审”指减少正文范围并压缩嵌入的 FX 文本，不表示把整个 JSON 写成单行。
+统一入口默认使用单行 JSON 以减少文本体积，并以 96 KiB 为网页单文件经验阈值。未超限时打印
+`handoff_upload_mode=single-file`；超限时自动生成分片并打印 `handoff_upload_mode=split` 与唯一的
+`handoff_upload_input=.../manifest.json`。这里的阈值只控制上传形式，不改变 handoff 内容和哈希。
 
 不需要查找 `reference-<timestamp>`。`latest-text-handoff.json` 始终指向最后发布的一轮；控制台同时
 打印真实 `run_dir=`，用于审计并发运行。
@@ -85,6 +86,7 @@ cd /data/z50063656/tmp
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${RUN_DIR}" \
   --profile review \
+  --compact \
   --output "${REVIEW_HANDOFF}"
 
 python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
@@ -93,7 +95,7 @@ python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
 ```
 
 T-076/T-077 已完成正式结论，但需补齐 1.3 review 学习/审计正文。旧 runner 没有 `latest` 软链接时，
-直接使用已知 run 目录；以下命令只导出，不重跑 GPU，并生成多行 JSON：
+直接使用已知 run 目录；以下命令只导出，不重跑 GPU，并生成单行 JSON：
 
 ```bash
 export T076_RUN=/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800
@@ -102,11 +104,13 @@ export T077_RUN=/data/z50063656/tmp/t077-reference-results/reference-20260902T12
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${T076_RUN}" \
   --profile review \
+  --compact \
   --output /data/z50063656/tmp/t076-handoff-review-v1.3.json
 
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${T077_RUN}" \
   --profile review \
+  --compact \
   --output /data/z50063656/tmp/t077-handoff-review-v1.3.json
 ```
 
@@ -124,13 +128,21 @@ review 包保留 FX 对照所需正文，并为未传输的成功日志、生成
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${RUN_DIR}" \
   --profile archive \
+  --compact \
   --output /data/z50063656/tmp/t078-reference-handoff-archive-v1.2.json
 ```
 
-### 2.2 GitHub 网页不接受单个长文件
+### 2.2 超限自动分片
 
-如果 review 包仍提示 `File could not be edited`，不要截断单文件或手工拼 JSON。将同一 handoff 自动
-拆为一个 manifest 和多个小 JSON；每个分片内部再将 Base64 按短行保存：
+一键入口会自动比较单行 handoff 与 96 KiB 阈值；超过时把同一 handoff 拆为一个 manifest 和多个
+小 JSON，每个分片内部再将 Base64 按短行保存，无需先尝试上传大文件。运行结束只看：
+
+```text
+handoff_upload_mode=split
+handoff_upload_input=/data/.../latest/text-handoff-parts/manifest.json
+```
+
+已有旧 run 需要独立补生成时可显式使用同一机制：
 
 ```bash
 export PARTS_DIR=/data/z50063656/tmp/t079-handoff-review-parts-v1.3
@@ -138,6 +150,7 @@ export PARTS_DIR=/data/z50063656/tmp/t079-handoff-review-parts-v1.3
 python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
   --run-dir "${RUN_DIR}" \
   --profile review \
+  --compact \
   --split-output-dir "${PARTS_DIR}"
 
 python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
@@ -168,8 +181,8 @@ python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
   --validate-only
 ```
 
-GPU 一键入口同时生成 review 单文件与 `latest/text-handoff-parts/manifest.json`。已有旧 run
-可用上述命令补生成分片，无需重跑 GPU。
+一键入口仍保留完整单文件作为本地证据；只有超过阈值才创建
+`latest/text-handoff-parts/manifest.json`。已有旧 run 可用上述命令补生成分片，无需重跑 GPU。
 
 ## 3. 通过文本复制上传 GitHub
 

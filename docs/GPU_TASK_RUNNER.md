@@ -108,7 +108,7 @@ sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
 
 - `latest` 指向本轮实际 `reference-<timestamp>` 目录；
 - `latest-text-handoff.json` 固定指向 `latest/text-handoff.json`；正常为本轮可恢复关键评审正文的
-  1.3 review 文件，并默认使用缩进和换行方便阅读与复制；
+  1.3 review 单行文件；超过 96 KiB 时自动生成分片，并通过 `handoff_upload_input` 指向 manifest；
 - 控制台仍打印真实 `run_dir=` 和 `text_handoff=`，便于审计；
 - 新一轮执行会原子更新软链接，不删除旧的带时间戳结果。
 
@@ -131,16 +131,24 @@ T-076～T-080 分别对应 `t076-reference-results`～`t080-reference-results`�
 
 ### 2.1 复制 JSON 到控制节点的固定接收目录
 
-GPU 侧只有文本复制条件时，打印本轮完整 JSON：
+GPU 侧只有文本复制条件时，先查看运行结束时打印的上传模式。未超限会输出：
+
+```text
+handoff_upload_mode=single-file
+handoff_upload_input=/data/.../latest-text-handoff.json
+```
+
+此时打印本轮完整 JSON：
 
 ```bash
 cat /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
 ```
 
-若 GitHub 网页提示 `File could not be edited`，使用一键运行同时生成的固定分片入口：
+超过 96 KiB 时不会要求先尝试大文件，而会自动输出：
 
 ```text
-/data/z50063656/tmp/t078-reference-results/latest/text-handoff-parts/manifest.json
+handoff_upload_mode=split
+handoff_upload_input=/data/z50063656/tmp/t078-reference-results/latest/text-handoff-parts/manifest.json
 ```
 
 将该目录的 `manifest.json` 与全部 `part-*.json` 分别复制到对应任务的

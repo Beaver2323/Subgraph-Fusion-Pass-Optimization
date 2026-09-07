@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-04T08:55:00+08:00",
-  "status": "t080-fifth-wave-human-reviewed-awaiting-gpu-reference",
+  "generated_at": "2026-09-07T08:32:00+08:00",
+  "status": "t080-direct-gpu-reference-reviewed-and-frozen-awaiting-npu",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -38,15 +38,21 @@
     "device_identity": "8x-NVIDIA-A100-SXM4-80GB-sm80",
     "backend": "inductor-default",
     "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
-    "runtime_fingerprint": "pending-t080-gpu-execution"
+    "runtime_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "suite_status": "valid-reference-suite",
+    "run_id": "reference-20260907T001455+0800-uv9_464e",
+    "payload_sha256": "a197df02e0d2b6141ae259fdc69526ddc0888ad4d5179086047ec9b284497f9b",
+    "case_count": 13,
+    "valid_case_count": 13,
+    "variant_count": 13
   },
   "counting_policy": {
     "primary_fact_source": "PyTorch community test plus GPU/reference baseline",
     "inventory_role": "registration candidate only for discovery and coverage",
     "tracking_key": "human-reviewed upstream optimization contract acceptance unit",
-    "denominator_rule": "T080 units remain pending-reference until the complete direct GPU suite is valid",
+    "denominator_rule": "T080 units freeze only after the complete direct GPU suite is valid",
     "current_manifest_units": 3,
-    "current_frozen_denominator_units": 0,
+    "current_frozen_denominator_units": 3,
     "current_formally_closed_units": 0
   },
   "acceptance_units": [
@@ -54,8 +60,8 @@
       "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
       "contract_name": "把常量 full 上的稀疏 scalar scatter 改写为 pointwise where 的合同",
       "stage": "joint_graph",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen-reference-valid",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/joint_graph.py", "line": 1150, "symbol": "scatter_upon_const_tensor_extra_check", "role": "shape-density-and-config-guard"},
         {"path": "torch/_inductor/fx_passes/joint_graph.py", "line": 1203, "symbol": "scatter_upon_const_tensor", "role": "registered-rewrite-handler"}
@@ -71,14 +77,14 @@
         {"nodeid": "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_cross_entropy_loss", "role": "end-to-end-and-performance-source", "evidence_scope": "CrossEntropy backward 端到端梯度、match；DO_PERF_TEST=1 时使用社区 A100 benchmark shape"}
       ],
       "variants": [
-        {"variant_id": "three-dimensional-last-dim-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "三维末维 sparse scalar scatter 改写为 pointwise", "expected_counter": "num_matches_for_scatter_upon_const_tensor=1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "non-last-dim-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "非末维 selector 正确 broadcast 并改写", "expected_counter": "num_matches_for_scatter_upon_const_tensor=1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "negative-dim-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "负 dim 规范化后改写", "expected_counter": "num_matches_for_scatter_upon_const_tensor=1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "shorter-index-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "非 scatter 维 selector 更短，当前 guard 拒绝", "expected_counter": "pattern_matcher_count=0", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "dense-selector-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "scatter 维 selector size 大于 1，收益/实现 guard 拒绝", "expected_counter": "no target rewrite; memory lower bound preserved", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "non-constant-base-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "底张量不是 aten.full 常量，拒绝改写", "expected_counter": "no target rewrite; three mutation/copy kernels remain", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "low-precision-dtype-regression", "kind": "regression", "expected_reference_match": true, "expected_behavior": "fp16/bf16 改写不被 Python scalar 提升为 fp32", "expected_counter": "target metric=1 per dtype and output dtype preserved", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "cross-entropy-backward-e2e-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "CrossEntropy backward 中 full+scatter 改写且 weight gradient 正确", "expected_counter": "num_matches_for_scatter_upon_const_tensor=1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "three-dimensional-last-dim-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "三维末维 sparse scalar scatter 改写为 pointwise", "expected_counter": "num_matches_for_scatter_upon_const_tensor=1", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "non-last-dim-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "非末维 selector 正确 broadcast 并改写", "expected_counter": "num_matches_for_scatter_upon_const_tensor=1", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "negative-dim-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "负 dim 规范化后改写", "expected_counter": "num_matches_for_scatter_upon_const_tensor=1", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "shorter-index-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "非 scatter 维 selector 更短，当前 guard 拒绝", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "dense-selector-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "scatter 维 selector size 大于 1，收益/实现 guard 拒绝", "expected_counter": "no target rewrite; memory lower bound preserved", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "non-constant-base-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "底张量不是 aten.full 常量，拒绝改写", "expected_counter": "no target rewrite; three mutation/copy kernels remain", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "low-precision-dtype-regression", "kind": "regression", "expected_reference_match": true, "expected_behavior": "fp16/bf16 改写不被 Python scalar 提升为 fp32", "expected_counter": "target metric=1 per dtype and output dtype preserved", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "cross-entropy-backward-e2e-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "CrossEntropy backward 中 full+scatter 改写且 weight gradient 正确", "expected_counter": "num_matches_for_scatter_upon_const_tensor=1", "reference_status": "valid-reference", "npu_status": "not-started"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -94,8 +100,8 @@
       "acceptance_unit_id": "AU-post-grad-prepare-softmax",
       "contract_name": "把 max/sub/exp/sum softmax 前处理改写为 online-softmax primitive 的合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen-reference-valid",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 490, "symbol": "prepare_softmax_pattern", "role": "registered-source-pattern"},
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 498, "symbol": "prepare_softmax_replacement", "role": "online-softmax-replacement"}
@@ -106,9 +112,9 @@
         {"nodeid": "test/inductor/test_online_softmax.py::TestOnlineSoftmax.test_prepare_softmax_perf", "role": "functional-and-performance-source", "evidence_scope": "默认小 shape 做 correctness；DO_PERF_TEST=1 对 eager/compiled 计时"}
       ],
       "variants": [
-        {"variant_id": "fast-math-prepare-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "bf16 max/sub/exp/sum 进入 prepare_softmax online primitive", "expected_counter": "community correctness; generated FX artifacts", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "strict-signed-zero-regression", "kind": "regression", "expected_reference_match": true, "expected_behavior": "strict signed zero 下 online reduction 保持 amax 的正负零位模式", "expected_counter": "generated code contains online_softmax_reduce", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "community-benchmark-contract", "kind": "positive", "expected_reference_match": "not-directly-asserted", "expected_behavior": "以社区 do_test_acc_and_perf 作为后续同输入性能设计来源", "expected_counter": "default run correctness; DO_PERF_TEST reserved for gated performance", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "fast-math-prepare-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "bf16 max/sub/exp/sum 进入 prepare_softmax online primitive", "expected_counter": "community correctness; generated FX artifacts", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "strict-signed-zero-regression", "kind": "regression", "expected_reference_match": true, "expected_behavior": "strict signed zero 下 online reduction 保持 amax 的正负零位模式", "expected_counter": "generated code contains online_softmax_reduce", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "community-benchmark-contract", "kind": "positive", "expected_reference_match": "not-directly-asserted", "expected_behavior": "以社区 do_test_acc_and_perf 作为后续同输入性能设计来源", "expected_counter": "default run correctness; DO_PERF_TEST reserved for gated performance", "reference_status": "valid-reference", "npu_status": "not-started"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -124,8 +130,8 @@
       "acceptance_unit_id": "AU-post-grad-move-constructors-to-gpu",
       "contract_name": "安全时把 CPU 中间构造器移动到加速器并保留不可移动依赖的合同",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "frozen-reference-valid",
+      "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 2488, "symbol": "move_constructors_to_gpu", "role": "graph-transform-entry"}
       ],
@@ -134,8 +140,8 @@
         {"nodeid": "test/inductor/test_torchinductor.py::TritonCodeGenTests.test_ctr_not_moved_to_cuda_when_used_in_index_put", "role": "primary-negative", "evidence_scope": "index_put_ scalar-tensor 构造器必须留在 CPU，不生成 empty_strided_cuda scalar"}
       ],
       "variants": [
-        {"variant_id": "movable-arange-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "无受保护依赖的 CPU arange 移到加速器，避免额外 copy kernel", "expected_counter": "generated_kernel_count=1", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"},
-        {"variant_id": "index-put-scalar-constructor-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "index_put_ 的 scalar-tensor 输入存在不可移动依赖，构造器留在 CPU", "expected_counter": "generated code has no empty_strided_cuda(())", "reference_status": "awaiting-direct-gpu", "npu_status": "not-started"}
+        {"variant_id": "movable-arange-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "无受保护依赖的 CPU arange 移到加速器，避免额外 copy kernel", "expected_counter": "generated_kernel_count=1", "reference_status": "valid-reference", "npu_status": "not-started"},
+        {"variant_id": "index-put-scalar-constructor-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "index_put_ 的 scalar-tensor 输入存在不可移动依赖，构造器留在 CPU", "expected_counter": "generated code has no empty_strided_cuda(())", "reference_status": "valid-reference", "npu_status": "not-started"}
       ],
       "tracking": {
         "reference_mode": "direct",

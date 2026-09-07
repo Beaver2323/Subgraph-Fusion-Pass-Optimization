@@ -1,7 +1,7 @@
 # T-080 功能与性能测例讲解
 
-> 更新时间：2026-09-06 02:21 CST（UTC+08:00）
-> 状态：13 个 GPU 功能 cases 与 3 个性能单元的方案已准备；性能 worker 尚未实现，等待 GPU reference。
+> 更新时间：2026-09-07 08:32 CST（UTC+08:00）
+> 状态：GPU 13/13 direct cases、13/13 variants 已复核并冻结；NPU 与性能 worker 尚未执行。
 > NPU 固定后端：`triton_experimental`；性能在功能命中和正确性门禁之后执行。
 
 下文按单元讲解功能测例、性能测例及其证据边界。
@@ -23,6 +23,11 @@ def scatter_upon_const_tensor(match, shape, background_val, dtype, dim, selector
 功能意图：原图先物化完整常量张量，再做稀疏 scalar scatter；改写后直接按 selector 用 pointwise
 `where` 生成结果，避免大张量 mutation。8 个社区 cases 覆盖：3D 最后维、非最后维、负 dim 正例；
 index 太短、selector 太密、base 非常量负例；FP16/BF16 dtype；以及 CrossEntropy backward 端到端。
+
+GPU 实测 8/8 通过。正例在 joint-graph 后的 FX 中形成 `iota/eq/where`，负例保留 scatter/copy；
+低精度 dtype 与 CrossEntropy backward 原生断言均通过。由于 joint-graph 改写早于当前 debug 捕获点，
+部分正例 before/after 同形，命中应结合社区 target metric 与访存断言判定。NPU 尚未执行，不能从 GPU
+结果推导 `triton_experimental` 已支持。
 
 性能测例直接来自社区 `test_cross_entropy_loss` 的 `DO_PERF_TEST=1` 分支：
 `B=32,T=1024,D=768,V=50257`，执行 linear→cross_entropy→backward。社区设计同时测设备时间和
@@ -50,6 +55,11 @@ def prepare_softmax_replacement(x, dim):
 功能意图：识别 max/sub/exp/sum 的 softmax 前处理，让 max 与 sum 通过 online primitive 合并遍历。
 三个功能入口分别验证 fast-math codegen、strict signed-zero 回归和社区 perf 合同。signed-zero case
 不是“性能负例”，而是防止优化改变 IEEE 符号零语义的 correctness 门禁。
+
+GPU 实测 3/3 通过，FX 明确显示 `amax/sub/exp/sum` 被替换为
+`prims.prepare_softmax_online.default`；fast-math 的后续 log 与 signed-zero 语义均保持。NPU 仍属于
+capability pending：上游 cuda/xpu device guard 不是产品显式关闭，需在 `triton_experimental` 原生阻断
+后评审最小适配，不能把 guard 绕过本身算作支持。
 
 社区已经提供 BF16 `N=32768,V=50304` 的 `DO_PERF_TEST` 全量 shape，以及默认
 `[1024,2048]`/`[128,128]` 诊断 shape。社区部分代码比较 eager/compiled，但 tracker 要评估目标 pass，
@@ -89,6 +99,10 @@ constructor，这种受保护依赖不能被移动。NPU 结果不能仅凭 CUDA
 index_put 负例原生测试只断言 codegen token，不比较 eager 数值；该 case 会明确标为
 `not-asserted-codegen-only`。这不等于数值失败，也不能代替 NPU 最小适配中的数值/依赖验证。
 
+GPU 实测 2/2 通过。arange 正例的社区原生 `generated_kernel_count=1` 成立；index_put 负例保留 CPU
+scalar constructor 依赖。当前 review 包的 FX 捕获点位于 mover/codegen 之前，因此正例 before/after
+都可见 CPU iota 与 device_put；这里以原生 kernel-count 断言冻结，不把未变化的 FX 伪装成移动证据。
+
 社区没有性能 benchmark。主测原样复用 length=32，额外长度网格只标为 tracker sensitivity。
 OFF 必须只跳过 `move_constructors_to_gpu` 调用，不能关闭整个 post-grad；负例只做功能 guard。
 
@@ -100,6 +114,6 @@ OFF 必须只跳过 `move_constructors_to_gpu` 调用，不能关闭整个 post-
 | prepare softmax | online primitive、fast math、signed zero | compiled OFF/ON 全量 BF16 softmax | 社区 shape/方法复用并校正对照臂 |
 | constructor mover | arange copy 消除、index_put 依赖不误移 | 小图端到端、copy 与 task 数 | tracker 从社区功能例派生 |
 
-机器可读执行合同见 `upstream/t080_performance_plan.yaml`。GPU reference 只建立上游基线；GPU
-通过后仍需在 NPU fresh process 中先选择 `triton_experimental`、完成原生入口与最小适配判定，才
-能解锁性能 worker。
+机器可读执行合同见 `upstream/t080_performance_plan.yaml`，完整 GPU 复核见
+`report/t080_gpu_reference_review_20260907.md`。GPU reference 只建立上游基线；下一步仍需在 NPU
+fresh process 中先选择 `triton_experimental`、完成原生入口与最小适配判定，才能解锁性能 worker。

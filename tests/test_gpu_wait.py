@@ -253,7 +253,7 @@ print('artifacts=' + str(root))
         handoff_text = (
             self.data / "tmp/t078-reference-results/latest-text-handoff.json"
         ).read_text()
-        self.assertGreater(handoff_text.count("\n"), 2)
+        self.assertEqual(handoff_text.count("\n"), 1)
         payload = json.loads(handoff_text)
         env = payload["environment"]["runtime"]["selected_environment"]
         self.assertEqual(env["PASS_GPU_EXECUTION_MODE"], "shared")
@@ -270,12 +270,29 @@ print('artifacts=' + str(root))
             },
             {"manifest_snapshot.json", "reference_plan_snapshot.json"},
         )
-        self.assertTrue(
-            (
-                self.data
-                / "tmp/t078-reference-results/latest/text-handoff-parts/manifest.json"
-            ).is_file()
+        self.assertFalse(
+            (self.data / "tmp/t078-reference-results/latest/text-handoff-parts").exists()
         )
+        self.assertIn("handoff_upload_mode=single-file", result.stdout)
+        self.assertIn("latest-text-handoff.json", result.stdout)
+
+    def test_oversized_handoff_is_automatically_split(self):
+        self.env["PASS_GPU_HANDOFF_SINGLE_FILE_BYTES"] = "1"
+        result = self.run_launcher()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        manifest = (
+            self.data
+            / "tmp/t078-reference-results/latest/text-handoff-parts/manifest.json"
+        )
+        self.assertTrue(manifest.is_file())
+        self.assertIn("handoff_upload_mode=split", result.stdout)
+        self.assertIn(str(manifest), result.stdout)
+
+    def test_invalid_handoff_threshold_is_rejected(self):
+        self.env["PASS_GPU_HANDOFF_SINGLE_FILE_BYTES"] = "0"
+        result = self.run_launcher()
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("必须是正整数", result.stderr)
 
     def test_exclusive_flag_blocks_busy_gpu_before_runner(self):
         result = self.run_launcher("--exclusive")

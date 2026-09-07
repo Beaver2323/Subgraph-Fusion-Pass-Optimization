@@ -245,6 +245,7 @@ class RawTextTests(unittest.TestCase):
 
     def test_real_cli_export_and_import(self):
         output = self.root / "raw-handoff.json"
+        parts = self.root / "unused-parts"
         export = subprocess.run(
             [
                 sys.executable,
@@ -253,8 +254,13 @@ class RawTextTests(unittest.TestCase):
                 str(self.run),
                 "--profile",
                 "review",
+                "--compact",
                 "--output",
                 str(output),
+                "--split-output-dir",
+                str(parts),
+                "--auto-split-over-bytes",
+                str(1024 * 1024),
             ],
             cwd=WORK,
             capture_output=True,
@@ -262,7 +268,9 @@ class RawTextTests(unittest.TestCase):
         )
         self.assertEqual(export.returncode, 0, export.stderr)
         output_text = output.read_text()
-        self.assertGreater(output_text.count("\n"), 2)
+        self.assertEqual(output_text.count("\n"), 1)
+        self.assertFalse(parts.exists())
+        self.assertIn("handoff_upload_mode=single-file", export.stdout)
         self.assertEqual(json.loads(output_text)["handoff_format_version"], "1.3")
         validation = subprocess.run(
             [
@@ -320,12 +328,15 @@ class RawTextTests(unittest.TestCase):
                 "--compress-raw-text",
                 "--split-output-dir",
                 str(parts),
+                "--auto-split-over-bytes",
+                "1",
             ],
             cwd=WORK,
             capture_output=True,
             text=True,
         )
         self.assertEqual(export.returncode, 0, export.stderr)
+        self.assertIn("handoff_upload_mode=split", export.stdout)
         manifest = json.loads((parts / "manifest.json").read_text())
         self.assertGreater(manifest["part_count"], 1)
         self.assertLessEqual(

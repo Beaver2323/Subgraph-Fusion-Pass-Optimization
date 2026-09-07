@@ -14,6 +14,7 @@ poll_interval=1
 wait_options_set=0
 execution_mode=shared
 min_free_memory=1024
+handoff_single_file_bytes="${PASS_GPU_HANDOFF_SINGLE_FILE_BYTES:-98304}"
 
 usage() {
     cat <<'EOF'
@@ -162,6 +163,11 @@ for required in \
     fi
 done
 
+if [[ ! "${handoff_single_file_bytes}" =~ ^[1-9][0-9]*$ ]]; then
+    echo "错误：PASS_GPU_HANDOFF_SINGLE_FILE_BYTES 必须是正整数。" >&2
+    exit 2
+fi
+
 mkdir -p \
     "${work_dir}" \
     "${data_root}/pip-cache" \
@@ -256,9 +262,11 @@ set +e
 "${PYTHON}" "${tracker_root}/scripts/export_reference_text.py" \
     --run-dir "${run_dir}" \
     --profile review \
+    --compact \
     --allow-derived-output \
     --output "${text_handoff}" \
-    --split-output-dir "${text_handoff_parts}"
+    --split-output-dir "${text_handoff_parts}" \
+    --auto-split-over-bytes "${handoff_single_file_bytes}"
 export_status=$?
 set -e
 
@@ -272,8 +280,14 @@ echo "latest_run=${result_root}/latest"
 if ((export_status == 0)); then
     echo "text_handoff=${text_handoff}"
     echo "latest_text_handoff=${result_root}/latest-text-handoff.json"
-    echo "text_handoff_parts=${text_handoff_parts}"
-    echo "latest_text_handoff_manifest=${result_root}/latest/text-handoff-parts/manifest.json"
+    if [[ -f "${text_handoff_parts}/manifest.json" ]]; then
+        echo "handoff_upload_mode=split"
+        echo "handoff_upload_input=${result_root}/latest/text-handoff-parts/manifest.json"
+        echo "text_handoff_parts=${text_handoff_parts}"
+    else
+        echo "handoff_upload_mode=single-file"
+        echo "handoff_upload_input=${result_root}/latest-text-handoff.json"
+    fi
     sha256sum "${text_handoff}"
 else
     echo "警告：本轮 artifacts 不完整，文本 handoff 导出失败（状态 ${export_status}）。" >&2

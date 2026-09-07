@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-07 07:50 CST（UTC+08:00）
+> 文档更新时间：2026-09-07 08:32 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -53,10 +53,10 @@
   12/12 GPU 原生 cases、4/4 NPU comparison、条件修复、性能和最终产品门禁，4 个单元已冻结。
   addcdiv 为 `PERF_NEUTRAL`，partial 与 baddbmm 为 `PERF_MIXED`，addmm 候选回退后显式关闭；
   baddbmm 只保留默认标量路径。GPU 1.0 紧凑摘要没有 FX 正文，因此不声称逐行图对照。
-- T-079/T-080 共登记 7 个 acceptance units、17 个 direct cases、27 个 variants。T-079 覆盖
-  bmm→mm 与三类 cat/split lowering，已由 4/4 GPU cases、14/14 variants 冻结 4 个 reference 单元，
-  下一步为 NPU `triton_experimental`；T-080 覆盖 const-scatter、prepare-softmax 和 constructor
-  mover，3 个单元仍等待 GPU。两批均已补齐性能计划和中文讲解，尚无 T-079/T-080 性能结论。
+- T-079/T-080 共登记 7 个 acceptance units、17 个 direct cases、27 个 variants，现已全部冻结
+  GPU reference。T-079 覆盖 bmm→mm 与三类 cat/split lowering；T-080 覆盖 const-scatter、
+  prepare-softmax 和 constructor mover，并由 13/13 GPU cases、13/13 variants 验证。两批下一步
+  均为 NPU `triton_experimental` 功能/命中验证；性能计划和中文讲解已备，尚无性能结论。
 - T-078 的 `copy_tests` 入口已纠偏：社区实际方法带 `_cuda` 后缀；runner 不再把不存在的无后缀
   方法静态判为有效。
 

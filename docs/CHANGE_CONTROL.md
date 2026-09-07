@@ -3716,3 +3716,27 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 统一 GPU 一键入口不再传 `--compact`，后续 review/archive 默认输出缩进、多行 JSON；分片仍只在
   网页单文件上限阻断时使用。T-076/T-077 既有结论无需重跑，但仍需从旧 run 补导出 1.3 review，
   以补齐逐行 FX 学习/审计正文。
+
+### E-233：单行体积优化与超限自动分片（2026-09-07）
+
+- 登记时间：2026-09-07 08:25 CST（UTC+08:00）。T-080 1.3 review 多行包实测 221412 字节，
+  相同 payload 单行序列化为 196860 字节，减少 24552 字节（11.09%），但仍高于本次网页通道
+  可接受范围；换行是体积因素之一，不是超限的根因。
+- 按用户最新选择恢复统一入口的 `--compact`，主 handoff 使用单行 JSON；同时增加 96 KiB
+  自动判断。未超限打印 `handoff_upload_mode=single-file`，超限才创建 48 KiB 原始负载分片并打印
+  `handoff_upload_mode=split` 和唯一 `handoff_upload_input`，不再要求先失败再人工重导。
+- 阈值可通过 `PASS_GPU_HANDOFF_SINGLE_FILE_BYTES` 调整，但必须是正整数；分片内部继续使用多行
+  Base64 JSON，保留 manifest、逐片、整包和 payload 四层校验。该变更只改变传输表现，不改变
+  1.3 review 的 FX/结果内容或 reference verdict。
+
+### E-234：T-080 GPU reference 复核冻结（2026-09-07）
+
+- 登记时间：2026-09-07 08:32 CST（UTC+08:00）。归一化网页上传的五个分片文件名后，导入器
+  完整验证 T-080 的 1.3 review：PyTorch commit、payload、逐片和逐 artifact 哈希全部一致；
+  13/13 direct cases、13/13 variants 有效，无 skip、失败或 GPU adapter。
+- const-scatter 正例形成 pointwise where、负例保留 scatter；prepare-softmax 明确改写为 online
+  primitive。constructor mover 的 FX 捕获点早于 mover/codegen，正例只按社区原生 kernel-count=1
+  冻结，不把 before/after 同形误述为 FX 移动证据；index_put 负例保持 CPU constructor 依赖。
+- T-080 的 3 个 acceptance units 从 `pending-reference` 冻结为 `yes-frozen`；当前五批 21 个单元
+  全部已有 GPU reference，其中 14 个已完成 NPU/comparison，T-079/T-080 共 7 个等待
+  `triton_experimental` NPU 功能、命中与性能门禁。

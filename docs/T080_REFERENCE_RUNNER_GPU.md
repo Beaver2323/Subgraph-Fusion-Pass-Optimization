@@ -1,7 +1,8 @@
 # T-080 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-07 07:32 CST（UTC+08:00）
-> 状态：3 个 acceptance units、13 个 direct cases、13 个 variants 及逐单元性能计划已准备，等待 GPU 执行
+> 更新时间：2026-09-07 08:32 CST（UTC+08:00）
+> 状态：GPU 13/13 direct cases、13/13 variants 已回传、逐项复核并冻结；下一步为 NPU
+> `triton_experimental` 功能/命中验证
 > 原则：reference 阶段只跑社区默认功能规模；`DO_PERF_TEST=1` 的社区性能路径留到功能/NPU 门禁后
 
 ## 一键执行
@@ -51,11 +52,14 @@ REF-move-constructors-arange-native
 REF-move-constructors-index-put-negative-native
 ```
 
-完整运行后复制：
+完整运行后只需读取控制台打印的 `handoff_upload_mode` 和 `handoff_upload_input`。未超限时复制：
 
 ```bash
 cat /data/z50063656/tmp/t080-reference-results/latest-text-handoff.json
 ```
+
+超过 96 KiB 时脚本自动生成分片，上传 `handoff_upload_input` 所在目录的 `manifest.json` 与全部
+`part-*.json`；无需先尝试大文件，也无需手工重新导出。
 
 只有 13/13 cases 均 `passed` 且 `reference_valid=true` 才能冻结 T-080。即使社区方法包含性能代码，
 本轮也不设置 `DO_PERF_TEST=1`；后续仅在 NPU `triton_experimental` 功能命中、correctness 与

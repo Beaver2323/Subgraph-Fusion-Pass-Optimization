@@ -20,6 +20,7 @@ COMPRESSED_RAW_TEXT_FORMAT_VERSION = "1.2"
 REVIEW_FORMAT_VERSION = "1.3"
 SPLIT_FORMAT_VERSION = "1.0"
 DEFAULT_SPLIT_PART_BYTES = 48 * 1024
+DEFAULT_AUTO_SPLIT_THRESHOLD_BYTES = 96 * 1024
 MIN_SPLIT_PART_BYTES = 16 * 1024
 MAX_SPLIT_PART_BYTES = 512 * 1024
 BASE64_LINE_CHARS = 1024
@@ -481,7 +482,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--compact",
         action="store_true",
-        help="兼容旧流程的单行 JSON；统一 runner 和新 handoff 不使用",
+        help="输出单行 JSON；统一 runner 默认启用以降低网页传输体积",
     )
     parser.add_argument(
         "--include-raw-text",
@@ -517,6 +518,14 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_SPLIT_PART_BYTES,
         help=f"每个分片承载的原始 JSON 字节数，默认 {DEFAULT_SPLIT_PART_BYTES}",
     )
+    parser.add_argument(
+        "--auto-split-over-bytes",
+        type=int,
+        help=(
+            "仅当完整 handoff 超过指定字节数时生成 --split-output-dir；"
+            f"省略则保持显式分片行为；统一入口使用 {DEFAULT_AUTO_SPLIT_THRESHOLD_BYTES}"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -534,6 +543,10 @@ def main() -> int:
             ):
                 raise ValueError("文本 handoff 必须写在原始 run 目录外")
         if args.split_output_dir is not None:
+            if args.split_output_dir.exists() or args.split_output_dir.is_symlink():
+                raise ValueError(
+                    f"分片输出目录必须不存在：{args.split_output_dir.resolve()}"
+                )
             split_output_dir = args.split_output_dir.resolve()
             reserved_split = run_dir / "text-handoff-parts"
             if (
@@ -543,6 +556,11 @@ def main() -> int:
                 args.allow_derived_output and split_output_dir == reserved_split
             ):
                 raise ValueError("文本 handoff 分片必须写在原始 run 目录外")
+        if args.auto_split_over_bytes is not None:
+            if args.split_output_dir is None:
+                raise ValueError("--auto-split-over-bytes 需要 --split-output-dir")
+            if args.auto_split_over_bytes <= 0:
+                raise ValueError("--auto-split-over-bytes 必须是正整数")
         payload = build_payload(run_dir)
         if args.profile is not None and (
             args.include_raw_text or args.compress_raw_text
@@ -567,18 +585,32 @@ def main() -> int:
             payload, ensure_ascii=False, sort_keys=True, indent=indent
         ) + "\n"
         wrote_output = False
-        if args.split_output_dir is not None:
+        content_bytes = content.encode("utf-8")
+        should_split = args.split_output_dir is not None and (
+            args.auto_split_over_bytes is None
+            or len(content_bytes) > args.auto_split_over_bytes
+        )
+        if should_split:
             manifest = write_split_payload(
-                content.encode("utf-8"),
+                content_bytes,
                 args.split_output_dir,
                 payload_sha256=payload["payload_sha256"],
                 part_bytes=args.split_part_bytes,
+            )
+            print("handoff_upload_mode=split")
+            print(
+                "handoff_upload_input="
+                f"{(args.split_output_dir / 'manifest.json').resolve()}"
             )
             print(f"split_manifest={(args.split_output_dir / 'manifest.json').resolve()}")
             print(f"parts={manifest['part_count']}")
             print(f"source_bytes={manifest['source_bytes']}")
             print(f"source_sha256={manifest['source_sha256']}")
             wrote_output = True
+        elif args.split_output_dir is not None:
+            print("handoff_upload_mode=single-file")
+            if args.output is not None:
+                print(f"handoff_upload_input={args.output.resolve()}")
         if args.output is None and not wrote_output:
             sys.stdout.write(content)
         elif args.output is not None:
@@ -587,7 +619,7 @@ def main() -> int:
                 handle.write(content)
             print(f"text_handoff={args.output.resolve()}")
             print(f"payload_sha256={payload['payload_sha256']}")
-            print(f"bytes={len(content.encode('utf-8'))}")
+            print(f"bytes={len(content_bytes)}")
         return 0
     except (OSError, ValueError) as error:
         print(f"错误：{error}", file=sys.stderr)

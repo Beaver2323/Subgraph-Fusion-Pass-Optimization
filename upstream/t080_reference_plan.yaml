@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "task_id": "T-080",
-  "generated_at": "2026-09-06T02:21:22+08:00",
-  "status": "prepared-awaiting-direct-gpu-execution",
+  "generated_at": "2026-09-07T08:32:00+08:00",
+  "status": "direct-gpu-reference-complete",
   "performance_plan": {"path": "upstream/t080_performance_plan.yaml", "status": "plan-only-worker-not-implemented"},
   "case_guide": {"path": "docs/T080_FUNCTION_PERFORMANCE_GUIDE.md", "language": "zh-CN"},
   "manifest": {
