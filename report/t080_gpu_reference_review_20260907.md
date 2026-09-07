@@ -6,6 +6,9 @@
 >
 > 结论：13/13 direct cases、13/13 variants 有效，T-080 的 3 个 acceptance units 冻结为 GPU reference；NPU 尚未运行
 
+> 范围说明：上一行是本报告在 GPU handoff 复核时点的结论。T-080 后续 NPU、性能与产品处置现已完成，
+> 请以 `docs/T080_RESULT_AND_LEARNING_GUIDE.md` 和 `results/current/T-080/` 为当前状态。
+
 ## 1. 输入与完整性
 
 - handoff：`results/incoming/T-080/manifest.json` 与 `part-0001.json`～`part-0005.json`

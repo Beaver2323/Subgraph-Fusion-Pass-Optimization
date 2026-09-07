@@ -1,0 +1,333 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-07T20:41:00+08:00",
+  "case_ids": [
+    "REF-prepare-softmax-fast-math-native",
+    "REF-prepare-softmax-signed-zero-native",
+    "REF-prepare-softmax-community-perf-native"
+  ],
+  "acceptance_unit_id": "AU-post-grad-prepare-softmax",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": [
+    "test/inductor/test_torchinductor.py::GPUTests.test_prepare_softmax_with_fast_math_cuda",
+    "test/inductor/test_online_softmax.py::TestOnlineSoftmax.test_prepare_softmax_signed_zero",
+    "test/inductor/test_online_softmax.py::TestOnlineSoftmax.test_prepare_softmax_perf"
+  ],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "disabled",
+    "source_control": "未移除 torch_npu FALLBACK_LIST；product_gate_bypassed=false。",
+    "product_gate_bypassed": false
+  },
+  "direct_execution": {
+    "status": "no-tests",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 0,
+    "reason": "原生 GPU class/module 启动条件不在 NPU 上生成或执行测试。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 3,
+    "tests_skipped": 0,
+    "reason": "3/3 经评审的 generic guard 探针形成 prepare_softmax_online prim；产品 FALLBACK_LIST 随后把该 prim 保留为外部调用，未生成 online_softmax_reduce。"
+  },
+  "paired_control": {
+    "status": "passed",
+    "reason": "产品显式关闭、无合法 ON 路径。"
+  },
+  "cases": [
+    {
+      "case_id": "REF-prepare-softmax-fast-math-native",
+      "executed_case_alias": "REF-prepare-softmax-fast-math-native",
+      "variant_ids": [
+        "fast-math-prepare-positive"
+      ],
+      "status": "passed",
+      "reference_target_match": true,
+      "candidate_npu_target_match": true,
+      "final_product_target_match": true,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "6d59e0d87307c6bb6d1ccfab48bb1840cbcf185f5d951f48e65171c7e1ab7de0"
+    },
+    {
+      "case_id": "REF-prepare-softmax-signed-zero-native",
+      "executed_case_alias": "REF-prepare-softmax-signed-zero-native",
+      "variant_ids": [
+        "strict-signed-zero-regression"
+      ],
+      "status": "controlled-product-difference",
+      "reference_target_match": true,
+      "candidate_npu_target_match": true,
+      "final_product_target_match": true,
+      "community_assertions_passed": false,
+      "compatibility_verdict": "structural-rewrite-product-lowering-explicitly-disabled",
+      "result_sha256": "38f85c177c9aa69d6834dbf51bbb6d68565a522693f130bdeb52713ab8e3060d"
+    },
+    {
+      "case_id": "REF-prepare-softmax-community-perf-native",
+      "executed_case_alias": "REF-prepare-softmax-perf-native",
+      "variant_ids": [
+        "community-benchmark-contract"
+      ],
+      "status": "passed",
+      "reference_target_match": true,
+      "candidate_npu_target_match": true,
+      "final_product_target_match": true,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "structural-rewrite-product-lowering-explicitly-disabled",
+      "result_sha256": "f0ecb7048e39e18730fa2a9115a0aa4cef82b572b140bb279dca48b3df3b4c31"
+    }
+  ],
+  "variants": [
+    {
+      "variant_id": "fast-math-prepare-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "explicit-product-lowering-disable",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "bfloat16",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                128,
+                128
+              ]
+            ],
+            "strides": [
+              [
+                128,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
+      "match": {
+        "target_matched": true,
+        "scope": "target-pattern-or-transform",
+        "note": "bf16 max/sub/exp/sum 进入 prepare_softmax online primitive"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "observed",
+        "evidence": "测试态 generic guard 探针形成 prepare_softmax_online prim。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "explicitly-disabled",
+        "evidence": "产品 FALLBACK_LIST 保留外部 prim 调用。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "external",
+        "evidence": "generated code 无 online_softmax_reduce。"
+      },
+      "runtime_path": "extern",
+      "correctness": {
+        "status": "passed",
+        "assertion": "3/3 经评审的 generic guard 探针形成 prepare_softmax_online prim；产品 FALLBACK_LIST 随后把该 prim 保留为外部调用，未生成 online_softmax_reduce。"
+      },
+      "performance": {
+        "status": "exempt-explicit-product-lowering-disable",
+        "reason": "prims.prepare_softmax_online.default 位于 torch_npu 显式 FALLBACK_LIST；没有合法同后端 ON 路径，按产品关闭免测。"
+      },
+      "first_divergence": "lowering",
+      "root_cause": "torch_npu/_inductor/lowering_fallback_list.py 显式关闭 prims.prepare_softmax_online.default lowering。",
+      "recommended_action": "保持关闭免测；只有产品显式重开并完成评审后再建立性能 ON 路径。"
+    },
+    {
+      "variant_id": "strict-signed-zero-regression",
+      "kind": "regression",
+      "evidence_mode": "runtime",
+      "support_status": "explicit-product-lowering-disable",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                2,
+                2048
+              ]
+            ],
+            "strides": [
+              [
+                2048,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
+      "match": {
+        "target_matched": true,
+        "scope": "target-pattern-or-transform",
+        "note": "strict signed zero 下 online reduction 保持 amax 的正负零位模式"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "observed",
+        "evidence": "测试态 generic guard 探针形成 prepare_softmax_online prim。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "explicitly-disabled",
+        "evidence": "产品 FALLBACK_LIST 保留外部 prim 调用。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "external",
+        "evidence": "generated code 无 online_softmax_reduce。"
+      },
+      "runtime_path": "extern",
+      "correctness": {
+        "status": "passed",
+        "assertion": "3/3 经评审的 generic guard 探针形成 prepare_softmax_online prim；产品 FALLBACK_LIST 随后把该 prim 保留为外部调用，未生成 online_softmax_reduce。"
+      },
+      "performance": {
+        "status": "exempt-explicit-product-lowering-disable",
+        "reason": "prims.prepare_softmax_online.default 位于 torch_npu 显式 FALLBACK_LIST；没有合法同后端 ON 路径，按产品关闭免测。"
+      },
+      "first_divergence": "lowering",
+      "root_cause": "torch_npu/_inductor/lowering_fallback_list.py 显式关闭 prims.prepare_softmax_online.default lowering。",
+      "recommended_action": "保持关闭免测；只有产品显式重开并完成评审后再建立性能 ON 路径。"
+    },
+    {
+      "variant_id": "community-benchmark-contract",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "explicit-product-lowering-disable",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "bfloat16",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                1024,
+                2048
+              ]
+            ],
+            "strides": [
+              [
+                2048,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": null,
+      "npu_match_expectation": null,
+      "match": {
+        "target_matched": null,
+        "scope": "target-pattern-or-transform",
+        "note": "以社区 do_test_acc_and_perf 作为后续同输入性能设计来源"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "observed",
+        "evidence": "测试态 generic guard 探针形成 prepare_softmax_online prim。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "explicitly-disabled",
+        "evidence": "产品 FALLBACK_LIST 保留外部 prim 调用。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "external",
+        "evidence": "generated code 无 online_softmax_reduce。"
+      },
+      "runtime_path": "extern",
+      "correctness": {
+        "status": "passed",
+        "assertion": "3/3 经评审的 generic guard 探针形成 prepare_softmax_online prim；产品 FALLBACK_LIST 随后把该 prim 保留为外部调用，未生成 online_softmax_reduce。"
+      },
+      "performance": {
+        "status": "exempt-explicit-product-lowering-disable",
+        "reason": "prims.prepare_softmax_online.default 位于 torch_npu 显式 FALLBACK_LIST；没有合法同后端 ON 路径，按产品关闭免测。"
+      },
+      "first_divergence": "lowering",
+      "root_cause": "torch_npu/_inductor/lowering_fallback_list.py 显式关闭 prims.prepare_softmax_online.default lowering。",
+      "recommended_action": "保持关闭免测；只有产品显式重开并完成评审后再建立性能 ON 路径。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-prepare-softmax-fast-math-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-prepare-softmax-fast-math-native/adapter-d9yrzimw/adapter_result.json",
+      "sha256": "6d59e0d87307c6bb6d1ccfab48bb1840cbcf185f5d951f48e65171c7e1ab7de0",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-prepare-softmax-signed-zero-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-prepare-softmax-signed-zero-native/adapter-hm32rzwk/adapter_result.json",
+      "sha256": "38f85c177c9aa69d6834dbf51bbb6d68565a522693f130bdeb52713ab8e3060d",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-prepare-softmax-community-perf-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-prepare-softmax-perf-native/adapter-w57vg17d/adapter_result.json",
+      "sha256": "f0ecb7048e39e18730fa2a9115a0aa4cef82b572b140bb279dca48b3df3b4c31",
+      "availability": "external-run-root"
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-07T20:41:00+08:00",
+  "acceptance_unit_id": "AU-post-grad-prepare-softmax",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "pattern_explanation": {
+    "name": "prepare_softmax",
+    "stage": "post_grad",
+    "intent": "以 online reduction 同时得到 xmax 与 exp-sum，减少 softmax 前处理的访存和 reduction passes。",
+    "source_excerpt": "# torch/_inductor/fx_passes/post_grad.py:490-520\ndef prepare_softmax_pattern(x, dim): ...\ndef prepare_softmax_replacement(x, dim):\n    return prims.prepare_softmax_online(x, dim)",
+    "full_learning_report": "docs/T080_RESULT_AND_LEARNING_GUIDE.md"
+  },
+  "reference": {
+    "run_id": "reference-20260907T001455+0800-uv9_464e",
+    "suite_status": "valid-reference-suite",
+    "suite_valid": true,
+    "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "payload_sha256": "a197df02e0d2b6141ae259fdc69526ddc0888ad4d5179086047ec9b284497f9b",
+    "cases": [
+      {
+        "case_id": "REF-prepare-softmax-fast-math-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "2dd2ff47123a0f52356baf167ddc8ad00533639a3f74086f1c505ed6831931a9",
+        "artifact_inventory_sha256": "f13cceb5f6b65477c9785bf84461ffc3e7554e21340d4aa6ad6cf9cecc179df9"
+      },
+      {
+        "case_id": "REF-prepare-softmax-signed-zero-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "ac1830580d3dace8ac75e92505552de883e994c602ad2d2388e5f823c0d55d9f",
+        "artifact_inventory_sha256": "2511d81681c3e40980084ec91ce4cf5e3feb593a6c73ffe8c1414af5bee2e53e"
+      },
+      {
+        "case_id": "REF-prepare-softmax-community-perf-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "a6ee8411a73587292f6131fbad28e16f45412a6400417fd3afb9ccb1779fc0e8",
+        "artifact_inventory_sha256": "62fb6c9a5de9f1a398a1ffafd7660ad37764ad418581f706b253a6598541651d"
+      }
+    ]
+  },
+  "npu": {
+    "result_path": "results/current/AU-post-grad-prepare-softmax/npu_result.json",
+    "result_sha256": "e1f281929bed77a343e85777e8dd9a39c0b2c752d56b0ba3a391f138615a3b22",
+    "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "tracking_mode": "adapter",
+    "execution_success": true,
+    "correctness_status": "passed"
+  },
+  "variant_comparisons": [
+    {
+      "variant_id": "fast-math-prepare-positive",
+      "intent": "bf16 max/sub/exp/sum 进入 prepare_softmax online primitive",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 490,
+          "symbol": "prepare_softmax_pattern"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 498,
+          "symbol": "prepare_softmax_replacement"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 case 命中并通过。",
+      "npu_behavior": "结构 replacement 发生，但产品 lowering 显式 fallback；数值正确。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "extern",
+      "correctness_status": "passed",
+      "performance_status": "exempt-explicit-product-lowering-disable",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "prims.prepare_softmax_online.default 位于 torch_npu 显式 FALLBACK_LIST；没有合法同后端 ON 路径，按产品关闭免测。"
+    },
+    {
+      "variant_id": "strict-signed-zero-regression",
+      "intent": "strict signed zero 下 online reduction 保持 amax 的正负零位模式",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 490,
+          "symbol": "prepare_softmax_pattern"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 498,
+          "symbol": "prepare_softmax_replacement"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 case 命中并通过。",
+      "npu_behavior": "结构 replacement 发生，但产品 lowering 显式 fallback；数值正确。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "extern",
+      "correctness_status": "passed",
+      "performance_status": "exempt-explicit-product-lowering-disable",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "prims.prepare_softmax_online.default 位于 torch_npu 显式 FALLBACK_LIST；没有合法同后端 ON 路径，按产品关闭免测。"
+    },
+    {
+      "variant_id": "community-benchmark-contract",
+      "intent": "以社区 do_test_acc_and_perf 作为后续同输入性能设计来源",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 490,
+          "symbol": "prepare_softmax_pattern"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 498,
+          "symbol": "prepare_softmax_replacement"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 case 通过；该方法未直接断言 target match。",
+      "npu_behavior": "结构 replacement 发生，但产品 lowering 显式 fallback；数值正确。",
+      "reference_contract_stable": true,
+      "reference_target_match": null,
+      "npu_target_match": null,
+      "match_contract_aligned": true,
+      "runtime_path": "extern",
+      "correctness_status": "passed",
+      "performance_status": "exempt-explicit-product-lowering-disable",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "prims.prepare_softmax_online.default 位于 torch_npu 显式 FALLBACK_LIST；没有合法同后端 ON 路径，按产品关闭免测。"
+    }
+  ],
+  "first_divergence": "lowering",
+  "root_cause": "torch_npu/_inductor/lowering_fallback_list.py 显式关闭 prims.prepare_softmax_online.default lowering。",
+  "recommended_action": "保持关闭免测；只有产品显式重开并完成评审后再建立性能 ON 路径。",
+  "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+  "repair_status": "not-needed",
+  "repair_detail": "产品已有显式 lowering fallback；保留关闭，无需制造修复。"
+}

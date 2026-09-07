@@ -11,7 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 class AdapterReportTests(unittest.TestCase):
     def test_every_adapter_has_a_contract_report(self):
         adapters = sorted((ROOT / "issues").glob("REF-*/npu_adapter.py"))
-        self.assertEqual(len(adapters), 28)
+        # 新任务会持续增加 adapter；这里看护下限与逐文件配套关系，避免每批
+        # 都为一个过时的精确总数修改测试。
+        self.assertGreaterEqual(len(adapters), 28)
         missing = [str(path.parent.relative_to(ROOT)) for path in adapters if not (path.parent / "适配报告.md").is_file()]
         self.assertEqual(missing, [])
 
@@ -26,7 +28,9 @@ class AdapterReportTests(unittest.TestCase):
             "product_gate_bypassed=false",
             "```python",
         )
-        timestamp = re.compile(r"2026-09-07 11:20 CST（UTC\+08:00）")
+        timestamp = re.compile(
+            r"20\d{2}-\d{2}-\d{2} \d{2}:\d{2} CST（UTC\+08:00）"
+        )
         incomplete = []
         for adapter in sorted((ROOT / "issues").glob("REF-*/npu_adapter.py")):
             report = adapter.parent / "适配报告.md"

@@ -1,0 +1,252 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-07T18:50:00+08:00",
+  "case_ids": [
+    "REF-bmm-to-mm-native"
+  ],
+  "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": [
+    "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_bmm_to_mm"
+  ],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "disabled",
+    "source_control": "triton_experimental.config.disable_bmm_to_mm=true；backend 激活时只拒绝 NPU bmm_to_mm match。",
+    "product_gate_bypassed": false
+  },
+  "paired_control": {
+    "status": "passed",
+    "reason": "候选 3×OFF/3×ON 完成后因稳定回退设置产品门禁；最终 default-disabled/gate-disabled 双臂通过。"
+  },
+  "direct_execution": {
+    "status": "no-tests",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 0,
+    "reason": "上游模块 __main__ 受 HAS_GPU 启动门限制，NPU 原生入口执行 0 tests。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 1,
+    "tests_skipped": 0,
+    "reason": "显式实例化原社区方法后，全部正例/guard、数值和结构断言通过。"
+  },
+  "variants": [
+    {
+      "variant_id": "batch-one-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                1,
+                16,
+                8
+              ],
+              [
+                1,
+                8,
+                32
+              ]
+            ],
+            "strides": [
+              [
+                128,
+                8,
+                1
+              ],
+              [
+                256,
+                32,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "count": 0,
+        "nodes": 0,
+        "scope": "target-pattern",
+        "note": "最终产品门禁生效，目标 handler 命中为 0。"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "适配运行已捕获 FX before/after。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "产品 gate 在 handler 前拒绝 replacement。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "编译图成功进入 NPU lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "triton_experimental 调度和执行成功。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "已保存 generated_code/output_code 结构证据。"
+      },
+      "runtime_path": "extern",
+      "correctness": {
+        "status": "passed",
+        "assertion": "原社区 compiled/eager、counter 或 FileCheck 断言通过，0 skip。"
+      },
+      "performance": {
+        "status": "passed",
+        "reason": "目标级 3×OFF/3×ON 的 Event p50 变化为 -12.46%；候选判定 PERF_REGRESSED。"
+      },
+      "first_divergence": "config",
+      "root_cause": "同后端性能测量显示 bmm→mm 在四个 shape 的 Event p50 全部回退，因此产品门禁在 handler 前拒绝 NPU match。",
+      "recommended_action": "保持默认门禁；只有新的 shape-qualified 收益证据通过评审后才重开。"
+    },
+    {
+      "variant_id": "multi-batch-negative",
+      "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                3,
+                16,
+                8
+              ],
+              [
+                3,
+                8,
+                32
+              ]
+            ],
+            "strides": [
+              [
+                128,
+                8,
+                1
+              ],
+              [
+                256,
+                32,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "count": 0,
+        "nodes": 0,
+        "scope": "target-pattern",
+        "note": "保留原社区 counter/FileCheck 判据。"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "适配运行已捕获 FX before/after。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "社区 guard 拒绝目标 replacement。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "编译图成功进入 NPU lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "triton_experimental 调度和执行成功。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "已保存 generated_code/output_code 结构证据。"
+      },
+      "runtime_path": "extern",
+      "correctness": {
+        "status": "passed",
+        "assertion": "原社区 compiled/eager、counter 或 FileCheck 断言通过，0 skip。"
+      },
+      "performance": {
+        "status": "passed",
+        "reason": "目标级 3×OFF/3×ON 的 Event p50 变化为 -12.46%；候选判定 PERF_REGRESSED。"
+      },
+      "first_divergence": "none",
+      "root_cause": "NPU 行为与冻结社区合同一致。",
+      "recommended_action": "保留当前实现和正负例回归。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "npu-adapter",
+      "path": "issues/REF-bmm-to-mm-native/npu_adapter.py",
+      "sha256": "fe99951adf59533842b8ca9f095beb18a346786be9507c0f1fd57f8cd4a709b2",
+      "availability": "repository"
+    },
+    {
+      "role": "npu-adapter-result",
+      "path": "/home/z50063656/tmp/t079-npu-results/REF-bmm-to-mm-native/adapter-8723yeav/adapter_result.json",
+      "sha256": "97574f02b672c01e6ded8b441cc9aea0c1f2fd87005096f830f687cb9bf838b8",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "performance-summary",
+      "path": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/performance_summary.json",
+      "sha256": "1618d189b86173c7aaffda0e7cefc10b4d298f2d53fe90b57dc000648a226837",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "product-gate-result",
+      "path": "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800/default-disabled/result.json",
+      "sha256": "dcdb404bd0b2a96f0b61cb2675d1f0dbe979efbfb72027548d0f9d35ff886e61",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "repair-report",
+      "path": "issues/REF-bmm-to-mm-native/修复验证报告.md",
+      "sha256": "771b12290fb004179b9ea42cc15aa7c7b191b52c1e9d8fef95810b9bf544d00a",
+      "availability": "repository"
+    }
+  ]
+}

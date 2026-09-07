@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-07T07:50:00+08:00",
-  "status": "t079-direct-gpu-reference-reviewed-and-frozen-awaiting-npu",
+  "generated_at": "2026-09-07T18:52:00+08:00",
+  "status": "t079-formally-closed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -54,14 +54,14 @@
     "denominator_rule": "T079 units freeze only after the complete direct GPU suite is valid",
     "current_manifest_units": 4,
     "current_frozen_denominator_units": 4,
-    "current_formally_closed_units": 0
+    "current_formally_closed_units": 4
   },
   "acceptance_units": [
     {
       "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
       "contract_name": "batch size 为 1 时把 bmm 降为 squeeze-mm-unsqueeze 的合同",
       "stage": "joint_graph",
-      "review_status": "frozen-reference-valid",
+      "review_status": "formally-closed",
       "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/joint_graph.py", "line": 979, "symbol": "bmm_to_mm", "role": "registered-rewrite-handler"}
@@ -70,8 +70,8 @@
         {"nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_bmm_to_mm", "role": "positive-and-guard", "evidence_scope": "batch=1 生成 extern mm；batch=3 保留 extern bmm；两路数值正确"}
       ],
       "variants": [
-        {"variant_id": "batch-one-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "batch=1 的 bmm 改写为 squeeze-mm-unsqueeze", "expected_counter": "generated code contains extern_kernels.mm and no extern_kernels.bmm", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "multi-batch-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "batch=3 不满足静态 batch=1 guard，保留 bmm", "expected_counter": "generated code contains extern_kernels.bmm", "reference_status": "valid-reference", "npu_status": "not-started"}
+        {"variant_id": "batch-one-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "batch=1 的 bmm 改写为 squeeze-mm-unsqueeze", "expected_counter": "generated code contains extern_kernels.mm and no extern_kernels.bmm", "reference_status": "valid-reference", "npu_status": "expected-product-divergence-verified"},
+        {"variant_id": "multi-batch-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "batch=3 不满足静态 batch=1 guard，保留 bmm", "expected_counter": "generated code contains extern_kernels.bmm", "reference_status": "valid-reference", "npu_status": "passed"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -80,14 +80,14 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 batch=1 guard", "以 bmm fallback 冒充 mm rewrite", "删除 multi-batch 负例"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后在 fresh process 中选择 triton_experimental 再执行 NPU"},
+      "npu_control": {"status": "completed", "result": "EXPECTED_PRODUCT_DIVERGENCE", "repair_status": "verified", "performance_result": "PERF_REGRESSED", "performance_evidence": "results/current/T-079/performance_summary.json", "product_gate": "triton_experimental.config.disable_bmm_to_mm=true"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-post-grad-cat-slice-cat",
       "contract_name": "复用首个 cat 输入把 cat→slice→cat 折为单次 cat 的 lowering 合同",
       "stage": "post_grad",
-      "review_status": "frozen-reference-valid",
+      "review_status": "formally-closed",
       "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1089, "symbol": "cat_slice_cat", "role": "registered-lowering-handler"}
@@ -96,9 +96,9 @@
         {"nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_cat_slice_cat_cuda", "role": "positive-and-handler-fallback", "evidence_scope": "合法 end 折叠；越界与负 end 命中结构后走非优化 fallback；全程数值正确"}
       ],
       "variants": [
-        {"variant_id": "slice-within-first-input-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "slice end 位于首个 cat 输入范围内，两个 cat 折为一个", "expected_counter": "pattern_matcher_count=1 and nodes=3", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "slice-end-exceeds-first-input-fallback", "kind": "guard", "expected_reference_match": true, "expected_behavior": "结构可匹配但 end 超过首输入大小，handler 返回原始两级 cat 语义", "expected_counter": "pattern matched; optimized folding not applied", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "negative-slice-end-fallback", "kind": "guard", "expected_reference_match": true, "expected_behavior": "负 end 明确走非优化 fallback，保持切片语义", "expected_counter": "pattern_matcher_count=1 and nodes=3; folding rejected", "reference_status": "valid-reference", "npu_status": "not-started"}
+        {"variant_id": "slice-within-first-input-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "slice end 位于首个 cat 输入范围内，两个 cat 折为一个", "expected_counter": "pattern_matcher_count=1 and nodes=3", "reference_status": "valid-reference", "npu_status": "passed"},
+        {"variant_id": "slice-end-exceeds-first-input-fallback", "kind": "guard", "expected_reference_match": true, "expected_behavior": "结构可匹配但 end 超过首输入大小，handler 返回原始两级 cat 语义", "expected_counter": "pattern matched; optimized folding not applied", "reference_status": "valid-reference", "npu_status": "passed"},
+        {"variant_id": "negative-slice-end-fallback", "kind": "guard", "expected_reference_match": true, "expected_behavior": "负 end 明确走非优化 fallback，保持切片语义", "expected_counter": "pattern_matcher_count=1 and nodes=3; folding rejected", "reference_status": "valid-reference", "npu_status": "passed"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -107,14 +107,14 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 slice end", "把 handler fallback 记为 rewrite applied", "删除负 end 分支"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后执行 NPU"},
+      "npu_control": {"status": "completed", "result": "PERF_IMPROVED", "repair_status": "not-needed", "performance_evidence": "results/current/T-079/performance_summary.json"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-post-grad-splitwithsizes-cat-replace",
       "contract_name": "完整且同序的 split_with_sizes→getitem→cat 消除为原输入的合同",
       "stage": "post_grad",
-      "review_status": "frozen-reference-valid",
+      "review_status": "formally-closed",
       "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1731, "symbol": "splitwithsizes_cat_replace", "role": "registered-lowering-replacement"}
@@ -123,10 +123,10 @@
         {"nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_splitwithsizes_cat", "role": "positive-and-negative-guards", "evidence_scope": "完整同序拼回消除；缺片、异维与重排均不得消除"}
       ],
       "variants": [
-        {"variant_id": "complete-same-order-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "所有 split 结果按原顺序同维 cat，直接返回原输入", "expected_counter": "pattern_matcher_count=1 and nodes=4", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "missing-getitem-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "部分 split 结果未参与 cat，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "different-cat-dim-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "split 与 cat 维度不同，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "reordered-getitems-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "getitem 顺序改变，不等价于原输入，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "not-started"}
+        {"variant_id": "complete-same-order-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "所有 split 结果按原顺序同维 cat，直接返回原输入", "expected_counter": "pattern_matcher_count=1 and nodes=4", "reference_status": "valid-reference", "npu_status": "passed"},
+        {"variant_id": "missing-getitem-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "部分 split 结果未参与 cat，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "passed"},
+        {"variant_id": "different-cat-dim-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "split 与 cat 维度不同，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "passed"},
+        {"variant_id": "reordered-getitems-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "getitem 顺序改变，不等价于原输入，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "passed"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -135,14 +135,14 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["重排 getitem", "改变 split sizes", "删除负例 guard"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后执行 NPU"},
+      "npu_control": {"status": "completed", "result": "PERF_IMPROVED", "repair_status": "not-needed", "performance_evidence": "results/current/T-079/performance_summary.json"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {
       "acceptance_unit_id": "AU-post-grad-cat-splitwithsizes-replace",
       "contract_name": "cat 后按原输入边界 split_with_sizes 时消除 cat/split 的合同",
       "stage": "post_grad",
-      "review_status": "frozen-reference-valid",
+      "review_status": "formally-closed",
       "denominator_eligible": "yes-frozen",
       "upstream_sources": [
         {"path": "torch/_inductor/fx_passes/post_grad.py", "line": 1786, "symbol": "cat_splitwithsizes_replace", "role": "registered-lowering-replacement"}
@@ -151,11 +151,11 @@
         {"nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_cat_splitwithsizes", "role": "positive-and-negative-guards", "evidence_scope": "同维同边界且 cat 单用户时返回原输入列表；用户、维度、数量、边界不符均拒绝"}
       ],
       "variants": [
-        {"variant_id": "same-boundaries-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "split sizes 与各 cat 输入边界一致，消除 cat/split", "expected_counter": "pattern_matcher_count=1 and nodes=2", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "cat-multi-user-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "cat 还有其他用户时不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "different-split-dim-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "cat 与 split 维度不同，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "different-split-count-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "split 数量与 cat 输入数量不同，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "not-started"},
-        {"variant_id": "different-boundaries-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "split 边界与 cat 输入大小不一致，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "not-started"}
+        {"variant_id": "same-boundaries-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "split sizes 与各 cat 输入边界一致，消除 cat/split", "expected_counter": "pattern_matcher_count=1 and nodes=2", "reference_status": "valid-reference", "npu_status": "passed"},
+        {"variant_id": "cat-multi-user-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "cat 还有其他用户时不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "passed"},
+        {"variant_id": "different-split-dim-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "cat 与 split 维度不同，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "passed"},
+        {"variant_id": "different-split-count-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "split 数量与 cat 输入数量不同，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "passed"},
+        {"variant_id": "different-boundaries-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "split 边界与 cat 输入大小不一致，不得消除", "expected_counter": "pattern_matcher_count=0", "reference_status": "valid-reference", "npu_status": "passed"}
       ],
       "tracking": {
         "reference_mode": "direct",
@@ -164,7 +164,7 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 cat 用户关系", "改变 split sizes/dim", "删除负例 guard"]
       },
-      "npu_control": {"status": "not-started", "next_action": "GPU reference 有效后执行 NPU"},
+      "npu_control": {"status": "completed", "result": "PERF_IMPROVED", "repair_status": "not-needed", "performance_evidence": "results/current/T-079/performance_summary.json"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     }
   ]

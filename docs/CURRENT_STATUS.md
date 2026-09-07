@@ -1,9 +1,9 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-07 09:05 CST（UTC+08:00）
+> 更新时间：2026-09-07 20:41 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076～T-078 已形成 14 份正式结果；T-079/T-080 共 7 个 GPU reference 单元已冻结、等待 NPU；T-081～T-113 为草案；T-077 MM 与 T-078 产品改动尚未合入。
+> 当前阶段：T-076～T-080 共 21 个 acceptance units 已正式闭环；T-081～T-113 为草案；T-077 MM、T-078～T-080 产品改动尚未合入。
 
 ## 1. 总结
 
@@ -175,7 +175,22 @@ report/         不可改写的实验事实和 T-074 数据
   `results/current/T-076/performance_summary.json` 与 `results/current/T-077/performance_summary.json`。
 - T-078 的 12/12 GPU 原生 cases、20/20 variants、4/4 NPU comparison 均已闭环；addcdiv/partial
   修复已验证，候选性能和最终 addmm/baddbmm 产品门禁均已落盘。正式数据位于
-  `results/current/T-078/` 与四个对应 acceptance-unit 目录。
+`results/current/T-078/` 与四个对应 acceptance-unit 目录。
+
+T-079 已完成 4/4 units、4/4 社区方法和 14/14 variants 的 GPU/NPU 对照与性能处置。NPU 原生入口
+均因 `HAS_GPU=false` 为 0 tests，最小适配保留原方法、数值和 counter/FileCheck 后全部 PASS。
+cat-slice-cat、split→cat、cat→split 的 NPU Event p50 分别改善 18.41%、28.46%、13.03%，保留启用；
+batch=1 bmm→mm 在社区 shape 和三个 sensitivity shape 的 Event p50 全部回退，已在
+`triton_experimental` 增加 `disable_bmm_to_mm=true` 门禁，默认/显式重开双臂验证 PASS。正式数据位于
+`results/current/T-079/` 与四个对应 acceptance-unit 目录。
+
+T-080 已完成 3/3 units、13/13 GPU cases、13/13 NPU variants 的功能/结构处置。Constructor mover
+功能一致且社区 length=32 的 Event p50/p99 变化为 +0.46%/-0.50%，判定 `PERF_NEUTRAL` 并保留启用。
+Prepare-softmax 经测试态 generic guard 探针形成 online prim，但产品 `FALLBACK_LIST` 明确关闭 lowering，
+因此为受控差异和 `PERF_EXEMPT`。Const-scatter 在修复两处完整图 codegen 缺口后，社区全尺寸
+CrossEntropy backward 的 Event p50/p99 回退 10.50%/10.55%，allocated 增加 35.87%；已增加
+NPU-only 可逆门禁并完成默认关闭/显式重开双臂验证。正式数据位于 `results/current/T-080/` 与三个
+对应 acceptance-unit 目录。
 
 T-078 已从上述集合审核并闭环 1 个 `no-test-found` 与 3 个 indirect 单元；T-080 又纠正 2 个
 `no-test-found`，其余 45 个 `no-test-found` 和 26 个 indirect 单元继续待审。仍未完成 T-077 MM 候选修复的
@@ -195,12 +210,9 @@ torch_npu，并用同一六变体合同做安装态回归。
 T-078：12/12 GPU reference、4/4 NPU comparison、条件 repair、候选性能和最终产品 gate 已闭环；
 后续只做同合同回归和 source drift 检查，不再绕过显式门禁补测。
 
-T-079 已完成 4 cases/14 variants 的 GPU review 复核并冻结；T-080 已完成 13 cases/13 variants 的
-GPU review 复核并冻结。两批下一步均为 NPU `triton_experimental` 功能/命中验证。T-080 保存
-const-scatter CrossEntropy 和 prepare-softmax 的社区 benchmark；T-078/T-079 无社区独立 benchmark，
-明确从社区功能正例派生。
-T-079/T-080 性能 worker 尚未实现，需先完成代码与静态验证；之后只有 NPU
-`triton_experimental` 功能与命中门禁通过，才允许目标级 OFF/ON 性能。
+T-079、T-080 均已正式闭环。T-080 保留 const-scatter CrossEntropy 的社区完整 benchmark；
+prepare-softmax 因产品显式 lowering fallback 免测；constructor mover 从社区功能正例派生性能图。
+下一主任务是从 `docs/TASK_BACKLOG.md` 人工冻结 T-081，而非继续把 T-080 plan-only 状态当待办。
 
 T-076/T-077 的正式 GPU、NPU、comparison 与性能结论无需重跑；新 1.3 review 已于 2026-09-07
 补齐并通过校验：T-076/T-077 分别可恢复 80/68 份关键正文。新增正文用于逐项 FX 学习与审计，
@@ -218,8 +230,7 @@ T-076/T-077 的正式 GPU、NPU、comparison 与性能结论无需重跑；新 1
   reference 使用 `z00824525`/sudo、A100/R550、CUDA 12.6.3、pip venv Python 3.12 和与冻结
   PyTorch commit 一致的 `/data/z50063656/envs/PassGPURef`；compat 当前未启用；
 - NPU 原生入口、最小适配、命中/生效分层、根因定位、最小修复和回归的连续教学流程见
-  `docs/NPU_FUNCTION_REPAIR_WORKFLOW.md`；T-079/T-080 当前仍需先实现功能 worker，不能把 plan-only
-  文档当作可运行结果；
+  `docs/NPU_FUNCTION_REPAIR_WORKFLOW.md`；T-079/T-080 均已有正式 runner、结果和产品处置；
 - 不在 PyTorch/torch_npu 源码树中 import `torch`；
 - installed torch_npu wheel 与 `dist` 同名 wheel 哈希冲突仍未解除，不重装；
 - T-055～T-073 的 Benchmark/isolated venv 结果保留原环境标签；

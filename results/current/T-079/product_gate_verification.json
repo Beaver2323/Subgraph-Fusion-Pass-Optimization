@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T18:50:00+08:00",
+  "task_id": "T-079",
+  "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
+  "backend": "triton_experimental",
+  "status": "passed",
+  "default_disabled": {
+    "schema_version": "1.0",
+    "task_id": "T-079",
+    "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
+    "mode": "default-disabled",
+    "backend": "triton_experimental",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "config_source": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/config.py",
+    "disable_bmm_to_mm_default": true,
+    "disable_bmm_to_mm_during_compile": true,
+    "gate_installed": true,
+    "target_hits": 0,
+    "correctness": "passed",
+    "codegen": {
+      "files": [
+        "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_18_41_13_564976-pid_529895/torchinductor/model__0_inference_0.0/output_code.py"
+      ],
+      "extern_mm": 0,
+      "extern_bmm": 1,
+      "triton_kernels": 0
+    },
+    "verdict": "PASS"
+  },
+  "gate_disabled": {
+    "schema_version": "1.0",
+    "task_id": "T-079",
+    "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
+    "mode": "gate-disabled",
+    "backend": "triton_experimental",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "config_source": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/config.py",
+    "disable_bmm_to_mm_default": true,
+    "disable_bmm_to_mm_during_compile": false,
+    "gate_installed": true,
+    "target_hits": 1,
+    "correctness": "passed",
+    "codegen": {
+      "files": [
+        "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800/gate-disabled/debug/torch_compile_debug/run_2026_09_07_18_41_40_577941-pid_536623/torchinductor/model__0_inference_0.0/output_code.py"
+      ],
+      "extern_mm": 1,
+      "extern_bmm": 0,
+      "triton_kernels": 0
+    },
+    "verdict": "PASS"
+  },
+  "source_run_root": "/home/z50063656/tmp/t079-bmm-gate-results/bmm-gate-verify-20260907T184104+0800"
+}

@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T20:41:00+08:00",
+  "task_id": "T-080",
+  "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+  "backend": "triton_experimental",
+  "status": "passed",
+  "default_disabled": {
+    "schema_version": "1.0",
+    "task_id": "T-080",
+    "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+    "mode": "default-disabled",
+    "backend": "triton_experimental",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "config_source": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/config.py",
+    "disable_scatter_upon_const_tensor_default": true,
+    "disable_scatter_upon_const_tensor_during_compile": true,
+    "gate_installed": true,
+    "handler_hits": 0,
+    "metric_hits": 0,
+    "correctness": "passed",
+    "codegen": {
+      "files": [
+        "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/default-disabled/debug/torch_compile_debug/run_2026_09_07_20_38_26_085238-pid_2495153/torchinductor/model__0_inference_0.0/output_code.py"
+      ],
+      "triton_kernels": 1,
+      "where_tokens": 0,
+      "scatter_tokens": 5
+    },
+    "verdict": "PASS"
+  },
+  "gate_disabled": {
+    "schema_version": "1.0",
+    "task_id": "T-080",
+    "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+    "mode": "gate-disabled",
+    "backend": "triton_experimental",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "config_source": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/config.py",
+    "disable_scatter_upon_const_tensor_default": true,
+    "disable_scatter_upon_const_tensor_during_compile": false,
+    "gate_installed": true,
+    "handler_hits": 1,
+    "metric_hits": 1,
+    "correctness": "passed",
+    "codegen": {
+      "files": [
+        "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/gate-disabled/debug/torch_compile_debug/run_2026_09_07_20_39_03_727083-pid_2505787/torchinductor/model__0_inference_0.0/output_code.py"
+      ],
+      "triton_kernels": 2,
+      "where_tokens": 3,
+      "scatter_tokens": 7
+    },
+    "verdict": "PASS"
+  },
+  "source_run_root": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800"
+}

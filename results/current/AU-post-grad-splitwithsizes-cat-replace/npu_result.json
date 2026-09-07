@@ -1,0 +1,360 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-07T18:50:00+08:00",
+  "case_ids": [
+    "REF-splitwithsizes-cat-native"
+  ],
+  "acceptance_unit_id": "AU-post-grad-splitwithsizes-cat-replace",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": [
+    "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_splitwithsizes_cat"
+  ],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "enabled",
+    "source_control": "上游目标 pass 在 triton_experimental 上保持启用，无新增产品 gate。",
+    "product_gate_bypassed": false
+  },
+  "paired_control": {
+    "status": "passed",
+    "reason": "目标级 3×OFF/3×ON 均正确且社区主 shape 性能改善。"
+  },
+  "direct_execution": {
+    "status": "no-tests",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 0,
+    "reason": "上游模块 __main__ 受 HAS_GPU 启动门限制，NPU 原生入口执行 0 tests。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 1,
+    "tests_skipped": 0,
+    "reason": "显式实例化原社区方法后，全部正例/guard、数值和结构断言通过。"
+  },
+  "variants": [
+    {
+      "variant_id": "complete-same-order-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                2,
+                32
+              ]
+            ],
+            "strides": [
+              [
+                32,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
+      "match": {
+        "target_matched": true,
+        "count": 1,
+        "nodes": 4,
+        "scope": "target-pattern",
+        "note": "保留原社区 counter/FileCheck 判据。"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "适配运行已捕获 FX before/after。"
+      },
+      "replacement": {
+        "status": "observed",
+        "evidence": "目标 handler/replacement 按社区合同执行。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "编译图成功进入 NPU lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "triton_experimental 调度和执行成功。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "已保存 generated_code/output_code 结构证据。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "原社区 compiled/eager、counter 或 FileCheck 断言通过，0 skip。"
+      },
+      "performance": {
+        "status": "passed",
+        "reason": "目标级 3×OFF/3×ON 的 Event p50 变化为 28.46%；候选判定 PERF_IMPROVED。"
+      },
+      "first_divergence": "none",
+      "root_cause": "NPU 行为与冻结社区合同一致。",
+      "recommended_action": "保留当前实现和正负例回归。"
+    },
+    {
+      "variant_id": "missing-getitem-negative",
+      "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                2,
+                32
+              ]
+            ],
+            "strides": [
+              [
+                32,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "count": 0,
+        "nodes": 0,
+        "scope": "target-pattern",
+        "note": "保留原社区 counter/FileCheck 判据。"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "适配运行已捕获 FX before/after。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "社区 guard 拒绝目标 replacement。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "编译图成功进入 NPU lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "triton_experimental 调度和执行成功。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "已保存 generated_code/output_code 结构证据。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "原社区 compiled/eager、counter 或 FileCheck 断言通过，0 skip。"
+      },
+      "performance": {
+        "status": "passed",
+        "reason": "目标级 3×OFF/3×ON 的 Event p50 变化为 28.46%；候选判定 PERF_IMPROVED。"
+      },
+      "first_divergence": "none",
+      "root_cause": "NPU 行为与冻结社区合同一致。",
+      "recommended_action": "保留当前实现和正负例回归。"
+    },
+    {
+      "variant_id": "different-cat-dim-negative",
+      "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                2,
+                32
+              ]
+            ],
+            "strides": [
+              [
+                32,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "count": 0,
+        "nodes": 0,
+        "scope": "target-pattern",
+        "note": "保留原社区 counter/FileCheck 判据。"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "适配运行已捕获 FX before/after。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "社区 guard 拒绝目标 replacement。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "编译图成功进入 NPU lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "triton_experimental 调度和执行成功。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "已保存 generated_code/output_code 结构证据。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "原社区 compiled/eager、counter 或 FileCheck 断言通过，0 skip。"
+      },
+      "performance": {
+        "status": "passed",
+        "reason": "目标级 3×OFF/3×ON 的 Event p50 变化为 28.46%；候选判定 PERF_IMPROVED。"
+      },
+      "first_divergence": "none",
+      "root_cause": "NPU 行为与冻结社区合同一致。",
+      "recommended_action": "保留当前实现和正负例回归。"
+    },
+    {
+      "variant_id": "reordered-getitems-negative",
+      "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                2,
+                32
+              ]
+            ],
+            "strides": [
+              [
+                32,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "count": 0,
+        "nodes": 0,
+        "scope": "target-pattern",
+        "note": "保留原社区 counter/FileCheck 判据。"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "适配运行已捕获 FX before/after。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "社区 guard 拒绝目标 replacement。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "编译图成功进入 NPU lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "triton_experimental 调度和执行成功。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "已保存 generated_code/output_code 结构证据。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "原社区 compiled/eager、counter 或 FileCheck 断言通过，0 skip。"
+      },
+      "performance": {
+        "status": "passed",
+        "reason": "目标级 3×OFF/3×ON 的 Event p50 变化为 28.46%；候选判定 PERF_IMPROVED。"
+      },
+      "first_divergence": "none",
+      "root_cause": "NPU 行为与冻结社区合同一致。",
+      "recommended_action": "保留当前实现和正负例回归。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "npu-adapter",
+      "path": "issues/REF-splitwithsizes-cat-native/npu_adapter.py",
+      "sha256": "a4ceec06a9296e1c03f3098de145019afbaabf872040a34152369cfde7c683fc",
+      "availability": "repository"
+    },
+    {
+      "role": "npu-adapter-result",
+      "path": "/home/z50063656/tmp/t079-npu-results/REF-splitwithsizes-cat-native/adapter-0mdctuz8/adapter_result.json",
+      "sha256": "81be2f01bff7b3b4a868d287d198f1e04f8ba66c84ef0a16af3a4da125afd783",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "performance-summary",
+      "path": "/home/z50063656/tmp/t079-performance-results/split-cat-performance-20260907T101115+0800/performance_summary.json",
+      "sha256": "9aa3a7b1205b6156e673c1e52d4579d9c42fd7dbed9fa2cb062d15d0c7d5b752",
+      "availability": "external-run-root"
+    }
+  ]
+}

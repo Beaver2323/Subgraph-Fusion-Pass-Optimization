@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T18:50:00+08:00",
+  "task_id": "T-079",
+  "status": "performance-disposition-and-product-gate-complete",
+  "backend": "triton_experimental",
+  "completion": {
+    "acceptance_units": 4,
+    "measured_candidate_units": 4,
+    "retained_enabled_units": 3,
+    "explicitly_disabled_units": 1
+  },
+  "measurement_contract": {
+    "order": "OFF1-ON1-ON2-OFF2-OFF3-ON3",
+    "process_isolation": "fresh-process-per-arm-and-round",
+    "warmup": 10,
+    "runs": 100,
+    "timing": "同步 NPU Event 与 host wall clock p50/p99",
+    "scope": "冻结社区正例子图的一次 compiled 调用，不是完整模型 benchmark"
+  },
+  "community_benchmark_review": {
+    "pass_specific_benchmark": "absent",
+    "decision": "复用社区功能正例图、shape、dtype，仅增加目标级 OFF/ON 与计时。"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
+      "performance_status": "measured-regressed-product-disabled",
+      "verdict": "PERF_REGRESSED",
+      "event_p50_improvement_percent": -12.463602443366483,
+      "event_p99_improvement_percent": -53.12477745858424,
+      "product_action": "disable_bmm_to_mm=true",
+      "raw_summary": "/home/z50063656/tmp/t079-performance-results/bmm-to-mm-performance-20260907T102213+0800/performance_summary.json",
+      "raw_summary_sha256": "1618d189b86173c7aaffda0e7cefc10b4d298f2d53fe90b57dc000648a226837"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-cat-slice-cat",
+      "performance_status": "measured-improved-retained",
+      "verdict": "PERF_IMPROVED",
+      "event_p50_improvement_percent": 18.413846252850163,
+      "event_p99_improvement_percent": 16.876134428492122,
+      "product_action": "retain-enabled",
+      "raw_summary": "/home/z50063656/tmp/t079-performance-results/cat-slice-cat-performance-20260907T101924+0800/performance_summary.json",
+      "raw_summary_sha256": "a5d2d58754d6edcd66d271858b35890c5faf1f42d5bfeca1fb3a36cc8f13510f"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-splitwithsizes-cat-replace",
+      "performance_status": "measured-improved-retained",
+      "verdict": "PERF_IMPROVED",
+      "event_p50_improvement_percent": 28.461955807233984,
+      "event_p99_improvement_percent": 26.463150424976956,
+      "product_action": "retain-enabled",
+      "raw_summary": "/home/z50063656/tmp/t079-performance-results/split-cat-performance-20260907T101115+0800/performance_summary.json",
+      "raw_summary_sha256": "9aa3a7b1205b6156e673c1e52d4579d9c42fd7dbed9fa2cb062d15d0c7d5b752"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-cat-splitwithsizes-replace",
+      "performance_status": "measured-improved-retained",
+      "verdict": "PERF_IMPROVED",
+      "event_p50_improvement_percent": 13.031169468004542,
+      "event_p99_improvement_percent": 31.427555384492383,
+      "product_action": "retain-enabled",
+      "raw_summary": "/home/z50063656/tmp/t079-performance-results/cat-split-performance-20260907T101524+0800/performance_summary.json",
+      "raw_summary_sha256": "a20837bc479397c7658acb14805da93f16b5ad829222ac7325baf648e24c8310"
+    }
+  ],
+  "product_gate": {
+    "status": "passed",
+    "path": "results/current/T-079/product_gate_verification.json"
+  },
+  "limitations": [
+    "性能结果是 pass 正例子图端到端，不代表完整模型端到端。",
+    "bmm→mm 的候选测量发生在门禁落盘前；最终门禁另以双臂结构验证。"
+  ]
+}

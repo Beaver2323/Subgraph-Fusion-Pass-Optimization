@@ -1,0 +1,836 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-07T20:41:00+08:00",
+  "case_ids": [
+    "REF-scatter-const-3d-native",
+    "REF-scatter-const-non-last-dim-native",
+    "REF-scatter-const-negative-dim-native",
+    "REF-scatter-const-short-index-negative-native",
+    "REF-scatter-const-dense-negative-native",
+    "REF-scatter-const-nonconst-negative-native",
+    "REF-scatter-const-dtype-regression-native",
+    "REF-scatter-const-cross-entropy-e2e-native"
+  ],
+  "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": [
+    "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_3d_tensor",
+    "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_non_last_dim",
+    "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_neg_scatter_dim",
+    "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_shorter_index_tensor",
+    "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_can_not_optimize_due_to_dense",
+    "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_can_not_optimize_due_to_non_const",
+    "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_dtype_preserved",
+    "test/inductor/test_scatter_optimization.py::TestScatterOpt.test_cross_entropy_loss"
+  ],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "disabled",
+    "source_control": "disable_scatter_upon_const_tensor=true；默认拒绝 NPU target match，显式 False 可逆重开。",
+    "product_gate_bypassed": false
+  },
+  "direct_execution": {
+    "status": "no-tests",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 0,
+    "reason": "原生 GPU class/module 启动条件不在 NPU 上生成或执行测试。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 8,
+    "tests_skipped": 0,
+    "reason": "8/8 社区方法体执行；5 类正例/回归命中，3 类 guard 负例拒绝；dtype、数值与 CrossEntropy backward 梯度通过。"
+  },
+  "paired_control": {
+    "status": "passed",
+    "reason": "默认关闭与显式重开双臂均正确；默认 handler/metric=0，重开 handler/metric>=1。"
+  },
+  "cases": [
+    {
+      "case_id": "REF-scatter-const-3d-native",
+      "executed_case_alias": "REF-scatter-3d-native",
+      "variant_ids": [
+        "three-dimensional-last-dim-positive"
+      ],
+      "status": "passed",
+      "reference_target_match": true,
+      "candidate_npu_target_match": true,
+      "final_product_target_match": false,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "6cf04d89d7bd07388b04dab847b9c5c9cafe4d5ef05c55a26765e7c97d7ad3f6"
+    },
+    {
+      "case_id": "REF-scatter-const-non-last-dim-native",
+      "executed_case_alias": "REF-scatter-non-last-dim-native",
+      "variant_ids": [
+        "non-last-dim-positive"
+      ],
+      "status": "passed",
+      "reference_target_match": true,
+      "candidate_npu_target_match": true,
+      "final_product_target_match": false,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "9a16042d97dd6bcb4a3389c16815d8dd52f0eae424be234dfa2b67eaac689815"
+    },
+    {
+      "case_id": "REF-scatter-const-negative-dim-native",
+      "executed_case_alias": "REF-scatter-negative-dim-native",
+      "variant_ids": [
+        "negative-dim-positive"
+      ],
+      "status": "passed",
+      "reference_target_match": true,
+      "candidate_npu_target_match": true,
+      "final_product_target_match": false,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "cf4717916c1d91123886a94f808f6d963615661ca8cba411a940bf10cb918b4b"
+    },
+    {
+      "case_id": "REF-scatter-const-short-index-negative-native",
+      "executed_case_alias": "REF-scatter-short-index-native",
+      "variant_ids": [
+        "shorter-index-negative"
+      ],
+      "status": "passed",
+      "reference_target_match": false,
+      "candidate_npu_target_match": false,
+      "final_product_target_match": false,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "5553eece612963639d59c78ae5df780665d5e787938fe128b9477369fc5813ad"
+    },
+    {
+      "case_id": "REF-scatter-const-dense-negative-native",
+      "executed_case_alias": "REF-scatter-dense-native",
+      "variant_ids": [
+        "dense-selector-negative"
+      ],
+      "status": "passed",
+      "reference_target_match": false,
+      "candidate_npu_target_match": false,
+      "final_product_target_match": false,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "c6beeedd4b5a4b281c6b73ddca8b22454ea0fe6a279b2c0ca1918be5d917a896"
+    },
+    {
+      "case_id": "REF-scatter-const-nonconst-negative-native",
+      "executed_case_alias": "REF-scatter-non-const-native",
+      "variant_ids": [
+        "non-constant-base-negative"
+      ],
+      "status": "passed",
+      "reference_target_match": false,
+      "candidate_npu_target_match": false,
+      "final_product_target_match": false,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "3518874c9fa46ad4d4ee587216a9352f0753a3be49763f970d3c7138542481d1"
+    },
+    {
+      "case_id": "REF-scatter-const-dtype-regression-native",
+      "executed_case_alias": "REF-scatter-dtype-native",
+      "variant_ids": [
+        "low-precision-dtype-regression"
+      ],
+      "status": "passed",
+      "reference_target_match": true,
+      "candidate_npu_target_match": true,
+      "final_product_target_match": false,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "b4d617072e04f7739fe23d78876414d205d4a6b9e05190472cba60e3545a0fbe"
+    },
+    {
+      "case_id": "REF-scatter-const-cross-entropy-e2e-native",
+      "executed_case_alias": "REF-scatter-cross-entropy-native",
+      "variant_ids": [
+        "cross-entropy-backward-e2e-positive"
+      ],
+      "status": "passed",
+      "reference_target_match": true,
+      "candidate_npu_target_match": true,
+      "final_product_target_match": false,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "6efb7e016469c5e0202c65fbc04602a9d1972bdb92dc08abad7bb8e33316f542"
+    }
+  ],
+  "variants": [
+    {
+      "variant_id": "three-dimensional-last-dim-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "int64",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                2,
+                1024
+              ]
+            ],
+            "strides": [
+              [
+                1024,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "scope": "target-pattern-or-transform",
+        "note": "三维末维 sparse scalar scatter 改写为 pointwise"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "最终产品 gate 在 handler 前拒绝 replacement；候选测量时曾命中。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "原 Scatter 图进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "默认门禁生成原 Scatter 路径；重开臂生成 pointwise 路径。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "8/8 社区方法体执行；5 类正例/回归命中，3 类 guard 负例拒绝；dtype、数值与 CrossEntropy backward 梯度通过。"
+      },
+      "performance": {
+        "status": "measured-regressed-product-disabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+      },
+      "first_divergence": "config",
+      "root_cause": "两处 codegen 缺口修复后，完整社区 CrossEntropy OFF/ON 显示 Scatter 改写稳定回退且显存增加，因此以 backend-local gate 关闭。",
+      "recommended_action": "保持默认门禁；保留两处 codegen 修复，未来只有新的 shape-qualified 收益证据通过评审后才重开。"
+    },
+    {
+      "variant_id": "non-last-dim-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "int64",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                2048
+              ]
+            ],
+            "strides": [
+              [
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "scope": "target-pattern-or-transform",
+        "note": "非末维 selector 正确 broadcast 并改写"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "最终产品 gate 在 handler 前拒绝 replacement；候选测量时曾命中。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "原 Scatter 图进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "默认门禁生成原 Scatter 路径；重开臂生成 pointwise 路径。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "8/8 社区方法体执行；5 类正例/回归命中，3 类 guard 负例拒绝；dtype、数值与 CrossEntropy backward 梯度通过。"
+      },
+      "performance": {
+        "status": "measured-regressed-product-disabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+      },
+      "first_divergence": "config",
+      "root_cause": "两处 codegen 缺口修复后，完整社区 CrossEntropy OFF/ON 显示 Scatter 改写稳定回退且显存增加，因此以 backend-local gate 关闭。",
+      "recommended_action": "保持默认门禁；保留两处 codegen 修复，未来只有新的 shape-qualified 收益证据通过评审后才重开。"
+    },
+    {
+      "variant_id": "negative-dim-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "int64",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                1024
+              ]
+            ],
+            "strides": [
+              [
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "scope": "target-pattern-or-transform",
+        "note": "负 dim 规范化后改写"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "最终产品 gate 在 handler 前拒绝 replacement；候选测量时曾命中。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "原 Scatter 图进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "默认门禁生成原 Scatter 路径；重开臂生成 pointwise 路径。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "8/8 社区方法体执行；5 类正例/回归命中，3 类 guard 负例拒绝；dtype、数值与 CrossEntropy backward 梯度通过。"
+      },
+      "performance": {
+        "status": "measured-regressed-product-disabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+      },
+      "first_divergence": "config",
+      "root_cause": "两处 codegen 缺口修复后，完整社区 CrossEntropy OFF/ON 显示 Scatter 改写稳定回退且显存增加，因此以 backend-local gate 关闭。",
+      "recommended_action": "保持默认门禁；保留两处 codegen 修复，未来只有新的 shape-qualified 收益证据通过评审后才重开。"
+    },
+    {
+      "variant_id": "shorter-index-negative",
+      "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "int64",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                512
+              ]
+            ],
+            "strides": [
+              [
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "scope": "target-pattern-or-transform",
+        "note": "非 scatter 维 selector 更短，当前 guard 拒绝"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "最终产品 gate 在 handler 前拒绝 replacement；候选测量时曾命中。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "原 Scatter 图进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "默认门禁生成原 Scatter 路径；重开臂生成 pointwise 路径。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "8/8 社区方法体执行；5 类正例/回归命中，3 类 guard 负例拒绝；dtype、数值与 CrossEntropy backward 梯度通过。"
+      },
+      "performance": {
+        "status": "measured-regressed-product-disabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+      },
+      "first_divergence": "config",
+      "root_cause": "两处 codegen 缺口修复后，完整社区 CrossEntropy OFF/ON 显示 Scatter 改写稳定回退且显存增加，因此以 backend-local gate 关闭。",
+      "recommended_action": "保持默认门禁；保留两处 codegen 修复，未来只有新的 shape-qualified 收益证据通过评审后才重开。"
+    },
+    {
+      "variant_id": "dense-selector-negative",
+      "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "int64",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                1024,
+                1024
+              ]
+            ],
+            "strides": [
+              [
+                1024,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "scope": "target-pattern-or-transform",
+        "note": "scatter 维 selector size 大于 1，收益/实现 guard 拒绝"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "最终产品 gate 在 handler 前拒绝 replacement；候选测量时曾命中。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "原 Scatter 图进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "默认门禁生成原 Scatter 路径；重开臂生成 pointwise 路径。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "8/8 社区方法体执行；5 类正例/回归命中，3 类 guard 负例拒绝；dtype、数值与 CrossEntropy backward 梯度通过。"
+      },
+      "performance": {
+        "status": "measured-regressed-product-disabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+      },
+      "first_divergence": "config",
+      "root_cause": "两处 codegen 缺口修复后，完整社区 CrossEntropy OFF/ON 显示 Scatter 改写稳定回退且显存增加，因此以 backend-local gate 关闭。",
+      "recommended_action": "保持默认门禁；保留两处 codegen 修复，未来只有新的 shape-qualified 收益证据通过评审后才重开。"
+    },
+    {
+      "variant_id": "non-constant-base-negative",
+      "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "int64+float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                1024,
+                1
+              ],
+              [
+                1024,
+                2048
+              ]
+            ],
+            "strides": [
+              [
+                1,
+                1
+              ],
+              [
+                2048,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "scope": "target-pattern-or-transform",
+        "note": "底张量不是 aten.full 常量，拒绝改写"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "最终产品 gate 在 handler 前拒绝 replacement；候选测量时曾命中。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "原 Scatter 图进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "默认门禁生成原 Scatter 路径；重开臂生成 pointwise 路径。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "8/8 社区方法体执行；5 类正例/回归命中，3 类 guard 负例拒绝；dtype、数值与 CrossEntropy backward 梯度通过。"
+      },
+      "performance": {
+        "status": "measured-regressed-product-disabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+      },
+      "first_divergence": "config",
+      "root_cause": "两处 codegen 缺口修复后，完整社区 CrossEntropy OFF/ON 显示 Scatter 改写稳定回退且显存增加，因此以 backend-local gate 关闭。",
+      "recommended_action": "保持默认门禁；保留两处 codegen 修复，未来只有新的 shape-qualified 收益证据通过评审后才重开。"
+    },
+    {
+      "variant_id": "low-precision-dtype-regression",
+      "kind": "regression",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "int64->float16/bfloat16",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                1024
+              ]
+            ],
+            "strides": [
+              [
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "scope": "target-pattern-or-transform",
+        "note": "fp16/bf16 改写不被 Python scalar 提升为 fp32"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "最终产品 gate 在 handler 前拒绝 replacement；候选测量时曾命中。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "原 Scatter 图进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "默认门禁生成原 Scatter 路径；重开臂生成 pointwise 路径。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "8/8 社区方法体执行；5 类正例/回归命中，3 类 guard 负例拒绝；dtype、数值与 CrossEntropy backward 梯度通过。"
+      },
+      "performance": {
+        "status": "measured-regressed-product-disabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+      },
+      "first_divergence": "config",
+      "root_cause": "两处 codegen 缺口修复后，完整社区 CrossEntropy OFF/ON 显示 Scatter 改写稳定回退且显存增加，因此以 backend-local gate 关闭。",
+      "recommended_action": "保持默认门禁；保留两处 codegen 修复，未来只有新的 shape-qualified 收益证据通过评审后才重开。"
+    },
+    {
+      "variant_id": "cross-entropy-backward-e2e-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "expected-disabled",
+      "input_contract": {
+        "direction": "forward-backward",
+        "dtype": "bfloat16+int64",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                502,
+                768
+              ],
+              [
+                32,
+                1024,
+                768
+              ],
+              [
+                32,
+                1024
+              ]
+            ],
+            "strides": [
+              [
+                768,
+                1
+              ],
+              [
+                786432,
+                768,
+                1
+              ],
+              [
+                1024,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "scope": "target-pattern-or-transform",
+        "note": "CrossEntropy backward 中 full+scatter 改写且 weight gradient 正确"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "最终产品 gate 在 handler 前拒绝 replacement；候选测量时曾命中。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "原 Scatter 图进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "默认门禁生成原 Scatter 路径；重开臂生成 pointwise 路径。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "8/8 社区方法体执行；5 类正例/回归命中，3 类 guard 负例拒绝；dtype、数值与 CrossEntropy backward 梯度通过。"
+      },
+      "performance": {
+        "status": "measured-regressed-product-disabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+      },
+      "first_divergence": "config",
+      "root_cause": "两处 codegen 缺口修复后，完整社区 CrossEntropy OFF/ON 显示 Scatter 改写稳定回退且显存增加，因此以 backend-local gate 关闭。",
+      "recommended_action": "保持默认门禁；保留两处 codegen 修复，未来只有新的 shape-qualified 收益证据通过评审后才重开。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-scatter-const-3d-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-scatter-3d-native/adapter-dy5f0s5g/adapter_result.json",
+      "sha256": "6cf04d89d7bd07388b04dab847b9c5c9cafe4d5ef05c55a26765e7c97d7ad3f6",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-scatter-const-non-last-dim-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-scatter-non-last-dim-native/adapter-b13cdl02/adapter_result.json",
+      "sha256": "9a16042d97dd6bcb4a3389c16815d8dd52f0eae424be234dfa2b67eaac689815",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-scatter-const-negative-dim-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-scatter-negative-dim-native/adapter-caualpwp/adapter_result.json",
+      "sha256": "cf4717916c1d91123886a94f808f6d963615661ca8cba411a940bf10cb918b4b",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-scatter-const-short-index-negative-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-scatter-short-index-native/adapter-7gq6kdns/adapter_result.json",
+      "sha256": "5553eece612963639d59c78ae5df780665d5e787938fe128b9477369fc5813ad",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-scatter-const-dense-negative-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-scatter-dense-native/adapter-i5xk8hze/adapter_result.json",
+      "sha256": "c6beeedd4b5a4b281c6b73ddca8b22454ea0fe6a279b2c0ca1918be5d917a896",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-scatter-const-nonconst-negative-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-scatter-non-const-native/adapter-9wpd4fyz/adapter_result.json",
+      "sha256": "3518874c9fa46ad4d4ee587216a9352f0753a3be49763f970d3c7138542481d1",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-scatter-const-dtype-regression-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-scatter-dtype-native/adapter-xre8d0bw/adapter_result.json",
+      "sha256": "b4d617072e04f7739fe23d78876414d205d4a6b9e05190472cba60e3545a0fbe",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-scatter-const-cross-entropy-e2e-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-scatter-cross-entropy-native/adapter-upxa_qx1/adapter_result.json",
+      "sha256": "6efb7e016469c5e0202c65fbc04602a9d1972bdb92dc08abad7bb8e33316f542",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "product-gate-result",
+      "mode": "default-disabled",
+      "path": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/default-disabled/result.json",
+      "sha256": "d097e47803e64a4493e62e62a817bd38b8e12587043e6211a9c04c4e1922014d",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "product-gate-result",
+      "mode": "gate-disabled",
+      "path": "/home/z50063656/tmp/t080-scatter-gate-results/scatter-gate-verify-20260907T203817+0800/gate-disabled/result.json",
+      "sha256": "6488041fb5e64b90fc8d286d39882d0b49f4fcf6067a568adfc886b13b29cef5",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "performance-summary",
+      "path": "/home/z50063656/tmp/t080-performance-results/scatter-performance-20260907T200322+0800/performance_summary.json",
+      "sha256": "eded1ac871ed00d4a2e8322e6dc4c771a74ced87c38faff4552be6c7a744fa73",
+      "availability": "external-run-root"
+    }
+  ]
+}

@@ -22,7 +22,9 @@ usage() {
   decompose 三项只做测试态最小 capability 适配，不修改产品源码；B2B 使用独立 capability 探针。
   T-078 已完成候选 OFF1-ON1-ON2-OFF2-OFF3-ON3、性能处置和最终产品门禁；
   当前入口只校验并展示正式结果。addmm 与 baddbmm 非默认标量已显式关闭，不得绕过门禁重跑 ON。
-  T-079～T-080 仅完成性能方案，worker 尚未实现；当前只开放 --validate-only。
+  T-079 的 --unit 支持 bmm-to-mm、cat-slice-cat、split-cat、cat-split。
+  T-080 已完成两项实测、一项显式免测及 Scatter 产品门禁；当前入口校验正式结果，
+  不再绕过最终门禁重跑候选 Scatter ON。
 EOF
 }
 
@@ -73,18 +75,47 @@ case "${task_id}" in
         echo "product_gate=${repo_root}/results/current/T-078/product_gate_verification.json"
         exit 0
         ;;
-    T-079|T079|T-080|T080)
-        case "${task_id}" in
-            T079) task_id="T-079" ;;
-            T080) task_id="T-080" ;;
-        esac
-        python "${repo_root}/scripts/validate_prepared_tasks.py" --task "${task_id}"
+    T-079|T079)
+        python "${repo_root}/scripts/validate_prepared_tasks.py" --task T-079
         if ((validate_only)); then
-            echo "performance_task_validation=OK task=${task_id} status=plan-only worker=not-implemented"
+            python -m py_compile \
+                "${repo_root}/runners/t079_performance_worker.py" \
+                "${repo_root}/runners/aggregate_t079_performance.py"
+            echo "performance_task_validation=OK task=T-079 worker=implemented"
             exit 0
         fi
-        echo "错误：${task_id} 性能 worker 尚未实现（不仅是等待解锁）；实现并验证后，仍需 GPU reference 与 NPU triton_experimental 功能/命中门禁。" >&2
-        exit 4
+        if [[ ! "${npu_id}" =~ ^[0-9]+$ ]]; then
+            echo "错误：实际运行必须通过 --npu ID 指定单个物理 NPU" >&2
+            exit 2
+        fi
+        exec bash "${repo_root}/scripts/run_t079_performance.sh" "${unit}" "${npu_id}"
+        ;;
+    T-080|T080)
+        task_id="T-080"
+        python "${repo_root}/scripts/validate_prepared_tasks.py" --task "${task_id}"
+        test -s "${repo_root}/results/current/T-080/performance_summary.json" || {
+            echo "错误：缺少 T-080 正式性能汇总" >&2
+            exit 2
+        }
+        test -s "${repo_root}/results/current/T-080/product_gate_verification.json" || {
+            echo "错误：缺少 T-080 Scatter 产品门禁验证" >&2
+            exit 2
+        }
+        if ((validate_only)); then
+            python -m py_compile \
+                "${repo_root}/runners/t080_performance_worker.py" \
+                "${repo_root}/runners/aggregate_t080_performance.py"
+            echo "performance_task_validation=OK task=${task_id} worker=implemented softmax=explicit-disable-exempt"
+            exit 0
+        fi
+        if [[ -n "${unit}" && "${unit}" != "all" ]]; then
+            echo "错误：T-080 已完成正式处置，不再开放单元级候选 OFF/ON 重跑" >&2
+            exit 4
+        fi
+        echo "performance_task=T-080 status=performance-disposition-and-product-gate-complete"
+        echo "summary=${repo_root}/results/current/T-080/performance_summary.json"
+        echo "product_gate=${repo_root}/results/current/T-080/product_gate_verification.json"
+        exit 0
         ;;
     *) echo "错误：--task 必须是 T-076～T-080" >&2; exit 2 ;;
 esac

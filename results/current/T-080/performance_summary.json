@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T20:41:00+08:00",
+  "task_id": "T-080",
+  "status": "performance-disposition-complete",
+  "backend": "triton_experimental",
+  "completion": {
+    "acceptance_units": 3,
+    "measured_units": 2,
+    "explicitly_disabled_exempt_units": 1,
+    "retained_enabled_units": 1,
+    "performance_disabled_units": 1
+  },
+  "measurement_contract": {
+    "order": "OFF1-ON1-ON2-OFF2-OFF3-ON3",
+    "process_isolation": "fresh-process-per-arm-and-round",
+    "warmup": 10,
+    "runs": 100,
+    "timing": "同步 NPU Event 与 host wall clock p50/p99"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+      "performance_status": "measured-regressed-product-disabled",
+      "verdict": "PERF_REGRESSED",
+      "product_action": "disable_scatter_upon_const_tensor=true",
+      "reason": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。",
+      "event_p50_improvement_percent": -10.5037366299142,
+      "event_p99_improvement_percent": -10.551629602497197,
+      "raw_summary": "/home/z50063656/tmp/t080-performance-results/scatter-performance-20260907T200322+0800/performance_summary.json",
+      "raw_summary_sha256": "eded1ac871ed00d4a2e8322e6dc4c771a74ced87c38faff4552be6c7a744fa73"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-prepare-softmax",
+      "performance_status": "exempt-explicit-product-lowering-disable",
+      "verdict": "PERF_EXEMPT",
+      "product_action": "explicit-disable-retained",
+      "reason": "prims.prepare_softmax_online.default 位于 torch_npu 显式 FALLBACK_LIST；没有合法同后端 ON 路径，按产品关闭免测。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-move-constructors-to-gpu",
+      "performance_status": "measured-neutral-retain-enabled",
+      "verdict": "PERF_NEUTRAL",
+      "product_action": "retain-enabled",
+      "reason": "目标级 3×OFF/3×ON，Event p50 改善 0.46%，p99 改善 -0.50%。",
+      "event_p50_improvement_percent": 0.4574156143883244,
+      "event_p99_improvement_percent": -0.5020272632243616,
+      "raw_summary": "/home/z50063656/tmp/t080-performance-results/constructors-performance-20260907T193616+0800/performance_summary.json",
+      "raw_summary_sha256": "1f198122b7584bbfc4864f583484af83930f25b44e9569bd2887415e22ab5a92"
+    }
+  ],
+  "repairs": [
+    {
+      "file": "torch_npu/_inductor/triton_experimental/npu_triton_heuristics.py",
+      "issue": "auto_blockify_size 被误传为 AST constexpr",
+      "verification": "完整社区 CrossEntropy shape OFF/ON 均可编译、反向并计时"
+    },
+    {
+      "file": "torch_npu/_inductor/triton_experimental/codegen/triton.py",
+      "issue": "group-dispatch physical rank 扩展后 shaped-zero 广播失败",
+      "verification": "完整社区 CrossEntropy shape 生成并运行 Triton kernels"
+    },
+    {
+      "file": "torch_npu/_inductor/triton_experimental/{config.py,fx_passes.py,overrides.py}",
+      "issue": "Scatter 候选 Event 与峰值显存稳定回退",
+      "verification": "默认关闭/显式重开两个真实 NPU fresh-process 均 PASS"
+    }
+  ],
+  "product_gate": {
+    "status": "passed",
+    "path": "results/current/T-080/product_gate_verification.json"
+  },
+  "limitations": [
+    "Scatter 是社区完整 CrossEntropy forward+backward workload；Constructor 是社区功能图及 tracker sensitivity。",
+    "prepare-softmax 只有结构 replacement，产品 lowering 显式关闭，未制造性能 ON 路径。"
+  ]
+}

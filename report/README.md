@@ -8,10 +8,10 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
-| [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 从活动 manifest、current results 与性能数据生成的逐 acceptance-unit 真值入口 | 21 units 全部冻结；14 个已闭环、T-079/T-080 的 7 个等待 NPU；现有 NPU 动态结果 backend 全为 `triton_experimental` |
+| [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 从活动 manifest、current results 与性能数据生成的逐 acceptance-unit 真值入口 | 21 units 全部冻结并闭环；NPU 动态结果 backend 全为 `triton_experimental` |
 | [t076_t077_history_reaudit_20260906.md](t076_t077_history_reaudit_20260906.md) | 逐单元历史复核、规则版本与统一检查入口 | 10 份 NPU 记录检查通过；历史原始证据仍 pending，原始 verdict 不改写 |
 | [tracker_validation_hardening_20260906.md](tracker_validation_hardening_20260906.md) | 验收校验、失败落盘与 latest 一致性修复 | 零设备回归；不重写既有 GPU/NPU 实测结果 |
-| [NPU 最小适配报告规范](../docs/ADAPTER_REPORT_STANDARD.md) | T-076～T-078 共 28 个实际 adapter 的逐 case 报告入口、代码框、调用链与审计合同 | 28/28 已补齐；adapter 不能代替产品修复或 comparison verdict |
+| [NPU 最小适配报告规范](../docs/ADAPTER_REPORT_STANDARD.md) | T-076～T-079 共 32 个实际 adapter 的逐 case 报告入口、代码框、调用链与审计合同 | 32/32 已补齐；adapter 不能代替产品修复或 comparison verdict |
 | [t076_t077_performance_20260903.md](t076_t077_performance_20260903.md) | 两批性能处置、backend 门禁、B2B capability 与四项 experimental OFF/ON 实测 | T-076 2测/3显式关闭免测；T-077 5/5 已处置、pending=0 |
 | [t076_npu_completion_20260902.md](t076_npu_completion_20260902.md) | T-076 五个单元的 NPU/comparison 闭环及 addmm 运行态纠偏 | 正式闭环 5/5；1 个行为一致、4 个预期产品分歧 |
 | [T-076 P-018 gate 分析](../issues/REF-addmm-contract-native/根因分析.md) / [候选验证](../issues/REF-addmm-contract-native/修复验证报告.md) | 社区 pattern、安装态 gate、必要调用链、live opt-out 与验证矩阵 | capability 候选已验证；正式安装态仍关闭 |
@@ -25,10 +25,10 @@
 | [t078_npu_completion_20260906.md](t078_npu_completion_20260906.md) | 第三批 GPU reference、NPU 修复、逐单元性能与最终产品门禁 | 12/12 GPU cases、4/4 NPU comparison 已闭环；紧凑 handoff 无 FX 正文 |
 | [t079_t080_mapping_review_20260904.md](t079_t080_mapping_review_20260904.md) | 第四/五批七单元的人工映射、源码意图、性能来源与后端边界 | 17 direct cases/27 variants 已准备，等待 reference |
 | [T-078 功能/性能 guide](../docs/T078_FUNCTION_PERFORMANCE_GUIDE.md) | 四单元功能 case、GPU/NPU 行为、修复与派生 benchmark 的源码化讲解 | 20/20 variants 已解释，含正式动态 verdict |
-| [t079_gpu_reference_review_20260907.md](t079_gpu_reference_review_20260907.md) | T-079 1.3 review 的完整性、逐 case FX 与冻结边界 | 4/4 cases、14/14 variants 已冻结；NPU 未运行 |
-| [T-079 功能/性能 guide](../docs/T079_FUNCTION_PERFORMANCE_GUIDE.md) | 四个图改写/消除合同及性能证据解释 | GPU verdict 已补，等待 NPU/性能 |
-| [t080_gpu_reference_review_20260907.md](t080_gpu_reference_review_20260907.md) | T-080 分片 1.3 review 的完整性、逐单元 FX/原生断言与冻结边界 | 13/13 cases、13/13 variants 已冻结；NPU 未运行 |
-| [T-080 功能/性能 guide](../docs/T080_FUNCTION_PERFORMANCE_GUIDE.md) | 社区性能方法复用、功能 guard 与 OFF/ON 解释 | GPU verdict 已补，等待 NPU/性能 |
+| [t079_gpu_reference_review_20260907.md](t079_gpu_reference_review_20260907.md) | T-079 1.3 review 的完整性、逐 case FX 与冻结边界 | GPU 复核时点 4/4 cases、14/14 variants 已冻结；后续状态见下一行 guide |
+| [T-079 功能/性能 guide](../docs/T079_FUNCTION_PERFORMANCE_GUIDE.md) | 四个图改写/消除合同及性能证据解释 | GPU/NPU 功能、性能与 bmm 产品门禁均已完成 |
+| [t080_gpu_reference_review_20260907.md](t080_gpu_reference_review_20260907.md) | T-080 分片 1.3 review 的完整性、逐单元 FX/原生断言与冻结边界 | 13/13 cases、13/13 variants 已冻结并进入正式 NPU 对照 |
+| [T-080 结果与学习 guide](../docs/T080_RESULT_AND_LEARNING_GUIDE.md) | 三个 pattern 的代码、GPU/NPU 行为、适配、修复、性能与产品处置 | 3/3 units 已闭环；Scatter 默认关闭、Softmax 免测、Constructor 中性 |
 | [REF-mm-plus-mm-native NPU 复现报告](../issues/REF-mm-plus-mm-native/复现报告.md) | 原生直接 `NO_TESTS`、最小 adapter、4/4 NPU 目标合同和 graph-mode 证据 | 统一 comparison 已落盘；`BEHAVIOR_UNCHANGED` |
 | [REF-pad-mm-dynamic-m-native NPU 复现报告](../issues/REF-pad-mm-dynamic-m-native/复现报告.md) | 原生 `NO_TESTS`、TRITON-only lowering 阻断、产品 gate baseline | 归属单元已正式闭环 |
 | [t076_gpu_reference_20260901.md](t076_gpu_reference_20260901.md) | 13/13 GPU direct valid、环境、哈希与 1.3 FX 正文复核 | reference 已冻结；80 份关键正文可恢复，完整大 artifacts 保留在 GPU |

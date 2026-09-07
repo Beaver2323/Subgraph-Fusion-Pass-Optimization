@@ -1,8 +1,8 @@
 # T-079/T-080 NPU 功能验证与修复实施计划
 
-> 更新时间：2026-09-07 09:32 CST（UTC+08:00）
+> 更新时间：2026-09-07 20:41 CST（UTC+08:00）
 >
-> 状态：GPU reference 已冻结；NPU 功能 worker 尚未实现，本文件是实现与执行合同，不是实测结果
+> 状态：T-079/T-080 功能、comparison、性能处置与必要产品门禁均已完成
 >
 > 后端：仅 `triton_experimental`
 
@@ -164,8 +164,9 @@ test/adapter 入口连续到断言或异常点。数值错误没有 exception tr
 
 ## 9. 当前执行优先级
 
-1. 先实现 T-079 四单元的 NPU 功能 runner/adapter 和结构化结果；
-2. 完成 T-079 comparison，只有 regression 才进入修复；
-3. 实现并执行 T-079 性能 worker；
-4. 再按同一流程顺序处理 T-080 三单元；
-5. 两批都不得引用 default/DVM/MLIR 历史结果作为 `triton_experimental` 动态 verdict。
+1. T-079 四单元功能、comparison 与性能已完成；三个收益单元保留启用；
+2. T-079 `bmm→mm` 因四个 shape 稳定回退，已增加并验证 experimental NPU 产品门禁；
+3. T-080 Scatter 候选回退后已默认关闭，Prepare-Softmax 显式 lowering fallback 免测，Constructor
+   保留启用；
+4. 两批正式结果均只使用 `triton_experimental`，未引用 default/DVM/MLIR 历史结果替代动态 verdict；
+5. 后续以本文件作为回归合同，主线转入 T-081 的人工 mapping/reference 准备。

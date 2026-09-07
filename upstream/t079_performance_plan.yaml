@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-06T02:21:22+08:00",
+  "generated_at": "2026-09-07T18:55:00+08:00",
   "task_id": "T-079",
-  "status": "plan-only-worker-not-implemented",
-  "implementation": {"status": "not-implemented", "entrypoint": null, "required_before_execution": ["目标级 OFF/ON worker 实现与零设备验证", "GPU 原生 reference 与 NPU 功能/命中证据", "源码、输入、backend 和 worker 版本绑定；显式关闭免测"]},
+  "status": "completed",
+  "implementation": {"status": "implemented-runtime-validated", "entrypoint": "runners/t079_performance_worker.py", "launcher": "scripts/run_t079_performance.sh", "aggregator": "runners/aggregate_t079_performance.py", "runtime_evidence": "results/current/T-079/performance_summary.json", "final_gate_verifier": "runners/verify_t079_bmm_gate.py"},
   "policy": "T-079 的四项社区测试均是功能测试，没有独立社区 benchmark。性能测例从对应正例合同原样派生，图消除类必须同时报告端到端耗时、kernel/task 数和中间量证据。",
   "backend_contract": {
     "npu_backend": "triton_experimental",
@@ -23,7 +23,7 @@
   "acceptance_units": [
     {
       "acceptance_unit_id": "AU-joint-graph-bmm-to-mm",
-      "performance_status": "planned-gated-capability-pending",
+      "performance_status": "measured-regressed-product-disabled",
       "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_bmm_to_mm"], "community_benchmark": "absent", "derivation": "先原样使用 batch=1 的 [1,16,8]@[1,8,32]；代表性放大只改变 M/N/K，不改变 batch=1 合同，并单列为 sensitivity。"},
       "functional_gate": ["GPU batch=1 命中 mm、batch=3 保留 bmm", "NPU device helper 最小适配经评审", "ON generated code/FX 确认 squeeze-mm-unsqueeze", "数值正确"],
       "workloads": [
@@ -36,7 +36,7 @@
     },
     {
       "acceptance_unit_id": "AU-post-grad-cat-slice-cat",
-      "performance_status": "planned-gated",
+      "performance_status": "measured-improved-retained",
       "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_cat_slice_cat_cuda"], "community_benchmark": "absent", "derivation": "复用社区 [2,32]、[2,16] 和合法 slice end；越界/负 end 只验证 fallback。"},
       "functional_gate": ["GPU 三分支有效", "NPU 正例确认真正折叠而非仅进入 handler", "fallback 分支保持原两次 cat 语义", "输出正确"],
       "workloads": [{"workload_id": "cat-slice-cat-community-shape", "role": "community-shape-primary", "shape_contract": "float32 first=[2,32]、rest=[2,16]，cat dim=1、slice end=19；return cat([cat(first,rest), slice],1)", "measurement_scope": "compiled end-to-end；记录 cat 数、kernel/task 数和中间写入"}],
@@ -46,7 +46,7 @@
     },
     {
       "acceptance_unit_id": "AU-post-grad-splitwithsizes-cat-replace",
-      "performance_status": "planned-gated",
+      "performance_status": "measured-improved-retained",
       "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_splitwithsizes_cat"], "community_benchmark": "absent", "derivation": "复用输入 [2,32]、sizes=[8,24] 的完整同序拼回合同。"},
       "functional_gate": ["GPU 正例和三类负例有效", "NPU ON 直接返回原输入", "缺片/异维/重排均不消除", "输出与 alias/stride 合同正确"],
       "workloads": [{"workload_id": "split-cat-community-shape", "role": "community-shape-primary", "shape_contract": "float32[2,32]，split sizes=[8,24]，按原顺序同维 cat", "measurement_scope": "compiled end-to-end；记录 split/cat 是否消失及 kernel/task 数"}],
@@ -56,7 +56,7 @@
     },
     {
       "acceptance_unit_id": "AU-post-grad-cat-splitwithsizes-replace",
-      "performance_status": "planned-gated",
+      "performance_status": "measured-improved-retained",
       "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_cat_splitwithsizes"], "community_benchmark": "absent", "derivation": "复用宽度 2/3/5 的输入、同边界 split 和所有输出消费合同。"},
       "functional_gate": ["GPU 正例和四类负例有效", "NPU ON 返回原始输入 tuple", "cat 多用户/异维/数量或边界不符均不消除", "输出与 alias/stride 合同正确"],
       "workloads": [{"workload_id": "cat-split-community-shape", "role": "community-shape-primary", "shape_contract": "float32 输入 [2,2]/[2,3]/[2,5]；dim=1 cat 后按 [2,3,5] split；返回每个 split 的平方，保留社区 consumer", "measurement_scope": "compiled end-to-end；记录 cat/split 是否消失及 kernel/task 数"}],

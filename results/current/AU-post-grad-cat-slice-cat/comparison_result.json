@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-07T18:50:00+08:00",
+  "acceptance_unit_id": "AU-post-grad-cat-slice-cat",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "reference": {
+    "run_id": "reference-20260906T212121+0800-898omha0",
+    "suite_status": "valid-reference-suite",
+    "suite_valid": true,
+    "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "payload_sha256": "dba65b563da64991f556e2b93658b0996dae266fd207e8a93fe4fc6becc024e7",
+    "cases": [
+      {
+        "case_id": "REF-cat-slice-cat-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "4d5d8d491e8e4addfe2f7cdfedfe7080f8cf0aaa8ca272ef4e6f6fae5619d66d",
+        "artifact_inventory_sha256": "6b8faa8cde65492ce9da4a2a7dcf02e9ff7de7ab11fd8373bb3033f0d2f7ff53"
+      }
+    ]
+  },
+  "npu": {
+    "result_path": "results/current/AU-post-grad-cat-slice-cat/npu_result.json",
+    "result_sha256": "ee8414a8d72de24c5523f43e72e781f2fee005e7c5a0806fe2be133b82867fbe",
+    "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "tracking_mode": "adapter",
+    "execution_success": true,
+    "correctness_status": "passed"
+  },
+  "variant_comparisons": [
+    {
+      "variant_id": "slice-within-first-input-positive",
+      "intent": "slice end 位于首个 cat 输入范围内，两个 cat 折为一个",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 1089,
+          "symbol": "cat_slice_cat"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 reference 按社区 expectation 命中并通过。",
+      "npu_behavior": "Ascend910B2 与社区正负例 expectation 一致，数值和结构断言通过。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "mixed",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "功能合同一致；正例另有目标级性能收益证据。"
+    },
+    {
+      "variant_id": "slice-end-exceeds-first-input-fallback",
+      "intent": "结构可匹配但 end 超过首输入大小，handler 返回原始两级 cat 语义",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 1089,
+          "symbol": "cat_slice_cat"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 reference 按社区 expectation 命中并通过。",
+      "npu_behavior": "Ascend910B2 与社区正负例 expectation 一致，数值和结构断言通过。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "mixed",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "功能合同一致；正例另有目标级性能收益证据。"
+    },
+    {
+      "variant_id": "negative-slice-end-fallback",
+      "intent": "负 end 明确走非优化 fallback，保持切片语义",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 1089,
+          "symbol": "cat_slice_cat"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 reference 按社区 expectation 命中并通过。",
+      "npu_behavior": "Ascend910B2 与社区正负例 expectation 一致，数值和结构断言通过。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": true,
+      "match_contract_aligned": true,
+      "runtime_path": "mixed",
+      "correctness_status": "passed",
+      "performance_status": "passed",
+      "comparison_basis": "equivalent-contract",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "功能合同一致；正例另有目标级性能收益证据。"
+    }
+  ],
+  "first_divergence": "none",
+  "root_cause": "GPU/NPU 功能行为一致，NPU 目标级性能测量显示收益。",
+  "recommended_action": "保留启用并持续运行正负例及性能回归。",
+  "final_verdict": "PERF_IMPROVED",
+  "repair_status": "not-needed"
+}

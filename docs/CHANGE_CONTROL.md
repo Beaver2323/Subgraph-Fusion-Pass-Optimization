@@ -3795,3 +3795,36 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - 新增 `tests/test_adapter_reports.py`：仓库当前 28 个 `npu_adapter.py` 必须逐一有中文报告、北京时间
   时间戳、`triton_experimental`、代码框、必要调用链和 `product_gate_bypassed=false`。后续新增
   adapter 而漏写报告将直接使统一门禁失败。
+
+### E-239：T-079 NPU、性能与 bmm 产品门禁闭环（2026-09-07）
+
+- 登记时间：2026-09-07 18:58 CST（UTC+08:00）。四个社区模块原生入口均因 `HAS_GPU=false` 为
+  0 tests；四个 case-specific adapter 只注入 NPU 设备、显式实例化原方法并关闭不兼容测试插桩，
+  原方法、shape、数值、counter 与 FileCheck 保持不变。最终 4/4 tests、14/14 variants PASS。
+- 四个单元均使用 `triton_experimental` 和 3×OFF/3×ON fresh process 测量。cat-slice-cat、
+  split→cat、cat→split 的 NPU Event p50 分别改善 18.41%、28.46%、13.03%，保留启用。
+- batch=1 bmm→mm 虽功能正确，但社区 shape 与三个 sensitivity shape 的 Event p50 全部回退
+  12.46%～31.58%。torch_npu experimental backend 新增默认开启、NPU-only、可逆且幂等的
+  `disable_bmm_to_mm` 门禁；默认保留 `extern_kernels.bmm`，显式关闭门禁恢复 `extern_kernels.mm`，
+  两个真实 NPU fresh-process 验证均 PASS。
+- 新增 T-079 功能/性能 runner、聚合器、结果生成器、四份复现/适配报告及 bmm 根因/修复/合入报告；
+  `results/current` 增至 18 个正式 comparison、71 个 variants。适配报告测试改为看护基线下限与通用
+  北京时间格式，避免未来新增 adapter 时依赖易漂移的精确总数。
+
+### E-240：T-080 NPU、完整社区性能与产品门禁闭环（2026-09-07）
+
+- 登记时间：2026-09-07 20:41 CST（UTC+08:00）。Scatter 8/8、Prepare-Softmax 3/3、Constructor
+  2/2 的社区方法/等价探针均在 `triton_experimental` fresh process 中执行；GPU handoff 13/13 cases、
+  13/13 variants 保持冻结。
+- Prepare-Softmax 的 generic cuda/xpu guard 经闭包级测试探针后形成
+  `prims.prepare_softmax_online.default`，但产品 `FALLBACK_LIST` 明确保留外部调用、无
+  `online_softmax_reduce`；记录为受控差异并按显式关闭规则 `PERF_EXEMPT`，没有删除 fallback。
+- Constructor mover 正例/负例通过。社区 length=32 的 Event p50/p99 变化为 +0.46%/-0.50%，三个
+  tracker sensitivity 也无稳定大收益；峰值内存不变，判定 `PERF_NEUTRAL` 并保留启用。
+- Scatter 完整社区 `B32×T1024×D768×V50257` BF16 CrossEntropy backward 首先暴露
+  `auto_blockify_size` option 分层和 group-dispatch shaped-zero 广播两处 codegen 缺口；最小修复后
+  六个 worker 全部正确。ON 相比 OFF 的 Event p50/p99 回退 10.50%/10.55%，host p50/p99 回退
+  10.57%/10.60%，allocated/reserved 增加 35.87%/5.51%，判定 `PERF_REGRESSED`。
+- 增加默认开启、NPU-only、可逆且幂等的 `disable_scatter_upon_const_tensor` 门禁；静态 2/2 与真实
+  NPU default-disabled/gate-disabled 双臂均 PASS。正式结果、逐 variant GPU/NPU 对照、pattern 代码框、
+  适配/根因/修复/合入报告全部落盘；当前矩阵应为 21/21 comparison 与 21/21 性能处置。

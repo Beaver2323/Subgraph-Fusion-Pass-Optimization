@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$comment": "更新时间：2026-09-06 02:21 CST；性能方案与 worker 实现状态分开，静态校验不授予动态测量权限。",
+  "$comment": "更新时间：2026-09-07 20:50 CST；性能方案与 worker 实现状态分开，静态校验不授予动态测量权限。",
   "$id": "performance_plan.schema.json",
   "title": "Subgraph fusion performance preparation plan",
   "type": "object",
@@ -21,7 +21,7 @@
     "implementation": {
       "type": "object", "required": ["status", "entrypoint"],
       "properties": {
-        "status": {"enum": ["not-implemented", "implemented-awaiting-runtime-validation"]},
+        "status": {"enum": ["not-implemented", "implemented-awaiting-runtime-validation", "implemented-runtime-validated"]},
         "entrypoint": {"type": ["string", "null"]}
       }
     },

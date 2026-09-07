@@ -1,13 +1,14 @@
 # T-080 功能与性能测例讲解
 
-> 更新时间：2026-09-07 08:32 CST（UTC+08:00）
-> 状态：GPU 13/13 direct cases、13/13 variants 已复核并冻结；NPU 与性能 worker 尚未执行。
-> NPU 固定后端：`triton_experimental`；性能在功能命中和正确性门禁之后执行。
+> 更新时间：2026-09-07 20:41 CST（UTC+08:00）
+> 状态：本页保留冻结时的测例设计；GPU/NPU、性能与产品处置均已完成。
+> NPU 固定后端：`triton_experimental`；正式结论见
+> [`T080_RESULT_AND_LEARNING_GUIDE.md`](T080_RESULT_AND_LEARNING_GUIDE.md)。
 
 NPU 的逐步操作、证据判定、最小适配和修复门禁统一见
 [`NPU_FUNCTION_REPAIR_WORKFLOW.md`](NPU_FUNCTION_REPAIR_WORKFLOW.md)。本页解释 T-080 各单元合同，
 逐单元执行合同见 [`T079_T080_NPU_FUNCTION_REPAIR_PLAN.md`](T079_T080_NPU_FUNCTION_REPAIR_PLAN.md)；
-不把尚未实现的 NPU worker 写成可执行入口。
+正式 worker、结果与门禁在结果指南中导航。
 
 下文按单元讲解功能测例、性能测例及其证据边界。
 
@@ -31,8 +32,8 @@ index 太短、selector 太密、base 非常量负例；FP16/BF16 dtype；以及
 
 GPU 实测 8/8 通过。正例在 joint-graph 后的 FX 中形成 `iota/eq/where`，负例保留 scatter/copy；
 低精度 dtype 与 CrossEntropy backward 原生断言均通过。由于 joint-graph 改写早于当前 debug 捕获点，
-部分正例 before/after 同形，命中应结合社区 target metric 与访存断言判定。NPU 尚未执行，不能从 GPU
-结果推导 `triton_experimental` 已支持。
+部分正例 before/after 同形，命中应结合社区 target metric 与访存断言判定。后续 NPU 候选功能已
+验证，但完整社区图性能回退并增加显存，产品最终默认关闭，不能只凭候选命中宣称默认生效。
 
 性能测例直接来自社区 `test_cross_entropy_loss` 的 `DO_PERF_TEST=1` 分支：
 `B=32,T=1024,D=768,V=50257`，执行 linear→cross_entropy→backward。社区设计同时测设备时间和
@@ -62,14 +63,13 @@ def prepare_softmax_replacement(x, dim):
 不是“性能负例”，而是防止优化改变 IEEE 符号零语义的 correctness 门禁。
 
 GPU 实测 3/3 通过，FX 明确显示 `amax/sub/exp/sum` 被替换为
-`prims.prepare_softmax_online.default`；fast-math 的后续 log 与 signed-zero 语义均保持。NPU 仍属于
-capability pending：上游 cuda/xpu device guard 不是产品显式关闭，需在 `triton_experimental` 原生阻断
-后评审最小适配，不能把 guard 绕过本身算作支持。
+`prims.prepare_softmax_online.default`。NPU 测试态 generic guard 探针也形成该 prim，但产品
+`FALLBACK_LIST` 明确关闭其 lowering、generated code 无 online kernel，最终为受控差异和性能免测。
 
 社区已经提供 BF16 `N=32768,V=50304` 的 `DO_PERF_TEST` 全量 shape，以及默认
 `[1024,2048]`/`[128,128]` 诊断 shape。社区部分代码比较 eager/compiled，但 tracker 要评估目标 pass，
-因此正式结论必须比较同一 compiled `triton_experimental` 的 `online_softmax=false/true`，而不是拿
-eager 当 OFF。上游 cuda/xpu guard 是 capability pending；最小适配、命中与正确性成立前不测性能。
+原计划要求比较同一 compiled `triton_experimental` 的 OFF/ON，而不是拿 eager 当 OFF。动态复核发现
+产品明确 lowering fallback 后，不再绕过关闭制造 ON，按工作流终止性能测量并记 `PERF_EXEMPT`。
 
 两处社区 benchmark 虽然大 shape 相同，但输出合同不同，必须作为两项 workload：
 
@@ -120,5 +120,5 @@ OFF 必须只跳过 `move_constructors_to_gpu` 调用，不能关闭整个 post-
 | constructor mover | arange copy 消除、index_put 依赖不误移 | 小图端到端、copy 与 task 数 | tracker 从社区功能例派生 |
 
 机器可读执行合同见 `upstream/t080_performance_plan.yaml`，完整 GPU 复核见
-`report/t080_gpu_reference_review_20260907.md`。GPU reference 只建立上游基线；下一步仍需在 NPU
-fresh process 中先选择 `triton_experimental`、完成原生入口与最小适配判定，才能解锁性能 worker。
+`report/t080_gpu_reference_review_20260907.md`，最终 NPU/comparison/performance 位于
+`results/current/T-080/` 与三个 acceptance-unit 目录。

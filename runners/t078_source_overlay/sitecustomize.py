@@ -1,4 +1,4 @@
-"""在未重装 wheel 时，仅从 T-078 冻结工作树加载五个 Python 产品模块。"""
+"""未重装 wheel 时，从冻结工作树加载 T-078～T-080 涉及的产品模块。"""
 
 import importlib.abc
 import importlib.util
@@ -17,8 +17,12 @@ MODULES = {
         "fx_passes",
         "lowering",
         "npu_triton_helpers",
+        "npu_triton_heuristics",
     )
 }
+MODULES[
+    "torch_npu._inductor.triton_experimental.codegen.triton"
+] = SOURCE / "codegen/triton.py"
 
 
 class _FormalSourceFinder(importlib.abc.MetaPathFinder):
@@ -27,7 +31,7 @@ class _FormalSourceFinder(importlib.abc.MetaPathFinder):
         if source is None:
             return None
         if not source.is_file():
-            raise ImportError(f"T-078 formal source module missing: {source}")
+            raise ImportError(f"formal source module missing: {source}")
         return importlib.util.spec_from_file_location(fullname, source)
 
 

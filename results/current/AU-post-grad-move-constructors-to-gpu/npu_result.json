@@ -1,0 +1,254 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "2026-09-07T20:41:00+08:00",
+  "case_ids": [
+    "REF-move-constructors-arange-native",
+    "REF-move-constructors-index-put-negative-native"
+  ],
+  "acceptance_unit_id": "AU-post-grad-move-constructors-to-gpu",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "source_tests": [
+    "test/inductor/test_torchinductor.py::GPUTests.test_move_arange_cuda",
+    "test/inductor/test_torchinductor.py::TritonCodeGenTests.test_ctr_not_moved_to_cuda_when_used_in_index_put"
+  ],
+  "tracking_mode": "adapter",
+  "environment": {
+    "fingerprint_sha256": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "python_version": "3.11.15",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_version": "2.14.0a0+git83cc452",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "triton_version": "3.2.0",
+    "triton_ascend_commit": "8bd9f380d2786002b84b5248f00838c26f900515",
+    "cann_version": "9.0.1",
+    "driver_version": "26.0.rc1",
+    "device": "Ascend910B2",
+    "backend": "triton_experimental"
+  },
+  "npu_control": {
+    "state": "enabled",
+    "source_control": "仅把目标 post-grad pass 调用替换为 no-op 形成 OFF；其他 passes 不变。",
+    "product_gate_bypassed": false
+  },
+  "direct_execution": {
+    "status": "no-tests",
+    "execution_success": false,
+    "tests_run": 0,
+    "tests_skipped": 0,
+    "reason": "原生 GPU class/module 启动条件不在 NPU 上生成或执行测试。"
+  },
+  "selected_execution": {
+    "status": "passed",
+    "execution_success": true,
+    "tests_run": 2,
+    "tests_skipped": 0,
+    "reason": "2/2 社区方法体执行；arange 正例仅一个 generated kernel，index_put scalar 负例未产生 NPU scalar allocation。"
+  },
+  "paired_control": {
+    "status": "passed",
+    "reason": "目标级 3×OFF/3×ON 正确完成。"
+  },
+  "cases": [
+    {
+      "case_id": "REF-move-constructors-arange-native",
+      "executed_case_alias": "REF-move-arange-native",
+      "variant_ids": [
+        "movable-arange-positive"
+      ],
+      "status": "passed",
+      "reference_target_match": true,
+      "candidate_npu_target_match": true,
+      "final_product_target_match": true,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "badd7e6074499af0ac1079789b2943d9b188293aaebf3979b7151dbeddae9a4b"
+    },
+    {
+      "case_id": "REF-move-constructors-index-put-negative-native",
+      "executed_case_alias": "REF-constructor-index-put-native",
+      "variant_ids": [
+        "index-put-scalar-constructor-negative"
+      ],
+      "status": "passed",
+      "reference_target_match": false,
+      "candidate_npu_target_match": false,
+      "final_product_target_match": false,
+      "community_assertions_passed": true,
+      "compatibility_verdict": "community-functional-pass",
+      "result_sha256": "f0207ada0ea6daab378106ed200bcdae967eca5e26dd6dc0ad50a059ee1b1ca2"
+    }
+  ],
+  "variants": [
+    {
+      "variant_id": "movable-arange-positive",
+      "kind": "positive",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward",
+        "dtype": "float32",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                32
+              ]
+            ],
+            "strides": [
+              [
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": true,
+      "npu_match_expectation": true,
+      "match": {
+        "target_matched": true,
+        "scope": "target-pattern-or-transform",
+        "note": "无受保护依赖的 CPU arange 移到加速器，避免额外 copy kernel"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "observed",
+        "evidence": "目标 transform 按社区正负例合同执行。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "已捕获 output_code 与 IR。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "2/2 社区方法体执行；arange 正例仅一个 generated kernel，index_put scalar 负例未产生 NPU scalar allocation。"
+      },
+      "performance": {
+        "status": "measured-neutral-retain-enabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 0.46%，p99 改善 -0.50%。"
+      },
+      "first_divergence": "none",
+      "root_cause": "GPU/NPU 功能合同一致，无产品缺口。",
+      "recommended_action": "保留启用并持续运行正负例回归。"
+    },
+    {
+      "variant_id": "index-put-scalar-constructor-negative",
+      "kind": "negative",
+      "evidence_mode": "runtime",
+      "support_status": "supported",
+      "input_contract": {
+        "direction": "forward-mutation",
+        "dtype": "float32+bool",
+        "dynamic": false,
+        "cases": [
+          {
+            "shapes": [
+              [
+                19,
+                128,
+                3
+              ],
+              [
+                128,
+                3
+              ]
+            ],
+            "strides": [
+              [
+                1,
+                76,
+                19
+              ],
+              [
+                3,
+                1
+              ]
+            ]
+          }
+        ]
+      },
+      "reference_match_expectation": false,
+      "npu_match_expectation": false,
+      "match": {
+        "target_matched": false,
+        "scope": "target-pattern-or-transform",
+        "note": "index_put_ 的 scalar-tensor 输入存在不可移动依赖，构造器留在 CPU"
+      },
+      "fx": {
+        "status": "observed",
+        "evidence": "GPU/NPU 均有 FX before/after 结构证据。"
+      },
+      "replacement": {
+        "status": "not-observed",
+        "evidence": "目标 transform 按社区正负例合同执行。"
+      },
+      "decomposition": {
+        "status": "not-applicable",
+        "evidence": "该单元不是 decomposition pass。"
+      },
+      "lowering": {
+        "status": "observed",
+        "evidence": "进入 triton_experimental lowering。"
+      },
+      "scheduler": {
+        "status": "observed",
+        "evidence": "在 triton_experimental fresh process 中完成编译。"
+      },
+      "codegen": {
+        "status": "observed",
+        "evidence": "已捕获 output_code 与 IR。"
+      },
+      "runtime_path": "triton",
+      "correctness": {
+        "status": "passed",
+        "assertion": "2/2 社区方法体执行；arange 正例仅一个 generated kernel，index_put scalar 负例未产生 NPU scalar allocation。"
+      },
+      "performance": {
+        "status": "measured-neutral-retain-enabled",
+        "reason": "目标级 3×OFF/3×ON，Event p50 改善 0.46%，p99 改善 -0.50%。"
+      },
+      "first_divergence": "none",
+      "root_cause": "GPU/NPU 功能合同一致，无产品缺口。",
+      "recommended_action": "保留启用并持续运行正负例回归。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-move-constructors-arange-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-move-arange-native/adapter-x3xu8ws7/adapter_result.json",
+      "sha256": "badd7e6074499af0ac1079789b2943d9b188293aaebf3979b7151dbeddae9a4b",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "npu-adapter-result",
+      "case_id": "REF-move-constructors-index-put-negative-native",
+      "path": "/home/z50063656/tmp/t080-npu-results/REF-constructor-index-put-native/adapter-f7p00jjx/adapter_result.json",
+      "sha256": "f0207ada0ea6daab378106ed200bcdae967eca5e26dd6dc0ad50a059ee1b1ca2",
+      "availability": "external-run-root"
+    },
+    {
+      "role": "performance-summary",
+      "path": "/home/z50063656/tmp/t080-performance-results/constructors-performance-20260907T193616+0800/performance_summary.json",
+      "sha256": "1f198122b7584bbfc4864f583484af83930f25b44e9569bd2887415e22ab5a92",
+      "availability": "external-run-root"
+    }
+  ]
+}

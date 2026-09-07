@@ -1,0 +1,318 @@
+{
+  "schema_version": "1.2",
+  "generated_at": "2026-09-07T20:41:00+08:00",
+  "acceptance_unit_id": "AU-joint-graph-scatter-upon-const-tensor",
+  "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "pattern_explanation": {
+    "name": "scatter_upon_const_tensor",
+    "stage": "joint_graph",
+    "intent": "把常量 full 上的稀疏 scalar scatter 改成 arange/broadcast/where pointwise，减少中间 mutation 写回和访存。",
+    "source_excerpt": "# torch/_inductor/fx_passes/joint_graph.py:1150,1203\ndef scatter_upon_const_tensor_extra_check(match): ...\n@register_graph_pattern(..., pass_dict=patterns)\ndef scatter_upon_const_tensor(match, ...): ...",
+    "full_learning_report": "docs/T080_RESULT_AND_LEARNING_GUIDE.md"
+  },
+  "reference": {
+    "run_id": "reference-20260907T001455+0800-uv9_464e",
+    "suite_status": "valid-reference-suite",
+    "suite_valid": true,
+    "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+    "payload_sha256": "a197df02e0d2b6141ae259fdc69526ddc0888ad4d5179086047ec9b284497f9b",
+    "cases": [
+      {
+        "case_id": "REF-scatter-const-3d-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "9b1bc6b245ef93abae7c875602791ed341b96fd782b8d1d979b6e71609b40d70",
+        "artifact_inventory_sha256": "524e1a386854484cdcb5c4647955a1951bf25d35961c95373faedfba9f5b880a"
+      },
+      {
+        "case_id": "REF-scatter-const-non-last-dim-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "d8ba2dfabc540967b58763f4eba907b7d57dc1c4074e65ef71eed9c4bd819ae4",
+        "artifact_inventory_sha256": "9a0c4c55c3a4f2e75a803579c9e3ee46ed2051c514fbc2eb4e40dcb7064b268b"
+      },
+      {
+        "case_id": "REF-scatter-const-negative-dim-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "5bcf693e903f9e2f26b315620d17be47cbf3671f0150851f65f7a107d8ed29de",
+        "artifact_inventory_sha256": "e4538012fbc09d8ae5fac05f8204e701a1fa8df647ffddfafe36e243a76bc46e"
+      },
+      {
+        "case_id": "REF-scatter-const-short-index-negative-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "f0eee3a701fbb88a9c45940ca11db83ab60d5a88bfa7b8acd7b3f8ee38d9916b",
+        "artifact_inventory_sha256": "0da85d1436d42836e4e8c71b61a797f0bd6bdc65fe0e69bcd229b87d80e66eb5"
+      },
+      {
+        "case_id": "REF-scatter-const-dense-negative-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "e3e9fcabda31e18cbd464e51a5244257609a4ea5386f39c2f633eac432b66d5a",
+        "artifact_inventory_sha256": "446b9ea753f9d41d79c55eaf35fcac222931133c017322ea1ed8a659e650b561"
+      },
+      {
+        "case_id": "REF-scatter-const-nonconst-negative-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "db6abdc5a0eeea88b55cecbb6f273b7ce6469163cd8d05d1674446b9cc4207e9",
+        "artifact_inventory_sha256": "4f66207a85ecb76cf343f06d82b187206672f50535d9db689d599b8102fdab08"
+      },
+      {
+        "case_id": "REF-scatter-const-dtype-regression-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "c540f8f8b1c2c9c8511639d0ca352d4762b3efcce72bcc73a1523ec246ddbce9",
+        "artifact_inventory_sha256": "c6455af9ff12d8094710f5f23e88c5796efbb9a091a9e513e0a9ba13a206b06c"
+      },
+      {
+        "case_id": "REF-scatter-const-cross-entropy-e2e-native",
+        "case_status": "passed",
+        "reference_valid": true,
+        "reference_result_sha256": "b973d3aea09b085d7f87aee8b639fe15cffc25595f97b04528efc8a1414f6553",
+        "artifact_inventory_sha256": "3becae9f7bed0d3c659c9186675b45aeae8c46eb209579cea14661d387ff53b0"
+      }
+    ]
+  },
+  "npu": {
+    "result_path": "results/current/AU-joint-graph-scatter-upon-const-tensor/npu_result.json",
+    "result_sha256": "7cc62bd3b686ca5481725a8c09cbf6226e92ef858f0eda2a2684a117b5d3e1dd",
+    "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
+    "tracking_mode": "adapter",
+    "execution_success": true,
+    "correctness_status": "passed"
+  },
+  "variant_comparisons": [
+    {
+      "variant_id": "three-dimensional-last-dim-positive",
+      "intent": "三维末维 sparse scalar scatter 改写为 pointwise",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1150,
+          "symbol": "scatter_upon_const_tensor_extra_check"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1203,
+          "symbol": "scatter_upon_const_tensor"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 case 命中并通过。",
+      "npu_behavior": "候选能力可改写；性能回退后产品默认门禁保留原 Scatter，显式重开仍可命中。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "measured-regressed-product-disabled",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+    },
+    {
+      "variant_id": "non-last-dim-positive",
+      "intent": "非末维 selector 正确 broadcast 并改写",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1150,
+          "symbol": "scatter_upon_const_tensor_extra_check"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1203,
+          "symbol": "scatter_upon_const_tensor"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 case 命中并通过。",
+      "npu_behavior": "候选能力可改写；性能回退后产品默认门禁保留原 Scatter，显式重开仍可命中。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "measured-regressed-product-disabled",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+    },
+    {
+      "variant_id": "negative-dim-positive",
+      "intent": "负 dim 规范化后改写",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1150,
+          "symbol": "scatter_upon_const_tensor_extra_check"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1203,
+          "symbol": "scatter_upon_const_tensor"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 case 命中并通过。",
+      "npu_behavior": "候选能力可改写；性能回退后产品默认门禁保留原 Scatter，显式重开仍可命中。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "measured-regressed-product-disabled",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+    },
+    {
+      "variant_id": "shorter-index-negative",
+      "intent": "非 scatter 维 selector 更短，当前 guard 拒绝",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1150,
+          "symbol": "scatter_upon_const_tensor_extra_check"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1203,
+          "symbol": "scatter_upon_const_tensor"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 guard 拒绝且通过。",
+      "npu_behavior": "Ascend910B2 与社区正负例 expectation 一致，数值/梯度和结构断言通过。",
+      "reference_contract_stable": true,
+      "reference_target_match": false,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "measured-regressed-product-disabled",
+      "comparison_basis": "product-control",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+    },
+    {
+      "variant_id": "dense-selector-negative",
+      "intent": "scatter 维 selector size 大于 1，收益/实现 guard 拒绝",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1150,
+          "symbol": "scatter_upon_const_tensor_extra_check"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1203,
+          "symbol": "scatter_upon_const_tensor"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 guard 拒绝且通过。",
+      "npu_behavior": "Ascend910B2 与社区正负例 expectation 一致，数值/梯度和结构断言通过。",
+      "reference_contract_stable": true,
+      "reference_target_match": false,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "measured-regressed-product-disabled",
+      "comparison_basis": "product-control",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+    },
+    {
+      "variant_id": "non-constant-base-negative",
+      "intent": "底张量不是 aten.full 常量，拒绝改写",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1150,
+          "symbol": "scatter_upon_const_tensor_extra_check"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1203,
+          "symbol": "scatter_upon_const_tensor"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 guard 拒绝且通过。",
+      "npu_behavior": "Ascend910B2 与社区正负例 expectation 一致，数值/梯度和结构断言通过。",
+      "reference_contract_stable": true,
+      "reference_target_match": false,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "measured-regressed-product-disabled",
+      "comparison_basis": "product-control",
+      "verdict": "BEHAVIOR_UNCHANGED",
+      "note": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+    },
+    {
+      "variant_id": "low-precision-dtype-regression",
+      "intent": "fp16/bf16 改写不被 Python scalar 提升为 fp32",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1150,
+          "symbol": "scatter_upon_const_tensor_extra_check"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1203,
+          "symbol": "scatter_upon_const_tensor"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 case 命中并通过。",
+      "npu_behavior": "候选能力可改写；性能回退后产品默认门禁保留原 Scatter，显式重开仍可命中。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "measured-regressed-product-disabled",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+    },
+    {
+      "variant_id": "cross-entropy-backward-e2e-positive",
+      "intent": "CrossEntropy backward 中 full+scatter 改写且 weight gradient 正确",
+      "source_locations": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1150,
+          "symbol": "scatter_upon_const_tensor_extra_check"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 1203,
+          "symbol": "scatter_upon_const_tensor"
+        }
+      ],
+      "gpu_behavior": "冻结 A100 原生社区 case 命中并通过。",
+      "npu_behavior": "候选能力可改写；性能回退后产品默认门禁保留原 Scatter，显式重开仍可命中。",
+      "reference_contract_stable": true,
+      "reference_target_match": true,
+      "npu_target_match": false,
+      "match_contract_aligned": true,
+      "runtime_path": "triton",
+      "correctness_status": "passed",
+      "performance_status": "measured-regressed-product-disabled",
+      "comparison_basis": "product-control",
+      "verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+      "note": "目标级 3×OFF/3×ON，Event p50 改善 -10.50%，p99 改善 -10.55%。"
+    }
+  ],
+  "first_divergence": "config",
+  "root_cause": "两处 codegen 缺口修复后，完整社区 CrossEntropy OFF/ON 显示 Scatter 改写稳定回退且显存增加，因此以 backend-local gate 关闭。",
+  "recommended_action": "保持默认门禁；保留两处 codegen 修复，未来只有新的 shape-qualified 收益证据通过评审后才重开。",
+  "final_verdict": "EXPECTED_PRODUCT_DIVERGENCE",
+  "repair_status": "verified",
+  "repair_detail": "两处 codegen 修复完成，并以性能驱动的产品门禁闭环。"
+}

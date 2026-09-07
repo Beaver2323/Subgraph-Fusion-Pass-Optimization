@@ -6,6 +6,9 @@
 >
 > 结论：4/4 direct cases、14/14 variants 有效，T-079 的 4 个 acceptance units 冻结为 GPU reference；NPU 尚未运行
 
+> 范围说明：上一行是本报告在 GPU handoff 复核时点的结论。T-079 后续 NPU、性能与产品门禁现已完成，
+> 请以 `docs/T079_FUNCTION_PERFORMANCE_GUIDE.md` 和 `results/current/T-079/` 为当前状态。
+
 ## 1. 输入与完整性
 
 - handoff：`results/incoming/T-079/text-handoff.json`

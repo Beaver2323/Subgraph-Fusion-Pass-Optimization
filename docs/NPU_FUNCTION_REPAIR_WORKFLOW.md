@@ -300,9 +300,12 @@ scripts/run_npu_performance_task.sh \
   --npu 0
 ```
 
-T-079/T-080 当前只有 performance plan，功能和性能 worker 尚未实现，不能把 plan-only 命令写成已
-可执行。实现顺序必须是：功能 runner/adapter → 原生阻断证据 → NPU 动态结果 → comparison → 性能
-worker → OFF/ON 实测。
+T-079 已完成上述全流程，可使用 `scripts/run_t079_npu_all.sh` 与
+`scripts/run_t079_performance.sh`；`bmm→mm` 的性能回退另由
+`scripts/verify_t079_bmm_gate.sh` 验证最终产品门禁。T-080 也已完成：
+`scripts/run_t080_npu_all.sh NPU_ID function` 一键复验 Scatter 最终门禁、Softmax 产品 fallback 和
+Constructor 功能；`performance` 模式只校验已冻结性能处置，不会绕过 Scatter/Softmax 产品关闭制造 ON 路径。
+完整代码、调用链、适配、修复和 GPU/NPU 对照见 `docs/T080_RESULT_AND_LEARNING_GUIDE.md`。
 
 ## 11. 从哪里学习已有真实案例
 
@@ -315,6 +318,7 @@ worker → OFF/ON 实测。
 | lowering correctness 回归与最小修复 | `issues/REF-decompose-mm-native/根因分析.md`、`修复验证报告.md` |
 | helper API 根因、修复和邻近验证 | `issues/REF-partial-reuse-positive-native/根因分析.md` |
 | 完整的复现/根因/验证/合入四件套 | `issues/REF-addcdiv-fma-codegen-native/` |
+| GPU rewrite 在 NPU 功能正确但性能回退的产品门禁 | `issues/REF-bmm-to-mm-native/` |
 
 阅读任何历史结论前，都要核对 source revision、输入合同、backend、gate 生命周期和测量方法。只要
 其中一项不同，就只能作为非计数历史证据，不能迁移成当前 verdict。
