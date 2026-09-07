@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-07 11:20 CST（UTC+08:00）
+> 更新时间：2026-09-07 22:26 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -91,7 +91,7 @@ T-079/T-080 七个单元的具体实施合同见
 - 数值失败可以是合法结果记录，但必须判为未修复 `NPU_REGRESSION` 并进入 repair；不得标记性能收益，
   不计入 formally_closed。已有修复回归通过也不代表产品合入，合入状态继续在 known_issues 单列。
 - 性能状态分为“方案已定义 → worker 实现并静态验证 → 功能/命中门禁通过 → 同后端实测 →
-  最终产品 gate 复验”；T-078 已走完整链路，T-079/T-080 当前只到方案阶段。后续 T 的草案排期
+  最终产品 gate 复验”；T-078～T-080 已完成对应实测/免测与产品处置，产品合入仍单列。后续 T 的草案排期
   也不等于 GPU-ready。
 - `latest-text-handoff.json` 固定经 `latest/text-handoff.json` 寻址；运行结束仅原子切换 latest。
   导出失败时回传本轮 `export-failed` 状态，不使用上轮成功文本代替。
@@ -200,10 +200,11 @@ results/history/
 
 不先创建大量空目录；每个目录在首个真实产物进入时创建。
 
-T-078～T-080 的 reference wrapper 在执行设备测试前先运行 `validate_prepared_tasks.py`，交叉检查
+T-078 起已准备批次的 reference wrapper 在执行设备测试前先运行 `validate_prepared_tasks.py`，交叉检查
 manifest/reference/performance unit 集合、固定 backend、OFF/ON 隔离、workload 来源和中文 case
-guide。校验成功只说明“准备完整”，不能替代 GPU/NPU 动态结果；T-078 的动态结果已另行落盘，
-T-079/T-080 仍遵守该前置门禁。
+guide。校验成功只说明“准备完整”，不能替代 GPU/NPU 动态结果；已闭环批次的动态结果另行落盘，
+后续批次仍遵守该前置门禁。CPU-only、FakeTensor 或 fake process group 测例不得冒充真实 GPU
+reference；单 rank 通信测例只证明其实际断言的结构/数值合同，真实跨 rank 性能另需多卡门禁。
 
 ## 7. Tracking mode
 
@@ -508,22 +509,27 @@ acceptance units 来自 source/name 归一化和少量显式 semantic group，�
 旧版本作为可追溯输入。
 
 T-075 首批复核没有改变 5 个单元的数量，但修正了 variants 和测试证据角色；T-074 v1 未覆盖。
-T-076 GPU reference 已完成并通过文本 handoff 复核，13 个 direct cases 全部有效，不创建 GPU
-adapter。首个 NPU unit 已生成统一 comparison 并正式闭环；pad-mm 首个产品 baseline 也已完成，
-下一执行项是继续同一单元的 original-aten、stride、exclusion cases。48 个 `no-test-found` 和
-29 个 indirect 单元仍待人工审核，但不阻塞首批 5 个冻结单元的 NPU 验证。
+T-076～T-080 的 21 个单元已按对应批次记录完成 GPU/NPU comparison 与性能处置；
+严格历史再认证和产品合入状态单列。T-074 的 `no-test-found`/indirect 只是原始覆盖提示，
+后续逐批审核必须回到真实测试实现，不按旧标签直接冻结，也不覆盖原始 inventory。
 
 ## 19. 统一提交检查与历史再认证
 
 提交代码、计划或验收数据之前，从 `/home/z50063656/tmp` 执行
 `python /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/validate_all.py --write-audit`。
-统一入口覆盖零设备回归、五批 reference 入口、NPU/comparison、性能准备计划、backlog 与语法检查。
+统一入口覆盖零设备回归、T-076～T-083 reference 入口、NPU/comparison、性能准备计划、backlog
+与递归语法检查；嵌套 source overlay/worker 也须检查，但静态检查不得执行其代码。
 
 规则登记在 `schemas/audit_policy.json`。改变验收口径须同步规则版本、schema/validator 和反例测试；
 审计记录同时绑定实际代码哈希，不能只写未提交代码所基于的旧 HEAD。
 缺原始证据记 `pending`，证据冲突记 `failed`；不得静默修改原始结果中的历史 verdict。
 
+历史复核分别记录“关键正文可读”“原始日志可重解析”“实际数值/输入梯度 oracle 覆盖”
+和“运行来源/测量可绑定”，不能以一个成功摘要替代其余证据。比较模型参数梯度时必须确认模型
+确有参数，不能把空循环当成输入梯度对齐。历史字段缺失应补原始证据或新增同合同测试，
+不得事后填入当前 PID、源码版本或 backend 选择时序冒充原始运行元数据。
+
 普通入口退出 0 仅代表工具检查通过。宣称历史已按新规则全部再认证前，还必须执行
 `--require-history-complete`；存在 pending 时退出 3。当前 T-076/T-077 记录检查通过不等于原始证据重验完成。
 完整清单、补证据路径与退出码见
-[历史复核与统一门禁](report/t076_t077_history_reaudit_20260906.md)。本条是工作流要求，不代表已安装 Git hooks 或远端分支保护。
+[本轮历史核验与补证](report/t076_t077_history_reaudit_20260907.md)。本条是工作流要求，不代表已安装 Git hooks 或远端分支保护。

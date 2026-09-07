@@ -1,0 +1,225 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T22:36:49+08:00",
+  "status": "prepared-awaiting-native-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-082原始候选逐项源码/测试复核",
+    "selected_acceptance_units": [
+      "AU-joint-graph-pointless-permute-pair",
+      "AU-joint-graph-pointless-view-pair"
+    ],
+    "corrections": [
+      "AU-joint-graph-pointless-view：test_pointless_view_pair直接验证的是pair handler，不能再计单view。保留独立单view注册候选，待直接社区证据。",
+      "AU-joint-graph-remove-noop-ops：joint_graph调用的是post_grad.remove_noop_ops。complex conj是保护负例，uneven-sharding是2rank SPMD保护旁证；尚缺可独立归属的正例/性能合同。pre_grad remove_noop测试不是本pass。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": null,
+    "scope": "原生GPU社区方法；make_fx-only方法按结构证据标记"
+  },
+  "counting_policy": {
+    "current_manifest_units": 2,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "全部直接GPU合同有效并人工复核后才能冻结；结构合同不得冒充数值门禁"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-pointless-permute-pair",
+      "contract_name": "互逆permute消除与中间用户保护",
+      "stage": "joint_graph",
+      "review_status": "human-reviewed-awaiting-native-gpu-reference",
+      "denominator_eligible": "pending-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 957,
+          "symbol": "pointless_permute_pair",
+          "role": "target-handler"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_permute_pair",
+          "role": "direct-community-contract",
+          "evidence_scope": "原生GPU make_fx图2→0节点；中间permute另有输出时保留2节点"
+        },
+        {
+          "nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_permute_pair_3d",
+          "role": "direct-community-contract",
+          "evidence_scope": "三维同样消除互逆置换、保留多用户"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "inverse-2d-positive",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "原生GPU make_fx图2→0节点；中间permute另有输出时保留2节点",
+          "expected_counter": "原生GPU make_fx图2→0节点；中间permute另有输出时保留2节点",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "intermediate-user-2d-negative",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "原生GPU make_fx图2→0节点；中间permute另有输出时保留2节点",
+          "expected_counter": "原生GPU make_fx图2→0节点；中间permute另有输出时保留2节点",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "inverse-3d-positive",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "三维同样消除互逆置换、保留多用户",
+          "expected_counter": "三维同样消除互逆置换、保留多用户",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "intermediate-user-3d-negative",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "三维同样消除互逆置换、保留多用户",
+          "expected_counter": "三维同样消除互逆置换、保留多用户",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "pending-native-reference",
+        "allowed_local_deviation": [
+          "只读FX观察，保留原生测试体/参数/断言",
+          "NPU原生阻断后单独审核device/backend适配"
+        ],
+        "forbidden_local_deviation": [
+          "跳过计通过",
+          "用CPU/FakeTensor执行冒充真实GPU计算",
+          "关闭整个pattern_matcher制造目标性能",
+          "绕过显式NPU产品disable"
+        ]
+      },
+      "npu_control": {
+        "status": "pending-triton-experimental-functional-validation",
+        "next_action": "先GPU原生reference，再NPU最小适配审核/功能与性能门禁"
+      },
+      "historical_evidence": []
+    },
+    {
+      "acceptance_unit_id": "AU-joint-graph-pointless-view-pair",
+      "contract_name": "互逆view消除、-1与unbacked动态形状",
+      "stage": "joint_graph",
+      "review_status": "human-reviewed-awaiting-native-gpu-reference",
+      "denominator_eligible": "pending-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 936,
+          "symbol": "pointless_view_pair",
+          "role": "target-handler"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_view_pair",
+          "role": "direct-community-contract",
+          "evidence_scope": "2→0节点，保留中间用户2节点，[-1,7]也消除"
+        },
+        {
+          "nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_view_pair_dynamic_shapes",
+          "role": "direct-community-contract",
+          "evidence_scope": "mark_unbacked首维，compiled输出相等，removed_pointless_view_pair=1"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "inverse-static-positive",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "2→0节点，保留中间用户2节点，[-1,7]也消除",
+          "expected_counter": "2→0节点，保留中间用户2节点，[-1,7]也消除",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "intermediate-user-negative",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "2→0节点，保留中间用户2节点，[-1,7]也消除",
+          "expected_counter": "2→0节点，保留中间用户2节点，[-1,7]也消除",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "inferred-minus-one-positive",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "2→0节点，保留中间用户2节点，[-1,7]也消除",
+          "expected_counter": "2→0节点，保留中间用户2节点，[-1,7]也消除",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "unbacked-dynamic-positive",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "mark_unbacked首维，compiled输出相等，removed_pointless_view_pair=1",
+          "expected_counter": "mark_unbacked首维，compiled输出相等，removed_pointless_view_pair=1",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "pending-native-reference",
+        "allowed_local_deviation": [
+          "只读FX观察，保留原生测试体/参数/断言",
+          "NPU原生阻断后单独审核device/backend适配"
+        ],
+        "forbidden_local_deviation": [
+          "跳过计通过",
+          "用CPU/FakeTensor执行冒充真实GPU计算",
+          "关闭整个pattern_matcher制造目标性能",
+          "绕过显式NPU产品disable"
+        ]
+      },
+      "npu_control": {
+        "status": "pending-triton-experimental-functional-validation",
+        "next_action": "先GPU原生reference，再NPU最小适配审核/功能与性能门禁"
+      },
+      "historical_evidence": []
+    }
+  ],
+  "deferred_candidates": [
+    {
+      "provisional_unit_id": "AU-joint-graph-pointless-view",
+      "status": "deferred-indirect-only",
+      "reason": "test_pointless_view_pair直接验证的是pair handler，不能再计单view。保留独立单view注册候选，待直接社区证据。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-functional-contract",
+      "next_action": "补全真实社区合同或评审最小适配后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-joint-graph-remove-noop-ops",
+      "status": "deferred-contract-too-broad",
+      "reason": "joint_graph调用的是post_grad.remove_noop_ops。complex conj是保护负例，uneven-sharding是2rank SPMD保护旁证；尚缺可独立归属的正例/性能合同。pre_grad remove_noop测试不是本pass。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-functional-contract",
+      "next_action": "补全真实社区合同或评审最小适配后重开；当前不执行不计数"
+    }
+  ]
+}

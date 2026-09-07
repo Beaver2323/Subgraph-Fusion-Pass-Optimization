@@ -44,6 +44,18 @@ TASK_FILES = {
         "manifest": "upstream/t080_manifest.yaml",
         "performance_plan": "upstream/t080_performance_plan.yaml",
     },
+    "T-081": {
+        "manifest": "upstream/t081_manifest.yaml",
+        "performance_plan": "upstream/t081_performance_plan.yaml",
+    },
+    "T-082": {
+        "manifest": "upstream/t082_manifest.yaml",
+        "performance_plan": "upstream/t082_performance_plan.yaml",
+    },
+    "T-083": {
+        "manifest": "upstream/t083_manifest.yaml",
+        "performance_plan": "upstream/t083_performance_plan.yaml",
+    },
 }
 
 FIELDNAMES = [
@@ -324,6 +336,7 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
         f"- 活动 acceptance units：**{len(rows)}**；已冻结 reference：**{frozen}**；等待 GPU reference：**{pending}**。",
         f"- 已形成 NPU/comparison：**{compared}**；已有正式性能处置：**{measured_or_disposed}**；其余为性能计划态。",
         f"- 当前 NPU 结果实际观测 backend：`{', '.join(observed) if observed else '无'}`。",
+        "- 本表汇总已登记结论，不代表严格历史再认证通过；T-076/T-077 的独立补证状态见 [最新审计](../results/audits/latest.json)。",
         "- `npu_execution_status=failed` 不自动表示数值错误；例如产品 gate 关闭时，目标命中失败可与原图 correctness 通过同时成立，应结合 comparison verdict 阅读。",
         "",
         "## 单元矩阵",

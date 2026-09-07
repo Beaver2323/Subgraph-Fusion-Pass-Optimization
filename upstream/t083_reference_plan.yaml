@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-083",
+  "generated_at": "2026-09-07T22:36:49+08:00",
+  "status": "prepared-awaiting-direct-gpu-execution",
+  "performance_plan": {
+    "path": "upstream/t083_performance_plan.yaml",
+    "status": "worker-implemented-awaiting-functional-gates"
+  },
+  "case_guide": {
+    "path": "docs/T083_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t083_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG；结构方法补只读joint入口前后观察",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600,
+    "minimum_gpus": 1,
+    "distributed_world_size": 1
+  },
+  "cases": [
+    {
+      "case_id": "REF-all-gather-copy-cat-native",
+      "correctness_evidence": "codegen-only",
+      "acceptance_unit_id": "AU-post-grad-bucket-all-gathers",
+      "source_test": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_all_gather_bucket_copy_cat_fusion",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "independent-copy-cat-positive"
+      ],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": [
+        "world_size=1真实CUDA/NCCL原生codegen例；3个[64]输入合并copy(cat)仅1个Triton kernel，原例不作数值比较",
+        "原生unittest完整执行，skip/xfail/缺失方法均不得通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "evidence_scope": "见community_tests；world_size=1，不证明跨rank"
+    },
+    {
+      "case_id": "REF-all-gather-dependency-native",
+      "correctness_evidence": "codegen-only",
+      "acceptance_unit_id": "AU-post-grad-bucket-all-gathers",
+      "source_test": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_all_gather_bucket_path",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "dependency-negative"
+      ],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": [
+        "第二allgather依赖第一输出，bucket_all_gathers_fx=all仍须2个wait。codegen断言，不冒充数值",
+        "原生unittest完整执行，skip/xfail/缺失方法均不得通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "evidence_scope": "见community_tests；world_size=1，不证明跨rank"
+    },
+    {
+      "case_id": "REF-all-reduce-bucket-native",
+      "acceptance_unit_id": "AU-post-grad-bucket-all-reduce",
+      "source_test": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_all_reduce_bucket",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "independent-all-reduce-positive"
+      ],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": [
+        "原生world_size=1，bucket_mode=all，代码1个all_reduce_，compiled/eager结果相等",
+        "原生unittest完整执行，skip/xfail/缺失方法均不得通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "direct_args": [
+        "TestCollectivesInductor.test_all_reduce_bucket_bucket_mode_all"
+      ],
+      "evidence_scope": "见community_tests；world_size=1，不证明跨rank"
+    },
+    {
+      "case_id": "REF-reduce-scatter-bucket-native",
+      "acceptance_unit_id": "AU-post-grad-bucket-reduce-scatters",
+      "source_test": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_reduce_scatter_bucket",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "default-mode-positive",
+        "custom-ops-mode-positive",
+        "fsdp-output-cast-regression"
+      ],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": [
+        "原生default/custom_ops各执行func/func2，1个reduce_scatter调用且compiled/eager相等",
+        "原生unittest完整执行，skip/xfail/缺失方法均不得通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "direct_args": [
+        "TestCollectivesInductor.test_reduce_scatter_bucket_bucket_mode_default",
+        "TestCollectivesInductor.test_reduce_scatter_bucket_bucket_mode_custom_ops"
+      ],
+      "evidence_scope": "见community_tests；world_size=1，不证明跨rank"
+    }
+  ],
+  "non_executed_variants": []
+}

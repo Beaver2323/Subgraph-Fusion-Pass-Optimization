@@ -130,6 +130,21 @@ def python_qualnames(path: Path) -> set[str]:
     # copy_tests appends the suffix to every method name.  Resolve the CUDA name
     # statically so validation still avoids importing torch.
     for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "instantiate_device_type_tests"
+            and node.args
+            and isinstance(node.args[0], ast.Name)
+            and node.args[0].id == "TestInductorDynamic"
+            and path.name == "test_torchinductor_dynamic_shapes.py"
+            and not any(keyword.arg in {"only_for", "except_for"} for keyword in node.keywords)
+        ):
+            source = node.args[0].id
+            for qualname in list(result):
+                if qualname.startswith(source + "."):
+                    method = qualname.removeprefix(source + ".")
+                    result.add(f"{source}CUDA.{method}_cuda")
         if not (
             isinstance(node, ast.Call)
             and isinstance(node.func, ast.Name)
@@ -155,6 +170,45 @@ def python_qualnames(path: Path) -> set[str]:
             if qualname.startswith(source_prefix):
                 method = qualname.removeprefix(source_prefix)
                 result.add(f"{target}.{method}_{suffix}")
+    return result
+
+
+def reviewed_parameter_names(path: Path, qualname: str) -> set[str] | None:
+    """解析已审核三种参数化入口，复用common_utils的dtype/常量命名规则。"""
+    reviewed = {
+        "TestPatternMatcher.test_pointless_convert",
+        "TestCollectivesInductor.test_all_reduce_bucket",
+        "TestCollectivesInductor.test_reduce_scatter_bucket",
+    }
+    if qualname not in reviewed:
+        return None
+    cls_name, method = qualname.split(".")
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == cls_name)
+    fn = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == method)
+    decorators = [n for n in fn.decorator_list if isinstance(n, ast.Call)
+                  and isinstance(n.func, ast.Name) and n.func.id == "parametrize"]
+    if len(decorators) != 1 or decorators[0].keywords:
+        raise ValueError("已审核参数化结构发生变化，需重新审核")
+    decorator = decorators[0]
+    names = [name.strip() for name in ast.literal_eval(decorator.args[0]).split(",")]
+    values = decorator.args[1]
+    if not isinstance(values, (ast.List, ast.Tuple)):
+        raise ValueError("已审核参数化值不再是静态列表")
+    result = set()
+    for row in values.elts:
+        elements = row.elts if len(names) > 1 and isinstance(row, (ast.Tuple, ast.List)) else [row]
+        if len(elements) != len(names):
+            raise ValueError("参数化列数不符")
+        suffix = []
+        for name, value in zip(names, elements):
+            if isinstance(value, ast.Attribute) and isinstance(value.value, ast.Name) and value.value.id == "torch":
+                suffix.append(value.attr)
+            elif isinstance(value, ast.Constant) and isinstance(value.value, (str, int, float)):
+                suffix.append(name + "_" + str(value.value).replace(".", "_"))
+            else:
+                raise ValueError("参数化命名规则变化，需重新审核")
+        result.add(qualname + "_" + "_".join(suffix))
     return result
 
 
@@ -211,6 +265,17 @@ def validate_contract(
         seen_tests.add(test_key)
 
         mode = case["tracking_mode"]
+        if "native_observer" in case:
+            if case["native_observer"] is not True or mode != "direct":
+                raise ValueError(f"{case_id} native_observer 只允许 direct 且显式 true")
+            if plan["task_id"] not in {"T-081", "T-082"}:
+                raise ValueError(f"{case_id} native_observer 尚未审核该任务")
+            relative_observed, _ = split_nodeid(case["source_test"])
+            if relative_observed not in {
+                "test/inductor/test_pattern_matcher.py",
+                "test/inductor/test_torchinductor_dynamic_shapes.py",
+            }:
+                raise ValueError(f"{case_id} native_observer 未审核该源码")
         if mode not in {"direct", "adapter", "extracted"}:
             raise ValueError(f"{case_id} tracking_mode 非法: {mode}")
         if mode != units[unit_id]["tracking"]["reference_mode"]:
@@ -260,6 +325,9 @@ def validate_contract(
                 raise ValueError(
                     f"{case_id} direct_args 必须是 {qualname} 的参数化生成方法名"
                 )
+            reviewed_names = reviewed_parameter_names(test_path, qualname)
+            if reviewed_names is not None and set(direct_args) != reviewed_names:
+                raise ValueError(f"{case_id} 参数化入口与冻结源码实际生成名称不一致")
 
     if seen_tests != manifest_tests:
         missing = sorted(manifest_tests - seen_tests)
@@ -670,6 +738,12 @@ def case_command(
     if mode == "direct":
         relative, qualname = split_nodeid(case["source_test"])
         direct_args = case.get("direct_args")
+        if case.get("native_observer"):
+            return [
+                sys.executable, str(repo_root / "runners/native_fx_observer.py"),
+                "--source", str(pytorch_root / relative), "--",
+                *(direct_args or [qualname]),
+            ]
         if direct_args:
             return [sys.executable, str(pytorch_root / relative), "-v", *direct_args]
         return [sys.executable, str(pytorch_root / relative), "-v", qualname]

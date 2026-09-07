@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-07 20:50 CST（UTC+08:00）
-> 状态：T-076～T-080 共 21 个 acceptance units 已完成 GPU reference、`triton_experimental` NPU 功能对照和性能处置；T-081～T-113 为待审核草案。T-077 MM 与 T-078～T-080 产品改动尚待独立产品仓评审/合入。
+> 更新时间：2026-09-07 22:30 CST（UTC+08:00）
+> 状态：T-076～T-080 共 21 个 acceptance units 已登记 GPU reference、`triton_experimental` NPU 功能对照和性能处置；T-076/T-077 严格再认证单列。T-081～T-083 新准备 7 个单元，等待 GPU；T-084～T-113 保留草案编号。产品改动仍待独立产品仓评审/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -20,11 +20,13 @@
 - [x] 登记规则版本、代码哈希与源文件哈希，统一 `validate_all.py` 检查入口；
 - [x] 修复 GPU 一键入口和文本导出路径冲突，补真实导出/发布集成回归；
 - [x] 补齐 T-076/T-077 共 24 个 GPU case 的 1.3 review 原文重解析与断言语义复核；
+- [x] 完成现存历史证据核验：19 份选定 NPU 原件可读、4 项性能汇总独立重算一致；补出 5 项 GPU oracle 边界与轻量日志导出工具；
 - [x] 将同等原文复核扩展到 T-079/T-080；分别完成 4/4、13/13 个 GPU cases；
-- [x] 完成 10 个单元 NPU 原始运行与 7 个性能处置项的更强溯源复核；显式关闭项保留免测；
+- [ ] 完成 10 个单元 NPU 原始运行与 7 个性能处置项的更强溯源复核；显式关闭项保留免测；
 - [ ] 严格历史再认证门禁通过后再声明新规则下的完整验收。
 
-清单与命令见 [历史复核与统一门禁](report/t076_t077_history_reaudit_20260906.md)。
+清单与命令见 [本轮历史核验与最短补证路径](report/t076_t077_history_reaudit_20260907.md)。
+完成“核验并列出缺口”不等于缺失证据已补齐；历史原始日志尚未重解析通过。
 
 ## P0-A：仓库与文档收束
 
@@ -230,6 +232,9 @@ T-077 GPU 准备：
 - [x] GPU 执行 T-080 13/13 direct cases；全部 reference valid 后冻结 3 个单元；
 - [x] T-078 内完整执行 reference → NPU → compare → 条件 repair → performance → final product gate；
 - [x] T-079/T-080 分别完成 reference → NPU → compare → 条件 repair → performance → 产品处置；
+- [x] T-081～T-083 人工审核后分别准备 2/2/3 个单元，功能计划、性能 worker、GPU 入口与中文讲解齐备；
+- [ ] GPU 执行 T-081/T-082/T-083，并回传本批固定 latest handoff；未执行前不冻结新增 7 个单元；
+- [ ] T-083 多 rank 数值/通信功能审核通过后才开放真实多卡性能，不以 world_size=1 原生测试代替；
 - [ ] 建立 upstream source/test/mapping drift 检测；
 - [x] 支持一条命令运行 T-079/T-080 NPU suite；
 - [x] 支持一条命令生成 comparison report；T-079/T-080 分别由 `finalize_t079_results.py`、`finalize_t080_results.py` 生成正式结果；
@@ -248,7 +253,7 @@ T-077 GPU 准备：
 - [x] 将 T-081～T-113 草案及每批完整 ID 写入 `upstream/task_backlog.json`，覆盖范围见 `docs/TASK_BACKLOG.md`；
 - [x] 实现并动态验证 T-079/T-080 目标级性能 worker；
 - [x] GPU 依次执行 T-079/T-080 reference，NPU 按原生优先完成最小适配审核、功能与命中后再测性能；
-- [ ] 按草案逐批人工审核并准备后续 T；独立 lowering/template 清单另补后去重，不能冒充现有 FX inventory；
+- [ ] 按草案从 T-084 继续审核后续 T；T-081～T-083 deferred 保留原任务归属，不凑数或重编号；独立 lowering/template 清单另补后去重；
 - [ ] MM 产品修复经独立评审后推送/合入（本轮未操作产品仓库）。
 
 1. [x] T-075：冻结首批 acceptance-unit schema 并复核 5 个单元；

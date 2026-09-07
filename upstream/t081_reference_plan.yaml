@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-081",
+  "generated_at": "2026-09-07T22:36:49+08:00",
+  "status": "prepared-awaiting-direct-gpu-execution",
+  "performance_plan": {
+    "path": "upstream/t081_performance_plan.yaml",
+    "status": "worker-implemented-awaiting-functional-gates"
+  },
+  "case_guide": {
+    "path": "docs/T081_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t081_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG；结构方法补只读joint入口前后观察",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600,
+    "minimum_gpus": 1,
+    "distributed_world_size": null
+  },
+  "cases": [
+    {
+      "case_id": "REF-constant-fold-dynamic-native",
+      "acceptance_unit_id": "AU-joint-graph-constant-fold-uniform-value",
+      "source_test": "test/inductor/test_torchinductor_dynamic_shapes.py::TestInductorDynamicCUDA.test_constant_fold_uniform_value_dynamic_cuda",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "dynamic-zero-add",
+        "dynamic-one-mul",
+        "dynamic-view-one"
+      ],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": [
+        "三个社区原图在static/dynamic及(2,4)/(3,4)输入下相等，恒等图不生成设备kernel",
+        "原生unittest完整执行，skip/xfail/缺失方法均不得通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "native_observer": true,
+      "evidence_scope": "gpu-compiled-functional"
+    },
+    {
+      "case_id": "REF-constant-fold-self-shape-native",
+      "acceptance_unit_id": "AU-joint-graph-constant-fold-uniform-value",
+      "source_test": "test/inductor/test_torchinductor_dynamic_shapes.py::TestInductorDynamicCUDA.test_constant_fold_uniform_value_self_referential_shape_cuda",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "self-referential-shape-regression"
+      ],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": [
+        "完整原生前后向可编译；自指shape不形成拓扑环，独立测试输入输出一致",
+        "原生unittest完整执行，skip/xfail/缺失方法均不得通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "native_observer": true,
+      "evidence_scope": "gpu-compiled-functional"
+    },
+    {
+      "case_id": "REF-pointless-convert-native",
+      "correctness_evidence": "codegen-only",
+      "acceptance_unit_id": "AU-joint-graph-pointless-convert",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_convert",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "fp32-fp16-preserved",
+        "fp32-bf16-preserved",
+        "fp32-fp64-folded",
+        "emulated-narrowing-preserved",
+        "fp16-fp32-folded",
+        "integer-roundtrip-preserved"
+      ],
+      "expected_match": "not-directly-asserted",
+      "expected_assertions": [
+        "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+        "原生unittest完整执行，skip/xfail/缺失方法均不得通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "direct_args": [
+        "TestPatternMatcher.test_pointless_convert_float32_float16_emulate_precision_casts_False_expected_calls_2",
+        "TestPatternMatcher.test_pointless_convert_float32_bfloat16_emulate_precision_casts_False_expected_calls_2",
+        "TestPatternMatcher.test_pointless_convert_float32_float64_emulate_precision_casts_False_expected_calls_1",
+        "TestPatternMatcher.test_pointless_convert_float32_float16_emulate_precision_casts_True_expected_calls_2",
+        "TestPatternMatcher.test_pointless_convert_float16_float32_emulate_precision_casts_True_expected_calls_1"
+      ],
+      "native_observer": true,
+      "evidence_scope": "gpu-tensor-make-fx-structure-only"
+    }
+  ],
+  "non_executed_variants": []
+}

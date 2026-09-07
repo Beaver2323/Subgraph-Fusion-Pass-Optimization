@@ -1,15 +1,16 @@
 # 当前 Acceptance Unit 兼容性矩阵
 
-> 生成时间：2026-09-07T20:50:00+08:00
+> 生成时间：2026-09-07T22:46:34+08:00
 > 数据源：`upstream/*manifest.yaml`、`results/current/` 与逐任务性能计划/汇总。
 > 后端边界：GPU reference 固定为 `inductor-default`；NPU 动态验证、比较、修复验证与性能固定为 `triton_experimental`。
 > 历史 251 行 registration 矩阵不参与本表 verdict；其用途与边界见 `report/archive/legacy-20260820-0828/pass_src_20260820/README.md`。
 
 ## 状态摘要
 
-- 活动 acceptance units：**21**；已冻结 reference：**21**；等待 GPU reference：**0**。
+- 活动 acceptance units：**28**；已冻结 reference：**21**；等待 GPU reference：**7**。
 - 已形成 NPU/comparison：**21**；已有正式性能处置：**21**；其余为性能计划态。
 - 当前 NPU 结果实际观测 backend：`triton_experimental`。
+- 本表汇总已登记结论，不代表严格历史再认证通过；T-076/T-077 的独立补证状态见 [最新审计](../results/audits/latest.json)。
 - `npu_execution_status=failed` 不自动表示数值错误；例如产品 gate 关闭时，目标命中失败可与原图 correctness 通过同时成立，应结合 comparison verdict 阅读。
 
 ## 单元矩阵
@@ -37,6 +38,13 @@
 | T-080 | AU-joint-graph-scatter-upon-const-tensor | joint_graph | valid-reference-suite | triton_experimental | passed | passed | EXPECTED_PRODUCT_DIVERGENCE | verified | measured-regressed-product-disabled / PERF_REGRESSED | functional-comparison-closed |
 | T-080 | AU-post-grad-prepare-softmax | post_grad | valid-reference-suite | triton_experimental | passed | passed | EXPECTED_PRODUCT_DIVERGENCE | not-needed | exempt-explicit-product-lowering-disable / PERF_EXEMPT | functional-comparison-closed |
 | T-080 | AU-post-grad-move-constructors-to-gpu | post_grad | valid-reference-suite | triton_experimental | passed | passed | PERF_NEUTRAL | not-needed | measured-neutral-retain-enabled / PERF_NEUTRAL | functional-comparison-closed |
+| T-081 | AU-joint-graph-constant-fold-uniform-value | joint_graph | pending-gpu-reference | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_FUNCTIONAL_GATES / planned | awaiting-gpu-reference |
+| T-081 | AU-joint-graph-pointless-convert | joint_graph | pending-gpu-reference | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_FUNCTIONAL_GATES / planned | awaiting-gpu-reference |
+| T-082 | AU-joint-graph-pointless-permute-pair | joint_graph | pending-gpu-reference | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_FUNCTIONAL_GATES / planned | awaiting-gpu-reference |
+| T-082 | AU-joint-graph-pointless-view-pair | joint_graph | pending-gpu-reference | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_FUNCTIONAL_GATES / planned | awaiting-gpu-reference |
+| T-083 | AU-post-grad-bucket-all-gathers | post_grad | pending-gpu-reference | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_FUNCTIONAL_GATES / planned | awaiting-gpu-reference |
+| T-083 | AU-post-grad-bucket-all-reduce | post_grad | pending-gpu-reference | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_FUNCTIONAL_GATES / planned | awaiting-gpu-reference |
+| T-083 | AU-post-grad-bucket-reduce-scatters | post_grad | pending-gpu-reference | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_FUNCTIONAL_GATES / planned | awaiting-gpu-reference |
 
 ## 使用说明
 

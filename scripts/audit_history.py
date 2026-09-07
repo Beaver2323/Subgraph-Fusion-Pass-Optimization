@@ -9,8 +9,10 @@ from datetime import datetime
 import hashlib
 import importlib.util
 import json
+import math
 from pathlib import Path
 import subprocess
+import statistics
 import sys
 
 
@@ -26,6 +28,11 @@ def load_module(name, path):
 
 comparison = load_module("history_comparison", ROOT / "scripts/validate_comparison_data.py")
 reference = load_module("history_reference", ROOT / "runners/reference_runner.py")
+# 导入器只处理文本，不导入 torch；复用同一分片、压缩及 SHA256 校验。
+sys.path.insert(0, str(ROOT / "scripts"))
+import import_reference_text as handoff
+import history_evidence_catalog as catalog
+from export_history_logs import validate_logs
 
 
 def read_json(path):
@@ -65,40 +72,105 @@ def inside(root, relative):
     return candidate
 
 
-def audit_gpu_case(run_dir, case, recorded, commit, evidence):
+def audit_gpu_case(run_dir, case, recorded, commit, evidence, text_files=None, source_root=None):
     checks = {}
     case_dir = inside(run_dir / "cases", case["case_id"])
+    prefix = f"cases/{case['case_id']}/"
+    implied_empty = {}
+
+    def content(name):
+        path = inside(case_dir, name)
+        if path.is_file():
+            return path.read_bytes()
+        return (text_files or {}).get(prefix + name, implied_empty.get(name))
+
+    def observe_case(name, expected=None):
+        data = content(name)
+        if data is None:
+            return check("pending", "原件未在本机或已校验 handoff 正文中提供。", path=str(case_dir / name))
+        actual = hashlib.sha256(data).hexdigest()
+        location = str(case_dir / name) if (case_dir / name).is_file() else f"handoff:{prefix}{name}"
+        evidence[location] = {"sha256": actual, "bytes": len(data)}
+        return check("failed" if expected and actual != expected else "passed",
+                     "由已绑定 inventory 的 bytes=0 与空文件 SHA256 确定空内容，无需传输。" if name in implied_empty else "实际读取原文并核对 SHA256。",
+                     path=location, actual=actual, expected=expected, derived_empty=name in implied_empty)
+
     for name, key in (("reference_result.json", "reference_result_sha256"),
                       ("artifact_inventory.json", "artifact_inventory_sha256")):
-        checks[name] = observe(case_dir / name, evidence, recorded[key])
+        checks[name] = observe_case(name, recorded[key])
     if combined(checks.values()) != "passed":
         return {"case_id": case["case_id"], "status": combined(checks.values()), "checks": checks}
-    result = read_json(case_dir / "reference_result.json")
+    result = json.loads(content("reference_result.json"))
     if result["source"]["actual_commit"] != commit or result["case"]["case_id"] != case["case_id"]:
         checks["identity"] = check("failed", "case 或 PyTorch revision 不一致。")
-    inventory = read_json(case_dir / "artifact_inventory.json")
+    inventory = json.loads(content("artifact_inventory.json"))
     indexed = {}
     for item in inventory:
         relative = item["path"]
         if relative in indexed:
             raise ValueError(f"inventory 重复项：{relative}")
         indexed[relative] = item
-        checks[f"inventory:{relative}"] = observe(inside(case_dir, relative), evidence, item["sha256"])
+        if item.get("bytes") == 0 and item["sha256"] == hashlib.sha256(b"").hexdigest() and content(relative) is None:
+            implied_empty[relative] = b""
+        checks[f"inventory:{relative}"] = observe_case(relative, item["sha256"])
     for name in ("stdout.log", "stderr.log", "fx_before.txt", "fx_after.txt"):
         if name not in indexed:
             checks[f"required:{name}"] = check("pending", "缺少必需文件的已绑定 inventory 哈希。")
-    if combined(checks.values()) == "passed":
+    logs_ready = all(checks.get(f"inventory:{name}", {}).get("status") == "passed" for name in ("stdout.log", "stderr.log"))
+    if logs_ready:
         expected = len(case.get("direct_args") or [case["source_test"]])
         parsed = reference.parse_unittest_output(
-            (case_dir / "stdout.log").read_text(), (case_dir / "stderr.log").read_text(),
+            content("stdout.log").decode("utf-8"), content("stderr.log").decode("utf-8"),
             result["execution"]["return_code"], expected,
         )
         checks["unittest_reparse"] = check(
             "passed" if parsed["success"] else "failed", "使用当前 parser 重解析原始日志。", parsed=parsed,
         )
+    else:
+        checks["unittest_reparse"] = check("pending", "缺成功测例 stdout/stderr 正文；摘要中的 tests_ran/OK 不替代重解析。")
     # 这是更强日志门禁的复核，不把日志 OK 当作逐分支数值断言的源码审查。
-    checks["assertion_semantics"] = check("pending", "需结合冻结社区源码/FX 审核数值与目标命中断言；不由 OK 自动推断。")
+    checks["assertion_semantics"] = catalog.review_source(case, commit, source_root, evidence)
+    core_names = ("reference_result.json", "artifact_inventory.json", "fx_before.txt", "fx_after.txt")
+    core = {name: observe_case(name, indexed.get(name, {}).get("sha256")) for name in core_names}
+    checks["key_text_available"] = check(combined(core.values()), "关键结果、inventory、FX 正文完整性；不等于全 archive 或数值认证。", files=core)
     return {"case_id": case["case_id"], "status": combined(checks.values()), "checks": checks}
+
+
+def load_history_handoff(repo_root, task_id, run_id, evidence):
+    path = repo_root / "results/incoming" / task_id / "manifest.json"
+    if not path.is_file():
+        return {}, check("pending", "尚未提供带原文 handoff。")
+    observe(path, evidence)
+    outer = read_json(path)
+    for part in outer.get("parts", []):
+        observe(inside(path.parent, part["path"]), evidence)
+    payload = handoff.load_input(path)
+    actual_run, data = handoff.validate_payload(payload)
+    if actual_run != run_id:
+        raise ValueError(f"{task_id} handoff run_id 与正式 comparison 不一致")
+    supplements = [p for p in (path.parent / "history-logs.json", path.parent / "history-logs/manifest.json") if p.is_file()]
+    if len(supplements) > 1:
+        raise ValueError("同一历史任务存在两份日志补证，请只保留一个明确入口")
+    supplement_check = check("pending", "未提供 history-logs.json 或 history-logs/manifest.json。")
+    if supplements:
+        supplement = supplements[0]
+        observe(supplement, evidence)
+        for part in read_json(supplement).get("parts", []):
+            observe(inside(supplement.parent, part["path"]), evidence)
+        logs = validate_logs(handoff.load_input(supplement), task_id, run_id)
+        indexed = {record["path"]: record for record in payload["evidence_files"]}
+        for relative, value in logs.items():
+            record = indexed.get(relative)
+            if record is None or len(value) != record["bytes"] or hashlib.sha256(value).hexdigest() != record["sha256"]:
+                raise ValueError(f"补证日志未绑定原 handoff inventory：{relative}")
+            if relative in data and data[relative] != value:
+                raise ValueError("补证日志与既有原文冲突")
+            data[relative] = value
+        supplement_check = check("passed", "日志补证逐项绑定原 handoff SHA256。", nonempty_logs=len(logs))
+    return data, check("passed", "分片、整包和每份正文均验证；不执行反序列化代码。",
+                       run_id=run_id, payload_sha256=payload["payload_sha256"],
+                       restorable_text_files=len(data), omitted_files=len(payload["raw_text_transfer"]["omitted_files"]),
+                       log_supplement=supplement_check)
 
 
 def audit_workers(raw, unit_id, policy, evidence):
@@ -115,6 +187,7 @@ def audit_workers(raw, unit_id, policy, evidence):
     if {path.name for path in worker_root.iterdir() if path.is_dir()} != set(names):
         checks["worker_selection"] = check("pending", "OFF/ON worker 目录未齐备，不能认证完整六轮。")
     workers = []
+    sample_checks = {}
     for name in names:
         path = root / "workers" / name / "result.json"
         checks[name] = observe(path, evidence, raw.get("worker_sha256", {}).get(name))
@@ -122,6 +195,23 @@ def audit_workers(raw, unit_id, policy, evidence):
             continue
         worker = read_json(path)
         workers.append(worker)
+        for channel in ("host", "device_event"):
+            timing = worker.get("timing", {}).get(channel, {})
+            samples = timing.get("samples_ms")
+            if samples is None:
+                sample_checks[f"{name}:{channel}"] = check("pending", "原始 worker 未持久化逐样本时延，统计量无法逆推出样本。")
+                continue
+            valid_samples = isinstance(samples, list) and len(samples) == worker.get("runs") and bool(samples) and all(
+                type(value) in (int, float) and math.isfinite(value) and value > 0 for value in samples
+            )
+            if valid_samples:
+                values = sorted(samples)
+                for label, fraction in (("p50_ms", .5), ("p99_ms", .99)):
+                    pos = (len(values) - 1) * fraction
+                    lo = int(pos)
+                    actual = values[lo] + (values[min(lo + 1, len(values) - 1)] - values[lo]) * (pos - lo)
+                    valid_samples = valid_samples and type(timing.get(label)) in (float, int) and math.isclose(timing[label], actual, abs_tol=1e-9)
+            sample_checks[f"{name}:{channel}"] = check("passed" if valid_samples else "failed", "按线性插值重算逐轮 p50/p99，并校验原始样本数量及有限正值。")
         mode, round_id = name[:-1], int(name[-1])
         correctness = worker.get("correctness")
         if isinstance(correctness, dict):
@@ -136,7 +226,9 @@ def audit_workers(raw, unit_id, policy, evidence):
             and pattern.get("actual_count") == pattern.get("expected_count") == (mode == "on")
         )
         checks[f"{name}:functional_round"] = check("passed" if valid else "failed", "核对唯一轮次、正整数迭代数、正确性与 OFF=0/ON=1 目标 counter。")
-        env = worker.get("environment", {})
+        env = dict(worker.get("environment", {}))
+        if "torch_commit" not in env and "torch_git" in env:
+            env["torch_commit"] = env["torch_git"]
         backend = env.get("backend")
         checks[f"{name}:backend"] = check(
             "pending" if backend is None else "passed" if backend == policy["required_npu_backend"] else "failed",
@@ -144,13 +236,47 @@ def audit_workers(raw, unit_id, policy, evidence):
         )
         required = ("torch_commit", "torch_npu_commit", "triton_ascend_commit", "backend_selected_before_import", "process_start", "pid")
         missing = [key for key in required if key not in env]
-        checks[f"{name}:provenance"] = check("pending", "旧格式尚无完整绑定验证器；需人工复核 revision/后端生命周期/独立进程证据。", missing_fields=missing)
+        valid_meta = (
+            all(isinstance(env.get(key), str) and len(env[key]) == 40 and all(c in "0123456789abcdef" for c in env[key])
+                for key in ("torch_commit", "torch_npu_commit", "triton_ascend_commit"))
+            and env.get("backend_selected_before_import") is True
+            and type(env.get("pid")) is int and env["pid"] > 0
+            and isinstance(env.get("process_start"), str)
+        )
+        checks[f"{name}:provenance"] = check(
+            "pending" if missing else "passed" if valid_meta else "failed",
+            "逐 worker 原始溯源字段核对；torch_git 按原值映射 torch_commit，generated_at 不是 process_start。",
+            missing_fields=missing, recorded_generated_at=worker.get("generated_at"),
+            available_revisions={key: env[key] for key in ("torch_commit", "torch_npu_commit", "triton_ascend_commit") if key in env},
+        )
+        for artifact_name in ("stdout.log", "stderr.log", "generated_code.py"):
+            checks[f"{name}:{artifact_name}"] = observe(path.parent / artifact_name, evidence)
     if len(workers) == 6:
         contracts = [json.dumps({key: worker.get(key) for key in (
             "input", "input_shapes", "dynamic", "performance_case_source", "warmup", "runs"
         )}, sort_keys=True) for worker in workers]
         checks["same_input_method"] = check("passed" if len(set(contracts)) == 1 else "failed", "六轮输入与测例来源、迭代数一致；不等同于完整测量方法审核。")
-    checks["measurement_review"] = check("pending", "需复核计时同步/原始样本/聚合公式、社区来源、候选审批与安装态绑定；本脚本不认证旧性能收益。")
+        summary = read_json(root / "performance_summary.json")
+        comparisons = {}
+        for channel, prefix in (("host", "host"), ("device_event", "device")):
+            for percentile in ("p50", "p99"):
+                medians = {}
+                for mode in ("off", "on"):
+                    values = [w.get("timing", {}).get(channel, {}).get(f"{percentile}_ms") for w in workers if w["mode"] == mode]
+                    if len(values) != 3 or any(type(v) not in (float, int) or not math.isfinite(v) or v <= 0 for v in values):
+                        comparisons[f"{prefix}_{percentile}"] = check("pending", "逐轮 percentile 数据未提供或无效。")
+                        break
+                    medians[mode] = statistics.median(values)
+                if len(medians) == 2:
+                    actual = (1 - medians["on"] / medians["off"]) * 100
+                    recorded = summary.get("comparison", {}).get(f"{prefix}_{percentile}_improvement_percent")
+                    comparisons[f"{prefix}_{percentile}"] = check(
+                        "pending" if recorded is None else "passed" if math.isclose(recorded, actual, abs_tol=1e-9) else "failed",
+                        "从原始六轮统计值独立重算三轮中位数与改善百分比。", recalculated_percent=actual, recorded_percent=recorded,
+                    )
+        checks["aggregate_recalculation"] = check(combined(comparisons.values()), "独立复算历史汇总，不据此证明逐样本分位数或同安装态。", metrics=comparisons)
+    checks["measurement_review"] = check(combined(sample_checks.values()) if sample_checks else "pending", "逐样本统计复核；计时同步的执行版本和后端生命周期另需源码溯源，不从当前脚本回填。", samples=sample_checks,
+                                         required_evidence=["逐样本 host/Event 时延", "当轮 worker/launcher 源码快照或哈希", "三库精确 revision 与实际加载源码", "导入前 backend、PID/启动时间及隔离顺序"])
     return checks
 
 
@@ -198,7 +324,7 @@ def build(repo_root=ROOT, gpu_runs=None):
                 if artifact["availability"] == "repository":
                     observe(inside(repo_root, artifact["path"]), evidence)
             records.append({"acceptance_unit_id": unit_id, "record_check": check("passed", "当前 validator 的结构、后端、正确性、comparison 哈希约束通过。"),
-                            "runtime_reaudit": check("pending", "未重新解析 NPU 原始运行；记录通过不等于动态再验证。"),
+                            "runtime_reaudit": catalog.runtime_inventory(unit_id, evidence, observe, check, combined),
                             "original_verdict": record["final_verdict"], "original_repair_status": record["repair_status"],
                             "variant_count": len(result["variants"])})
             run_ids.add(record["reference"]["run_id"])
@@ -209,9 +335,11 @@ def build(repo_root=ROOT, gpu_runs=None):
         if seen != set(units) or set(recorded_cases) != {case["case_id"] for case in plan["cases"]} or len(run_ids) != 1:
             raise ValueError(f"{task_id} 历史 unit/case/run 覆盖不完整")
         run_id = next(iter(run_ids))
+        text_files, transport_check = load_history_handoff(repo_root, task_id, run_id, evidence)
         run_dir = gpu_runs.get(task_id, Path(f"/data/z50063656/tmp/{task_id.lower().replace('-', '')}-reference-results/{run_id}"))
         for case in plan["cases"]:
-            gpu_cases.append(audit_gpu_case(run_dir, case, recorded_cases[case["case_id"]], plan["manifest"]["pytorch_commit"], evidence))
+            gpu_cases.append(audit_gpu_case(run_dir, case, recorded_cases[case["case_id"]], plan["manifest"]["pytorch_commit"], evidence,
+                                            text_files=text_files, source_root=catalog.SOURCE_ROOT))
         perf_path = repo_root / f"results/current/{task_id}/performance_summary.json"
         observe(perf_path, evidence)
         perf = read_json(perf_path)
@@ -240,11 +368,15 @@ def build(repo_root=ROOT, gpu_runs=None):
             raw = detail.get("raw_artifacts", {})
             if raw.get("root") and raw.get("summary_sha256"):
                 checks = audit_workers(raw, unit_id, policy, evidence)
+            elif unit_id == "AU-b2b-gemm" and raw.get("root"):
+                checks = catalog.capability_inventory(raw, evidence, observe, check, combined)
+            elif task_id == "T-076":
+                checks = catalog.legacy_performance_inventory(unit_id, evidence, observe, check)
             else:
                 checks = {"manual_provenance": check("pending", "旧报告/能力网格证据需人工建立 revision、输入、后端和测量合同映射；不由旧 verdict 自动通过。", source=path_text)}
             performance.append({"acceptance_unit_id": unit_id, "status": combined(checks.values()),
                                 "original_verdict": item["verdict"], "checks": checks})
-        tasks.append({"task_id": task_id, "gpu_run_id": run_id, "gpu_cases": gpu_cases,
+        tasks.append({"task_id": task_id, "gpu_run_id": run_id, "gpu_handoff": transport_check, "gpu_cases": gpu_cases,
                       "npu_records": records, "performance_units": performance})
     files = [repo_root / "schemas/audit_policy.json"]
     for directory in ("scripts", "runners", "tests", "schemas", "upstream"):
@@ -253,11 +385,21 @@ def build(repo_root=ROOT, gpu_runs=None):
     code_hash = hashlib.sha256(json.dumps(validator_files, sort_keys=True).encode()).hexdigest()
     statuses = [item["status"] for task in tasks for section in ("gpu_cases", "performance_units") for item in task[section]]
     statuses.extend(item["runtime_reaudit"]["status"] for task in tasks for item in task["npu_records"])
+    components = {
+        "gpu_key_text_cases_passed": sum(c["checks"].get("key_text_available", {}).get("status") == "passed" for t in tasks for c in t["gpu_cases"]),
+        "gpu_log_reparse_cases_passed": sum(c["checks"].get("unittest_reparse", {}).get("status") == "passed" for t in tasks for c in t["gpu_cases"]),
+        "gpu_source_semantics_passed": sum(c["checks"].get("assertion_semantics", {}).get("status") == "passed" for t in tasks for c in t["gpu_cases"]),
+        "gpu_missing_nonempty_logs": sum(v["status"] == "pending" for t in tasks for c in t["gpu_cases"] for k, v in c["checks"].items() if k in ("inventory:stdout.log", "inventory:stderr.log")),
+        "gpu_empty_logs_verified_without_transfer": sum(v.get("derived_empty", False) for t in tasks for c in t["gpu_cases"] for k, v in c["checks"].items() if k in ("inventory:stdout.log", "inventory:stderr.log")),
+        "npu_selected_raw_result_files_passed": sum(run["checks"]["adapter_result"]["status"] == "passed" for t in tasks for n in t["npu_records"] for run in n["runtime_reaudit"]["runs"]),
+        "performance_aggregate_recalculations_passed": sum(p.get("checks", {}).get("aggregate_recalculation", {}).get("status") == "passed" for t in tasks for p in t["performance_units"]),
+    }
     git = subprocess.run(["git", "-C", str(repo_root), "rev-parse", "HEAD"], text=True, capture_output=True, check=True)
     return {"schema_version": "1.0", "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
             "rule_version": policy["rule_version"], "validator_version": policy["validator_version"],
             "validator_fingerprint_sha256": code_hash, "validator_files": validator_files,
             "repository_head": git.stdout.strip(), "source_files": evidence, "tasks": tasks,
+            "component_counts": components,
             "status": combined(check(status, "") for status in statuses), "status_counts": dict(Counter(statuses)),
             "npu_record_checks_passed": sum(len(task["npu_records"]) for task in tasks),
             "boundary": "旧 verdict 原样保留。通过的记录校验不等于重新验证所有 GPU/NPU/性能证据；本清单不得用于扩大冻结分母。T-067 属旧 feature-family 格式，未自动迁入本清单。"}

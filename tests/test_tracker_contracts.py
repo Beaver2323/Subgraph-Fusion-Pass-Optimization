@@ -351,14 +351,16 @@ class BacklogTests(unittest.TestCase):
         controls = [unit["provisional_unit_id"] for unit in data["non_counting_review"]]
         self.assertEqual(len(units), len(set(units)))
         self.assertFalse(set(units) & set(controls))
-        self.assertEqual(len(units) + len(controls) + data["counts"]["selected_manifest_units"], data["counts"]["inventory_units"])
+        self.assertEqual(len(units) + len(controls) + len(data["planning_seed_units"]), data["counts"]["inventory_units"])
         self.assertNotIn("AU-post-grad-move-constructors-to-cuda", units)
         self.assertTrue(all(1 <= len(batch["units"]) <= 5 for batch in data["batches"]))
 
     def test_draft_batches_never_claim_runnable(self):
         data = backlog.build(ROOT, "2026-09-06T02:15:00+08:00")
-        self.assertTrue(all(not batch["reference_ready"] for batch in data["batches"]))
-        self.assertTrue(all(batch["performance_readiness"] == "needs-community-benchmark-search-and-worker" for batch in data["batches"]))
+        drafts = [batch for batch in data["batches"] if batch["status"] == "draft-awaiting-contract-review"]
+        self.assertTrue(all(not batch["reference_ready"] for batch in drafts))
+        self.assertTrue(all(batch["performance_readiness"] == "needs-community-benchmark-search-and-worker" for batch in drafts))
+        self.assertEqual([b["task_id"] for b in drafts], [f"T-{i:03d}" for i in range(84, 114)])
 
 
 if __name__ == "__main__":

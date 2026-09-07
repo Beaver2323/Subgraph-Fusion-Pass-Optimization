@@ -78,6 +78,10 @@ class HistoryTests(HistoryFixtures):
         self.assertEqual(sum(len(task["gpu_cases"]) for task in payload["tasks"]), 24)
         self.assertEqual(sum(len(task["performance_units"]) for task in payload["tasks"]), 10)
         self.assertEqual(payload["status"], "pending")
+        self.assertEqual(payload["component_counts"]["gpu_key_text_cases_passed"], 24)
+        self.assertEqual(payload["component_counts"]["gpu_empty_logs_verified_without_transfer"], 24)
+        gaps = {case["case_id"] for task in payload["tasks"] for case in task["gpu_cases"] if case["checks"]["assertion_semantics"]["status"] == "pending"}
+        self.assertTrue((set(audit.catalog.NUMERICAL_GAPS) | audit.catalog.INPUT_GRADIENT_GAPS) <= gaps)
         self.assertEqual(payload["validator_files"]["scripts/audit_history.py"], audit.digest(ROOT / "scripts/audit_history.py"))
         self.assertEqual({path: audit.digest(path) for path in originals}, originals)
 
@@ -109,6 +113,28 @@ class HistoryTests(HistoryFixtures):
         self.assertEqual(result["checks"]["unittest_reparse"]["status"], "passed")
         self.assertEqual(result["status"], "pending")
 
+    def test_missing_archive_does_not_prevent_available_log_reparse(self):
+        self.gpu_case("Ran 2 tests in 1s\nOK\n")
+        case_dir = self.root / "cases/case"
+        inventory = audit.read_json(case_dir / "artifact_inventory.json")
+        inventory.append({"path": "cache/not-transferred.py", "bytes": 1, "sha256": "0" * 64})
+        self.write(case_dir / "artifact_inventory.json", inventory)
+        result = audit.audit_gpu_case(self.root, {"case_id": "case", "direct_args": ["a", "b"]},
+                                      {"reference_result_sha256": audit.digest(case_dir / "reference_result.json"), "artifact_inventory_sha256": audit.digest(case_dir / "artifact_inventory.json")}, "a" * 40, {})
+        self.assertEqual(result["checks"]["unittest_reparse"]["status"], "passed")
+        self.assertEqual(result["checks"]["inventory:cache/not-transferred.py"]["status"], "pending")
+
+    def test_handoff_from_wrong_historical_run_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "run_id"):
+            audit.load_history_handoff(ROOT, "T-076", "wrong-run", {})
+
+    def test_corrupt_handoff_is_rejected(self):
+        payload = audit.handoff.load_input(ROOT / "results/incoming/T-076/manifest.json")
+        payload["payload_sha256"] = "0" * 64
+        self.write(self.root / "results/incoming/T-076/manifest.json", payload)
+        with self.assertRaisesRegex(ValueError, "SHA256"):
+            audit.load_history_handoff(self.root, "T-076", payload["reference_summary"]["run_id"], {})
+
     def workers(self, mutate=None):
         self.write(self.root / "performance_summary.json", {})
         policy = audit.read_json(ROOT / "schemas/audit_policy.json")
@@ -135,6 +161,29 @@ class HistoryTests(HistoryFixtures):
         self.assertEqual(checks["off1:functional_round"]["status"], "passed")
         self.assertEqual(checks["off1:backend"]["status"], "pending")
         self.assertEqual(audit.combined(checks.values()), "pending")
+
+    def test_existing_torch_git_alias_is_not_reported_missing(self):
+        checks = self.workers(lambda worker: worker["environment"].update(torch_git="a" * 40))
+        self.assertNotIn("torch_commit", checks["off1:provenance"]["missing_fields"])
+        self.assertEqual(checks["off1:provenance"]["available_revisions"]["torch_commit"], "a" * 40)
+
+    def test_sample_corruption_is_failed_not_pending(self):
+        def mutate(worker):
+            worker["timing"] = {"host": {"samples_ms": [1.0] * 100, "p50_ms": 2, "p99_ms": 1}}
+        checks = self.workers(mutate)
+        self.assertEqual(checks["measurement_review"]["status"], "failed")
+
+    def test_aggregate_tampering_is_detected(self):
+        def timings(worker):
+            value = 1 if worker["mode"] == "off" else .5
+            worker["timing"] = {channel: {"p50_ms": value, "p99_ms": value} for channel in ("host", "device_event")}
+        self.workers(timings)
+        summary = {"comparison": {f"{prefix}_{percentile}_improvement_percent": 50 for prefix in ("host", "device") for percentile in ("p50", "p99")}}
+        summary["comparison"]["device_p50_improvement_percent"] = 51
+        self.write(self.root / "performance_summary.json", summary)
+        raw = {"root": str(self.root), "summary_sha256": audit.digest(self.root / "performance_summary.json")}
+        checks = audit.audit_workers(raw, "unit", audit.read_json(ROOT / "schemas/audit_policy.json"), {})
+        self.assertEqual(checks["aggregate_recalculation"]["status"], "failed")
 
     def test_duplicate_round_failed_even_with_six_files(self):
         checks = self.workers(lambda worker: worker.update(round=1))

@@ -36,9 +36,16 @@ def build(repo_root: Path, generated_at: str) -> dict:
     if len(selected) != len(set(selected)):
         raise ValueError("活动 manifest 有重复单元")
     existing_path = repo_root / "upstream/task_backlog.json"
+    planning_seed = sorted(selected)
     if existing_path.exists():
         previous = json.loads(existing_path.read_text(encoding="utf-8"))
-        if previous.get("planning_manifest_units", sorted(selected)) != sorted(selected):
+        planning_seed = previous.get("planning_seed_units", previous["planning_manifest_units"])
+        previous_selected = set(previous["planning_manifest_units"])
+        reviewed_ids = {
+            unit["provisional_unit_id"] for batch in previous["batches"]
+            if batch["task_id"] in {"T-081", "T-082", "T-083"} for unit in batch["units"]
+        }
+        if previous_selected - set(selected) or (set(selected) - previous_selected) - reviewed_ids:
             raise ValueError("manifest 单元集合已变化：请显式审核批次迁移并保留既有 T 编号，禁止自动重编号")
     inventory_ids = [row["acceptance_unit"] for row in rows]
     if len(inventory_ids) != len(set(inventory_ids)):
@@ -50,7 +57,9 @@ def build(repo_root: Path, generated_at: str) -> dict:
     eligible = [row for row in remaining if row["denominator_eligible"] == "yes-provisional"]
     controls = [row for row in remaining if row["denominator_eligible"] != "yes-provisional"]
     groups = {}
-    for row in eligible:
+    scheduled = [row for row in rows if ALIASES.get(row["acceptance_unit"], row["acceptance_unit"]) not in planning_seed
+                 and row["denominator_eligible"] == "yes-provisional"]
+    for row in scheduled:
         family = Path(row["source"].split(";")[0]).stem
         groups.setdefault(family, []).append(row)
     families = sorted(groups, key=lambda family: (FAMILY_ORDER.index(family) if family in FAMILY_ORDER else len(FAMILY_ORDER), family))
@@ -72,13 +81,31 @@ def build(repo_root: Path, generated_at: str) -> dict:
                     "coverage_hint": row["test_coverage"],
                 } for row in chunk],
             })
+    for batch in batches:
+        suffix = batch["task_id"].lower().replace("-", "")
+        manifest_file = repo_root / "upstream" / f"{suffix}_manifest.yaml"
+        if not manifest_file.is_file():
+            continue
+        manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+        ready = {unit["acceptance_unit_id"] for unit in manifest["acceptance_units"]}
+        deferred = {unit["provisional_unit_id"]: unit for unit in manifest.get("deferred_candidates", [])}
+        original_ids = {unit["provisional_unit_id"] for unit in batch["units"]}
+        if ready & deferred.keys() or ready | deferred.keys() != original_ids:
+            raise ValueError(f"{batch['task_id']}准备/延期审核未完整覆盖原批次，禁止重编号")
+        batch.update(status="prepared-with-explicit-deferred-candidates", reference_ready=True,
+                     performance_readiness="worker-static-only-awaiting-functional-gates",
+                     ready_acceptance_units=sorted(ready), deferred_candidates=list(deferred.values()),
+                     manifest=manifest_file.relative_to(repo_root).as_posix())
+        for unit in batch["units"]:
+            unit["review_disposition"] = "prepared-awaiting-gpu" if unit["provisional_unit_id"] in ready else "deferred-not-counting"
     return {
         "schema_version": "1.0", "generated_at": generated_at,
         "scope": "T-074 FX inventory 的剩余 provisional 单元；不是全 Inductor 分母",
         "source_inventory": {"path": inventory.relative_to(repo_root).as_posix(), "sha256": hashlib.sha256(inventory.read_bytes()).hexdigest()},
         "aliases": ALIASES,
         "planning_manifest_units": sorted(selected),
-        "counts": {"inventory_units": len(rows), "selected_manifest_units": len(selected), "remaining_provisional_units": len(eligible), "non_counting_review_records": len(controls), "draft_batches": len(batches)},
+        "planning_seed_units": planning_seed,
+        "counts": {"inventory_units": len(rows), "selected_manifest_units": len(selected), "remaining_provisional_units": len(eligible), "non_counting_review_records": len(controls), "draft_batches": sum(not b["reference_ready"] for b in batches), "prepared_batches": sum(b["reference_ready"] for b in batches), "scheduled_batches": len(batches), "deferred_review_units": sum(len(b.get("deferred_candidates", [])) for b in batches)},
         "batch_acceptance": [
             "逐单元审核 contract、正负例和真实测试入口；允许合并/拆分，但保留旧 ID 映射",
             "性能先检索社区 benchmark；没有则记录功能例派生理由和精确输入/输出/梯度合同",
@@ -101,11 +128,12 @@ def markdown(data: dict) -> str:
     lines = ["# 后续批次与覆盖边界", "", f"> 更新时间：{data['generated_at']}", "",
         "机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。", "",
         f"T-074 的 {counts['inventory_units']} 个 provisional 单元中，活动 manifest 已接入 {counts['selected_manifest_units']} 个；",
-        f"剩余 {counts['remaining_provisional_units']} 个 provisional eligible 单元暂分 {counts['draft_batches']} 批，另有 {counts['non_counting_review_records']} 条非计数结构记录待审。", "",
-        "这些 T 是待审核草案，**不是 GPU-ready**，不进入冻结分母。仅修正 constructor mover 的 cuda→gpu 名称映射，不重写 T-074 原始证据。", "",
+        f"未接入的 {counts['remaining_provisional_units']} 个候选中，{counts['deferred_review_units']} 个留在已审批次延期，其余保留 {counts['draft_batches']} 个草案批次；另有 {counts['non_counting_review_records']} 条非计数结构记录待审。", "",
+        "T-081～T-083 的已选7单元已具备原生GPU入口，仍不进入冻结分母；7个原候选明确延期。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-084及以后编号。", "",
         "| 草案任务 | 源码 family | 暂列单元数 | 状态 |", "| --- | --- | ---: | --- |"]
     for batch in data["batches"]:
-        lines.append(f"| {batch['task_id']} | `{batch['family']}` | {len(batch['units'])} | 功能映射、性能来源与 worker 待准备 |")
+        status = f"已准备{len(batch.get('ready_acceptance_units', []))}，延期{len(batch.get('deferred_candidates', []))}；等GPU" if batch["reference_ready"] else "功能映射、性能来源与worker待准备"
+        lines.append(f"| {batch['task_id']} | `{batch['family']}` | {len(batch['units'])} | {status} |")
     lines += ["", "## 每批准备与验收标准", ""]
     lines += [f"- {item}。" for item in data["batch_acceptance"]]
     lines += ["", "## 当前覆盖边界", "",
@@ -125,6 +153,7 @@ def main() -> None:
     parser.add_argument("--timestamp", default="2026-09-06T02:15:00+08:00")
     parser.add_argument("--format", choices=("json", "markdown"), default="json")
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--write", action="store_true", help="经审核批次机械生成JSON与中文导航")
     args = parser.parse_args()
     if args.check:
         actual = json.loads((args.repo_root / "upstream/task_backlog.json").read_text(encoding="utf-8"))
@@ -134,6 +163,10 @@ def main() -> None:
         print("task_backlog_validation=OK " + json.dumps(expected["counts"], ensure_ascii=False))
         return
     data = build(args.repo_root, args.timestamp)
+    if args.write:
+        (args.repo_root / "upstream/task_backlog.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (args.repo_root / "docs/TASK_BACKLOG.md").write_text(markdown(data), encoding="utf-8")
+        return
     print(json.dumps(data, ensure_ascii=False, indent=2) if args.format == "json" else markdown(data), end="\n" if args.format == "json" else "")
 
 

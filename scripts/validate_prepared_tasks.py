@@ -13,7 +13,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-TASKS = ("T-078", "T-079", "T-080")
+TASKS = ("T-078", "T-079", "T-080", "T-081", "T-082", "T-083")
 
 
 def load_json(path: Path) -> dict:

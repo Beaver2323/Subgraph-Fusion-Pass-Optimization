@@ -18,5 +18,6 @@ results/incoming/*
 !results/incoming/T-*/
 results/incoming/T-*/*
 !results/incoming/T-*/.gitkeep
+!results/incoming/T-*/README.md
 *.tar.gz
 *.tar.gz.sha256

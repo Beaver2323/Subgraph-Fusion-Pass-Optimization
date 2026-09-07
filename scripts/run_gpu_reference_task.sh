@@ -29,7 +29,8 @@ usage() {
   bash scripts/run_gpu_reference_task.sh --task T-078 --validate-only
 
 参数：
-  --task T-076|T-077|T-078|T-079|T-080   必填，选择已登记的 GPU reference 任务
+  --task T-076|T-077|T-078|T-079|T-080|T-081|T-082|T-083   必填
+  T-083 原生功能例使用 world_size=1，只需1卡；不证明跨rank通信收益。
   --gpu ID             实际运行时使用的物理 GPU 编号；也可预先设置 CUDA_VISIBLE_DEVICES
   --case CASE_ID       可选，只运行指定 case
   --validate-only      只做零设备静态校验
@@ -132,8 +133,15 @@ case "${task_id}" in
         task_runner="${tracker_root}/scripts/run_t080_reference_all.sh"
         result_root="${data_root}/tmp/t080-reference-results"
         ;;
+    T-081|T081|T-082|T082|T-083|T083)
+        task_id="T-${task_id//[!0-9]/}"
+        task_suffix="${task_id,,}"
+        task_suffix="${task_suffix//-/}"
+        task_runner="${tracker_root}/scripts/run_${task_suffix}_reference_all.sh"
+        result_root="${data_root}/tmp/${task_suffix}-reference-results"
+        ;;
     *)
-        echo "错误：--task 必须是 T-076、T-077、T-078、T-079 或 T-080。" >&2
+        echo "错误：--task 必须是 T-076～T-083。" >&2
         usage >&2
         exit 2
         ;;

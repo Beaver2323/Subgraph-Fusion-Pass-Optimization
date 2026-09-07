@@ -1,0 +1,247 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T22:36:49+08:00",
+  "status": "prepared-awaiting-native-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-081原始候选逐项源码/测试复核",
+    "selected_acceptance_units": [
+      "AU-joint-graph-constant-fold-uniform-value",
+      "AU-joint-graph-pointless-convert"
+    ],
+    "corrections": [
+      "AU-joint-graph-div-softmax：与mul合为scaled-softmax合同；原生test_scaled_softmax与nonfinite方法构造CPU张量，common不迁移设备。尚未得到原生GPU阻断/最小设备适配审核记录。",
+      "AU-joint-graph-mul-softmax：共享测试同时覆盖mul、反序mul、div、broadcast与非有限值，应合为AU-joint-graph-scaled-softmax，两个旧ID完整保留。CPU执行不能冻结GPU分母。",
+      "AU-joint-graph-fix-iota-device：源码788行修正仅被index/index_put使用的CPU iota设备；未找到直接社区断言。constructor mover属于另一pass，不能借其结果代替。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": null,
+    "scope": "原生GPU社区方法；make_fx-only方法按结构证据标记"
+  },
+  "counting_policy": {
+    "current_manifest_units": 2,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "全部直接GPU合同有效并人工复核后才能冻结；结构合同不得冒充数值门禁"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-constant-fold-uniform-value",
+      "contract_name": "动态形状均匀常量折叠与自指形状保护",
+      "stage": "joint_graph",
+      "review_status": "human-reviewed-awaiting-native-gpu-reference",
+      "denominator_eligible": "pending-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 501,
+          "symbol": "constant_fold_uniform_value",
+          "role": "target-handler"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_torchinductor_dynamic_shapes.py::TestInductorDynamicCUDA.test_constant_fold_uniform_value_dynamic_cuda",
+          "role": "direct-community-contract",
+          "evidence_scope": "三个社区原图在static/dynamic及(2,4)/(3,4)输入下相等，恒等图不生成设备kernel"
+        },
+        {
+          "nodeid": "test/inductor/test_torchinductor_dynamic_shapes.py::TestInductorDynamicCUDA.test_constant_fold_uniform_value_self_referential_shape_cuda",
+          "role": "direct-community-contract",
+          "evidence_scope": "完整原生前后向可编译；自指shape不形成拓扑环，独立测试输入输出一致"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "dynamic-zero-add",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "三个社区原图在static/dynamic及(2,4)/(3,4)输入下相等，恒等图不生成设备kernel",
+          "expected_counter": "三个社区原图在static/dynamic及(2,4)/(3,4)输入下相等，恒等图不生成设备kernel",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "dynamic-one-mul",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "三个社区原图在static/dynamic及(2,4)/(3,4)输入下相等，恒等图不生成设备kernel",
+          "expected_counter": "三个社区原图在static/dynamic及(2,4)/(3,4)输入下相等，恒等图不生成设备kernel",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "dynamic-view-one",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "三个社区原图在static/dynamic及(2,4)/(3,4)输入下相等，恒等图不生成设备kernel",
+          "expected_counter": "三个社区原图在static/dynamic及(2,4)/(3,4)输入下相等，恒等图不生成设备kernel",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "self-referential-shape-regression",
+          "kind": "regression",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "完整原生前后向可编译；自指shape不形成拓扑环，独立测试输入输出一致",
+          "expected_counter": "完整原生前后向可编译；自指shape不形成拓扑环，独立测试输入输出一致",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "pending-native-reference",
+        "allowed_local_deviation": [
+          "只读FX观察，保留原生测试体/参数/断言",
+          "NPU原生阻断后单独审核device/backend适配"
+        ],
+        "forbidden_local_deviation": [
+          "跳过计通过",
+          "用CPU/FakeTensor执行冒充真实GPU计算",
+          "关闭整个pattern_matcher制造目标性能",
+          "绕过显式NPU产品disable"
+        ]
+      },
+      "npu_control": {
+        "status": "pending-triton-experimental-functional-validation",
+        "next_action": "先GPU原生reference，再NPU最小适配审核/功能与性能门禁"
+      },
+      "historical_evidence": []
+    },
+    {
+      "acceptance_unit_id": "AU-joint-graph-pointless-convert",
+      "contract_name": "无损浮点转换链消除与舍入保护",
+      "stage": "joint_graph",
+      "review_status": "human-reviewed-awaiting-native-gpu-reference",
+      "denominator_eligible": "pending-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/joint_graph.py",
+          "line": 842,
+          "symbol": "pointless_convert",
+          "role": "target-handler"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_convert",
+          "role": "direct-community-contract",
+          "evidence_scope": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "fp32-fp16-preserved",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "expected_counter": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "fp32-bf16-preserved",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "expected_counter": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "fp32-fp64-folded",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "expected_counter": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "emulated-narrowing-preserved",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "expected_counter": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "fp16-fp32-folded",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "expected_counter": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "integer-roundtrip-preserved",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "expected_counter": "五个参数化方法全部执行；cast节点数2/2/1/2/1，各方法均保留整数往返2节点",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "pending-native-reference",
+        "allowed_local_deviation": [
+          "只读FX观察，保留原生测试体/参数/断言",
+          "NPU原生阻断后单独审核device/backend适配"
+        ],
+        "forbidden_local_deviation": [
+          "跳过计通过",
+          "用CPU/FakeTensor执行冒充真实GPU计算",
+          "关闭整个pattern_matcher制造目标性能",
+          "绕过显式NPU产品disable"
+        ]
+      },
+      "npu_control": {
+        "status": "pending-triton-experimental-functional-validation",
+        "next_action": "先GPU原生reference，再NPU最小适配审核/功能与性能门禁"
+      },
+      "historical_evidence": []
+    }
+  ],
+  "deferred_candidates": [
+    {
+      "provisional_unit_id": "AU-joint-graph-div-softmax",
+      "status": "merged-pending-gpu-contract",
+      "reason": "与mul合为scaled-softmax合同；原生test_scaled_softmax与nonfinite方法构造CPU张量，common不迁移设备。尚未得到原生GPU阻断/最小设备适配审核记录。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-functional-contract",
+      "next_action": "补全真实社区合同或评审最小适配后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-joint-graph-mul-softmax",
+      "status": "merged-pending-gpu-contract",
+      "reason": "共享测试同时覆盖mul、反序mul、div、broadcast与非有限值，应合为AU-joint-graph-scaled-softmax，两个旧ID完整保留。CPU执行不能冻结GPU分母。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-functional-contract",
+      "next_action": "补全真实社区合同或评审最小适配后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-joint-graph-fix-iota-device",
+      "status": "deferred-no-direct-community-test",
+      "reason": "源码788行修正仅被index/index_put使用的CPU iota设备；未找到直接社区断言。constructor mover属于另一pass，不能借其结果代替。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-functional-contract",
+      "next_action": "补全真实社区合同或评审最小适配后重开；当前不执行不计数"
+    }
+  ]
+}

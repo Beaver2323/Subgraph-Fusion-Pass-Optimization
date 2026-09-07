@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-081",
+  "generated_at": "2026-09-07T22:36:49+08:00",
+  "status": "prepared-not-measured",
+  "implementation": {
+    "status": "implemented-awaiting-runtime-validation",
+    "entrypoint": "runners/t081_t083_performance_worker.py",
+    "launcher": "scripts/run_prepared_performance.py"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "进程启动后、导入torch/torch_npu前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable时记录证据并免测；worker不接收绕过产品gate参数"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU全reference有效后，先做目标NPU功能/命中/数值、stride/alias、无graph break/fallback复核；性能worker额外当场复核，不复用结构-only作为数值门禁",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw per-sample arrays"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "先每round/arm求p50,p99；3round取中位数，保留顺序；通信取同sample各rank最大值"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 1,
+    "performance_minimum_devices": 1,
+    "performance_world_size": 1,
+    "real_collective_required": false,
+    "fake_process_group_allowed": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/",
+      "test/distributed/"
+    ],
+    "terms": [
+      "目标symbol",
+      "bucket_all_*",
+      "scaled_softmax",
+      "pointless_*",
+      "constant_fold_uniform"
+    ],
+    "result": "未发现覆盖本目标并有同后端目标级OFF/ON的专属benchmark。DDP benchmark的bucket_cap_mb属于DDP reducer，非Inductor FX分桶，不能代用。",
+    "source_priority": "保持社区功能原图/shape；性能worker明确派生，不称社区原生benchmark"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-joint-graph-constant-fold-uniform-value",
+      "worker_unit": "constant-fold",
+      "performance_status": "PENDING_FUNCTIONAL_GATES",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_torchinductor_dynamic_shapes.py::TestInductorDynamicCUDA.test_constant_fold_uniform_value_dynamic_cuda",
+          "test/inductor/test_torchinductor_dynamic_shapes.py::TestInductorDynamicCUDA.test_constant_fold_uniform_value_self_referential_shape_cuda"
+        ],
+        "reason": "无对应社区目标级性能benchmark；复用明确原图并补独立OFF/ON计时"
+      },
+      "functional_gate": "只切换 joint_graph_constant_folding，记录目标入口前后FX；ON必须实质折叠且正确。未形成可区分路径时不计收益。",
+      "workloads": [
+        {
+          "workload_id": "constant-fold-community-shape",
+          "role": "primary",
+          "shape_contract": "full_add_zero 原图：(2,4)/(3,4) fp32；性能保留 x + (full(x.shape,1)-1)，dynamic=True",
+          "measurement_scope": "社区功能图派生的恒等子图；host调用/编译开销是重点，不能解释为全模型吞吐"
+        }
+      ],
+      "off_on_control": "只切换 joint_graph_constant_folding，记录目标入口前后FX；ON必须实质折叠且正确。未形成可区分路径时不计收益。",
+      "artifacts": [
+        "environment.json含实际loaded源码sha256与git状态",
+        "OFF/ON目标前后FX与改写计数",
+        "generated output_code.py/IR",
+        "逐样本host/Event/allocated/reserved",
+        "PID/时间/后端/seed/输入/进程组/rank/world_size",
+        "失败日志与traceback"
+      ],
+      "negative_cases": [
+        "self-referential-shape-regression",
+        "ON未改写/OFF误改写/数值错误/显式disable均拒绝计时"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-joint-graph-pointless-convert",
+      "worker_unit": "convert",
+      "performance_status": "PENDING_FUNCTIONAL_GATES",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_convert"
+        ],
+        "reason": "无对应社区目标级性能benchmark；复用明确原图并补独立OFF/ON计时"
+      },
+      "functional_gate": "只禁用 joint_graph.patterns 中 pointless_convert 的 extra_check；ON记录handler前后图差异。不得关闭整个pattern_matcher。",
+      "workloads": [
+        {
+          "workload_id": "convert-community-shape",
+          "role": "primary",
+          "shape_contract": "原生正例 x[8] fp16 → fp32 → fp16，emulate_precision_casts=True；保留纯cast输出和alias检查",
+          "measurement_scope": "社区make_fx结构合同派生；先直接joint pass OFF/ON生成图，再以同配置编译测量。编译后可能被下游同等消除，需保留无可区分设备工作结论。"
+        }
+      ],
+      "off_on_control": "只禁用 joint_graph.patterns 中 pointless_convert 的 extra_check；ON记录handler前后图差异。不得关闭整个pattern_matcher。",
+      "artifacts": [
+        "environment.json含实际loaded源码sha256与git状态",
+        "OFF/ON目标前后FX与改写计数",
+        "generated output_code.py/IR",
+        "逐样本host/Event/allocated/reserved",
+        "PID/时间/后端/seed/输入/进程组/rank/world_size",
+        "失败日志与traceback"
+      ],
+      "negative_cases": [
+        "fp32-fp16-preserved",
+        "fp32-bf16-preserved",
+        "emulated-narrowing-preserved",
+        "integer-roundtrip-preserved",
+        "ON未改写/OFF误改写/数值错误/显式disable均拒绝计时"
+      ]
+    }
+  ]
+}

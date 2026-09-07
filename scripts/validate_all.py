@@ -38,9 +38,18 @@ def commands(root, pytorch_root):
         "--check",
     ]
     yield "task_backlog", [python, str(root / "scripts/build_task_backlog.py"), "--check"]
-    for task in ("", "t077_", "t078_", "t079_", "t080_"):
+    for task in ("", "t077_", "t078_", "t079_", "t080_", "t081_", "t082_", "t083_"):
         yield f"{task}reference_plan", ["bash", str(root / f"scripts/run_{task}reference_all.sh"), "--pytorch-root", str(pytorch_root), "--validate-only"]
     yield "whitespace", ["git", "-C", str(root), "diff", "--check"]
+
+
+def validate_source_syntax(root, work_dir, env):
+    """覆盖嵌套 overlay/worker，避免只检查顶层入口而漏掉实际加载的源码。"""
+    for directory in ("scripts", "runners", "tests"):
+        for path in sorted((root / directory).rglob("*.py")):
+            ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        for path in sorted((root / directory).rglob("*.sh")):
+            subprocess.run(["bash", "-n", str(path)], check=True, cwd=work_dir, env=env)
 
 
 def main():
@@ -56,11 +65,7 @@ def main():
         return 2
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PASS_TRACKER_WORK_DIR=str(work_dir), PYTHON=sys.executable)
     try:
-        for directory in ("scripts", "runners", "tests"):
-            for path in sorted((ROOT / directory).glob("*.py")):
-                ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-            for path in sorted((ROOT / directory).glob("*.sh")):
-                subprocess.run(["bash", "-n", str(path)], check=True, cwd=work_dir, env=env)
+        validate_source_syntax(ROOT, work_dir, env)
         for directory in ("schemas", "upstream"):
             for path in sorted((ROOT / directory).iterdir()):
                 if path.suffix == ".json" or (path.suffix == ".yaml" and path.read_text().lstrip().startswith("{")):

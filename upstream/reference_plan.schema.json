@@ -56,7 +56,9 @@
         "failure_behavior": {"const": "continue-and-record"},
         "artifact_capture": {"type": "string"},
         "benchmark_gate": {"const": "functional-reference-valid-first"},
-        "default_timeout_seconds": {"type": "integer", "minimum": 1}
+        "default_timeout_seconds": {"type": "integer", "minimum": 1},
+        "minimum_gpus": {"type": "integer", "minimum": 1},
+        "distributed_world_size": {"type": ["integer", "null"], "minimum": 1}
       }
     },
     "cases": {
@@ -128,6 +130,9 @@
           "type": "array",
           "items": {"type": "string", "minLength": 1}
         },
+        "native_observer": {"const": true},
+        "evidence_scope": {"type": "string"},
+        "correctness_evidence": {"type": "string"},
         "entrypoint": {"type": "string"},
         "direct_blocker": {"$ref": "#/$defs/direct_blocker"}
       },

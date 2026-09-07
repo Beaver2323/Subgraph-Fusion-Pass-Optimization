@@ -1,16 +1,18 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-07 20:41 CST（UTC+08:00）
+> 更新时间：2026-09-07 22:30 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076～T-080 共 21 个 acceptance units 已正式闭环；T-081～T-113 为草案；T-077 MM、T-078～T-080 产品改动尚未合入。
+> 当前阶段：T-076～T-080 共 21 个 acceptance units 已登记闭环；T-076/T-077 严格再认证单列；T-081～T-083 新准备 7 个单元待 GPU，后续编号保留；产品改动尚未合入。
 
 ## 1. 总结
 
-2026-09-07 增补：T-076/T-077 的 10 份 NPU/comparison 记录通过当前校验；24 个 GPU case 已通过
-1.3 review 补回关键 FX/结果正文并完成重解析。完整生成代码/IR 仍保留在 GPU 原 run；NPU 原始运行
-与 7 项性能处置的更强溯源复核仍为 `pending`，3 项显式关闭免测保留。原始 verdict 不改写。
-详见 [历史复核与统一门禁](../report/t076_t077_history_reaudit_20260906.md)；
+2026-09-07 严格核验：24 个 GPU case 的关键正文已验哈希，19 个 case 的源码断言覆盖在声明
+范围内通过；另有 2 项数值辅助 oracle 与 3 项输入梯度 oracle 缺口。24 份空 stdout 无须重传，
+24 份非空 stderr 及全量 archive 仍待补；不能称原始日志已经重解析通过。本机已读取 19 份选定
+NPU 原始结果，4 项性能汇总独立重算一致，但历史安装态/源码绑定和逐样本证据仍不足。
+严格总状态 `pending=41、exempt=3`，表示分项总门禁而非 41 个文件缺失；原始 verdict 不改写。
+详见 [本轮核验与最短补证路径](../report/t076_t077_history_reaudit_20260907.md)；
 固定机器可读入口为 [最新审计](../results/audits/latest.json)。
 
 8 月 31 日需求与 8 月 29 日主线方向一致，都要求从 T-056/T-074 的静态 inventory 转向
@@ -212,17 +214,20 @@ T-078：12/12 GPU reference、4/4 NPU comparison、条件 repair、候选性能�
 
 T-079、T-080 均已正式闭环。T-080 保留 const-scatter CrossEntropy 的社区完整 benchmark；
 prepare-softmax 因产品显式 lowering fallback 免测；constructor mover 从社区功能正例派生性能图。
-下一主任务是从 `docs/TASK_BACKLOG.md` 人工冻结 T-081，而非继续把 T-080 plan-only 状态当待办。
+T-081～T-083 已审核为 2/2/3 个可执行社区合同，进入 GPU 待运行队列，尚不能冻结。
+CPU-only/fake-PG/间接覆盖或缺少直接测例的剩余候选按原批次保留 deferred。
+活动矩阵共 28 行，其中已冻结仍为 21，新准备 7 行；性能 worker 静态准备不计实测。
 
-T-076/T-077 的正式 GPU、NPU、comparison 与性能结论无需重跑；新 1.3 review 已于 2026-09-07
-补齐并通过校验：T-076/T-077 分别可恢复 80/68 份关键正文。新增正文用于逐项 FX 学习与审计，
-不改变既有冻结、NPU comparison 和性能结论；完整生成代码/IR 仍按哈希回查 GPU 原始 run。
+T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或同合同重验。新 1.3 review
+分别可恢复 80/68 份关键正文，用于逐项 FX 学习与审计，但不是完整历史 archive。
+仍须区分原始日志、数值/梯度断言覆盖、性能运行溯源是否齐全；缺项以独立审计记录为准，
+不得用当前源码元数据补造历史运行事实。
 ```
 
 ## 8. 当前环境边界
 
 - NPU 新测试从 `/home/z50063656/tmp` 发起；GPU T-076 从 `/data/z50063656/tmp` 发起；
-- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077|T-078|T-079|T-080 --gpu ID`，脚本自动进入
+- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-081 --gpu ID`（支持 T-076～T-083），脚本自动进入
   工作目录、激活环境、校验、运行、导出 1.3 review handoff 与备用网页分片并维护 `latest`，
   不再人工查找 timestamp；默认 handoff 是单行 JSON，超过 96 KiB 时自动生成分片并打印应上传的
   manifest 路径；评审包恢复摘要/FX/关键 case 正文，其余 artifacts 保留 SHA256；

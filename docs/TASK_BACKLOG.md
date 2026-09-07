@@ -1,49 +1,49 @@
 # 后续批次与覆盖边界
 
-> 更新时间：2026-09-06T02:15:00+08:00
+> 更新时间：2026-09-07T22:36:49+08:00
 
 机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。
 
-T-074 的 188 个 provisional 单元中，活动 manifest 已接入 21 个；
-剩余 137 个 provisional eligible 单元暂分 33 批，另有 30 条非计数结构记录待审。
+T-074 的 188 个 provisional 单元中，活动 manifest 已接入 28 个；
+未接入的 130 个候选中，7 个留在已审批次延期，其余保留 30 个草案批次；另有 30 条非计数结构记录待审。
 
-这些 T 是待审核草案，**不是 GPU-ready**，不进入冻结分母。仅修正 constructor mover 的 cuda→gpu 名称映射，不重写 T-074 原始证据。
+T-081～T-083 的已选7单元已具备原生GPU入口，仍不进入冻结分母；7个原候选明确延期。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-084及以后编号。
 
 | 草案任务 | 源码 family | 暂列单元数 | 状态 |
 | --- | --- | ---: | --- |
-| T-081 | `joint_graph` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-082 | `joint_graph` | 4 | 功能映射、性能来源与 worker 待准备 |
-| T-083 | `post_grad` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-084 | `post_grad` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-085 | `post_grad` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-086 | `post_grad` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-087 | `post_grad` | 4 | 功能映射、性能来源与 worker 待准备 |
-| T-088 | `split_cat` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-089 | `split_cat` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-090 | `split_cat` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-091 | `split_cat` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-092 | `split_cat` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-093 | `split_cat` | 3 | 功能映射、性能来源与 worker 待准备 |
-| T-094 | `pre_grad` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-095 | `pre_grad` | 1 | 功能映射、性能来源与 worker 待准备 |
-| T-096 | `misc_patterns` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-097 | `replace_random` | 4 | 功能映射、性能来源与 worker 待准备 |
-| T-098 | `efficient_conv_bn_eval` | 3 | 功能映射、性能来源与 worker 待准备 |
-| T-099 | `freezing_patterns` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-100 | `binary_folding` | 1 | 功能映射、性能来源与 worker 待准备 |
-| T-101 | `reduced_atomic_contention` | 1 | 功能映射、性能来源与 worker 待准备 |
-| T-102 | `fuse_attention` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-103 | `fuse_attention` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-104 | `fuse_attention` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-105 | `fuse_attention` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-106 | `fuse_attention` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-107 | `fuse_attention` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-108 | `quantization` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-109 | `quantization` | 4 | 功能映射、性能来源与 worker 待准备 |
-| T-110 | `mkldnn_fusion` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-111 | `mkldnn_fusion` | 5 | 功能映射、性能来源与 worker 待准备 |
-| T-112 | `fsdp` | 1 | 功能映射、性能来源与 worker 待准备 |
-| T-113 | `group_batch_fusion` | 1 | 功能映射、性能来源与 worker 待准备 |
+| T-081 | `joint_graph` | 5 | 已准备2，延期3；等GPU |
+| T-082 | `joint_graph` | 4 | 已准备2，延期2；等GPU |
+| T-083 | `post_grad` | 5 | 已准备3，延期2；等GPU |
+| T-084 | `post_grad` | 5 | 功能映射、性能来源与worker待准备 |
+| T-085 | `post_grad` | 5 | 功能映射、性能来源与worker待准备 |
+| T-086 | `post_grad` | 5 | 功能映射、性能来源与worker待准备 |
+| T-087 | `post_grad` | 4 | 功能映射、性能来源与worker待准备 |
+| T-088 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
+| T-089 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
+| T-090 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
+| T-091 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
+| T-092 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
+| T-093 | `split_cat` | 3 | 功能映射、性能来源与worker待准备 |
+| T-094 | `pre_grad` | 5 | 功能映射、性能来源与worker待准备 |
+| T-095 | `pre_grad` | 1 | 功能映射、性能来源与worker待准备 |
+| T-096 | `misc_patterns` | 5 | 功能映射、性能来源与worker待准备 |
+| T-097 | `replace_random` | 4 | 功能映射、性能来源与worker待准备 |
+| T-098 | `efficient_conv_bn_eval` | 3 | 功能映射、性能来源与worker待准备 |
+| T-099 | `freezing_patterns` | 5 | 功能映射、性能来源与worker待准备 |
+| T-100 | `binary_folding` | 1 | 功能映射、性能来源与worker待准备 |
+| T-101 | `reduced_atomic_contention` | 1 | 功能映射、性能来源与worker待准备 |
+| T-102 | `fuse_attention` | 5 | 功能映射、性能来源与worker待准备 |
+| T-103 | `fuse_attention` | 5 | 功能映射、性能来源与worker待准备 |
+| T-104 | `fuse_attention` | 5 | 功能映射、性能来源与worker待准备 |
+| T-105 | `fuse_attention` | 5 | 功能映射、性能来源与worker待准备 |
+| T-106 | `fuse_attention` | 5 | 功能映射、性能来源与worker待准备 |
+| T-107 | `fuse_attention` | 5 | 功能映射、性能来源与worker待准备 |
+| T-108 | `quantization` | 5 | 功能映射、性能来源与worker待准备 |
+| T-109 | `quantization` | 4 | 功能映射、性能来源与worker待准备 |
+| T-110 | `mkldnn_fusion` | 5 | 功能映射、性能来源与worker待准备 |
+| T-111 | `mkldnn_fusion` | 5 | 功能映射、性能来源与worker待准备 |
+| T-112 | `fsdp` | 1 | 功能映射、性能来源与worker待准备 |
+| T-113 | `group_batch_fusion` | 1 | 功能映射、性能来源与worker待准备 |
 
 ## 每批准备与验收标准
 

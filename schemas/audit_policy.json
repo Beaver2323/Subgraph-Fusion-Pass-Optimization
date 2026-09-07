@@ -1,7 +1,7 @@
 {
-  "rule_version": "2026-09-06.2",
-  "validator_version": "2.0.0",
-  "updated_at": "2026-09-06T05:20:00+08:00",
+  "rule_version": "2026-09-07.1",
+  "validator_version": "2.1.0",
+  "updated_at": "2026-09-07T22:32:00+08:00",
   "required_npu_backend": "triton_experimental",
   "history_tasks": ["T-076", "T-077"],
   "rules": {
@@ -10,7 +10,7 @@
     "npu": "只接受 triton_experimental；失败证据可保留，但不得宣称已修复或性能通过。记录校验不等同于原始运行重验。",
     "performance": "同 revision/输入/后端/测量方法；导入前选择后端，OFF/ON 各三个独立进程，正确性和目标命中先通过，再比较 host/Event p50/p99。",
     "disable": "明确产品关闭免测，保留已有证据；普通 device guard 只算 capability-pending，未经独立评审不得绕过。",
-    "history": "原始证据只读；追加带时间戳、规则/校验器版本、代码哈希和源文件哈希的复核记录。缺失为 pending，冲突为 failed，不自动回填历史 passed。",
+    "history": "原始证据只读；追加带时间戳、规则/校验器版本、代码哈希和源文件哈希的复核记录。直接读取已验证1.3 review及日志补证，不要求重复传FX。bytes=0且空SHA256一致的已绑定日志可确定为空。源码语义、日志重解析、archive完整性分别计数；原有全inventory门禁仍保留。缺失为pending，冲突为failed，不自动回填历史passed；未采集的PID/源码安装态/逐样本数据不得事后推造。",
     "delivery": "工具门禁与历史再认证分开；交付检查须运行统一入口，历史未完整时不得宣称新规则全量验收通过。"
   },
   "performance_round_order": ["off1", "on1", "on2", "off2", "off3", "on3"],

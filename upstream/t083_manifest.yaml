@@ -1,0 +1,246 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-07T22:36:49+08:00",
+  "status": "prepared-awaiting-native-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-083原始候选逐项源码/测试复核",
+    "selected_acceptance_units": [
+      "AU-post-grad-bucket-all-gathers",
+      "AU-post-grad-bucket-all-reduce",
+      "AU-post-grad-bucket-reduce-scatters"
+    ],
+    "corrections": [
+      "AU-post-grad-chain-random-ops-ordering：fallback_random触发排序链；未找到针对_chain_random_ops_for_ordering的社区直接断言。随机数正确性/排序需独立合同。",
+      "AU-post-grad-decomp-comms：已找到test/distributed/test_decomp_comms.py::TestDecompGramMatrixAllGather，直接helper+FakeTensorMode+fake PG world_size=2只证明结构。需真实多rank数值/稳定性/通信量证据，不能以fake测试宣称GPU计算通过。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": 1,
+    "scope": "single-process-community-collective-contract; no cross-rank performance claim"
+  },
+  "counting_policy": {
+    "current_manifest_units": 3,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "全部直接GPU合同有效并人工复核后才能冻结；结构合同不得冒充数值门禁"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-bucket-all-gathers",
+      "contract_name": "post-grad独立all-gather分桶及依赖保护",
+      "stage": "post_grad",
+      "review_status": "human-reviewed-awaiting-native-gpu-reference",
+      "denominator_eligible": "pending-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 384,
+          "symbol": "bucket_all_gather",
+          "role": "post-grad-pipeline-entry"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_all_gather_bucket_copy_cat_fusion",
+          "role": "direct-community-contract",
+          "evidence_scope": "world_size=1真实CUDA/NCCL原生codegen例；3个[64]输入合并copy(cat)仅1个Triton kernel，原例不作数值比较"
+        },
+        {
+          "nodeid": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_all_gather_bucket_path",
+          "role": "direct-community-contract",
+          "evidence_scope": "第二allgather依赖第一输出，bucket_all_gathers_fx=all仍须2个wait。codegen断言，不冒充数值"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "independent-copy-cat-positive",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "world_size=1真实CUDA/NCCL原生codegen例；3个[64]输入合并copy(cat)仅1个Triton kernel，原例不作数值比较",
+          "expected_counter": "world_size=1真实CUDA/NCCL原生codegen例；3个[64]输入合并copy(cat)仅1个Triton kernel，原例不作数值比较",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "dependency-negative",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "第二allgather依赖第一输出，bucket_all_gathers_fx=all仍须2个wait。codegen断言，不冒充数值",
+          "expected_counter": "第二allgather依赖第一输出，bucket_all_gathers_fx=all仍须2个wait。codegen断言，不冒充数值",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "pending-native-reference",
+        "allowed_local_deviation": [
+          "只读FX观察，保留原生测试体/参数/断言",
+          "NPU原生阻断后单独审核device/backend适配"
+        ],
+        "forbidden_local_deviation": [
+          "跳过计通过",
+          "用CPU/FakeTensor执行冒充真实GPU计算",
+          "关闭整个pattern_matcher制造目标性能",
+          "绕过显式NPU产品disable"
+        ]
+      },
+      "npu_control": {
+        "status": "pending-triton-experimental-functional-validation",
+        "next_action": "先GPU原生reference，再NPU最小适配审核/功能与性能门禁"
+      },
+      "historical_evidence": []
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-bucket-all-reduce",
+      "contract_name": "post-grad独立all-reduce分桶",
+      "stage": "post_grad",
+      "review_status": "human-reviewed-awaiting-native-gpu-reference",
+      "denominator_eligible": "pending-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 367,
+          "symbol": "bucket_all_reduce",
+          "role": "post-grad-pipeline-entry"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_all_reduce_bucket",
+          "role": "direct-community-contract",
+          "evidence_scope": "原生world_size=1，bucket_mode=all，代码1个all_reduce_，compiled/eager结果相等"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "independent-all-reduce-positive",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "原生world_size=1，bucket_mode=all，代码1个all_reduce_，compiled/eager结果相等",
+          "expected_counter": "原生world_size=1，bucket_mode=all，代码1个all_reduce_，compiled/eager结果相等",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "pending-native-reference",
+        "allowed_local_deviation": [
+          "只读FX观察，保留原生测试体/参数/断言",
+          "NPU原生阻断后单独审核device/backend适配"
+        ],
+        "forbidden_local_deviation": [
+          "跳过计通过",
+          "用CPU/FakeTensor执行冒充真实GPU计算",
+          "关闭整个pattern_matcher制造目标性能",
+          "绕过显式NPU产品disable"
+        ]
+      },
+      "npu_control": {
+        "status": "pending-triton-experimental-functional-validation",
+        "next_action": "先GPU原生reference，再NPU最小适配审核/功能与性能门禁"
+      },
+      "historical_evidence": []
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-bucket-reduce-scatters",
+      "contract_name": "post-grad reduce-scatter分桶与输出cast",
+      "stage": "post_grad",
+      "review_status": "human-reviewed-awaiting-native-gpu-reference",
+      "denominator_eligible": "pending-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 349,
+          "symbol": "bucket_reduce_scatter",
+          "role": "post-grad-pipeline-entry"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_reduce_scatter_bucket",
+          "role": "direct-community-contract",
+          "evidence_scope": "原生default/custom_ops各执行func/func2，1个reduce_scatter调用且compiled/eager相等"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "default-mode-positive",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "原生default/custom_ops各执行func/func2，1个reduce_scatter调用且compiled/eager相等",
+          "expected_counter": "原生default/custom_ops各执行func/func2，1个reduce_scatter调用且compiled/eager相等",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "custom-ops-mode-positive",
+          "kind": "positive",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "原生default/custom_ops各执行func/func2，1个reduce_scatter调用且compiled/eager相等",
+          "expected_counter": "原生default/custom_ops各执行func/func2，1个reduce_scatter调用且compiled/eager相等",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "fsdp-output-cast-regression",
+          "kind": "regression",
+          "expected_reference_match": "not-directly-asserted",
+          "expected_behavior": "原生default/custom_ops各执行func/func2，1个reduce_scatter调用且compiled/eager相等",
+          "expected_counter": "原生default/custom_ops各执行func/func2，1个reduce_scatter调用且compiled/eager相等",
+          "reference_status": "pending-gpu-reference",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "pending-native-reference",
+        "allowed_local_deviation": [
+          "只读FX观察，保留原生测试体/参数/断言",
+          "NPU原生阻断后单独审核device/backend适配"
+        ],
+        "forbidden_local_deviation": [
+          "跳过计通过",
+          "用CPU/FakeTensor执行冒充真实GPU计算",
+          "关闭整个pattern_matcher制造目标性能",
+          "绕过显式NPU产品disable"
+        ]
+      },
+      "npu_control": {
+        "status": "pending-triton-experimental-functional-validation",
+        "next_action": "先GPU原生reference，再NPU最小适配审核/功能与性能门禁"
+      },
+      "historical_evidence": []
+    }
+  ],
+  "deferred_candidates": [
+    {
+      "provisional_unit_id": "AU-post-grad-chain-random-ops-ordering",
+      "status": "deferred-no-direct-community-test",
+      "reason": "fallback_random触发排序链；未找到针对_chain_random_ops_for_ordering的社区直接断言。随机数正确性/排序需独立合同。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-functional-contract",
+      "next_action": "补全真实社区合同或评审最小适配后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-decomp-comms",
+      "status": "deferred-fake-only-community-evidence",
+      "reason": "已找到test/distributed/test_decomp_comms.py::TestDecompGramMatrixAllGather，直接helper+FakeTensorMode+fake PG world_size=2只证明结构。需真实多rank数值/稳定性/通信量证据，不能以fake测试宣称GPU计算通过。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-functional-contract",
+      "next_action": "补全真实社区合同或评审最小适配后重开；当前不执行不计数"
+    }
+  ]
+}
