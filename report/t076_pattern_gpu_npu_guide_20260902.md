@@ -1,6 +1,6 @@
 # T-076 pattern 源码、GPU/NPU 行为对照导读
 
-> 更新时间：2026-09-02 17:42 CST（UTC+08:00）
+> 更新时间：2026-09-07 09:05 CST（UTC+08:00；补充 GPU 1.3 review 来源）
 > PyTorch：`release/2.14@8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > GPU reference：A100，13/13 direct cases valid
 > NPU：Ascend910B2，`triton_experimental`
@@ -8,6 +8,10 @@
 本文是 `results/current/*/comparison_result.json` 的学习视图。JSON 中每个 variant 都含
 `intent/source_locations/gpu_behavior/npu_behavior`；本文补充带文件位置的关键代码块。判断顺序是
 pattern 是否命中、replacement 是否发生、实际 lowering/codegen 路径、最后才是数值与性能。
+
+GPU FX 原文现已通过 `results/incoming/T-076/manifest.json` 和五个分片回传并校验，可恢复 80 份
+关键正文；此前仅凭签名/哈希的结构描述已按正文复核。完整 NPU 执行与修复方法见
+`docs/NPU_FUNCTION_REPAIR_WORKFLOW.md`。
 
 ## 1. post-grad mm + mm
 

@@ -1,15 +1,15 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-07 08:32 CST（UTC+08:00）
+> 更新时间：2026-09-07 09:05 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
 > 当前阶段：T-076～T-078 已形成 14 份正式结果；T-079/T-080 共 7 个 GPU reference 单元已冻结、等待 NPU；T-081～T-113 为草案；T-077 MM 与 T-078 产品改动尚未合入。
 
 ## 1. 总结
 
-2026-09-06 增补：T-076/T-077 的 10 份 NPU/comparison 记录通过当前校验，但历史原始证据再认证
-仍为 `pending`，不能从旧闭环数直接推断新规则全绿。24 个 GPU case 原文件不在控制节点；
-NPU 原始运行与 7 项性能处置还需加强溯源复核，3 项显式关闭免测保留。原始结果不改写。
+2026-09-07 增补：T-076/T-077 的 10 份 NPU/comparison 记录通过当前校验；24 个 GPU case 已通过
+1.3 review 补回关键 FX/结果正文并完成重解析。完整生成代码/IR 仍保留在 GPU 原 run；NPU 原始运行
+与 7 项性能处置的更强溯源复核仍为 `pending`，3 项显式关闭免测保留。原始 verdict 不改写。
 详见 [历史复核与统一门禁](../report/t076_t077_history_reaudit_20260906.md)；
 固定机器可读入口为 [最新审计](../results/audits/latest.json)。
 
@@ -202,9 +202,9 @@ const-scatter CrossEntropy 和 prepare-softmax 的社区 benchmark；T-078/T-079
 T-079/T-080 性能 worker 尚未实现，需先完成代码与静态验证；之后只有 NPU
 `triton_experimental` 功能与命中门禁通过，才允许目标级 OFF/ON 性能。
 
-T-076/T-077 的正式 GPU、NPU、comparison 与性能结论无需重跑；但新 1.3 review 证据规范尚未补齐：
-仓库内 T-076 文本为截断 JSON，T-077 尚无 review 文件。若 GPU 原 run 仍在，只需重新导出单行
-review 包并上传，用于补齐逐行 FX 学习/审计证据，不改变既有冻结和闭环状态。
+T-076/T-077 的正式 GPU、NPU、comparison 与性能结论无需重跑；新 1.3 review 已于 2026-09-07
+补齐并通过校验：T-076/T-077 分别可恢复 80/68 份关键正文。新增正文用于逐项 FX 学习与审计，
+不改变既有冻结、NPU comparison 和性能结论；完整生成代码/IR 仍按哈希回查 GPU 原始 run。
 ```
 
 ## 8. 当前环境边界
@@ -217,6 +217,9 @@ review 包并上传，用于补齐逐行 FX 学习/审计证据，不改变既�
 - NPU 控制节点动态任务使用 `/home/z50063656/Pass/activate_pass.sh` 激活 Conda `Pass`；GPU
   reference 使用 `z00824525`/sudo、A100/R550、CUDA 12.6.3、pip venv Python 3.12 和与冻结
   PyTorch commit 一致的 `/data/z50063656/envs/PassGPURef`；compat 当前未启用；
+- NPU 原生入口、最小适配、命中/生效分层、根因定位、最小修复和回归的连续教学流程见
+  `docs/NPU_FUNCTION_REPAIR_WORKFLOW.md`；T-079/T-080 当前仍需先实现功能 worker，不能把 plan-only
+  文档当作可运行结果；
 - 不在 PyTorch/torch_npu 源码树中 import `torch`；
 - installed torch_npu wheel 与 `dist` 同名 wheel 哈希冲突仍未解除，不重装；
 - T-055～T-073 的 Benchmark/isolated venv 结果保留原环境标签；

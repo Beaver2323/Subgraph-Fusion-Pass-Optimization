@@ -1,6 +1,6 @@
 # T-076 NPU/comparison 与性能处置闭环报告
 
-> 更新时间：2026-09-03 01:07 CST（UTC+08:00；校准明确关闭免测口径）
+> 更新时间：2026-09-07 09:50 CST（UTC+08:00；补充 P-018 代码框与必要调用栈入口）
 > 上游 commit：`8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > GPU reference：`reference-20260901T180826+0800`
 
@@ -24,6 +24,9 @@ T-076 首批 5 个冻结 acceptance units 已全部完成 NPU 执行、reference
 - 当前 Pass site-packages 的 addmm gate 默认关闭；`regressions/known_issues.yaml` 中原回归已移出 open issues 并保留 reclassified 审计记录。
 - P-018 独立 wheel 在同一冻结 PyTorch commit 上完成精确上游复验：matrix/vector 正例均为 `2/4`，non-expandable/batched/Python/symbolic scalar 负例均为 `0/0`；正例生成两个 extern addmm。
 - 每个 variant 的意图、源码位置、GPU/NPU 行为已写入 comparison JSON；带关键源码块的学习导读见 `report/t076_pattern_gpu_npu_guide_20260902.md`。
+- P-018 的社区触发代码、upstream guard、安装态 gate、必要调用链、live wrapper 完整代码与逐项复验见
+  [`根因分析.md`](../issues/REF-addmm-contract-native/根因分析.md) 和
+  [`修复验证报告.md`](../issues/REF-addmm-contract-native/修复验证报告.md)。
 - 正式结果位于 `results/current/`；原始运行产物保留在 `/home/z50063656/tmp/t076-npu-results/`，不提交重型 artifact。
 
 ## 性能处置与后续

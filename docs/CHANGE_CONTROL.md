@@ -3740,3 +3740,30 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - T-080 的 3 个 acceptance units 从 `pending-reference` 冻结为 `yes-frozen`；当前五批 21 个单元
   全部已有 GPU reference，其中 14 个已完成 NPU/comparison，T-079/T-080 共 7 个等待
   `triton_experimental` NPU 功能、命中与性能门禁。
+
+### E-235：T-076/T-077 review 补证与 NPU 修复教学收束（2026-09-07）
+
+- 登记时间：2026-09-07 09:05 CST（UTC+08:00）。拉取并验证 T-076/T-077 的五分片 1.3 review；
+  payload 分别为 `0830cdcc3b44e81510e98422e056cc68d5baf16880a560b3a216c2b5e79746ad`、
+  `4a85fadc7370cf412cbda0c40da80cef34ded8f10ce603aa490f8b2996e8b623`，可恢复 80/68 份关键正文，
+  `code_executed=false`。
+- T-076 新增 mm-plus-mm、pad family、addmm 正负 FX 复核；T-077 新增 Gumbel 捕获点、B2B
+  replacement 和 decompose `unsqueeze/mul/sum` 的正文复核。补证只增强审计与学习，不重算既有
+  GPU/NPU/comparison/性能 verdict。
+- 新增 `docs/NPU_FUNCTION_REPAIR_WORKFLOW.md`，把此前散落在 case 复现报告中的原生入口、0 tests
+  判定、测试最小适配、后端验真、匹配/改写/lowering/template 分层、首个分歧、最小修复、全变体
+  回归和性能解锁串成可执行教学路径；另以 `docs/T079_T080_NPU_FUNCTION_REPAIR_PLAN.md` 逐项规定
+  七个待测单元的功能证据、潜在修复层和交付物，并明确 worker 尚未实现。
+
+### E-236：修复报告代码框与必要调用栈合同（2026-09-07）
+
+- 登记时间：2026-09-07 09:50 CST（UTC+08:00）。产品源码修复报告新增强制交付合同：必须同时给出
+  触发测试、原实现决策点、完整修复的代码框及仓库位置，并提供从测试入口到断言/异常点的最短必要
+  调用栈、首个分歧层、修复前后生成路径和逐变体复验命令。
+- 数值错误没有 exception traceback 时，不伪造堆栈；必须区分动态 artifact 与源码重建节点。T-077
+  decompose-MM 作为首份完整样例，新增 `issues/REF-decompose-mm-native/根因分析.md` 和
+  `修复验证报告.md`，把 `aten.mm` 保持、small-MM lowering、错误 NPU pointwise kernel、extern 修复及
+  2/2 专属 UT、6/6 variants 串成连续证据链。
+- 同步补齐 T-076 P-018：在 `issues/REF-addmm-contract-native/` 增加 gate 差异分析和候选验证，给出
+  社区 addmm pattern、安装态不可逆关闭路径、P-018 live wrapper、必要调用链、精确社区正负合同与
+  性能边界；明确它是已验证 capability 候选，不是安装态 correctness 回归或正式已启用功能。

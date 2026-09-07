@@ -1,6 +1,6 @@
 # T-077 GPU 原生 Reference 验证报告
 
-> 报告整理时间：2026-09-02 21:03 CST（UTC+08:00）
+> 报告整理时间：2026-09-07 09:05 CST（UTC+08:00；补入 1.3 review 原文）
 > GPU run：`reference-20260902T125636+0800`
 > 结论：`valid-reference-suite`，11/11 cases passed，17/17 variants 为有效 reference
 
@@ -65,16 +65,32 @@ reference 合同有效；必须完成 NPU execution、comparison 和 first-diver
 | manifest snapshot | `659a9778d4a1db92f9ef66148eedeef973a22cf675405e219c5af969d6dd1408` |
 | reference plan snapshot | `f93bbc906d935faeb6100267cdb31314e9530959fff30ccd40e3b9d4060b6d17` |
 | reference summary | `880c0411478bcf6427035e840059d955bb31e09c2c3d36861f0c6e0323c1307a` |
-| handoff canonical payload | `97a1ef8315c9d1332dcee4542c928aedc600ebc984b2ac3e4e5ab27e0079b518` |
+| 首次 summary handoff canonical payload | `97a1ef8315c9d1332dcee4542c928aedc600ebc984b2ac3e4e5ab27e0079b518` |
+| 1.3 review payload | `4a85fadc7370cf412cbda0c40da80cef34ded8f10ce603aa490f8b2996e8b623` |
+| 1.3 review 传输源码 | 223915 bytes；SHA256 `36e7668f0c82a74de742453e34873434d02ec62ece3d16d9cf488bc4300f6dfd` |
 
-GPU 机器禁用 Git/二进制上传，因此仓库只保存可审计摘要和结构化哈希。原始 run 保留在
-`/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800`。需要查看具体 FX、
-generated code 或 stderr 时，必须按本报告哈希回查原始 GPU 目录，不能从摘要推断正文。
+2026-09-07 已补回 `results/incoming/T-077/manifest.json` 与五个分片。导入器验证成功，可恢复 68 份
+review 关键正文，包括 11 个 case 的 FX before/after、metadata、reference result、benchmark 与
+inventory；成功 case 的完整生成代码、IR 和长日志仍只保留大小/SHA256。深度 codegen 排障仍需
+回查 `/data/z50063656/tmp/t077-reference-results/reference-20260902T125636+0800`。
+
+### 4.1 新增 FX 原文复核
+
+- Gumbel-max 的 readable/transformed FX 已处于早期 graph rewrite 之后，因此两者都呈现
+  `logits/temperature + (-log(exponential random)) → argmax`。命中必须结合 target counter 与百万样本
+  分布断言判断，不能因 before/after 同形否定 rewrite。
+- B2B 四个正例从两级 mm 与中间 pointwise 变为 `functools_tuned_b2b_gemm(...)`，bad-pattern 与
+  bad-shape 两个负例保留 mm 链，正负盈利/结构 guard 均得到正文支持。
+- decompose-bmm/mm/addmm 的正例由 GEMM 变为 `unsqueeze → mul → sum`（addmm 继续加 bias）；batch、
+  K 或 M 阈值负例保留 bmm/mm。FX 证明的是 decomposition 已发生，最终模板和性能仍由后续
+  lowering/autotune 与独立性能 worker 判断。
 
 ## 5. 后续动作
 
-1. 不创建 GPU adapter；11 个 direct cases 已全部有效。
-2. 第二波 denominator 冻结为 5 个 acceptance units、17 个 variants。
-3. NPU 侧仍按原生入口优先；原生 test body 被 GPU_TYPE/`requires_gpu` 阻断后，才运行最小 adapter。
-4. 每个 variant 必须记录源码意图、GPU/NPU 行为、FX/replacement/codegen、正确性和 first divergence。
-5. 只有 `NPU_REGRESSION` 进入 repair；平台适用性或显式产品控制不强行修复。
+1. GPU 11 个 direct cases 已全部有效，不创建 GPU adapter。
+2. 第二波 denominator 已冻结为 5 个 acceptance units、17 个 variants。
+3. 后续 NPU `triton_experimental` execution/comparison 与性能处置已完成 5/5；见
+   `report/t077_npu_completion_20260902.md`、`report/t077_pattern_gpu_npu_guide_20260902.md` 和
+   `report/t076_t077_performance_20260903.md`。
+4. decompose-MM 发现的独立 small-mm lowering correctness 修复已经验证，但候选尚未合入；本次 GPU
+   1.3 review 补证不改变该状态。

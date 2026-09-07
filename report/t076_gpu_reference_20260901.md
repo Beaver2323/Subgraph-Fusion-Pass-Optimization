@@ -1,6 +1,6 @@
 # T-076 GPU 原生 Reference 验证报告
 
-> 报告整理时间：2026-09-02 02:22 CST（UTC+08:00）
+> 报告整理时间：2026-09-07 09:05 CST（UTC+08:00；补入 1.3 review 原文）
 > GPU run：`reference-20260901T180826+0800`
 > 结论：`valid-reference-suite`，13/13 passed，13/13 `reference_valid=true`
 
@@ -96,17 +96,29 @@ PyTorch source、CUDA、cuDNN 和执行工作目录均由环境指纹明确固�
 | manifest snapshot | `fd68168e7f0b832509eeaf6c756ece096b96b16f17c2d304ec73f2ce51c19d63` |
 | reference plan snapshot | `6029cfd5d11a2f19259c11bfabc240299e574d9ffb069173a6248c70b484d73d` |
 | reference summary | `21d57950fbe197ce6460d284d8b77e329deb7714f7128adcbdad6fb4d20855e0` |
-| handoff canonical payload | `7fb9033a765dd632fc3288640ac33803a30a9d63848acddb14f48065b11b6a8d` |
+| 首次 summary handoff canonical payload | `7fb9033a765dd632fc3288640ac33803a30a9d63848acddb14f48065b11b6a8d` |
+| 1.3 review payload | `0830cdcc3b44e81510e98422e056cc68d5baf16880a560b3a216c2b5e79746ad` |
+| 1.3 review 传输源码 | 226066 bytes；SHA256 `a6f50e923edc3a1c727966f532f7cc37e081454117eea629c88fa3c206aa7f06` |
 
-GPU 机器禁用 Git/二进制上传，因此仓库保存可审计摘要和完整结构化哈希，不复制大体积 debug
-正文。原始 run 保留在 GPU 路径：
-`/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800`。若后续需要检查某个
-具体 FX/codegen 文件，必须在 GPU 机器按本报告的 inventory/result hash 回查，不能从摘要臆测正文。
+2026-09-07 已补回 `results/incoming/T-076/manifest.json` 与五个分片。导入器验证成功，可恢复 80 份
+review 关键正文，包括 13 个 case 的 FX before/after、metadata、reference result、benchmark 与
+inventory；成功 case 的完整生成代码、IR 和长日志仍只保留大小/SHA256，深度 codegen 排障需回查
+GPU 原始 run：`/data/z50063656/tmp/t076-reference-results/reference-20260901T180826+0800`。
+
+### 5.1 新增 FX 原文复核
+
+- `mm+mm` 两个合法输出分支从 `mm + mm + add` 变为 `mm_plus_mm` handler；两个输出 shape
+  不匹配分支没有进入目标 handler，而被独立 addmm pattern 处理。后者不能计为 mm-plus-mm 命中。
+- pad-mm、pad-bmm、pad-addmm 正例的 readable/transformed FX 都包含
+  `constant_pad_nd → mm/bmm/addmm → slice`。这说明当前 debug 捕获点已经位于 shape-padding 改写
+  之后；before/after 同形不等于未命中，需与社区原生 marker、shape 和 correctness 一起判断。
+- addmm 合同的 matrix/vector bias 两个 operand order 均从 `mm + add` 变为 `aten.addmm`；
+  non-expandable、batched 和 Python/symbolic scalar 分支保留原图，正负 guard 与结构化结果一致。
 
 ## 6. 后续动作
 
-1. 不创建 GPU adapter；direct 路径已经全部有效。
-2. 首批 denominator 冻结为 5 个 acceptance units，正式闭环仍为 0/5。
-3. 从同一 manifest 生成 NPU runner，使用当前 Pass 环境和 `triton_experimental` backend。
-4. NPU 侧分别保留产品默认 gate 与仅用于诊断的 gate-bypass；不能把 bypass 冒充 baseline。
-5. 完成 execution、correctness、FX、runtime path 和 first divergence 后生成 5 个 comparison verdict。
+1. GPU direct 路径已全部有效，不创建 GPU adapter。
+2. 首批 denominator 已冻结为 5 个 acceptance units。
+3. 后续 NPU `triton_experimental` execution/comparison 已完成 5/5；见
+   `report/t076_npu_completion_20260902.md` 和 `report/t076_pattern_gpu_npu_guide_20260902.md`。
+4. 本次 1.3 review 补证只增强 GPU FX 学习/审计，不改变已经形成的 comparison 和性能处置。

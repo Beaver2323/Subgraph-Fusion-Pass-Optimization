@@ -4,6 +4,11 @@
 > 状态：GPU 13/13 direct cases、13/13 variants 已复核并冻结；NPU 与性能 worker 尚未执行。
 > NPU 固定后端：`triton_experimental`；性能在功能命中和正确性门禁之后执行。
 
+NPU 的逐步操作、证据判定、最小适配和修复门禁统一见
+[`NPU_FUNCTION_REPAIR_WORKFLOW.md`](NPU_FUNCTION_REPAIR_WORKFLOW.md)。本页解释 T-080 各单元合同，
+逐单元执行合同见 [`T079_T080_NPU_FUNCTION_REPAIR_PLAN.md`](T079_T080_NPU_FUNCTION_REPAIR_PLAN.md)；
+不把尚未实现的 NPU worker 写成可执行入口。
+
 下文按单元讲解功能测例、性能测例及其证据边界。
 
 ## 1. 常量 full 上的 scatter 改为 pointwise（`AU-joint-graph-scatter-upon-const-tensor`）

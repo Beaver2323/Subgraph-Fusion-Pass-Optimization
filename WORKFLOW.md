@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-06 09:50 CST（UTC+08:00）
+> 更新时间：2026-09-07 09:05 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -76,6 +76,11 @@ upstream change / community test discovery
 ```
 
 性能必须位于 trigger、正确性、fallback 和 graph-break 门禁之后。
+
+NPU 阶段的逐命令教程、0 tests 判定、最小适配、命中/改写/lowering/template 分层、最小修复与
+回归要求见 [`docs/NPU_FUNCTION_REPAIR_WORKFLOW.md`](docs/NPU_FUNCTION_REPAIR_WORKFLOW.md)；
+T-079/T-080 七个单元的具体实施合同见
+[`docs/T079_T080_NPU_FUNCTION_REPAIR_PLAN.md`](docs/T079_T080_NPU_FUNCTION_REPAIR_PLAN.md)。
 
 2026-09-06 起，工具验收边界补充为：
 

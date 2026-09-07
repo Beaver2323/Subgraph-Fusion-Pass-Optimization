@@ -4,6 +4,11 @@
 > 状态：GPU 1.3 review 已复核，4/4 cases、14/14 variants 有效并冻结；NPU/性能 worker 尚未执行。
 > NPU 固定后端：`triton_experimental`；其他后端历史数据不计入 verdict。
 
+NPU 的逐步操作、证据判定、最小适配和修复门禁统一见
+[`NPU_FUNCTION_REPAIR_WORKFLOW.md`](NPU_FUNCTION_REPAIR_WORKFLOW.md)。本页解释 T-079 各单元合同，
+逐单元执行合同见 [`T079_T080_NPU_FUNCTION_REPAIR_PLAN.md`](T079_T080_NPU_FUNCTION_REPAIR_PLAN.md)；
+不把尚未实现的 NPU worker 写成可执行入口。
+
 ## 1. batch=1 的 bmm 降为 mm（`AU-joint-graph-bmm-to-mm`）
 
 代码位置：`torch/_inductor/fx_passes/joint_graph.py:979`。

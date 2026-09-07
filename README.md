@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-07 08:32 CST（UTC+08:00）
+> 文档更新时间：2026-09-07 09:50 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -14,8 +14,9 @@
 
 ## 当前结论
 
-- 新规则复核：T-076/T-077 的 10 份 NPU/comparison 记录通过；原始 GPU/NPU/性能证据再认证仍为
-  `pending`。下列历史闭环与收益不等于已完成新规则全量重验。详见
+- 新规则复核：T-076/T-077 的 10 份 NPU/comparison 记录通过，GPU 1.3 review 已补齐并重解析；
+  NPU 原始运行与性能证据的更强再认证仍为 `pending`。下列历史闭环与收益不等于已完成新规则
+  全量重验。详见
   [逐单元清单与统一门禁](report/t076_t077_history_reaudit_20260906.md)，机器可读入口为
   [最新审计](results/audits/latest.json)。
 - 2026-08-29 之后的活动主线是 community-native Inductor compatibility tracker；
@@ -28,7 +29,8 @@
   T-076 已完成全部 5 个单元的 GPU baseline、NPU 结果与 comparison，正式闭环 `5/5`。
 - T-076 的 GPU 环境与精确 source build 已验真，13/13 direct community cases 均 passed 且
   `reference_valid=true`；不存在 adapter case。GPU 禁止 Git/二进制上传，已通过通用文本导出器
-  回传并复核环境、summary、逐 case FX signature 和关键文件哈希；对应 NPU comparison 已完成。
+  回传并复核环境、summary、逐 case FX signature 和关键文件哈希；2026-09-07 又补回 1.3 review，
+  可恢复 80 份关键正文；对应 NPU comparison 已完成。
 - `AU-post-grad-mm-plus-mm` 已按原生优先执行：直接入口因上游 `HAS_GPU`
   不包含 NPU 而为 `NO_TESTS`；case-specific adapter 在 `triton_experimental` 上
   4/4 输入分支有效，统一 NPU/comparison 记录已落盘，正式 verdict 为
@@ -42,6 +44,7 @@
   `disable_addmm_fusion=True`，因此 GPU `2/4` 与安装态 NPU `0/0` 是
   `EXPECTED_PRODUCT_DIVERGENCE`；P-018 独立候选已恢复正例 `2/4` 并保留全部负例 `0/0`。
 - T-077 第二波 GPU reference 11/11 direct cases、17/17 variants 有效，NPU 5/5 单元正式闭环。
+  1.3 review 已补回并可恢复 68 份关键正文，B2B 与 decomposition 前后 FX 已按正文复核。
   Gumbel 功能为 `BEHAVIOR_UNCHANGED`，同 backend 性能最终为 `PERF_IMPROVED`；B2B GEMM、decompose-BMM、dynamic addmm 为
   `EXPECTED_PRODUCT_DIVERGENCE`；decompose-MM 发现 small-mm pointwise 反向 lowering 回归，
   本地候选 `dfbcc25` 已通过 2/2 定向单测和 6/6 合同回归，尚未推送/合入。
@@ -114,6 +117,10 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [docs/T080_REFERENCE_RUNNER_GPU.md](docs/T080_REFERENCE_RUNNER_GPU.md) | T-080 第五批 GPU 执行、社区性能来源与文本回传说明 |
 | [docs/GPU_TASK_RUNNER.md](docs/GPU_TASK_RUNNER.md) | GPU 一键运行（默认共享、可选独占、快速等卡）、固定 latest 与 results/incoming/ JSON 接收路径 |
 | [docs/GPU_TEXT_HANDOFF.md](docs/GPU_TEXT_HANDOFF.md) | summary、默认 1.3 review、1.2 archive 及网页分片，覆盖复制、校验、安全恢复与 FX 查看 |
+| [docs/NPU_FUNCTION_REPAIR_WORKFLOW.md](docs/NPU_FUNCTION_REPAIR_WORKFLOW.md) | NPU 原生入口、最小适配、命中/生效分层、根因定位、最小修复、回归和性能解锁教程 |
+| [docs/T079_T080_NPU_FUNCTION_REPAIR_PLAN.md](docs/T079_T080_NPU_FUNCTION_REPAIR_PLAN.md) | T-079/T-080 七个单元逐项 NPU 功能证据、潜在分歧层、修复边界和交付物 |
+| [T-076 P-018 gate 分析](issues/REF-addmm-contract-native/根因分析.md) / [候选验证](issues/REF-addmm-contract-native/修复验证报告.md) | addmm 社区 pattern、安装态 gate、必要调用栈、live opt-out 和候选验证矩阵 |
+| [T-077 small-MM 根因](issues/REF-decompose-mm-native/根因分析.md) / [修复验证](issues/REF-decompose-mm-native/修复验证报告.md) | 数值回归的触发代码、必要调用栈、首个 lowering 分歧、修复前后生成路径与六变体验证 |
 | [results/incoming/README.md](results/incoming/README.md) | GPU 文本 handoff 接收目录，T-076～T-080 文件夹随 clone/pull 建立 |
 | [docs/T078_FUNCTION_PERFORMANCE_GUIDE.md](docs/T078_FUNCTION_PERFORMANCE_GUIDE.md) | T-078 四单元的功能 case、派生性能 case、源码与判据讲解 |
 | [docs/T079_FUNCTION_PERFORMANCE_GUIDE.md](docs/T079_FUNCTION_PERFORMANCE_GUIDE.md) | T-079 四单元的图消除功能/性能证据讲解 |
@@ -144,16 +151,16 @@ T-075 首批静态复核已完成：
 
 T-076 GPU reference 已完成：13 个原生 community cases 全部 direct valid，20 个 variants 中 14 个取得动态
 reference，3 个 registration-only 和 3 个 NPU-only gate 保持显式非动态处置。完整环境、逐 case
-FX signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.md`。首个 NPU 单元证据见
+FX 正文/signature 与结果/inventory 哈希见 `report/t076_gpu_reference_20260901.md`。首个 NPU 单元证据见
 `issues/REF-mm-plus-mm-native/复现报告.md` 和
 `results/current/REF-mm-plus-mm-native/`。pad-mm 单元级 comparison 见
 `results/current/AU-pad-mm-mm/`。T-076 NPU 闭环汇总见
 `report/t076_npu_completion_20260902.md`。T-077 第二波 reference 和 NPU 5/5 comparison 也已完成；
 GPU 后续统一使用 `scripts/run_gpu_reference_task.sh --task T-076|T-077|T-078|T-079|T-080 --gpu ID`。
 T-077 性能 5/5 已处置、pending=0；T-078 已完成 12/12 GPU reference、4/4 NPU comparison、
-修复、候选性能与最终产品门禁。T-079 GPU reference 已冻结，下一步进入 NPU；GPU 侧下一批只需
-运行 T-080。两批性能 worker 尚未实现，必须先完成实现和静态验证，再经 reference 与 NPU
-功能/命中门禁开放实测，不会自动解锁。
+修复、候选性能与最终产品门禁。T-079/T-080 的 7 个 GPU reference 单元均已冻结，下一步依次实现
+并运行 NPU 功能 worker。两批性能 worker 尚未实现，必须先完成实现和静态验证，再经 NPU
+`triton_experimental` 功能/命中门禁开放实测，不会自动解锁。
 独立 correctness 修复 `dfbcc25` 继续等待产品代码评审授权，不与 T-078 reference 混合。
 
 2026-09-06 验收加固：部分 skip、expected failure、执行数不足均不算 valid reference；NPU

@@ -1,6 +1,6 @@
 # T-077 NPU/comparison 闭环与修复验证报告
 
-> 更新时间：2026-09-03 01:51 CST（UTC+08:00；校准性能 capability 口径）
+> 更新时间：2026-09-07 09:32 CST（UTC+08:00；补充代码框与必要调用栈入口）
 > PyTorch：`release/2.14@8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > torch_npu 基线：`master@83cc452480c3546fd5cccf853bfe3a360ce9dbfc`
 > NPU：Ascend910B2，backend=`triton_experimental`
@@ -54,6 +54,12 @@ fix(inductor): guard NPU small-mm pointwise lowering
 
 候选当前只存在于本地 detached worktree，未推送、未合入，不能登记为正式 fixed issue。可审阅补丁为
 [`backend_fix_dfbcc25.patch`](../issues/REF-decompose-mm-native/backend_fix_dfbcc25.patch)。
+
+完整的触发代码、post-grad pattern 与 small-MM lowering 代码框、从 `torch.compile` 到梯度断言的必要
+调用链、修复前后生成路径及逐变体复验命令，见：
+
+- [`根因分析.md`](../issues/REF-decompose-mm-native/根因分析.md)；
+- [`修复验证报告.md`](../issues/REF-decompose-mm-native/修复验证报告.md)。
 
 ## 证据入口
 

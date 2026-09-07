@@ -1,6 +1,6 @@
 # T-077 pattern 源码、意图与 GPU/NPU 行为对照
 
-> 更新时间：2026-09-03 08:05 CST（UTC+08:00；补充命中、rewrite 与模板获选口径）
+> 更新时间：2026-09-07 09:05 CST（UTC+08:00；补充 GPU 1.3 review 来源）
 > PyTorch：`release/2.14@8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > GPU reference：A100，11/11 direct cases valid，17/17 variants valid
 > NPU：Ascend910B2，`triton_experimental`；5/5 单元正式闭环；MM 发现 1 个 lowering 回归并已验证本地修复
@@ -8,6 +8,10 @@
 本文是 `results/current/AU-apply-gumbel-max-trick/`、`AU-b2b-gemm/` 和三个
 `AU-decompose-mem-bound-mm-*` 目录中结构化结果的学习视图。每个 comparison JSON 也保存
 `intent/source_locations/gpu_behavior/npu_behavior`，便于脚本消费和逐项复核。
+
+GPU FX 原文现已通过 `results/incoming/T-077/manifest.json` 和五个分片回传并校验，可恢复 68 份
+关键正文；B2B 正负例和 decomposition 前后结构已由正文复核。完整 NPU 执行与修复方法见
+`docs/NPU_FUNCTION_REPAIR_WORKFLOW.md`。
 
 ## 1. Gumbel-max 等价采样重写
 
