@@ -51,6 +51,62 @@ def validate_sha256(value: Any, context: str) -> None:
         raise ValueError(f"{context} 不是合法 SHA256")
 
 
+def validate_variant_extension(
+    manifest_variant: dict[str, Any], repo_root: Path, context: str
+) -> None:
+    """校验已签名主结果之后，以 append-only sidecar 新增的 NPU variant。"""
+    evidence = manifest_variant.get("extension_evidence")
+    if not isinstance(evidence, dict):
+        raise ValueError(f"{context} 缺少 extension_evidence")
+    require_keys(
+        evidence,
+        {"result_path", "result_sha256", "expected_dtype", "expected_counter"},
+        f"{context}.extension_evidence",
+    )
+    validate_sha256(
+        evidence["result_sha256"], f"{context}.extension_evidence.result_sha256"
+    )
+    result_path = (repo_root / evidence["result_path"]).resolve()
+    try:
+        result_path.relative_to(repo_root.resolve())
+    except ValueError as error:
+        raise ValueError(f"{context} extension evidence 逃逸仓库") from error
+    if not result_path.is_file():
+        raise FileNotFoundError(f"{context} extension evidence 不存在: {result_path}")
+    if sha256(result_path) != evidence["result_sha256"]:
+        raise ValueError(f"{context} extension evidence SHA256 不一致")
+    result = load_object(result_path)
+    require_keys(
+        result,
+        {
+            "backend",
+            "status",
+            "dtype",
+            "bitwise_equal",
+            "max_abs_error",
+            "expected_addcdiv_fma_fused",
+            "actual_addcdiv_fma_fused",
+            "guard_preserved",
+        },
+        str(result_path),
+    )
+    expected_counter = evidence["expected_counter"]
+    if result["backend"] != REQUIRED_NPU_BACKEND:
+        raise ValueError(f"{result_path} backend 必须为 {REQUIRED_NPU_BACKEND}")
+    if result["status"] != "passed":
+        raise ValueError(f"{result_path} extension status 必须为 passed")
+    if result["dtype"] != evidence["expected_dtype"]:
+        raise ValueError(f"{result_path} dtype 与 manifest 不一致")
+    if result["bitwise_equal"] is not True or result["max_abs_error"] != 0.0:
+        raise ValueError(f"{result_path} extension 未达到位级正确性")
+    if (
+        result["expected_addcdiv_fma_fused"] != expected_counter
+        or result["actual_addcdiv_fma_fused"] != expected_counter
+        or result["guard_preserved"] is not True
+    ):
+        raise ValueError(f"{result_path} extension target/guard 合同不成立")
+
+
 def environment_fingerprint(environment: dict[str, Any]) -> str:
     payload = {
         key: value
@@ -187,8 +243,16 @@ def validate_npu_result(
     }
     result_variants = result["variants"]
     result_variant_ids = [variant["variant_id"] for variant in result_variants]
-    if set(result_variant_ids) != set(manifest_variants):
-        raise ValueError(f"{result_path} variants 未完整覆盖 manifest")
+    unexpected = set(result_variant_ids) - set(manifest_variants)
+    if unexpected:
+        raise ValueError(f"{result_path} 包含 manifest 外 variants: {sorted(unexpected)}")
+    extension_variant_ids = set(manifest_variants) - set(result_variant_ids)
+    for variant_id in sorted(extension_variant_ids):
+        validate_variant_extension(
+            manifest_variants[variant_id],
+            repo_root,
+            f"{result_path}:{variant_id}",
+        )
     if len(result_variant_ids) != len(set(result_variant_ids)):
         raise ValueError(f"{result_path} variant_id 重复")
     for variant in result_variants:
@@ -506,8 +570,15 @@ def validate_comparison(
     manifest_variant_ids = {
         variant["variant_id"] for variant in manifest_unit["variants"]
     }
-    if set(comparison_ids) != manifest_variant_ids:
-        raise ValueError(f"{comparison_path} 未覆盖 manifest 全部 variants")
+    extension_variant_ids = {
+        variant["variant_id"]
+        for variant in manifest_unit["variants"]
+        if variant.get("extension_evidence")
+    }
+    if set(comparison_ids) != manifest_variant_ids - extension_variant_ids:
+        raise ValueError(
+            f"{comparison_path} 未覆盖主结果 variants；append-only extension 必须由 sidecar 独立验签"
+        )
 
 
 def is_formally_closed(comparison: dict[str, Any]) -> bool:

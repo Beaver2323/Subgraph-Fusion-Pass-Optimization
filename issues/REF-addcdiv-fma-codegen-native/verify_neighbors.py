@@ -61,9 +61,10 @@ def make_case(case_name):
         def fn(s, t1, t2):
             return torch.addcdiv(s, t1, t2, value=2.0)
 
-        # Formal NPU capability is intentionally FP32-only.  Lower-precision
-        # eager rounding differs from FMA/div_rn, so this is an exclusion test.
-        return fn, (self_tensor, tensor1, tensor2), dtype, 0
+        # BF16 三臂与 eager 位级一致，纳入正式能力；FP16 三臂输出相同但
+        # 共同偏离 eager，继续作为明确的精度阻断边界。
+        expected_fusion = 1 if case_name == "bfloat16" else 0
+        return fn, (self_tensor, tensor1, tensor2), dtype, expected_fusion
 
     if case_name == "integer-self-guard":
         self_tensor = torch.randint(0, 8, shape, device="npu", dtype=torch.int32)
@@ -139,13 +140,12 @@ def main() -> int:
         bitwise_equal = bool(torch.equal(compiled, eager))
         max_abs_error = float((compiled.float() - eager.float()).abs().max().item())
         actual_fusion = counters["inductor"]["addcdiv_fma_fused"]
-        # Positive FP32 bitwise correctness is covered by the community cases.
-        # These neighbors verify that unproven dtype/argument forms do not enter
-        # the new path; shape/dtype and successful execution are also retained.
+        bitwise_required = args.case == "bfloat16"
         valid = (
             actual_fusion == expected_fusion
             and compiled.shape == eager.shape
             and compiled.dtype == eager.dtype
+            and (bitwise_equal or not bitwise_required)
         )
         summary.update(
             {
@@ -156,7 +156,7 @@ def main() -> int:
                 "expected_addcdiv_fma_fused": expected_fusion,
                 "actual_addcdiv_fma_fused": actual_fusion,
                 "guard_preserved": actual_fusion == expected_fusion,
-                "bitwise_required": False,
+                "bitwise_required": bitwise_required,
                 "status": "passed" if valid else "failed",
             }
         )

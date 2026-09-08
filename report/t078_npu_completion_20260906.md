@@ -2,6 +2,8 @@
 
 > 更新时间：2026-09-06 09:50 CST（UTC+08:00）
 
+> 2026-09-08 07:51:59 CST 增量结论：BF16 已完成 NPU 三臂、正式源码修复和性能处置并保持启用；
+> FP16 三条 compiled 路径共同偏离 eager，继续 guard=0。原 20 variants 历史快照不覆盖，详见文末增量。
 > 2026-09-08 06:07 CST 覆盖修订：本文“闭环”仅适用于当时冻结的 20 个 variants，addcdiv
 > 社区 case 实际只有 FP32。上游 guard 允许 FP16/BF16，现已新增 2 个 pending dtype variants；
 > 在 GPU reference 与 NPU 三臂精度归因完成前，不得把本文 FP32 功能/性能结论外推至低精度。
@@ -122,3 +124,13 @@ SHA256 为 `1c4759582da3a19b382504606932e14002117334c609a544d4b136627f142b17`。
 - 修复/门禁的产品文件在共享 torch_npu 工作树中，与其他未提交改动共存；提交产品仓前必须单独
   做 diff 归属审查，不能把整个脏工作树打包进 T-078。
 - 下一主线任务是 T-079 GPU reference；T-078 只保留回归与 drift 检查，不再作为开放开发任务。
+
+## 2026-09-08 addcdiv 低精度覆盖增量
+
+本文前述闭环口径仍作为原 20 variants 的历史快照保存。新增 dtype-only GPU reference 为 2/2
+有效；NPU `triton_experimental` 三臂证明 BF16 可安全启用，正式 guard 已扩展为 FP32/BF16，三轮
+性能结论为 `PERF_NEUTRAL`。FP16 三条 compiled 路径相互一致但共同偏离 eager，保持 guard=0、
+性能免测，作为独立 precision blocked variant 管理。
+
+本增量没有覆盖原结果文件；机器可读旁证和完整代码/调用栈见
+`issues/REF-addcdiv-fma-codegen-native/低精度三臂与BF16修复报告.md`。

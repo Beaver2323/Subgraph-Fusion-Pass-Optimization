@@ -176,14 +176,20 @@ def install_target_control(
     return selected
 
 
-def make_workloads(unit: str) -> list[dict[str, Any]]:
+def make_workloads(
+    unit: str, addcdiv_dtype: str = "float32"
+) -> list[dict[str, Any]]:
     torch.manual_seed(20260906)
     torch.npu.manual_seed_all(20260906)
     if unit == "addcdiv":
-        s = torch.randn(64, 64, device="npu", dtype=torch.float32)
-        t1 = torch.randn(64, 64, device="npu", dtype=torch.float32)
+        dtype = {
+            "float32": torch.float32,
+            "bfloat16": torch.bfloat16,
+        }[addcdiv_dtype]
+        s = torch.randn(64, 64, device="npu", dtype=dtype)
+        t1 = torch.randn(64, 64, device="npu", dtype=dtype)
         t2 = (
-            torch.randn(64, 64, device="npu", dtype=torch.float32)
+            torch.randn(64, 64, device="npu", dtype=dtype)
             .abs()
             .clamp(min=0.1)
         )
@@ -198,11 +204,11 @@ def make_workloads(unit: str) -> list[dict[str, Any]]:
         # div->mul->add 的目标 pattern。它保留为功能/bitwise 邻居，不伪造性能 ON。
         return [
             {
-                "id": f"addcdiv-value-{int(value)}",
+                "id": f"addcdiv-{addcdiv_dtype}-value-{int(value)}",
                 "fn": make_fn(value),
                 "inputs": (s, t1, t2),
                 "shape_contract": (
-                    f"float32[64,64] 三输入，value={value:.1f}；"
+                    f"{addcdiv_dtype}[64,64] 三输入，value={value:.1f}；"
                     "来自社区 bitwise/codegen 测例"
                 ),
                 "exact_contract": True,
@@ -479,6 +485,12 @@ def main() -> int:
     parser.add_argument("--warmup", type=int, default=10)
     parser.add_argument("--runs", type=int, default=100)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--addcdiv-dtype",
+        choices=("float32", "bfloat16"),
+        default="float32",
+        help="仅 addcdiv 单元使用；低精度功能门通过后才可选择 bfloat16",
+    )
     args = parser.parse_args()
     if torch.version.git_version != PYTORCH_COMMIT:
         raise RuntimeError(
@@ -500,7 +512,9 @@ def main() -> int:
 
     target_hits: dict[str, int] = {"total": 0}
     selected_entries = install_target_control(args.unit, args.mode, target_hits)
-    workloads = make_workloads(args.unit)
+    if args.unit != "addcdiv" and args.addcdiv_dtype != "float32":
+        raise RuntimeError("--addcdiv-dtype 仅适用于 addcdiv 单元")
+    workloads = make_workloads(args.unit, args.addcdiv_dtype)
     artifact_dir = args.output.parent
     artifact_dir.mkdir(parents=True, exist_ok=True)
     workload_results = []
@@ -598,6 +612,7 @@ def main() -> int:
         "task_id": "T-078",
         "acceptance_unit_id": source["acceptance_unit_id"],
         "unit": args.unit,
+        "addcdiv_dtype": args.addcdiv_dtype if args.unit == "addcdiv" else None,
         "mode": args.mode,
         "round": args.round,
         "warmup": args.warmup,

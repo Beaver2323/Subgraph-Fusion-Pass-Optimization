@@ -127,6 +127,11 @@ def reference_status(unit: dict, reference_contract: dict) -> str:
     if eligible == "yes-frozen":
         status = str(reference_contract.get("suite_status") or "frozen-reference-valid")
         if unit.get("pending_variants"):
+            if all(
+                str(item.get("reference_status", "")).startswith("valid")
+                for item in unit["pending_variants"]
+            ):
+                return status + "-with-npu-pending-extension"
             return status + "-with-pending-extension"
         return status
     return eligible or "unknown"
@@ -311,7 +316,13 @@ def build_rows(generated_at: str) -> list[dict]:
                     + str(len(unit.get("variants", [])))
                     + "; pending="
                     + ",".join(
-                        item["variant_id"] for item in unit.get("pending_variants", [])
+                        item["variant_id"]
+                        + "[reference="
+                        + str(item.get("reference_status", "unknown"))
+                        + ";npu="
+                        + str(item.get("npu_status", "unknown"))
+                        + "]"
+                        for item in unit.get("pending_variants", [])
                     )
                     if unit.get("pending_variants")
                     else "fully-covered"
@@ -340,7 +351,7 @@ def build_rows(generated_at: str) -> list[dict]:
                 ),
                 "performance_evidence_path": performance_path.relative_to(ROOT).as_posix(),
             }
-            row["current_phase"] = phase(row)
+            row["current_phase"] = str(unit.get("coverage_phase") or phase(row))
             rows.append(row)
 
     unknown_npu = set(npu_results) - unit_ids
@@ -388,7 +399,7 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
         "",
         "## 状态摘要",
         "",
-        f"- 活动 acceptance units：**{len(rows)}**；已冻结 reference：**{frozen}**；等待 GPU reference：**{pending}**。",
+        f"- 活动 acceptance units：**{len(rows)}**；已冻结 reference：**{frozen}**；存在覆盖扩展未闭环：**{pending}**。",
         f"- 已形成 NPU/comparison：**{compared}**；已有正式性能处置：**{measured_or_disposed}**；其余为性能计划态。",
         "- `comparison`/性能处置数量只说明已登记 variants；存在 pending extension 的单元必须以“覆盖”和“当前阶段”列为准，不能外推为全域闭环。",
         f"- 当前 NPU 结果实际观测 backend：`{', '.join(observed) if observed else '无'}`。",

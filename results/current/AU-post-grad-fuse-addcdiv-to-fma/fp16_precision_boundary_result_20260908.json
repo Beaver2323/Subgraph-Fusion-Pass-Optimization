@@ -1,0 +1,25 @@
+{
+  "tracking_mode": "source-fix-neighbor-verification",
+  "case": "fp16",
+  "source": "tracker-derived-from-upstream-addcdiv-contract",
+  "backend": "triton_experimental",
+  "formal_source_modules": {
+    "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py",
+    "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+    "lowering": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/lowering.py"
+  },
+  "cpu_fallback_added": false,
+  "disabled_test_added": false,
+  "status": "passed",
+  "shape": [
+    64,
+    64
+  ],
+  "dtype": "torch.float16",
+  "bitwise_equal": false,
+  "max_abs_error": 0.03125,
+  "expected_addcdiv_fma_fused": 0,
+  "actual_addcdiv_fma_fused": 0,
+  "guard_preserved": true,
+  "bitwise_required": false
+}

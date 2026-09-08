@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T07:43:13+0800",
+  "task_id": "T-078",
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "unit": "addcdiv",
+  "addcdiv_dtype": "bfloat16",
+  "mode": "on",
+  "round": 1,
+  "warmup": 10,
+  "runs": 100,
+  "performance_case_source": {
+    "kind": "tracker-derived-from-community-functional-case",
+    "nodeids": [
+      "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda",
+      "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda"
+    ],
+    "community_benchmark": "absent",
+    "reused": [
+      "bfloat16[64,64] 三输入，value=2.0；来自社区 bitwise/codegen 测例"
+    ],
+    "added": [
+      "目标 handler OFF/ON",
+      "fresh-process 隔离",
+      "host/NPU Event 计时、峰值显存与 debug 工件"
+    ],
+    "measurement_scope": "单个 compiled 子图端到端调用；不是完整模型 benchmark"
+  },
+  "target_control": {
+    "selected_entries": [
+      {
+        "handler": "_fuse_addcdiv_to_fma",
+        "registry_key": [
+          "call_function",
+          "aten.add.Tensor"
+        ],
+        "entry_type": "GraphPatternEntry"
+      },
+      {
+        "handler": "npu_fuse_addcdiv_to_fma",
+        "registry_key": [
+          "call_function",
+          "aten.add.Tensor"
+        ],
+        "entry_type": "GraphPatternEntry"
+      }
+    ],
+    "only_difference": "OFF 将目标 entry.extra_check 置 False；ON 保持目标 entry 原语义；两臂均安装同一观测 wrapper，未关闭全局 pattern matcher",
+    "hits": {
+      "total": 1,
+      "npu_fuse_addcdiv_to_fma": 1
+    },
+    "expected_hits": 1
+  },
+  "workloads": [
+    {
+      "workload_id": "addcdiv-bfloat16-value-2",
+      "shape_contract": "bfloat16[64,64] 三输入，value=2.0；来自社区 bitwise/codegen 测例",
+      "target_hits": 1,
+      "correctness_after_compile": {
+        "allclose": true,
+        "bitwise_equal": true,
+        "per_output_bitwise_equal": [
+          true
+        ],
+        "max_abs_error": 0.0
+      },
+      "correctness_after_measurement": {
+        "allclose": true,
+        "bitwise_equal": true,
+        "per_output_bitwise_equal": [
+          true
+        ],
+        "max_abs_error": 0.0
+      },
+      "timing": {
+        "compile_and_first_run_ms": 24892.02334,
+        "host": {
+          "mean_ms": 0.3376196,
+          "stdev_ms": 0.06484628772845533,
+          "p50_ms": 0.329665,
+          "p99_ms": 0.37948260000000306,
+          "min_ms": 0.31538,
+          "max_ms": 0.97077
+        },
+        "device_event": {
+          "mean_ms": 0.22232579976320266,
+          "stdev_ms": 0.006802683407969358,
+          "p50_ms": 0.22129999846220016,
+          "p99_ms": 0.24232799425721172,
+          "min_ms": 0.1917800009250641,
+          "max_ms": 0.2490600049495697
+        }
+      },
+      "memory": {
+        "max_allocated_bytes": 79360,
+        "max_reserved_bytes": 2097152
+      },
+      "generated_code": "generated_code/addcdiv-bfloat16-value-2.py",
+      "code_observation": {
+        "operators": {
+          "addcdiv": {
+            "present": false,
+            "spellings": {
+              "torch.ops.aten.addcdiv.default(": 0,
+              "extern_kernels.addcdiv(": 0
+            }
+          },
+          "addmm": {
+            "present": false,
+            "spellings": {
+              "torch.ops.aten.addmm.default(": 0,
+              "extern_kernels.addmm(": 0
+            }
+          },
+          "baddbmm": {
+            "present": false,
+            "spellings": {
+              "torch.ops.aten.baddbmm.default(": 0,
+              "extern_kernels.baddbmm(": 0
+            }
+          },
+          "mm": {
+            "present": false,
+            "spellings": {
+              "torch.ops.aten.mm.default(": 0,
+              "extern_kernels.mm(": 0
+            }
+          },
+          "bmm": {
+            "present": false,
+            "spellings": {
+              "torch.ops.aten.bmm.default(": 0,
+              "extern_kernels.bmm(": 0
+            }
+          }
+        },
+        "contains_tl_fma": true,
+        "contains_div_rn": true,
+        "wrapper_dispatch_count": 1,
+        "wrapper_dispatch_lines": [
+          "triton_unk_fused_add_0.run(arg0_1, arg1_1, arg2_1, buf0, 4096, stream=raw_stream0)"
+        ],
+        "scope": "generated wrapper 静态调用点，不等同于 profiler 的 NPU task 数"
+      },
+      "debug_artifacts": [
+        "graphs/addcdiv-bfloat16-value-2-00-fx_graph_readable.py",
+        "graphs/addcdiv-bfloat16-value-2-01-fx_graph_transformed.py",
+        "graphs/addcdiv-bfloat16-value-2-02-ir_post_fusion.txt",
+        "graphs/addcdiv-bfloat16-value-2-03-ir_pre_fusion.txt",
+        "graphs/addcdiv-bfloat16-value-2-04-output_code.py",
+        "graphs/addcdiv-bfloat16-value-2-05-fx_graph_readable.py",
+        "graphs/addcdiv-bfloat16-value-2-06-fx_graph_transformed.py",
+        "graphs/addcdiv-bfloat16-value-2-07-ir_post_fusion.txt",
+        "graphs/addcdiv-bfloat16-value-2-08-ir_pre_fusion.txt",
+        "graphs/addcdiv-bfloat16-value-2-09-output_code.py"
+      ]
+    }
+  ],
+  "environment": {
+    "backend": "triton_experimental",
+    "torch": "2.14.0a0+git8e86e0a",
+    "torch_npu": "2.14.0a0+git83cc452",
+    "triton": "3.2.0",
+    "device": "Ascend910B2",
+    "physical_device": "0",
+    "python": "3.11.15 | packaged by conda-forge | (main, Aug 11 2026, 10:16:23) [GCC 14.4.0]",
+    "cwd": "/home/z50063656/tmp"
+  },
+  "source_state": {
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "torch_npu_worktree_dirty": true,
+    "relevant_file_sha256": {
+      "torch_npu/_inductor/triton_experimental/fx_passes.py": "6344a13bf933cc95850790898513e935e91631b29e0e9f86631226ad71d4040c",
+      "torch_npu/_inductor/triton_experimental/lowering.py": "022f924cd2e349f75bf99828ffd730d50fe156adcccada0815c2e7a129f055e3",
+      "torch_npu/_inductor/triton_experimental/overrides.py": "2f9de39e400d99fbdc5c81c44cfa23dd19e3d71a92834036b60aef22a95a601c",
+      "torch_npu/_inductor/triton_experimental/npu_triton_helpers.py": "d3475b14960c732903c5f00eb48ff219d361a0140eb2462548651fbb93851fac"
+    }
+  },
+  "loaded_formal_modules": {
+    "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py",
+    "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+    "lowering": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/lowering.py",
+    "npu_triton_helpers": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/npu_triton_helpers.py"
+  },
+  "half_dtype_explicit_disable": null
+}

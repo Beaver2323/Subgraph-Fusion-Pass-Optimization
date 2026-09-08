@@ -61,13 +61,13 @@ host p50/p99 改善 45.79%/45.75%，NPU Event p50/p99 改善 46.69%/46.50%，升
 acceptance units。
 
 T-078 原冻结范围的 4 个 post-grad 单元、12/12 原生 cases、20/20 variants 继续有效。
-2026-09-08 覆盖复核发现 addcdiv 源码 guard 允许 FP16/BF16，而社区 case 只执行默认 FP32；现新增
-2 个 pending dtype variants 和派生 GPU case，因此该单元为 `3 verified + 2 pending`，不能再称
-全 dtype 闭环。紧凑 handoff 保留 FX signature 与 inventory hash，但不含 FX 正文，因此没有扩大为
-逐行 GPU/NPU FX 比较。NPU `triton_experimental` 上补齐 addcdiv FP32 pattern/lowering，并修复
+2026-09-08 覆盖复核新增 addcdiv FP16/BF16 两条 dtype-only GPU case，2/2 reference 有效；NPU
+六进程三臂归因后 BF16 已通过位级/codegen 验证并以 `PERF_NEUTRAL` 保持启用，FP16 三条 compiled
+路径输出相同但共同偏离 eager，故该单元当前为 `4 verified + 1 NPU blocked/pending`。NPU
+`triton_experimental` 上补齐 addcdiv FP32/BF16 pattern/lowering，并修复
 partial amin→min 的 Triton Ascend NaN helper；两项均通过同合同回归。性能处置结果为 addcdiv
 `PERF_NEUTRAL`、partial `PERF_MIXED`、addmm unfuse `PERF_REGRESSED`、baddbmm unfuse
-`PERF_MIXED`。其中 addcdiv `PERF_NEUTRAL` 仅适用于 FP32，低精度正确性完成前不测性能。最终产品 gate 全局关闭 addmm unfuse，只关闭 baddbmm 的非默认 alpha/beta，默认
+`PERF_MIXED`。其中 addcdiv `PERF_NEUTRAL` 适用于 FP32/BF16；FP16 保持 guard 并免测性能。最终产品 gate 全局关闭 addmm unfuse，只关闭 baddbmm 的非默认 alpha/beta，默认
 标量收益路径保留。详情见 [T-078 闭环报告](../report/t078_npu_completion_20260906.md)。
 
 ## 2. 工作线吻合性
@@ -178,7 +178,7 @@ report/         不可改写的实验事实和 T-074 数据
 - T-076、T-077 性能处置均完成；T-077 为 measured=4、capability-assessed=1、pending=0。机器可读结果位于
   `results/current/T-076/performance_summary.json` 与 `results/current/T-077/performance_summary.json`。
 - T-078 原冻结范围的 12/12 GPU 原生 cases、20/20 variants、4/4 NPU comparison 均已闭环；
-  addcdiv 另有 FP16/BF16 两个 pending variants 等待补证。addcdiv/partial 修复已验证，候选性能
+  addcdiv BF16 扩展已闭环，FP16 因既有 compiled/eager 精度差异单列 blocked/pending。addcdiv/partial 修复已验证，候选性能
   和最终 addmm/baddbmm 产品门禁均已落盘。正式数据位于
 `results/current/T-078/` 与四个对应 acceptance-unit 目录。
 

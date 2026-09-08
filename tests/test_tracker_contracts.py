@@ -127,8 +127,12 @@ class ReferenceTests(unittest.TestCase):
             for item in manifest["acceptance_units"]
             if item["acceptance_unit_id"] == "AU-post-grad-fuse-addcdiv-to-fma"
         )
-        self.assertEqual(len(unit["variants"]), 3)
-        self.assertEqual(len(unit["pending_variants"]), 2)
+        self.assertEqual(len(unit["variants"]), 4)
+        self.assertEqual(len(unit["pending_variants"]), 1)
+        self.assertEqual(
+            unit["pending_variants"][0]["variant_id"],
+            "fp16-value2-fma-positive",
+        )
 
     def test_derived_case_cannot_change_more_than_dtype(self):
         manifest = json.loads((ROOT / "upstream/t078_manifest.yaml").read_text())
@@ -194,6 +198,7 @@ class ComparisonTests(unittest.TestCase):
                     )
                 self.assertTrue(comparison.is_formally_closed(record))
 
+
     def test_other_backend_rejected_even_with_consistent_fingerprint(self):
         for backend in ("default", "dvm", "mlir", ""):
             with self.subTest(backend=backend):
@@ -245,6 +250,40 @@ class ComparisonTests(unittest.TestCase):
         self.record["npu"]["correctness_status"] = "passed"
         with self.assertRaisesRegex(ValueError, "correctness 与 variants"):
             self.validate_record()
+
+
+class AppendOnlyVariantExtensionTests(unittest.TestCase):
+    def setUp(self):
+        self.result_path = (
+            ROOT
+            / "results/current/AU-post-grad-fuse-addcdiv-to-fma/npu_result.json"
+        )
+        self.result = json.loads(self.result_path.read_text())
+        manifest = json.loads((ROOT / "upstream/t078_manifest.yaml").read_text())
+        self.unit = next(
+            item
+            for item in manifest["acceptance_units"]
+            if item["acceptance_unit_id"]
+            == "AU-post-grad-fuse-addcdiv-to-fma"
+        )
+
+    def test_signed_primary_result_plus_valid_sidecar_passes(self):
+        comparison.validate_npu_result(
+            self.result, self.result_path, ROOT, self.unit
+        )
+
+    def test_bad_extension_hash_cannot_extend_primary_result(self):
+        unit = copy.deepcopy(self.unit)
+        variant = next(
+            item
+            for item in unit["variants"]
+            if item["variant_id"] == "bfloat16-value2-fma-positive"
+        )
+        variant["extension_evidence"]["result_sha256"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "SHA256 不一致"):
+            comparison.validate_npu_result(
+                self.result, self.result_path, ROOT, unit
+            )
 
 
 class PreparationTests(unittest.TestCase):

@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T07:45:50+0800",
+  "task_id": "T-078",
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "unit": "addcdiv",
+  "status": "measured",
+  "verdict": "PERF_NEUTRAL",
+  "performance_case_source": {
+    "kind": "tracker-derived-from-community-functional-case",
+    "nodeids": [
+      "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda",
+      "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda"
+    ],
+    "community_benchmark": "absent",
+    "reused": [
+      "bfloat16[64,64] 三输入，value=2.0；来自社区 bitwise/codegen 测例"
+    ],
+    "added": [
+      "目标 handler OFF/ON",
+      "fresh-process 隔离",
+      "host/NPU Event 计时、峰值显存与 debug 工件"
+    ],
+    "measurement_scope": "单个 compiled 子图端到端调用；不是完整模型 benchmark"
+  },
+  "method": {
+    "backend": "triton_experimental",
+    "process_isolation": "fresh-process-per-arm-and-round",
+    "order": "OFF1-ON1-ON2-OFF2-OFF3-ON3",
+    "warmup": 10,
+    "runs": 100,
+    "target_control": "OFF 将目标 entry.extra_check 置 False；ON 保持目标 entry 原语义；两臂均安装同一观测 wrapper，未关闭全局 pattern matcher",
+    "verdict_threshold": "IMPROVED: Event p50>=10% 且 p99不回退；REGRESSED: Event p50或p99回退>=5%；其余 NEUTRAL"
+  },
+  "workloads": [
+    {
+      "workload_id": "addcdiv-bfloat16-value-2",
+      "shape_contract": "bfloat16[64,64] 三输入，value=2.0；来自社区 bitwise/codegen 测例",
+      "off_on": {
+        "off": {
+          "rounds": [
+            1,
+            2,
+            3
+          ],
+          "raw": {
+            "host_p50_ms": [
+              0.351295,
+              0.327005,
+              0.342035
+            ],
+            "host_p99_ms": [
+              0.4021560000000025,
+              0.3814228000000031,
+              0.5048893000000026
+            ],
+            "device_p50_ms": [
+              0.2437399998307228,
+              0.2195800021290779,
+              0.21692000329494476
+            ],
+            "device_p99_ms": [
+              0.26882879048585895,
+              0.2460966067016125,
+              0.2716702136397366
+            ],
+            "compile_ms": [
+              24599.54971,
+              24772.28144,
+              24719.03017
+            ],
+            "max_allocated_bytes": [
+              79360,
+              79360,
+              79360
+            ],
+            "max_reserved_bytes": [
+              2097152,
+              2097152,
+              2097152
+            ],
+            "wrapper_dispatch_count": [
+              1,
+              1,
+              1
+            ]
+          },
+          "median": {
+            "host_p50_ms": 0.342035,
+            "host_p99_ms": 0.4021560000000025,
+            "device_p50_ms": 0.2195800021290779,
+            "device_p99_ms": 0.26882879048585895,
+            "compile_ms": 24719.03017,
+            "max_allocated_bytes": 79360,
+            "max_reserved_bytes": 2097152,
+            "wrapper_dispatch_count": 1
+          },
+          "target_hits_per_workload": [
+            0,
+            0,
+            0
+          ],
+          "target_hits_total_per_worker": [
+            {
+              "total": 0
+            },
+            {
+              "total": 0
+            },
+            {
+              "total": 0
+            }
+          ]
+        },
+        "on": {
+          "rounds": [
+            1,
+            2,
+            3
+          ],
+          "raw": {
+            "host_p50_ms": [
+              0.329665,
+              0.343345,
+              0.3415
+            ],
+            "host_p99_ms": [
+              0.37948260000000306,
+              0.3952359000000029,
+              0.38771900000000337
+            ],
+            "device_p50_ms": [
+              0.22129999846220016,
+              0.22850999981164932,
+              0.2182299941778183
+            ],
+            "device_p99_ms": [
+              0.24232799425721172,
+              0.25039919823408135,
+              0.2379603959619999
+            ],
+            "compile_ms": [
+              24892.02334,
+              24669.43353,
+              24852.3416
+            ],
+            "max_allocated_bytes": [
+              79360,
+              79360,
+              79360
+            ],
+            "max_reserved_bytes": [
+              2097152,
+              2097152,
+              2097152
+            ],
+            "wrapper_dispatch_count": [
+              1,
+              1,
+              1
+            ]
+          },
+          "median": {
+            "host_p50_ms": 0.3415,
+            "host_p99_ms": 0.38771900000000337,
+            "device_p50_ms": 0.22129999846220016,
+            "device_p99_ms": 0.24232799425721172,
+            "compile_ms": 24852.3416,
+            "max_allocated_bytes": 79360,
+            "max_reserved_bytes": 2097152,
+            "wrapper_dispatch_count": 1
+          },
+          "target_hits_per_workload": [
+            1,
+            1,
+            1
+          ],
+          "target_hits_total_per_worker": [
+            {
+              "total": 1,
+              "npu_fuse_addcdiv_to_fma": 1
+            },
+            {
+              "total": 1,
+              "npu_fuse_addcdiv_to_fma": 1
+            },
+            {
+              "total": 1,
+              "npu_fuse_addcdiv_to_fma": 1
+            }
+          ]
+        }
+      },
+      "comparison": {
+        "host_p50_improvement_percent": 0.15641674097678665,
+        "host_p99_improvement_percent": 3.5899004366462406,
+        "device_p50_improvement_percent": -0.7833119211426052,
+        "device_p99_improvement_percent": 9.857871316815391,
+        "allocated_delta_bytes": 0,
+        "reserved_delta_bytes": 0,
+        "wrapper_dispatch_delta": 0,
+        "verdict": "PERF_NEUTRAL"
+      }
+    }
+  ],
+  "source_state": {
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_npu_commit": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+    "torch_npu_worktree_dirty": true,
+    "relevant_file_sha256": {
+      "torch_npu/_inductor/triton_experimental/fx_passes.py": "6344a13bf933cc95850790898513e935e91631b29e0e9f86631226ad71d4040c",
+      "torch_npu/_inductor/triton_experimental/lowering.py": "022f924cd2e349f75bf99828ffd730d50fe156adcccada0815c2e7a129f055e3",
+      "torch_npu/_inductor/triton_experimental/overrides.py": "2f9de39e400d99fbdc5c81c44cfa23dd19e3d71a92834036b60aef22a95a601c",
+      "torch_npu/_inductor/triton_experimental/npu_triton_helpers.py": "d3475b14960c732903c5f00eb48ff219d361a0140eb2462548651fbb93851fac"
+    }
+  },
+  "tooling": {
+    "worker_sha256": "b02dc571837152873411d5a9f5a5c5eed7872359d3826335ef2418143016d41e",
+    "aggregator_sha256": "f1ad22f05ede3950cb01ecf11264096c740974e8499f8d5d13c8b851f46fcd5b"
+  },
+  "workers": [
+    "workers/off1/result.json",
+    "workers/on1/result.json",
+    "workers/on2/result.json",
+    "workers/off2/result.json",
+    "workers/off3/result.json",
+    "workers/on3/result.json"
+  ]
+}

@@ -1,7 +1,7 @@
 # T-078 addcdiv FP16/BF16 覆盖修订与验证步骤
 
-> 更新时间：2026-09-08 07:12 CST（UTC+08:00）
-> 当前状态：FP32 修复与性能结论有效；FP16/BF16 GPU reference 已通过，等待补导出关键代码/IR 正文并进入 NPU 三臂归因。
+> 更新时间：2026-09-08 07:51:59 CST（UTC+08:00）
+> 当前状态：FP32/BF16 已完成功能与性能闭环；FP16 GPU reference 有效，但 NPU 被既有 Triton/eager 精度差异阻断。
 
 ## 1. 为什么需要补测
 
@@ -90,13 +90,13 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 成功条件不是“脚本退出 0”这么宽泛，而是两条 case 都满足：测试数为 1、无 skip、FX before/after
 存在、位级一致、counter=1 且生成代码包含 FMA/div_rn。失败必须原样回传，不能改为容差通过。
 
-## 4. NPU 后续三臂归因
+## 4. NPU 三臂归因
 
-GPU 通过后，NPU 必须使用 `triton_experimental`，并在三个 fresh process 中使用同一输入：
+GPU 通过后，NPU 使用 `triton_experimental`，并对每个 dtype 在三个 fresh process 中使用同一输入：
 
 1. `OFF`：禁用目标重融合，观察常规编译路径；
 2. `decomposed`：确认 `div → mul → add` 的低精度误差；
-3. `refused`：启用 `addcdiv → FMA/div_rn` 重融合。
+3. `re-fused`：启用 `addcdiv → FMA/div_rn` 重融合。
 
 必要调用链与证据：
 
@@ -110,15 +110,23 @@ torch.compile
 ```
 
 每臂保存 `fx_graph_readable.py`、`fx_graph_transformed.py`、`ir_pre_fusion.txt`、
-`ir_post_fusion.txt` 与 `output_code.py`。已有一次 FP16 ON 观察到最大绝对误差 `0.03125`，但 OFF
-路径也观察到同量级差异，因此不能归因于 FMA；三臂同输入完成前既不判定 NPU 缺陷，也不测性能。
+`ir_post_fusion.txt` 与 `output_code.py`。正式运行共六个 fresh process：
+
+- FP16 三条 compiled 输出哈希相同，均相对 eager 最大误差 `0.0625`、1187/4096 元素不同；
+  重融合未增加误差，但当前 NPU Triton 编译路径不满足 eager 位级合同。
+- BF16 的 OFF、分解、重融合和 eager 输出哈希完全相同，重融合 counter=1 且生成 FMA/div_rn。
+
+完整数据和调用栈见
+[低精度三臂与 BF16 修复报告](../issues/REF-addcdiv-fma-codegen-native/低精度三臂与BF16修复报告.md)。
 
 ## 5. 当前结论边界
 
-- FP32：功能修复已验证，`triton_experimental` 性能为 `PERF_NEUTRAL`，结论继续有效。
-- FP16/BF16：不是产品显式 disable；当前是能力与精度待判定。
-- 当前矩阵显示 5 个覆盖 variants：3 个已验证、2 个 pending；不会再显示成全 dtype 已闭环。
-- 低精度正确性闭环后，若 NPU 合法启用，才按 T-078 现有 fresh-process OFF/ON 合同补性能。
+- FP32：功能修复已验证，`triton_experimental` 性能为 `PERF_NEUTRAL`。
+- BF16：产品 guard 已最小放宽，正式源码位级/codegen 验证通过；三轮 OFF/ON 为
+  `PERF_NEUTRAL`，保持启用。
+- FP16：GPU reference 有效；NPU 产品 guard 明确保持关闭。它不是 addcdiv 重融合引入的误差，
+  而是既有 Triton compiled/eager 精度缺口；功能未闭环，性能免测。
+- 当前矩阵显示 5 个覆盖 variants：4 个已验证、1 个 NPU pending/blocked。
 
 ## 6. 2026-09-08 GPU 回传复核
 
@@ -132,3 +140,17 @@ CUDA 12.6、A100 上执行：
 
 初次上传的 1.3 review 包只携带合并 FX，原始 FX、前后 IR、`output_code.py` 和日志仅有哈希。
 这不推翻 GPU pass，但不满足独立代码审计。导出规则已修正；从现有 run 补导出即可，不需要重跑 GPU。
+
+## 7. NPU 修复与性能结果
+
+产品源码只把 addcdiv NPU guard 从 FP32 放宽为 `(FP32, BF16)`，FP16 仍不命中。正式 BF16
+近邻结果为 bitwise true、最大误差 0、counter=1。性能沿用社区功能 case 的 `64×64/value=2`，
+三轮 OFF/ON 的 NPU Event p50 回退 `0.78%`、p99 改善 `9.86%`，没有显存或 dispatch 变化，按
+阈值判定 `PERF_NEUTRAL`。
+
+机器可读结果位于：
+
+- `results/current/AU-post-grad-fuse-addcdiv-to-fma/lowp_three_arm_result_20260908.json`；
+- 同目录的 `bfloat16_source_fix_result_20260908.json` 和
+  `fp16_precision_boundary_result_20260908.json`；
+- `results/current/T-078/addcdiv_bfloat16_performance_summary_20260908.json`。

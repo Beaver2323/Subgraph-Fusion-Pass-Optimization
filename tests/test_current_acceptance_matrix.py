@@ -65,7 +65,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
         self.assertEqual(
             sum(
                 row["current_phase"]
-                == "coverage-extension-awaiting-gpu-reference"
+                == "coverage-extension-fp16-precision-blocked"
                 for row in rows
             ),
             1,
@@ -87,13 +87,14 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             == "AU-post-grad-fuse-addcdiv-to-fma"
         )
         self.assertEqual(row["variant_count"], 5)
-        self.assertEqual(row["verified_variant_count"], 3)
-        self.assertEqual(row["pending_variant_count"], 2)
+        self.assertEqual(row["verified_variant_count"], 4)
+        self.assertEqual(row["pending_variant_count"], 1)
         self.assertIn("fp16-value2-fma-positive", row["coverage_status"])
-        self.assertIn("bfloat16-value2-fma-positive", row["coverage_status"])
+        self.assertIn("valid-derived-reference", row["coverage_status"])
+        self.assertIn("blocked-by-existing-triton-fp16-eager-parity", row["coverage_status"])
         self.assertEqual(
             row["current_phase"],
-            "coverage-extension-awaiting-gpu-reference",
+            "coverage-extension-fp16-precision-blocked",
         )
 
     def test_t081_t083_results_bind_backend_and_learning_evidence(self):

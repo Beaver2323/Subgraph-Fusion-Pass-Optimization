@@ -1,9 +1,14 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-08 06:07 CST（UTC+08:00）
+> 日志校准时间：2026-09-08 07:51:59 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
+
+- 2026-09-08 07:51:59 CST：T-078 addcdiv 低精度增量完成。GPU FP16/BF16 dtype-only reference
+  2/2 有效；NPU `triton_experimental` 六进程三臂显示 BF16 位级一致，已最小扩展产品 guard 并以
+  `PERF_NEUTRAL` 保持启用。FP16 三条 compiled 路径输出相同但共同偏离 eager，故继续 guard=0、
+  性能免测。原 FP32 签名结果保持不变，新增 sidecar 和代码/FX/IR 证据。
 
 - 2026-09-08 06:07 CST：纠正 T-078 addcdiv dtype 覆盖统计。上游 guard/lowering 接受 floating
   dtype，GPU 原生两条 case 实际仅覆盖默认 FP32；原 3 个 variants、NPU FP32 修复与
@@ -3872,3 +3877,14 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   `fx_graph_runnable.py` 的前提下嵌入这些小型关键正文；历史 1.3 包继续可校验，不修改既有结果。
 - 本次只需从 GPU 已有 run 重新导出，不重跑用例。关键正文补回后进入 NPU
   `triton_experimental` 三臂同输入精度归因；三臂完成前不把 FP16/BF16 计入 NPU 闭环或性能结论。
+
+### E-242：T-078 低精度三臂归因、BF16 修复与性能闭环（2026-09-08）
+
+- 登记时间：2026-09-08 07:51:59 CST（UTC+08:00）。FP16/BF16 各执行 OFF、显式分解、重融合
+  三个 fresh process，均在导入 torch 前选择 `triton_experimental`，并用 CPU 固定 seed 保证输入一致。
+- BF16 三臂与 eager 位级一致；产品 guard 最小扩展为 FP32/BF16，正式源码验证 counter=1 且生成
+  FMA/div_rn。三轮 OFF/ON 性能为 `PERF_NEUTRAL`，保持启用。
+- FP16 三条 compiled 输出 SHA256 相同，但都相对 eager 最大误差 `0.0625`、1187/4096 元素不同。
+  该缺口不是 addcdiv 重融合新引入；产品 guard 保持关闭，功能修复前性能免测。
+- 新增独立低精度三臂/修复报告及仓库内 FX、IR、`output_code.py`、结构化结果和 BF16 性能证据；
+  原 FP32 已签名结果不覆盖，只新增旁证并更新当前 manifest/matrix。
