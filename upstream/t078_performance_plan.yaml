@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-08T07:45:50+08:00",
+  "generated_at": "2026-09-08T09:12:00+08:00",
   "task_id": "T-078",
   "status": "performance-disposition-and-product-gate-complete",
   "implementation": {"status": "implemented-runtime-validated", "entrypoint": "runners/t078_performance_worker.py", "runtime_evidence": "results/current/T-078/performance_summary.json", "final_gate_verifier": "runners/t078_product_gate_verify.py", "post_gate_rerun_policy": "候选 OFF/ON 已完成；addmm 与 baddbmm 非默认标量现为显式关闭，不得绕过最终门禁重跑 ON"},
-  "policy": "原冻结范围的 GPU reference、NPU triton_experimental 功能/命中与候选 OFF/ON 均已完成。addcdiv FP32 与 BF16 均完成功能和三轮性能处置；FP16 三臂显示现有分解和重融合输出相同但共同偏离 eager，因此保持产品 guard 并禁止性能测量。最终只保留有收益或中性的合法路径；addmm 全路径和 baddbmm 非默认标量路径已显式关闭，后续按免测处理。",
+  "policy": "原冻结范围的 GPU reference、NPU triton_experimental 功能/命中与候选 OFF/ON 均已完成。addcdiv FP32 与 BF16 均完成功能和三轮性能处置；FP16 已通过后端专属显式舍入 lowering 和 value=1 补充 pattern 完成位级修复。修复前 OFF 不等价于 eager，不能作为有效性能收益 denominator，因此 FP16 只记录无合法分母处置，不外推其他 dtype 的 verdict。最终只保留有收益或中性的合法路径；addmm 全路径和 baddbmm 非默认标量路径已显式关闭，后续按免测处理。",
   "backend_contract": {
     "npu_backend": "triton_experimental",
     "selection_timing": "在 fresh worker 导入 torch/torch_npu 之前设置 TORCHINDUCTOR_NPU_BACKEND=triton_experimental",
@@ -23,17 +23,17 @@
   "acceptance_units": [
     {
       "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
-      "performance_status": "measured-retained-fp32-and-bfloat16-fp16-precision-blocked",
+      "performance_status": "measured-retained-fp32-and-bfloat16-fp16-correctness-fixed-no-valid-off-denominator",
       "verdict": "PERF_NEUTRAL",
       "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda", "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda"], "community_benchmark": "absent", "derivation": "原样复用 float32[64,64]、value=1/2 和 bitwise/codegen 合同，只添加计时、显存和 OFF/ON。"},
-      "functional_gate": ["GPU FP32 原生及 FP16/BF16 dtype-only 派生 reference 有效", "NPU FP32/BF16 source fix 后 addcdiv_fma_fused=1 且与 eager 位级一致", "NPU generated code 提供 FMA/精确除法的等价证据", "FP16 三臂 compiled 输出一致但共同偏离 eager，产品 guard=0"],
+      "functional_gate": ["GPU FP32 原生及 FP16/BF16 dtype-only 派生 reference 有效", "NPU FP32/BF16 source fix 后 addcdiv_fma_fused=1 且与 eager 位级一致", "NPU FP32/BF16 generated code 提供 FMA/精确除法证据", "NPU FP16 value=0.3/1/2/7.7 均 addcdiv_fma_fused=1、bitwise 且 generated code 保留显式低精度舍入"],
       "workloads": [
         {"workload_id": "addcdiv-value-2", "role": "community-shape-primary", "shape_contract": "inp/t1/t2=float32[64,64]，value=2", "measurement_scope": "单个 compiled 子图调用端到端；value=2 独立报告", "outcome": "Event p50/p99 改善 1.82%/2.62%，无显存或 wrapper dispatch 变化，PERF_NEUTRAL"},
         {"workload_id": "addcdiv-bfloat16-value-2", "role": "community-dtype-extension", "shape_contract": "inp/t1/t2=bfloat16[64,64]，value=2；只改变社区功能 case 的 dtype", "measurement_scope": "单个 compiled 子图调用端到端；3×OFF/3×ON fresh process", "outcome": "host p50/p99 改善 0.16%/3.59%；Event p50 回退 0.78%、p99 改善 9.86%；显存与 dispatch 不变，PERF_NEUTRAL"}
       ],
       "off_on_control": {"OFF": "仅抑制 _fuse_addcdiv_to_fma 目标注册项", "ON": "启用经功能阶段确认合法的同一目标注册项", "isolation_check": "OFF target_hit=0、ON target_hit=1；其余源码、输入、后端和采样合同相同"},
       "artifacts": ["environment.json", "correctness.json", "target_hit.json", "fx_before.txt", "fx_after.txt", "generated_code", "timing.json", "memory.json"],
-      "negative_cases": "value=1 的乘一在 decomposition 中消去，保留作 bitwise 正确性邻接测例，不伪造目标 ON 性能样本；FP16 是三臂确认的既有 Triton/eager 精度阻断，保持 guard=0 且免测性能，不把它错误记成 addcdiv pass 引入的误差"
+      "negative_cases": "value=1 的乘一在 decomposition 中消去，现由独立 add(div) pattern 重融合并通过位级验证；integer-self、tensor-valued value 继续 guard=0。FP16 修复前 OFF 已被证明错误，禁止将其当作 ON 收益 denominator；只有未来得到同语义合法 OFF 后才做正式性能收益比较。"
     },
     {
       "acceptance_unit_id": "AU-post-grad-reuse-partial",

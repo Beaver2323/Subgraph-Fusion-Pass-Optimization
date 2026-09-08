@@ -1,7 +1,7 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-08 06:07 CST（UTC+08:00）
-> 状态：T-076～T-083 共28个acceptance units的原冻结合同已完成；T-078 addcdiv 新增 FP16/BF16 覆盖扩展等待 GPU/NPU 正确性验证，不回滚既有 FP32 结论，也不得外推。T-076/T-077严格再认证单列，T-084～T-113保留草案编号。产品改动仍待独立产品仓评审/合入。
+> 更新时间：2026-09-08 09:12 CST（UTC+08:00）
+> 状态：T-076～T-083 共28个acceptance units及 T-078 addcdiv FP16/BF16 覆盖扩展已完成功能闭环；T-076/T-077严格再认证单列，T-084～T-113保留草案编号。产品改动仍待独立产品仓评审/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -195,11 +195,14 @@ T-077 GPU 准备：
 - [x] addmm 性能回退后设置全局 unfuse gate；baddbmm 按默认/非默认标量设置选择性 gate；
 - [x] 最终产品 gate 动态验证 addmm hit=0、默认 baddbmm hit=1、非默认 baddbmm hit=0；
 - [x] 四份正式 NPU/comparison、性能汇总、中文逐 pattern 讲解与闭环报告落盘。
-- [x] 纠正 addcdiv dtype 统计缺口：上游 floating guard 不拦截 FP16/BF16，新增 2 个
-  `pending_variants`、两条社区合同派生 GPU case、矩阵 pending 状态和专项说明；
-- [ ] GPU 执行 `REF-addcdiv-fma-{fp16,bfloat16}-derived`，回传位级、counter、FX 和 codegen；
-- [ ] GPU 通过后，在 NPU `triton_experimental` 上完成 OFF/分解/重融合三臂同输入精度归因；
-- [ ] 仅在低精度正确性闭环且产品路径合法启用后补性能，禁止沿用 FP32 `PERF_NEUTRAL`。
+- [x] 纠正 addcdiv dtype 统计缺口：上游 floating guard 不拦截 FP16/BF16，新增两条社区合同
+  dtype-only 派生 GPU case，并完成 2/2 reference；
+- [x] 在 NPU `triton_experimental` 上完成 OFF/分解/重融合三臂同输入精度归因；
+- [x] BF16 以 FMA/div_rn 位级闭环并完成 `PERF_NEUTRAL` 处置；
+- [x] FP16 以显式除法/乘法舍入 lowering 和 `value=1` 补充 pattern 修复；4 个标量位级一致、
+  counter=1，两个邻接 guard counter=0；
+- [x] FP16 性能记为“正确性修复完成但无合法修复前 OFF 分母”，不沿用 FP32/BF16 verdict，
+  也不拿错误路径制造收益。
 
 ## P0-G：首批跟踪闭环
 

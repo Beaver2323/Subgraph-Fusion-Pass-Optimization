@@ -1,7 +1,9 @@
 # T-078 addcdiv FP16/BF16 覆盖修订与验证步骤
 
 > 更新时间：2026-09-08 07:51:59 CST（UTC+08:00）
-> 当前状态：FP32/BF16 已完成功能与性能闭环；FP16 GPU reference 有效，但 NPU 被既有 Triton/eager 精度差异阻断。
+> 当前状态：FP32/BF16 已完成功能与性能闭环；FP16 GPU reference 有效，NPU 已通过显式低精度
+> 舍入 lowering 和 `value=1` 补充 pattern 完成功能闭环。修复前 OFF 不正确，FP16 暂无合法
+> pass 收益 denominator。
 
 ## 1. 为什么需要补测
 
@@ -124,9 +126,9 @@ torch.compile
 - FP32：功能修复已验证，`triton_experimental` 性能为 `PERF_NEUTRAL`。
 - BF16：产品 guard 已最小放宽，正式源码位级/codegen 验证通过；三轮 OFF/ON 为
   `PERF_NEUTRAL`，保持启用。
-- FP16：GPU reference 有效；NPU 产品 guard 明确保持关闭。它不是 addcdiv 重融合引入的误差，
-  而是既有 Triton compiled/eager 精度缺口；功能未闭环，性能免测。
-- 当前矩阵显示 5 个覆盖 variants：4 个已验证、1 个 NPU pending/blocked。
+- FP16：GPU reference 有效；NPU 通过显式保存除法/乘法后的 FP16 舍入和 `value=1` 补充 pattern
+  完成功能修复。4 个标量值均 bitwise、counter=1，两个 guard counter=0。
+- 当前矩阵显示 5 个覆盖 variants：5 个已验证、0 个 pending。
 
 ## 6. 2026-09-08 GPU 回传复核
 
@@ -143,8 +145,9 @@ CUDA 12.6、A100 上执行：
 
 ## 7. NPU 修复与性能结果
 
-产品源码只把 addcdiv NPU guard 从 FP32 放宽为 `(FP32, BF16)`，FP16 仍不命中。正式 BF16
-近邻结果为 bitwise true、最大误差 0、counter=1。性能沿用社区功能 case 的 `64×64/value=2`，
+产品源码的当前范围为 `(FP32, FP16, BF16)`。FP32/BF16 使用 FMA/div_rn；FP16 使用后端专属
+显式舍入 lowering。正式 FP16 的 `0.3/1/2/7.7` 均 bitwise true、最大误差 0、counter=1。
+BF16 性能沿用社区功能 case 的 `64×64/value=2`，
 三轮 OFF/ON 的 NPU Event p50 回退 `0.78%`、p99 改善 `9.86%`，没有显存或 dispatch 变化，按
 阈值判定 `PERF_NEUTRAL`。
 
@@ -152,5 +155,10 @@ CUDA 12.6、A100 上执行：
 
 - `results/current/AU-post-grad-fuse-addcdiv-to-fma/lowp_three_arm_result_20260908.json`；
 - 同目录的 `bfloat16_source_fix_result_20260908.json` 和
-  `fp16_precision_boundary_result_20260908.json`；
+  `fp16_precision_boundary_result_20260908.json`（修复前历史）、
+  `fp16_source_fix_result_20260908.json`（当前）；
 - `results/current/T-078/addcdiv_bfloat16_performance_summary_20260908.json`。
+
+FP16 没有报告正式 OFF/ON 收益：修复前 OFF 本身不等价于 eager，不能作为收益 denominator。
+详细根因、源码框、调用栈、FX/IR/output_code 对照见
+[FP16 精度修复报告](../issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md)。

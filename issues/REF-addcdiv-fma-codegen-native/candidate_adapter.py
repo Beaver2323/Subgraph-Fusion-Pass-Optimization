@@ -63,6 +63,51 @@ def register_candidate_lowering() -> None:
             self_val = self_loader(idx)
             t1_val = t1_loader(idx)
             t2_val = t2_loader(idx)
+
+            # NPU eager FP16 addcdiv follows the observable low-precision
+            # arithmetic sequence rather than CUDA's FP32-accumulating FMA:
+            # div -> FP16 round -> mul -> FP16 round -> add -> FP16 store.
+            # Keep those two internal rounding boundaries inside one Triton
+            # kernel; otherwise Inductor's compute-type promotion collapses
+            # the whole expression to FP32 and only rounds the final store.
+            if dtype == torch.float16:
+                quotient = t1_val / t2_val
+                quotient = lowering.ops.to_dtype(
+                    quotient,
+                    torch.float16,
+                    src_dtype=torch.float32,
+                    use_compute_types=False,
+                )
+                quotient = lowering.ops.to_dtype(
+                    quotient,
+                    torch.float16,
+                    src_dtype=torch.float16,
+                )
+                if isinstance(value, lowering.sympy.Basic):
+                    value_expr = lowering.ops.index_expr(value, dtype)
+                else:
+                    # Wrapped Python scalars are converted to the tensor dtype
+                    # by eager FP16 arithmetic.  Materialize that conversion at
+                    # lowering time so Triton's float32 compute literal does not
+                    # silently retain extra scalar precision.
+                    quantized_value = torch.tensor(
+                        value, dtype=torch.float16
+                    ).item()
+                    value_expr = lowering.ops.constant(quantized_value, dtype)
+                product = lowering.ops.mul(quotient, value_expr)
+                product = lowering.ops.to_dtype(
+                    product,
+                    torch.float16,
+                    src_dtype=torch.float32,
+                    use_compute_types=False,
+                )
+                product = lowering.ops.to_dtype(
+                    product,
+                    torch.float16,
+                    src_dtype=torch.float16,
+                )
+                return lowering.ops.add(self_val, product)
+
             quotient = lowering.ops.div_rn(t1_val, t2_val)
             if value == 1:
                 return lowering.ops.add(self_val, quotient)
@@ -86,21 +131,28 @@ def register_candidate_pattern() -> None:
     def eligible(match: Match) -> bool:
         inp_val = match.kwargs["inp"].meta.get("val")
         out_val = match.output_node().meta.get("val")
+        supported_dtypes = (torch.float32, torch.float16, torch.bfloat16)
         if not (
             isinstance(inp_val, torch.Tensor)
-            and inp_val.dtype.is_floating_point
+            and inp_val.dtype in supported_dtypes
             and isinstance(out_val, torch.Tensor)
             and out_val.device.type == "npu"
+            and out_val.dtype in supported_dtypes
         ):
             return False
         for key in ("t1", "t2"):
             node = match.kwargs.get(key)
             val = node.meta.get("val") if isinstance(node, torch.fx.Node) else node
             if not (
-                isinstance(val, torch.Tensor) and val.dtype.is_floating_point
+                isinstance(val, torch.Tensor) and val.dtype in supported_dtypes
             ):
                 return False
-        return not isinstance(match.kwargs.get("value"), torch.fx.Node)
+        value = match.kwargs.get("value", 1)
+        if isinstance(value, torch.fx.Node):
+            return False
+        if out_val.dtype == torch.float16 and not isinstance(value, (int, float)):
+            return False
+        return True
 
     @register_graph_pattern(
         CallFunction(
@@ -125,6 +177,26 @@ def register_candidate_pattern() -> None:
 
         counters["inductor"]["addcdiv_fma_fused"] += 1
         match.replace_by_example(repl, [inp, t1, t2, value])
+
+    @register_graph_pattern(
+        CallFunction(
+            ATEN.add.Tensor,
+            KeywordArg("inp"),
+            CallFunction(
+                ATEN.div.Tensor,
+                KeywordArg("t1"),
+                KeywordArg("t2"),
+            ),
+        ),
+        pass_dict=post_grad.pass_patterns[2],
+        extra_check=eligible,
+    )
+    def fuse_addcdiv_value_one(match: Match, inp, t1, t2) -> None:
+        def repl(inp, t1, t2):
+            return ATEN.addcdiv(inp, t1, t2, value=1)
+
+        counters["inductor"]["addcdiv_fma_fused"] += 1
+        match.replace_by_example(repl, [inp, t1, t2])
 
 
 def main() -> int:

@@ -1,13 +1,15 @@
 # T-078 功能、性能与 GPU/NPU 对照讲解
 
 > 更新时间：2026-09-08 07:51:59 CST（UTC+08:00）
-> 状态：原 12/12 GPU 原生 case 有效；addcdiv FP16/BF16 GPU 2/2 有效，BF16 NPU/性能闭环，FP16 精度阻断。
+> 状态：原 12/12 GPU 原生 case 有效；addcdiv FP16/BF16 GPU 2/2 有效，BF16 NPU/性能闭环，
+> FP16 NPU 功能与命中已修复，性能因无合法修复前 OFF 分母而不计算收益。
 > NPU 后端：所有动态验证与性能结论固定使用 `triton_experimental`，OFF/ON 每臂使用 fresh process。
 
 T-078 包含 4 个 post-grad acceptance units；原冻结范围为 12 个 GPU cases、20 个 variants。覆盖
 复核发现 addcdiv 社区测例只有 FP32，而源码 guard 允许 FP16/BF16，因此现计划为 14 个 GPU cases、
 22 个 variants。前 12 条 GPU reference 来自 PyTorch 原生测试；新增两条只改变 dtype 的派生
-case 在结果中显式标识。BF16 已转为 verified，FP16 保持 NPU blocked/pending。NPU 只在原生入口不能生成 NPU case 时注入 device、backend 和证据采集，
+case 在结果中显式标识。BF16 与 FP16 均已转为 verified；FP16 使用 NPU 专属显式舍入 lowering，
+不沿用 GPU 的 FMA 指令合同。NPU 只在原生入口不能生成 NPU case 时注入 device、backend 和证据采集，
 不改变图、shape、dtype、标量或预期命中。性能测量是一次 compiled 子图调用的端到端耗时，不是
 完整模型端到端 benchmark。
 
@@ -15,7 +17,7 @@ case 在结果中显式标识。BF16 已转为 verified，FP16 保持 NPU blocke
 
 | Acceptance unit | GPU | NPU 功能 | 性能结论 | 最终产品动作 |
 | --- | --- | --- | --- | --- |
-| `AU-post-grad-fuse-addcdiv-to-fma` | 原生 FP32 2/2、FP16/BF16 派生 2/2 有效 | FP32/BF16 命中且 bitwise/codegen 通过；FP16 guard=0 | `PERF_NEUTRAL`（FP32/BF16）；FP16 免测 | 保留 FP32/BF16；FP16 精度阻断 |
+| `AU-post-grad-fuse-addcdiv-to-fma` | 原生 FP32 2/2、FP16/BF16 派生 2/2 有效 | 三种 dtype 均命中且 bitwise；FP32/BF16 为 FMA/div_rn，FP16 为显式舍入 | `PERF_NEUTRAL`（FP32/BF16）；FP16 无合法修复前 OFF 分母 | 三种 dtype 功能保留；FP16 性能不外推 |
 | `AU-post-grad-reuse-partial` | 原生 2/2 case、5/5 variants 有效 | min2 修复后正负例均通过 | `PERF_MIXED` | 保留 pass，逐 shape 监控 |
 | `AU-post-grad-unfuse-bias-add-to-pointwise` | 原生 6/6 cases、8/8 variants 有效 | 门禁前能力正确；最终 gate 保留 addmm | `PERF_REGRESSED` | `disable_unfuse_bias_addmm=true` |
 | `AU-post-grad-unfuse-bias-baddbmm-to-pointwise` | 原生 2/2 cases、4/4 variants 有效 | 默认标量启用，非默认标量关闭 | `PERF_MIXED` | 选择性 gate |
@@ -247,7 +249,9 @@ GPU 侧只改变社区 `64×64/value=2` 的 dtype：FP16/BF16 都位级一致并
 - BF16 的 OFF、显式分解、重融合和 eager 位级一致，正式产品 counter=1；三轮性能中 Event p50
   回退 0.78%、p99 改善 9.86%，判定 `PERF_NEUTRAL` 并保留启用。
 - FP16 的三个 compiled arm 输出完全相同但共同偏离 eager，说明关闭 addcdiv 重融合也不会消除
-  该误差；产品继续 guard=0，正确性未闭环前不测性能。
+  该误差。后续已通过显式保留除法/乘法后的 FP16 舍入修复，并为 `value=1` 增加消乘结构
+  pattern；详见 `issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md`。修复前 OFF 仍不可
+  作为性能分母。
 
 这一区分避免把“真实低精度后端缺口”误记为“本 pattern 引入回归”。完整代码、调用栈、FX/IR 和
 `output_code.py` 见

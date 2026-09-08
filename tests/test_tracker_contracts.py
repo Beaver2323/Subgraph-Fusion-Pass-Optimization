@@ -127,12 +127,18 @@ class ReferenceTests(unittest.TestCase):
             for item in manifest["acceptance_units"]
             if item["acceptance_unit_id"] == "AU-post-grad-fuse-addcdiv-to-fma"
         )
-        self.assertEqual(len(unit["variants"]), 4)
-        self.assertEqual(len(unit["pending_variants"]), 1)
-        self.assertEqual(
-            unit["pending_variants"][0]["variant_id"],
-            "fp16-value2-fma-positive",
+        self.assertEqual(len(unit["variants"]), 5)
+        self.assertNotIn("pending_variants", unit)
+        fp16 = next(
+            variant
+            for variant in unit["variants"]
+            if variant["variant_id"] == "fp16-value2-fma-positive"
         )
+        self.assertEqual(
+            fp16["npu_status"],
+            "supported-source-fixed-backend-specific-rounding",
+        )
+        self.assertEqual(fp16["extension_evidence"]["expected_counter"], 1)
 
     def test_derived_case_cannot_change_more_than_dtype(self):
         manifest = json.loads((ROOT / "upstream/t078_manifest.yaml").read_text())
@@ -284,6 +290,30 @@ class AppendOnlyVariantExtensionTests(unittest.TestCase):
             comparison.validate_npu_result(
                 self.result, self.result_path, ROOT, unit
             )
+
+    def test_fp16_source_fix_sidecar_is_strict_and_complete(self):
+        sidecar = json.loads(
+            (
+                ROOT
+                / "results/current/AU-post-grad-fuse-addcdiv-to-fma/"
+                "fp16_source_fix_result_20260908.json"
+            ).read_text()
+        )
+        self.assertEqual(sidecar["backend"], "triton_experimental")
+        self.assertEqual(sidecar["status"], "valid-source-fix")
+        self.assertEqual(sidecar["fresh_process_count"], 6)
+        self.assertEqual(
+            [item["value"] for item in sidecar["values"]],
+            [0.3, 1.0, 2.0, 7.7],
+        )
+        for item in sidecar["values"]:
+            self.assertTrue(item["bitwise_equal_to_addcdiv_eager"])
+            self.assertEqual(item["mismatch_count"], 0)
+            self.assertEqual(item["addcdiv_fma_fused"], 1)
+            self.assertFalse(item["generated_code_contains_fma"])
+            self.assertFalse(item["generated_code_contains_div_rn"])
+            self.assertTrue(item["codegen_contract_valid"])
+        self.assertTrue(all(item["guard_preserved"] for item in sidecar["guards"]))
 
 
 class PreparationTests(unittest.TestCase):

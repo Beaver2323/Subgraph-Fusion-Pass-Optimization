@@ -76,6 +76,60 @@ def validate_variant_extension(
     if sha256(result_path) != evidence["result_sha256"]:
         raise ValueError(f"{context} extension evidence SHA256 不一致")
     result = load_object(result_path)
+    if result.get("status") == "valid-source-fix":
+        require_keys(
+            result,
+            {"backend", "dtype", "fresh_process_count", "values", "guards"},
+            str(result_path),
+        )
+        if result["backend"] != REQUIRED_NPU_BACKEND:
+            raise ValueError(
+                f"{result_path} backend 必须为 {REQUIRED_NPU_BACKEND}"
+            )
+        if result["dtype"] != evidence["expected_dtype"]:
+            raise ValueError(f"{result_path} dtype 与 manifest 不一致")
+        values = result["values"]
+        guards = result["guards"]
+        if not isinstance(values, list) or not values:
+            raise ValueError(f"{result_path} source-fix values 不能为空")
+        if result["fresh_process_count"] != len(values) + len(guards):
+            raise ValueError(f"{result_path} fresh process 计数不一致")
+        for index, item in enumerate(values):
+            require_keys(
+                item,
+                {
+                    "backend",
+                    "status",
+                    "dtype",
+                    "bitwise_equal_to_addcdiv_eager",
+                    "max_abs_error_to_addcdiv_eager",
+                    "addcdiv_fma_fused",
+                    "codegen_contract_valid",
+                },
+                f"{result_path}.values[{index}]",
+            )
+            if (
+                item["backend"] != REQUIRED_NPU_BACKEND
+                or item["status"] != "passed"
+                or item["dtype"] != evidence["expected_dtype"]
+                or item["bitwise_equal_to_addcdiv_eager"] is not True
+                or item["max_abs_error_to_addcdiv_eager"] != 0.0
+                or item["addcdiv_fma_fused"] != evidence["expected_counter"]
+                or item["codegen_contract_valid"] is not True
+            ):
+                raise ValueError(
+                    f"{result_path}.values[{index}] source-fix 合同不成立"
+                )
+        if not isinstance(guards, list) or not guards:
+            raise ValueError(f"{result_path} source-fix guards 不能为空")
+        if any(
+            item.get("status") != "passed"
+            or item.get("actual_addcdiv_fma_fused") != 0
+            or item.get("guard_preserved") is not True
+            for item in guards
+        ):
+            raise ValueError(f"{result_path} source-fix guard 合同不成立")
+        return
     require_keys(
         result,
         {

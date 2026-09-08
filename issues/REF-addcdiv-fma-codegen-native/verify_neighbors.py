@@ -61,9 +61,9 @@ def make_case(case_name):
         def fn(s, t1, t2):
             return torch.addcdiv(s, t1, t2, value=2.0)
 
-        # BF16 三臂与 eager 位级一致，纳入正式能力；FP16 三臂输出相同但
-        # 共同偏离 eager，继续作为明确的精度阻断边界。
-        expected_fusion = 1 if case_name == "bfloat16" else 0
+        # BF16 走 FMA；FP16 走同一 re-fusion 入口下的显式低精度舍入
+        # lowering。两者都必须命中并与各自 NPU eager 逐位一致。
+        expected_fusion = 1
         return fn, (self_tensor, tensor1, tensor2), dtype, expected_fusion
 
     if case_name == "integer-self-guard":
@@ -140,7 +140,7 @@ def main() -> int:
         bitwise_equal = bool(torch.equal(compiled, eager))
         max_abs_error = float((compiled.float() - eager.float()).abs().max().item())
         actual_fusion = counters["inductor"]["addcdiv_fma_fused"]
-        bitwise_required = args.case == "bfloat16"
+        bitwise_required = args.case in ("fp16", "bfloat16")
         valid = (
             actual_fusion == expected_fusion
             and compiled.shape == eager.shape

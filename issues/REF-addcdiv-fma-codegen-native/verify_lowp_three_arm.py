@@ -73,7 +73,18 @@ def main():
     parser.add_argument("--artifact-dir", type=Path, required=True)
     parser.add_argument("--dtype", choices=("float16", "bfloat16"), required=True)
     parser.add_argument(
+        "--value",
+        type=float,
+        default=2.0,
+        help="addcdiv Python 标量；默认保持社区 case 的 value=2.0",
+    )
+    parser.add_argument(
         "--arm", choices=("off", "decomposed", "re-fused"), required=True
+    )
+    parser.add_argument(
+        "--source-fix",
+        action="store_true",
+        help="直接验证 torch_npu 工作树中的正式 pass/lowering，不注入候选注册",
     )
     args = parser.parse_args()
     # TORCH_COMPILE_DEBUG_DIR 可能在 torch 导入阶段先创建父目录；允许该空目录，
@@ -86,10 +97,11 @@ def main():
         "task": "T-078",
         "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
         "dtype": args.dtype,
+        "value": args.value,
         "arm": args.arm,
         "backend": None,
         "status": "error",
-        "product_source_modified": False,
+        "product_source_modified": args.source_fix,
         "cpu_fallback_added": False,
         "performance_measured": False,
     }
@@ -108,7 +120,7 @@ def main():
         result["torch_npu_version"] = torch_npu.__version__
         result["source_modules"] = verify_source_overlay()
 
-        if args.arm == "re-fused":
+        if args.arm == "re-fused" and not args.source_fix:
             # 只在本进程内放宽到浮点 dtype，探查候选能力；不修改产品源码。
             from candidate_adapter import (
                 register_candidate_lowering,
@@ -122,10 +134,10 @@ def main():
         inputs, input_hashes = make_inputs(dtype)
 
         def addcdiv_fn(s, t1, t2):
-            return torch.addcdiv(s, t1, t2, value=2.0)
+            return torch.addcdiv(s, t1, t2, value=args.value)
 
         def decomposed_fn(s, t1, t2):
-            return s + (t1 / t2) * 2.0
+            return s + (t1 / t2) * args.value
 
         fn = decomposed_fn if args.arm == "decomposed" else addcdiv_fn
         eager = addcdiv_fn(*inputs)
@@ -145,6 +157,26 @@ def main():
         (args.artifact_dir / "generated_code.py").write_text(code, encoding="utf-8")
         delta = actual.float() - eager.float()
         bitwise_equal = bool(torch.equal(actual, eager))
+        fp16_round_count = code.count(".to(tl.float16)")
+        if args.arm == "re-fused" and args.dtype == "float16":
+            minimum_rounds = 1 if args.value == 1 else 2
+            codegen_contract_valid = (
+                fp16_round_count >= minimum_rounds
+                and "tl.fma" not in code
+                and "triton.language.div_rn" not in code
+            )
+            codegen_contract = (
+                f"至少 {minimum_rounds} 个显式 FP16 舍入，且不使用 FMA/div_rn"
+            )
+        elif args.arm == "re-fused":
+            codegen_contract_valid = (
+                "triton.language.div_rn" in code
+                and (args.value == 1 or "tl.fma" in code)
+            )
+            codegen_contract = "div_rn，且非 value=1 分支使用 tl.fma"
+        else:
+            codegen_contract_valid = True
+            codegen_contract = "归因 arm 不施加修复后 codegen 合同"
         result.update(
             {
                 "input_sha256": input_hashes,
@@ -162,6 +194,9 @@ def main():
                 "generated_code_sha256": hashlib.sha256(code.encode()).hexdigest(),
                 "generated_code_contains_fma": "tl.fma" in code,
                 "generated_code_contains_div_rn": "triton.language.div_rn" in code,
+                "generated_code_fp16_round_count": fp16_round_count,
+                "codegen_contract": codegen_contract,
+                "codegen_contract_valid": codegen_contract_valid,
                 "expected_fusion": 1 if args.arm == "re-fused" else 0,
                 "status": "passed",
             }
@@ -172,6 +207,10 @@ def main():
                 f"actual={result['addcdiv_fma_fused']} "
                 f"expected={result['expected_fusion']}"
             )
+        if args.arm == "re-fused" and not bitwise_equal:
+            raise AssertionError("修复后 re-fused 必须与 NPU eager 逐位一致")
+        if not codegen_contract_valid:
+            raise AssertionError(f"codegen 合同不满足：{codegen_contract}")
     except Exception as error:
         result.update(
             {

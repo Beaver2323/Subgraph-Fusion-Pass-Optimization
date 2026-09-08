@@ -1,9 +1,15 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-08 07:51:59 CST（UTC+08:00）
+> 日志校准时间：2026-09-08 09:12:00 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
+
+- 2026-09-08 09:12 CST：T-078 addcdiv FP16 已完成正式源码修复。根因是 NPU eager 在除法、
+  乘法后暴露 FP16 舍入，而原 Triton 分解/FMA 路径只在末端舍入。新 lowering 在单 Triton
+  kernel 内保留两次低精度边界，并为分解器消去乘一的 `value=1` 图增加独立重融合 pattern。
+  `value=0.3/1/2/7.7` 均 bitwise、counter=1，integer-self/tensor-value guard 均 counter=0；
+  原始 FX/IR/output_code 已追加归档。修复前 OFF 不正确，故不得作为性能收益分母。
 
 - 2026-09-08 07:51:59 CST：T-078 addcdiv 低精度增量完成。GPU FP16/BF16 dtype-only reference
   2/2 有效；NPU `triton_experimental` 六进程三臂显示 BF16 位级一致，已最小扩展产品 guard 并以
