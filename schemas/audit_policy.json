@@ -1,13 +1,14 @@
 {
-  "rule_version": "2026-09-07.1",
-  "validator_version": "2.1.0",
-  "updated_at": "2026-09-07T22:32:00+08:00",
+  "rule_version": "2026-09-08.1",
+  "validator_version": "2.2.0",
+  "updated_at": "2026-09-08T21:10:00+08:00",
   "required_npu_backend": "triton_experimental",
   "history_tasks": ["T-076", "T-077"],
   "rules": {
     "reference": "原始日志重解析：返回码为零、用例数与计划一致、完整 OK，禁止 skip/expected failure/unexpected success 计通过。代码生成断言不能替代数值正确性。",
     "gpu_functional": "GPU 功能 reference 默认共享、可选 --exclusive；--wait-gpu 默认每 1 秒轮询指定卡，默认显存门槛 1024 MiB，可设 0。记录运行策略；不杀其他进程、不改计算模式；共享耗时不得作为正式性能证据。",
     "npu": "只接受 triton_experimental；失败证据可保留，但不得宣称已修复或性能通过。记录校验不等同于原始运行重验。",
+    "community_alignment": "新建或实质更新的comparison必须显式区分FULL_ALIGNED、PARTIAL_ALIGNED、EXPECTED_BACKEND_DIVERGENCE、NOT_ALIGNED_REPAIR_REQUIRED、PENDING_REVIEW，并分别记录对齐、差异、未决范围和处置。旧PASS不得自动外推为完全社区对齐；未对齐项必须进入repair。",
     "performance": "同 revision/输入/后端/测量方法；导入前选择后端，OFF/ON 各三个独立进程，正确性和目标命中先通过，再比较 host/Event p50/p99。",
     "disable": "明确产品关闭免测，保留已有证据；普通 device guard 只算 capability-pending，未经独立评审不得绕过。",
     "history": "原始证据只读；追加带时间戳、规则/校验器版本、代码哈希和源文件哈希的复核记录。直接读取已验证1.3 review及日志补证，不要求重复传FX。bytes=0且空SHA256一致的已绑定日志可确定为空。源码语义、日志重解析、archive完整性分别计数；原有全inventory门禁仍保留。缺失为pending，冲突为failed，不自动回填历史passed；未采集的PID/源码安装态/逐样本数据不得事后推造。",

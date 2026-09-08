@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "generated_at": "2026-09-06T09:40:00+08:00",
+  "generated_at": "2026-09-08T21:10:00+08:00",
   "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
   "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
   "reference": {
@@ -16,11 +16,23 @@
   },
   "npu": {
     "result_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/npu_result.json",
-    "result_sha256": "867d84966fd197058488a851101c69b558d406bf1ac8c4cb6d32568aab762132",
+    "result_sha256": "f3293af3d302502f1621078010ad1a8e017771921269da94d0b142adb0d4917f",
     "environment_fingerprint": "5bddbfd035192005a1911ddd336364b9f0cecb9074376642980bbde87f104a80",
     "tracking_mode": "adapter",
     "execution_success": true,
     "correctness_status": "passed"
+  },
+  "community_alignment": {
+    "status": "PARTIAL_ALIGNED",
+    "aligned_scope": [
+      "value=1 的社区结构合同在 GPU/NPU 均为不命中 FMA pattern，counter=0，只验证 compiled/eager 正确性",
+      "value!=1 的 FP32/BF16 在 GPU/NPU 均命中 addcdiv 重融合，并保持同设备 eager 语义"
+    ],
+    "divergent_scope": [
+      "GPU FP16 使用 div_rn+FMA 指令合同；NPU FP16 为对齐 NPU eager，在单个 Triton kernel 内显式保留除法和乘法后的 FP16 舍入，不生成 div_rn/FMA"
+    ],
+    "open_scope": [],
+    "disposition": "保留经过位级验证的 NPU 专属 FP16 lowering，并将其标为后端实现差异；不伪造 value=1 命中。若后续 NPU eager 或 Triton 舍入语义变化，按同输入三臂合同重新评审并酌情修复。"
   },
   "variant_comparisons": [
     {

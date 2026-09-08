@@ -249,8 +249,9 @@ GPU 侧只改变社区 `64×64/value=2` 的 dtype：FP16/BF16 都位级一致并
 - BF16 的 OFF、显式分解、重融合和 eager 位级一致，正式产品 counter=1；三轮性能中 Event p50
   回退 0.78%、p99 改善 9.86%，判定 `PERF_NEUTRAL` 并保留启用。
 - FP16 的三个 compiled arm 输出完全相同但共同偏离 eager，说明关闭 addcdiv 重融合也不会消除
-  该误差。后续已通过显式保留除法/乘法后的 FP16 舍入修复，并为 `value=1` 增加消乘结构
-  pattern；详见 `issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md`。修复前 OFF 仍不可
+  该误差。后续已通过显式保留除法/乘法后的 FP16 舍入修复 `value!=1` 原 FMA 图；`value=1`
+  仍按社区 bitwise-native 合同预期不命中，曾增加的消乘结构 pattern 已移除。详见
+  `issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md`。修复前 OFF 仍不可
   作为性能分母。
 
 这一区分避免把“真实低精度后端缺口”误记为“本 pattern 引入回归”。完整代码、调用栈、FX/IR 和

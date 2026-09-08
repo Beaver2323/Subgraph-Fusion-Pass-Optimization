@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime
 import hashlib
 import json
 from pathlib import Path
@@ -22,6 +23,16 @@ FORMAL_VERDICTS = {
     "PERF_REGRESSED",
     "BEHAVIOR_UNCHANGED",
     "EXPECTED_PRODUCT_DIVERGENCE",
+}
+COMMUNITY_ALIGNMENT_CUTOFF = datetime.fromisoformat(
+    "2026-09-08T21:10:00+08:00"
+)
+COMMUNITY_ALIGNMENT_STATUSES = {
+    "FULL_ALIGNED",
+    "PARTIAL_ALIGNED",
+    "EXPECTED_BACKEND_DIVERGENCE",
+    "NOT_ALIGNED_REPAIR_REQUIRED",
+    "PENDING_REVIEW",
 }
 
 
@@ -94,7 +105,24 @@ def validate_variant_extension(
             raise ValueError(f"{result_path} source-fix values 不能为空")
         if result["fresh_process_count"] != len(values) + len(guards):
             raise ValueError(f"{result_path} fresh process 计数不一致")
-        for index, item in enumerate(values):
+        counting_values = values
+        if evidence.get("counting_scope") == "value!=1 only":
+            counting_values = [item for item in values if item.get("value") != 1]
+            supersession_path = repo_root / evidence["supersession_path"]
+            correction = load_object(supersession_path)
+            if (
+                correction.get("status") != "contract-corrected"
+                or correction.get("source_contract", {}).get(
+                    "expected_addcdiv_fma_fused"
+                )
+                != 0
+                or correction.get("npu_contract", {}).get(
+                    "add_div_refusion_allowed"
+                )
+                is not False
+            ):
+                raise ValueError(f"{supersession_path} value=1 合同纠正无效")
+        for index, item in enumerate(counting_values):
             require_keys(
                 item,
                 {
@@ -174,6 +202,63 @@ def environment_fingerprint(environment: dict[str, Any]) -> str:
         separators=(",", ":"),
     ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def validate_community_alignment(
+    comparison: dict[str, Any], comparison_path: Path
+) -> None:
+    """校验社区合同对齐范围；新结果不得只给笼统的 aligned/not-aligned。"""
+    generated_at = datetime.fromisoformat(comparison["generated_at"])
+    alignment = comparison.get("community_alignment")
+    if alignment is None:
+        if generated_at >= COMMUNITY_ALIGNMENT_CUTOFF:
+            raise ValueError(
+                f"{comparison_path} 缺少 community_alignment；新结果必须显式记录社区对齐范围"
+            )
+        return
+    if not isinstance(alignment, dict):
+        raise ValueError(f"{comparison_path}.community_alignment 必须是 object")
+    require_keys(
+        alignment,
+        {"status", "aligned_scope", "divergent_scope", "open_scope", "disposition"},
+        f"{comparison_path}.community_alignment",
+    )
+    status = alignment["status"]
+    if status not in COMMUNITY_ALIGNMENT_STATUSES:
+        raise ValueError(f"{comparison_path} community alignment status 非法")
+    for field in ("aligned_scope", "divergent_scope", "open_scope"):
+        values = alignment[field]
+        if not isinstance(values, list) or any(
+            not isinstance(value, str) or not value.strip() for value in values
+        ):
+            raise ValueError(
+                f"{comparison_path}.community_alignment.{field} 必须是非空字符串列表"
+            )
+    if not isinstance(alignment["disposition"], str) or not alignment[
+        "disposition"
+    ].strip():
+        raise ValueError(f"{comparison_path} community alignment disposition 不能为空")
+    if status == "FULL_ALIGNED" and (
+        not alignment["aligned_scope"]
+        or alignment["divergent_scope"]
+        or alignment["open_scope"]
+    ):
+        raise ValueError(f"{comparison_path} FULL_ALIGNED 范围自相矛盾")
+    if status == "PARTIAL_ALIGNED" and (
+        not alignment["aligned_scope"] or not alignment["divergent_scope"]
+    ):
+        raise ValueError(f"{comparison_path} PARTIAL_ALIGNED 必须同时说明对齐与差异范围")
+    if status == "EXPECTED_BACKEND_DIVERGENCE" and not alignment[
+        "divergent_scope"
+    ]:
+        raise ValueError(f"{comparison_path} 预期后端差异缺少差异范围")
+    if status == "NOT_ALIGNED_REPAIR_REQUIRED":
+        if not alignment["divergent_scope"]:
+            raise ValueError(f"{comparison_path} 需修复状态缺少差异范围")
+        if comparison["repair_status"] not in {"queued", "in-progress", "blocked"}:
+            raise ValueError(f"{comparison_path} 社区行为未对齐但未进入 repair 流程")
+    if status == "PENDING_REVIEW" and not alignment["open_scope"]:
+        raise ValueError(f"{comparison_path} 待复核状态缺少未决范围")
 
 
 def validate_npu_result(
@@ -433,6 +518,7 @@ def validate_comparison(
     )
     if comparison["schema_version"] != "1.2":
         raise ValueError(f"{comparison_path} schema_version 必须为 1.2")
+    validate_community_alignment(comparison, comparison_path)
     if comparison["acceptance_unit_id"] != npu_result["acceptance_unit_id"]:
         raise ValueError(f"{comparison_path} acceptance_unit_id 不一致")
     if comparison["upstream_commit"] != npu_result["upstream_commit"]:

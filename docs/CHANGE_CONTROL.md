@@ -1,14 +1,35 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-08 09:12:00 CST（UTC+08:00）
+> 日志校准时间：2026-09-08 22:44:08 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
 
+- 2026-09-08 22:44 CST：补全 CUDA FP16 `addcdiv(value!=1)` 的精确舍入链讲解。CUDA
+  eager 与 Inductor 都使用 FP32 quotient、FP32 FMA 和最终 FP16 store；`div_rn` 固定除法
+  舍入，FMA 消除 mul/add 之间的额外 FP32 舍入。该结论同步到 T-078 低精度指南和
+  issue 讲解报告；NPU FP16 仍以 NPU eager 为 oracle，保留 div/mul 后两个低精度边界。
+
+- 2026-09-08 21:10 CST：新增社区行为部分对齐的强制记录合同。comparison 增加
+  `community_alignment`，分别记录已对齐、差异、未决范围和处置；当前进度矩阵同步展示状态，旧结果
+  缺字段时只标为 `PENDING_REVIEW`。语义/正确性不一致必须进入 repair；后端专属 lowering 若能保持
+  NPU compile/eager 正确性，可标为 `PARTIAL_ALIGNED`，但必须保留差异和复核条件。T-078 addcdiv 已按
+  此规则登记：FP32/BF16 与 value=1 命中合同对齐，FP16 codegen 为有证据的后端专属差异。
+
+- 2026-09-08 20:08 CST：澄清 T-078 addcdiv 低精度验收方向。功能精度以同输入的 NPU
+  `torch.compile` 对 NPU eager 为主判据；CUDA 仅作为计算 dtype、运算顺序和舍入控制的实现
+  参考，不要求 NPU 输出强制逐位复制 CUDA。FP16 因 NPU eager 存在可观察的 div/mul 低精度
+  边界，继续使用 NPU 专属显式舍入 lowering；BF16 已证明可复用 `div_rn + FMA` 并与 NPU
+  eager 位级一致。`value=1` 仍按社区结构合同不命中 FMA pattern，counter 必须为 0。
+- 2026-09-08 19:33 CST：纠正 T-078 `value=1` 合同。社区 bitwise-native 对该分支只要求
+  compiled/eager 位级一致；decomposition 消去乘一后不进入 `div→mul→add` FMA pattern，故
+  GPU/NPU 均应 `addcdiv_fma_fused=0`。已移除 NPU `add(div)` 重融合；旧 counter=1 证据保留为
+  被纠正、不计数历史。value!=1 的 FP16 显式舍入 lowering 结论不变。19:49 CST 的动态重跑在
+  测试代码执行前被 `aclInit 507008` 环境错误阻断，不计为失败或 PASS，待 NPU 可见层再认证。
 - 2026-09-08 09:12 CST：T-078 addcdiv FP16 已完成正式源码修复。根因是 NPU eager 在除法、
   乘法后暴露 FP16 舍入，而原 Triton 分解/FMA 路径只在末端舍入。新 lowering 在单 Triton
-  kernel 内保留两次低精度边界，并为分解器消去乘一的 `value=1` 图增加独立重融合 pattern。
-  `value=0.3/1/2/7.7` 均 bitwise、counter=1，integer-self/tensor-value guard 均 counter=0；
+  kernel 内保留两次低精度边界。该时点增加的 `value=1` 独立重融合已被上述 19:33 合同纠正
+  所取代；`value=0.3/2/7.7` 的 value!=1 路径 bitwise、counter=1，两个 guard counter=0；
   原始 FX/IR/output_code 已追加归档。修复前 OFF 不正确，故不得作为性能收益分母。
 
 - 2026-09-08 07:51:59 CST：T-078 addcdiv 低精度增量完成。GPU FP16/BF16 dtype-only reference

@@ -135,7 +135,7 @@
   "artifacts": [
     {"role": "npu-bitwise-adapter", "path": "issues/REF-addcdiv-fma-bitwise-native/npu_adapter.py", "sha256": "94f6aeb4a0be1677fd69de94772cbe6e3148fca01d06a353a4190de45d2e3ef9", "availability": "repository"},
     {"role": "npu-codegen-adapter", "path": "issues/REF-addcdiv-fma-codegen-native/npu_adapter.py", "sha256": "2dca76b37a3814576eeb1dc598a3b34c338a043f8837815e4dc4d55b66b6ffbd", "availability": "repository"},
-    {"role": "repair-verification-report", "path": "issues/REF-addcdiv-fma-codegen-native/修复验证报告.md", "sha256": "00944d3070f434e460df78a98c6ff1c62e1b21f1156807d233db07672bb95aa3", "availability": "repository"},
+    {"role": "repair-verification-report", "path": "issues/REF-addcdiv-fma-codegen-native/修复验证报告.md", "sha256": "e30d91c560e0b076ddb6dbe846b3457b0b680b568824d18fb91a2e1dc8724184", "availability": "repository"},
     {"role": "performance-summary", "path": "results/current/T-078/performance_summary.json", "sha256": "bd7f0c33c83f17edc78d31822bbd8bc230bad45ae488c62f93184ac3e563c297", "availability": "repository"},
     {"role": "bitwise-source-fix-result", "path": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-bitwise-native/source-fix-lp6oiclu/source_fix_result.json", "sha256": "62bc6593b76235f0c07f4f2e18326d4d27bbbe90a3c0c805fd5ee1090702e591", "availability": "external-run-root"},
     {"role": "codegen-source-fix-result", "path": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/source-fix-ed64g13n/source_fix_result.json", "sha256": "ea7c395d0b0d8410ccf291b175ef95720d95157f4c57766983ff148f07633851", "availability": "external-run-root"}

@@ -4,6 +4,8 @@
 
 > 2026-09-08 07:51:59 CST 增量结论：BF16 已完成 NPU 三臂、正式源码修复和性能处置并保持启用；
 > FP16 三条 compiled 路径曾共同偏离 eager；2026-09-08 已完成后端专属显式舍入修复。
+> 2026-09-08 19:33 CST 合同纠正：`value=1` 只作 bitwise 邻接，预期不命中 FMA；NPU
+> `add(div)` 补充重融合已移除，旧 counter=1 证据不计数。
 > 原 20 variants 历史快照不覆盖，当前结论见文末增量和 issue 的 FP16 精度修复报告。
 > 2026-09-08 06:07 CST 覆盖修订：本文“闭环”仅适用于当时冻结的 20 个 variants，addcdiv
 > 社区 case 实际只有 FP32。上游 guard 允许 FP16/BF16，现已新增 2 个 pending dtype variants；
@@ -140,9 +142,11 @@ SHA256 为 `1c4759582da3a19b382504606932e14002117334c609a544d4b136627f142b17`。
 
 上述 precision blocked 状态是修复前历史。专项探针证明 NPU eager FP16 需要在除法与乘法后分别
 舍入，并且 Python 标量也要先量化到 FP16。当前产品候选已在 NPU 专属 lowering 中恢复这些边界，
-并为 `value=1` 被分解器消去乘法的图增加 `add(div)` 重融合 pattern。
+`value=1` 的 `add(div)` 重融合曾作为后端附加路径加入，但 2026-09-08 19:33 CST 复核确认它超出
+社区 FMA 合同，现已移除；该分支按 bitwise-native 合同预期 counter=0。
 
-正式 6 个 fresh process 结果：`value=0.3/1/2/7.7` 全部 bitwise、最大误差 0、counter=1；
+原 6 个 fresh process 结果中的 `value=1 counter=1` 已降级为不计数历史；其余
+`value=0.3/2/7.7` 的 value!=1 路径保持 bitwise、最大误差 0、counter=1；
 integer-self 与 tensor-valued value 均 counter=0。旧 sidecar 不覆盖，新状态保存在
 `fp16_source_fix_result_20260908.json`。修复前 OFF 因不正确而不能作为性能 denominator。
 完整源码框、调用栈和修复前后 FX/IR/output_code 见

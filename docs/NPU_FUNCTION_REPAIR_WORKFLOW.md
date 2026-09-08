@@ -1,6 +1,6 @@
 # NPU 功能验证、诊断与最小修复实操指南
 
-> 更新时间：2026-09-07 11:20 CST（UTC+08:00）
+> 更新时间：2026-09-08 21:10 CST（UTC+08:00）
 >
 > 适用范围：本仓库 acceptance unit 在 Ascend NPU 上的功能验证、差异分类、最小修复和回归
 >
@@ -176,6 +176,19 @@ unoptimized fallback，因此不能写成“B2B 融合已生效”。decompose-B
 - `EXPECTED_PRODUCT_DIVERGENCE`：有明确 NPU 产品 gate/device policy，原图 fallback 正确；
 - `CAPABILITY_PENDING`：只有 generic cuda/xpu guard，没有明确 NPU 产品 disable；需单独评审探针；
 - `NPU_REGRESSION`：没有合法产品边界，NPU 在同一合同上出现错误或异常。
+
+comparison 还必须独立记录社区对齐范围，不能把总体 verdict 当成“全部行为一致”：
+
+- `FULL_ALIGNED`：社区语义、目标命中/不命中合同和 NPU compile/eager 正确性均已覆盖，且无已知差异；
+- `PARTIAL_ALIGNED`：上述合同的一部分成立，但存在已证明合理的后端实现差异；必须列出对齐范围、差异
+  范围、未决范围和保留/修复理由；
+- `EXPECTED_BACKEND_DIVERGENCE`：有明确产品或 backend 边界；
+- `NOT_ALIGNED_REPAIR_REQUIRED`：语义、命中合同或正确性不成立，必须进入 repair；
+- `PENDING_REVIEW`：证据不足，不能把历史 PASS 推断为完全对齐。
+
+是否修复按最早分歧层决定：数值/语义错误必须修；命中合同漂移须先确认是否有明确产品边界；仅
+codegen 指令序列不同但同设备 eager、目标改写和性能合同成立时，可保留后端专属 lowering，并标为
+`PARTIAL_ALIGNED`。修复后仍须重新填写范围，不得只把 `repair_status` 改成 `verified`。
 
 ## 7. 第五步：只做最小、分层修复
 

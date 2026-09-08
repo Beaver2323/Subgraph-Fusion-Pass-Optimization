@@ -80,6 +80,12 @@ FIELDNAMES = [
     "npu_correctness_status",
     "comparison_verdict",
     "repair_status",
+    "community_alignment_status",
+    "community_alignment_source",
+    "community_aligned_scope",
+    "community_divergent_scope",
+    "community_open_scope",
+    "community_alignment_disposition",
     "performance_status",
     "performance_verdict",
     "current_phase",
@@ -147,6 +153,31 @@ def phase(row: dict) -> str:
     if row["reference_status"].startswith("pending"):
         return "awaiting-gpu-reference"
     return "awaiting-npu"
+
+
+def community_alignment(comparison: dict | None) -> dict[str, str]:
+    """读取显式社区对齐结论；旧结果只标记待复核，不反推完全对齐。"""
+    default = {
+        "community_alignment_status": "PENDING_REVIEW",
+        "community_alignment_source": "legacy-missing-explicit",
+        "community_aligned_scope": "",
+        "community_divergent_scope": "",
+        "community_open_scope": "历史结果缺少显式社区对齐范围，需在后续再认证时补录",
+        "community_alignment_disposition": "保留原功能/性能结论，但不得据此外推为完全社区对齐",
+    }
+    if not comparison:
+        return default
+    alignment = comparison.get("community_alignment")
+    if not isinstance(alignment, dict):
+        return default
+    return {
+        "community_alignment_status": str(alignment.get("status") or "PENDING_REVIEW"),
+        "community_alignment_source": "explicit",
+        "community_aligned_scope": "；".join(alignment.get("aligned_scope", [])),
+        "community_divergent_scope": "；".join(alignment.get("divergent_scope", [])),
+        "community_open_scope": "；".join(alignment.get("open_scope", [])),
+        "community_alignment_disposition": str(alignment.get("disposition") or ""),
+    }
 
 
 def build_rows(generated_at: str) -> list[dict]:
@@ -265,6 +296,10 @@ def build_rows(generated_at: str) -> list[dict]:
                 comparison_verdict = "BEHAVIOR_UNCHANGED"
                 repair_status = "not-needed"
 
+            alignment = community_alignment(
+                comparison if not compact_functional else npu
+            )
+
             plan_item = plan_items[unit_id]
             performance_status = str(plan_item.get("performance_status") or "unknown")
             performance_verdict = str(plan_item.get("verdict") or "planned")
@@ -336,6 +371,7 @@ def build_rows(generated_at: str) -> list[dict]:
                 "npu_correctness_status": correctness,
                 "comparison_verdict": comparison_verdict,
                 "repair_status": repair_status,
+                **alignment,
                 "performance_status": performance_status,
                 "performance_verdict": performance_verdict,
                 "current_phase": "",
@@ -405,11 +441,12 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
         f"- 当前 NPU 结果实际观测 backend：`{', '.join(observed) if observed else '无'}`。",
         "- 本表汇总已登记结论，不代表严格历史再认证通过；T-076/T-077 的独立补证状态见 [最新审计](../results/audits/latest.json)。",
         "- `npu_execution_status=failed` 不自动表示数值错误；例如产品 gate 关闭时，目标命中失败可与原图 correctness 通过同时成立，应结合 comparison verdict 阅读。",
+        "- 社区对齐列必须区分完全对齐、部分对齐、预期后端差异、需修复和待复核；旧结果缺少显式字段时一律显示待复核，不从既有 PASS 自动外推。",
         "",
         "## 单元矩阵",
         "",
-        "| T | Acceptance unit | Stage | 覆盖 | Reference | NPU backend | NPU 执行 | Correctness | Comparison | Repair | 性能处置 | 当前阶段 |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| T | Acceptance unit | Stage | 覆盖 | Reference | NPU backend | NPU 执行 | Correctness | Comparison | Repair | 社区对齐/处置 | 性能处置 | 当前阶段 |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in rows:
         performance = f"{row['performance_status']} / {row['performance_verdict']}"
@@ -428,6 +465,9 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
                     row["npu_correctness_status"],
                     row["comparison_verdict"],
                     row["repair_status"],
+                    row["community_alignment_status"]
+                    + " / "
+                    + row["community_alignment_disposition"],
                     performance,
                     row["current_phase"],
                 )
@@ -443,6 +483,7 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
             "- `reference_backend=inductor-default` 表示 CUDA/GPU 对照端，不能据此声称 NPU 使用了 default backend。",
             "- 只有 `observed_npu_backend=triton_experimental` 的动态结果可进入当前 NPU comparison。空值表示尚未运行，不表示可使用其他 backend。",
             "- 性能证据路径指向 `results/current/` 时表示已有处置；指向 `upstream/*_performance_plan.yaml` 时只表示测量合同已准备。",
+            "- 社区对齐的完整已对齐/差异/未决范围保存在 CSV；`source=legacy-missing-explicit` 表示旧结果仍需显式再认证。",
             "- 修改 manifest/result 后运行 `python scripts/generate_current_acceptance_matrix.py --write` 更新，再运行 `--check` 做一致性校验。",
             "",
         ]

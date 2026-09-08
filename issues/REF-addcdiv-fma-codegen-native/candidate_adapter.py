@@ -178,27 +178,6 @@ def register_candidate_pattern() -> None:
         counters["inductor"]["addcdiv_fma_fused"] += 1
         match.replace_by_example(repl, [inp, t1, t2, value])
 
-    @register_graph_pattern(
-        CallFunction(
-            ATEN.add.Tensor,
-            KeywordArg("inp"),
-            CallFunction(
-                ATEN.div.Tensor,
-                KeywordArg("t1"),
-                KeywordArg("t2"),
-            ),
-        ),
-        pass_dict=post_grad.pass_patterns[2],
-        extra_check=eligible,
-    )
-    def fuse_addcdiv_value_one(match: Match, inp, t1, t2) -> None:
-        def repl(inp, t1, t2):
-            return ATEN.addcdiv(inp, t1, t2, value=1)
-
-        counters["inductor"]["addcdiv_fma_fused"] += 1
-        match.replace_by_example(repl, [inp, t1, t2])
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifact-dir", type=Path, required=True)

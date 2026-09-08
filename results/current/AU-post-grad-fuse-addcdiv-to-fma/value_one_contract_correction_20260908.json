@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T19:33:00+08:00",
+  "task": "T-078",
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "case_id": "REF-addcdiv-fma-bitwise-native",
+  "variant_id": "value-one-bitwise-positive",
+  "status": "contract-corrected",
+  "source_contract": {
+    "value": 1,
+    "expected_structure": "div-then-add-after-mul-one-elimination",
+    "expected_addcdiv_fma_fused": 0,
+    "expected_fma": false,
+    "expected_behavior": "compiled 与 eager bitwise equal"
+  },
+  "npu_contract": {
+    "backend": "triton_experimental",
+    "expected_addcdiv_fma_fused": 0,
+    "add_div_refusion_allowed": false,
+    "performance_counting": "not-applicable-non-hit-neighbor"
+  },
+  "supersedes_claims_in": [
+    "results/current/AU-post-grad-fuse-addcdiv-to-fma/fp16_source_fix_result_20260908.json",
+    "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/value-one/",
+    "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/summary.json"
+  ],
+  "superseded_claim": "value=1 addcdiv_fma_fused=1 表示目标 FMA pass 命中",
+  "historical_artifact_policy": "保留原始工件但不计入当前功能、命中或性能结论",
+  "source_change": "已移除 NPU add(div) 到 addcdiv(value=1) 的补充重融合注册",
+  "dynamic_revalidation": {
+    "status": "environment-blocked-not-counted",
+    "attempted_at": "2026-09-08T19:49:20+08:00",
+    "run_dir": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/fp16-source-fix-20260908T194920+0800",
+    "error": "aclInit 507008: current execution layer could not obtain NPU device count",
+    "code_executed": false,
+    "required_next": "在 NPU 可见执行层重跑修正后的 3 个 value!=1 与 2 个 guard；value=1 运行 bitwise-native 并要求 counter=0"
+  }
+}

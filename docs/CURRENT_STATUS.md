@@ -1,6 +1,6 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-08 09:12 CST（UTC+08:00）
+> 更新时间：2026-09-08 19:33 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
 > 当前阶段：T-076～T-083共28个acceptance units已冻结GPU reference，并全部完成NPU/comparison与性能处置；T-076/T-077严格再认证单列，后续编号保留；产品改动尚未合入。
@@ -64,8 +64,10 @@ T-078 原冻结范围的 4 个 post-grad 单元、12/12 原生 cases、20/20 var
 2026-09-08 覆盖复核新增 addcdiv FP16/BF16 两条 dtype-only GPU case，2/2 reference 有效；NPU
 六进程三臂归因后 BF16 已通过位级/codegen 验证并以 `PERF_NEUTRAL` 保持启用。FP16 修复前的
 三条 compiled 路径共同偏离 eager，根因为缺少除法、乘法后的 FP16 舍入；现已通过 NPU 专属
-显式舍入 lowering 和 `value=1` 补充 pattern 修复，`value=0.3/1/2/7.7` 全部 bitwise、counter=1，
-两个 guard counter=0，该单元为 `5 verified + 0 pending`。NPU
+显式舍入 lowering 修复 `value!=1` 的原 FMA 图；`value=1` 已纠正为社区 bitwise 邻接，
+预期不命中且 counter=0，不再注册 `add(div)` 重融合。此前 `value=1 counter=1` 的附加证据仅作
+被纠正历史、不参与验收；该单元仍为 `5 verified + 0 pending`，因为 FP16 扩展 variant 原合同是
+`value=2`。NPU
 `triton_experimental` 上补齐 addcdiv FP32/BF16/FP16 pattern/lowering，并修复
 partial amin→min 的 Triton Ascend NaN helper；两项均通过同合同回归。性能处置结果为 addcdiv
 `PERF_NEUTRAL`、partial `PERF_MIXED`、addmm unfuse `PERF_REGRESSED`、baddbmm unfuse

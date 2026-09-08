@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-08 06:07 CST（UTC+08:00）
+> 更新时间：2026-09-08 21:10 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -472,6 +472,31 @@ BEHAVIOR_UNCHANGED
 
 只有 reference contract 稳定而 NPU 行为变坏时，才能标记 `NPU_REGRESSION`。
 
+### 14.1 社区行为对齐范围
+
+从 2026-09-08 21:10 CST 起，新建或实质更新的 comparison 必须填写
+`community_alignment`，并在当前进度矩阵中显式展示。状态只能是：
+
+```text
+FULL_ALIGNED
+PARTIAL_ALIGNED
+EXPECTED_BACKEND_DIVERGENCE
+NOT_ALIGNED_REPAIR_REQUIRED
+PENDING_REVIEW
+```
+
+每条结论必须分别记录 `aligned_scope`、`divergent_scope`、`open_scope` 和
+`disposition`。pattern 是否命中、改写合同是否一致、同设备 compile/eager 数值是否一致，以及
+最终 codegen 指令是否相同，是四个不同问题，不得用其中一个替代其余问题。
+
+- 社区语义或 NPU eager 正确性不一致时，标记 `NOT_ALIGNED_REPAIR_REQUIRED` 并进入 repair；
+- 语义、命中和正确性成立，但为保持 NPU eager 语义采用后端专属 lowering/codegen 时，标记
+  `PARTIAL_ALIGNED`，保留差异证据并评审是否需要继续修复；
+- 明确产品/backend disable 导致的差异标记 `EXPECTED_BACKEND_DIVERGENCE`，性能按既有规则免测；
+- 缺少足够证据时标记 `PENDING_REVIEW`，不得从历史 PASS 自动外推为完全对齐；
+- 修复后必须使用同一 community contract、同一 NPU backend 和同设备 eager oracle 重跑，再把状态
+  更新为 `FULL_ALIGNED` 或有证据的 `PARTIAL_ALIGNED`。
+
 ## 15. Correctness 和性能门禁
 
 correctness 失败时优先比较 pass OFF/ON，检查 transformation、decomposition、lowering 和 guard。
@@ -508,6 +533,7 @@ correctness 未通过，不运行或不发布性能收益结论。
 - correctness 明确；
 - 性能已完成或有明确“不适用/未执行”理由；
 - final verdict、failure layer 和 repair status 已写入 matrix；
+- 社区行为对齐状态及已对齐、差异、未决范围和处置已写入 matrix；
 - 版本间 diff 可计算；
 - 修复项有 regression expectation。
 

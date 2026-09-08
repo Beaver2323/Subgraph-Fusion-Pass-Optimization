@@ -94,6 +94,21 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             row["current_phase"],
             "functional-comparison-closed",
         )
+        self.assertEqual(row["community_alignment_status"], "PARTIAL_ALIGNED")
+        self.assertEqual(row["community_alignment_source"], "explicit")
+        self.assertIn("NPU eager", row["community_divergent_scope"])
+
+    def test_legacy_results_are_not_inferred_as_fully_aligned(self):
+        rows = matrix.build_rows("2026-09-08T21:10:00+08:00")
+        legacy = next(
+            item
+            for item in rows
+            if item["acceptance_unit_id"] == "AU-apply-gumbel-max-trick"
+        )
+        self.assertEqual(legacy["community_alignment_status"], "PENDING_REVIEW")
+        self.assertEqual(
+            legacy["community_alignment_source"], "legacy-missing-explicit"
+        )
 
     def test_t081_t083_results_bind_backend_and_learning_evidence(self):
         rows = matrix.build_rows("2026-09-08T03:17:00+08:00")

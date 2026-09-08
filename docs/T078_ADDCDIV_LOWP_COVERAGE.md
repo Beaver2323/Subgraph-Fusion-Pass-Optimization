@@ -1,8 +1,9 @@
 # T-078 addcdiv FP16/BF16 覆盖修订与验证步骤
 
-> 更新时间：2026-09-08 07:51:59 CST（UTC+08:00）
+> 更新时间：2026-09-08 22:44:08 CST（UTC+08:00）
 > 当前状态：FP32/BF16 已完成功能与性能闭环；FP16 GPU reference 有效，NPU 已通过显式低精度
-> 舍入 lowering 和 `value=1` 补充 pattern 完成功能闭环。修复前 OFF 不正确，FP16 暂无合法
+> 舍入 lowering 修复 `value!=1` 原 FMA 图。`value=1` 预期不命中，已移除补充 pattern。
+> 修复前 OFF 不正确，FP16 暂无合法
 > pass 收益 denominator。
 
 ## 1. 为什么需要补测
@@ -37,6 +38,18 @@ use_fma = (
 if use_fma:
     return ops.fma(value_expr, ops.div_rn(t1_val, t2_val), self_val)
 ```
+
+CUDA FP16 eager 的 `acc_type` 是 FP32，所以 `value!=1` 与 Inductor 共享如下舍入链：
+
+```text
+q32   = RN_FP32(float(t1) / float(t2))
+r32   = RN_FP32_FMA(float(value), q32, float(self))
+out16 = RN_FP16(r32)
+```
+
+两条路径都不对 quotient/product 做 FP16 中间舍入。`div_rn` 固定除法的 FP32 舍入，
+FMA 避免普通 mul/add 之间多一次 FP32 舍入，最终 store 才落回 FP16。因此 CUDA 的
+位级一致来自 eager/compiled 使用相同的 FP32 运算顺序和舍入边界，不是忽略了低精度。
 
 但两条社区测例使用未指定 dtype 的 `torch.randn(64, 64)`，实际只覆盖 FP32。原统计矩阵把
 3 个 FP32 variants 写成整个 acceptance unit 已覆盖，遗漏了源码允许而社区未执行的低精度域。
@@ -126,8 +139,8 @@ torch.compile
 - FP32：功能修复已验证，`triton_experimental` 性能为 `PERF_NEUTRAL`。
 - BF16：产品 guard 已最小放宽，正式源码位级/codegen 验证通过；三轮 OFF/ON 为
   `PERF_NEUTRAL`，保持启用。
-- FP16：GPU reference 有效；NPU 通过显式保存除法/乘法后的 FP16 舍入和 `value=1` 补充 pattern
-  完成功能修复。4 个标量值均 bitwise、counter=1，两个 guard counter=0。
+- FP16：GPU reference 的正式扩展合同为 `value=2`。NPU 对 `value!=1` 原 FMA 图显式保存除法、
+  乘法后的 FP16 舍入并保持 counter=1；`value=1` 只属于 bitwise 邻接，预期 counter=0。
 - 当前矩阵显示 5 个覆盖 variants：5 个已验证、0 个 pending。
 
 ## 6. 2026-09-08 GPU 回传复核
@@ -146,7 +159,9 @@ CUDA 12.6、A100 上执行：
 ## 7. NPU 修复与性能结果
 
 产品源码的当前范围为 `(FP32, FP16, BF16)`。FP32/BF16 使用 FMA/div_rn；FP16 使用后端专属
-显式舍入 lowering。正式 FP16 的 `0.3/1/2/7.7` 均 bitwise true、最大误差 0、counter=1。
+显式舍入 lowering。正式计数范围是 FP16 `value=0.3/2/7.7`：均 bitwise true、最大误差 0、
+counter=1。旧证据中的 `value=1 counter=1` 来自已移除的 `add(div)` 补充 pattern，只保留为
+被纠正历史；它不参与 FMA acceptance unit 或性能统计。
 BF16 性能沿用社区功能 case 的 `64×64/value=2`，
 三轮 OFF/ON 的 NPU Event p50 回退 `0.78%`、p99 改善 `9.86%`，没有显存或 dispatch 变化，按
 阈值判定 `PERF_NEUTRAL`。
@@ -162,3 +177,6 @@ BF16 性能沿用社区功能 case 的 `64×64/value=2`，
 FP16 没有报告正式 OFF/ON 收益：修复前 OFF 本身不等价于 eager，不能作为收益 denominator。
 详细根因、源码框、调用栈、FX/IR/output_code 对照见
 [FP16 精度修复报告](../issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md)。
+
+社区 FP16 eager、Inductor lowering 与通用 `emulate_precision_casts` 的边界详见
+[社区 FP16 精度处理与 value=1 合同纠正](../issues/REF-addcdiv-fma-codegen-native/社区FP16精度处理与value1合同纠正.md)。

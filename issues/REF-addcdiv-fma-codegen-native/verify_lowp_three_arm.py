@@ -158,8 +158,15 @@ def main():
         delta = actual.float() - eager.float()
         bitwise_equal = bool(torch.equal(actual, eager))
         fp16_round_count = code.count(".to(tl.float16)")
-        if args.arm == "re-fused" and args.dtype == "float16":
-            minimum_rounds = 1 if args.value == 1 else 2
+        expected_fusion = (
+            1 if args.arm == "re-fused" and args.value != 1 else 0
+        )
+        if (
+            args.arm == "re-fused"
+            and args.dtype == "float16"
+            and expected_fusion == 1
+        ):
+            minimum_rounds = 2
             codegen_contract_valid = (
                 fp16_round_count >= minimum_rounds
                 and "tl.fma" not in code
@@ -168,7 +175,7 @@ def main():
             codegen_contract = (
                 f"至少 {minimum_rounds} 个显式 FP16 舍入，且不使用 FMA/div_rn"
             )
-        elif args.arm == "re-fused":
+        elif args.arm == "re-fused" and expected_fusion == 1:
             codegen_contract_valid = (
                 "triton.language.div_rn" in code
                 and (args.value == 1 or "tl.fma" in code)
@@ -197,7 +204,7 @@ def main():
                 "generated_code_fp16_round_count": fp16_round_count,
                 "codegen_contract": codegen_contract,
                 "codegen_contract_valid": codegen_contract_valid,
-                "expected_fusion": 1 if args.arm == "re-fused" else 0,
+                "expected_fusion": expected_fusion,
                 "status": "passed",
             }
         )
@@ -208,7 +215,7 @@ def main():
                 f"expected={result['expected_fusion']}"
             )
         if args.arm == "re-fused" and not bitwise_equal:
-            raise AssertionError("修复后 re-fused 必须与 NPU eager 逐位一致")
+            raise AssertionError("compiled 必须与 NPU eager 逐位一致")
         if not codegen_contract_valid:
             raise AssertionError(f"codegen 合同不满足：{codegen_contract}")
     except Exception as error:

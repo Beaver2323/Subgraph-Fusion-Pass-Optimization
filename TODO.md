@@ -199,8 +199,8 @@ T-077 GPU 准备：
   dtype-only 派生 GPU case，并完成 2/2 reference；
 - [x] 在 NPU `triton_experimental` 上完成 OFF/分解/重融合三臂同输入精度归因；
 - [x] BF16 以 FMA/div_rn 位级闭环并完成 `PERF_NEUTRAL` 处置；
-- [x] FP16 以显式除法/乘法舍入 lowering 和 `value=1` 补充 pattern 修复；4 个标量位级一致、
-  counter=1，两个邻接 guard counter=0；
+- [x] FP16 的 `value!=1` 原 FMA 图以显式除法/乘法舍入 lowering 修复；`value=1` 按
+  `addcdiv-fma-bitwise-native` 合同保持不命中、counter=0，不再注册 `add(div)` 重融合；
 - [x] FP16 性能记为“正确性修复完成但无合法修复前 OFF 分母”，不沿用 FP32/BF16 verdict，
   也不拿错误路径制造收益。
 

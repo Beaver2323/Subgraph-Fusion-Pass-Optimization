@@ -16,7 +16,9 @@ WORK = Path("/home/z50063656/tmp")
 TRACKER = Path("/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization")
 ISSUE = TRACKER / "issues/REF-addcdiv-fma-codegen-native"
 OVERLAY = TRACKER / "runners/t078_source_overlay"
-VALUES = (0.3, 1.0, 2.0, 7.7)
+# value=1 在 decomposition 中消去乘一，不属于 div->mul->add FMA pattern。
+# 原生 bitwise case 单独要求它正确且 addcdiv_fma_fused=0。
+VALUES = (0.3, 2.0, 7.7)
 GUARDS = ("integer-self-guard", "tensor-value-guard")
 
 

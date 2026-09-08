@@ -257,6 +257,23 @@ class ComparisonTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "correctness 与 variants"):
             self.validate_record()
 
+    def test_new_comparison_requires_explicit_community_alignment(self):
+        self.record["generated_at"] = "2026-09-08T21:10:00+08:00"
+        with self.assertRaisesRegex(ValueError, "缺少 community_alignment"):
+            self.validate_record()
+
+    def test_partial_alignment_requires_both_scopes(self):
+        self.record["generated_at"] = "2026-09-08T21:10:00+08:00"
+        self.record["community_alignment"] = {
+            "status": "PARTIAL_ALIGNED",
+            "aligned_scope": ["数值语义一致"],
+            "divergent_scope": [],
+            "open_scope": [],
+            "disposition": "保留差异并复核",
+        }
+        with self.assertRaisesRegex(ValueError, "必须同时说明对齐与差异范围"):
+            self.validate_record()
+
 
 class AppendOnlyVariantExtensionTests(unittest.TestCase):
     def setUp(self):
@@ -291,7 +308,7 @@ class AppendOnlyVariantExtensionTests(unittest.TestCase):
                 self.result, self.result_path, ROOT, unit
             )
 
-    def test_fp16_source_fix_sidecar_is_strict_and_complete(self):
+    def test_fp16_source_fix_sidecar_preserves_corrected_counting_scope(self):
         sidecar = json.loads(
             (
                 ROOT
@@ -306,13 +323,30 @@ class AppendOnlyVariantExtensionTests(unittest.TestCase):
             [item["value"] for item in sidecar["values"]],
             [0.3, 1.0, 2.0, 7.7],
         )
-        for item in sidecar["values"]:
+        counting_values = [
+            item for item in sidecar["values"] if item["value"] != 1.0
+        ]
+        for item in counting_values:
             self.assertTrue(item["bitwise_equal_to_addcdiv_eager"])
             self.assertEqual(item["mismatch_count"], 0)
             self.assertEqual(item["addcdiv_fma_fused"], 1)
             self.assertFalse(item["generated_code_contains_fma"])
             self.assertFalse(item["generated_code_contains_div_rn"])
             self.assertTrue(item["codegen_contract_valid"])
+        correction = json.loads(
+            (
+                ROOT
+                / "results/current/AU-post-grad-fuse-addcdiv-to-fma/"
+                "value_one_contract_correction_20260908.json"
+            ).read_text()
+        )
+        self.assertEqual(correction["status"], "contract-corrected")
+        self.assertEqual(
+            correction["source_contract"]["expected_addcdiv_fma_fused"], 0
+        )
+        self.assertFalse(
+            correction["npu_contract"]["add_div_refusion_allowed"]
+        )
         self.assertTrue(all(item["guard_preserved"] for item in sidecar["guards"]))
 
 
