@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-086",
+  "generated_at": "2026-09-09T00:35:07+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "performance_plan": {
+    "path": "upstream/t086_performance_plan.yaml",
+    "status": "implemented-awaiting-runtime-validation"
+  },
+  "case_guide": {
+    "path": "docs/T086_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t086_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG与TORCH_TRACE逐case采集",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600,
+    "minimum_gpus": 1,
+    "distributed_world_size": null
+  },
+  "cases": [
+    {
+      "case_id": "REF-index-put-reinplace-positive-native",
+      "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_index_put_reinplace_cuda",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "dead-input-index-put-positive"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "GPUTests.common将fixture复制到实际CUDA设备并比较compiled/eager及mutation",
+        "可重入原位分支generated_kernel_count=1",
+        "原生unittest完整执行，skip/xfail/缺失方法均不得通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "evidence_scope": "gpu-compiled-functional-mutation-and-kernel-count"
+    },
+    {
+      "case_id": "REF-index-put-reinplace-negative-native",
+      "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_index_put_failed_reinplace_cuda",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "live-input-index-put-negative"
+      ],
+      "expected_match": false,
+      "expected_assertions": [
+        "GPUTests.common将fixture复制到实际CUDA设备并比较input与updated两个输出",
+        "活跃input保护分支generated_kernel_count=2",
+        "原生unittest完整执行，skip/xfail/缺失方法均不得通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "evidence_scope": "gpu-compiled-functional-alias-guard-and-kernel-count"
+    }
+  ],
+  "non_executed_variants": []
+}

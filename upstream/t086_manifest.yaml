@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-09T00:35:07+08:00",
+  "status": "gpu-reference-and-performance-prepared-awaiting-device-validation",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-086 provisional units逐项回到冻结PyTorch源码、社区测试和benchmark树复核",
+    "selected_acceptance_units": [
+      "AU-post-grad-reinplace-inplaceable-ops"
+    ],
+    "corrections": [
+      "reciprocal_sqrt_to_rsqrt的社区test_reciprocal_sqrt_to_rsqrt直接断言rsqrt与counter，但输入torch.rand(64)未指定device，实际为CPU；当前不能冻结GPU分母。",
+      "reinplace原候选错误映射到test_dtype_view_clone_elimination；该测试属于fix_auto_functionalized_dtype_views。改用GPUTests中实际迁移到GPU并断言1/2个kernel的index_put正负例。",
+      "remove_assert_ops没有直接post-grad社区测试；profiler测试不能证明该pass。",
+      "remove_noop_ops候选test_uneven_sharding_spmd_graphs只证明分布式不应删除的保护分支；pre-grad remove_noop测试属于另一pass，不能充当post-grad正例。",
+      "remove_profiler_ops的直接社区测试使用CPU张量；不能作为GPU实际设备证据。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": null,
+    "scope": "原生GPUTests实际CUDA编译、数值、mutation/alias及kernel-count合同；零设备准备阶段不预填运行结论",
+    "suite_status": "prepared-awaiting-gpu-run"
+  },
+  "counting_policy": {
+    "current_manifest_units": 1,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "只有原生GPU case无skip/xfail、eager/compiled与mutation合同通过、FX artifacts有效并经人工复核后，才冻结该单元"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+      "contract_name": "post-grad可安全index_put重入原位与活跃输入保护",
+      "stage": "post_grad",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "pending-gpu-reference-review",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 464,
+          "symbol": "reinplace_inplaceable_ops",
+          "role": "post-grad-pipeline-entry"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/reinplace.py",
+          "line": 1062,
+          "symbol": "reinplace_inplaceable_ops",
+          "role": "target-pass"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_torchinductor.py::GPUTests.test_index_put_reinplace_cuda",
+          "role": "direct-community-positive-contract",
+          "evidence_scope": "GPUTests.common将CPU fixture复制到GPU；in-place index_put后expand与eager一致且generated_kernel_count=1"
+        },
+        {
+          "nodeid": "test/inductor/test_torchinductor.py::GPUTests.test_index_put_failed_reinplace_cuda",
+          "role": "direct-community-negative-contract",
+          "evidence_scope": "GPUTests.common将CPU fixture复制到GPU；原input仍作为输出时不得重入原位，返回input与updated均正确且generated_kernel_count=2"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "dead-input-index-put-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "functional index_put可安全改为index_put_并消除copy-back，返回expand视图保持正确",
+          "expected_counter": "generated_kernel_count=1；性能worker要求index_put.default减少且index_put_.default增加",
+          "reference_status": "prepared",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "live-input-index-put-negative",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "输入与更新结果同时存活时保持functional index_put，禁止破坏alias/mutation语义",
+          "expected_counter": "generated_kernel_count=2；不得错误改成index_put_",
+          "reference_status": "prepared",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-required-after-gpu-reference",
+        "allowed_local_deviation": [
+          "只读FX/生成代码观察",
+          "NPU原生阻断后另行审核仅device/backend的最小适配"
+        ],
+        "forbidden_local_deviation": [
+          "跳过计通过",
+          "用CPU/FakeTensor冒充GPU执行",
+          "改变shape、index数量或活跃输入关系",
+          "关闭整个post_grad或pattern_matcher制造OFF",
+          "绕过显式NPU产品disable"
+        ]
+      },
+      "npu_control": {
+        "status": "not-run",
+        "next_action": "GPU reference复核后，在导入torch/torch_npu前选择triton_experimental，以fresh process完成OFF/ON功能与性能"
+      },
+      "historical_evidence": []
+    }
+  ],
+  "deferred_candidates": [
+    {
+      "provisional_unit_id": "AU-post-grad-reciprocal-sqrt-to-rsqrt",
+      "status": "deferred-community-test-cpu-only",
+      "reason": "直接社区测试的x=torch.rand(64)+1.0未指定device；其rsqrt/codegen/counter证据只在CPU成立，尚无原生GPU阻断及最小设备适配记录。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-gpu-functional-contract",
+      "next_action": "先原样运行并记录CPU-only事实，再单独评审只增加device的最小适配；不得把当前CPU结果计入GPU"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-remove-assert-ops",
+      "status": "deferred-no-direct-community-test",
+      "reason": "未找到直接调用或断言post_grad.remove_assert_ops的社区GPU测试；profiler测试只覆盖remove_profiler_ops。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-functional-contract",
+      "next_action": "补直接正例与语义保护负例后重开"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-remove-noop-ops",
+      "status": "deferred-negative-only-post-grad-evidence",
+      "reason": "uneven_sharding_spmd_graphs只验证no-op pad/slice不能被删的跨rank保护；已找到的可删除正例属于pre-grad remove_noop，不能跨pass借用。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-positive-functional-contract",
+      "next_action": "补post-grad实际删除正例及同后端GPU结构证据后重开"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-remove-profiler-ops",
+      "status": "deferred-community-test-cpu-only",
+      "reason": "直接社区test_inductor_remove_profiler_ops使用torch.randn(10) CPU输入；只证明CPU post-grad图移除record_function。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-gpu-functional-contract",
+      "next_action": "先记录原生CPU-only结果，再评审只迁移device的最小适配"
+    }
+  ]
+}

@@ -6,6 +6,8 @@ tracker_root="${TRACKER_ROOT:-${repo_root}}"
 data_root="${PASS_GPU_DATA_ROOT:-/data/z50063656}"
 task_id=""
 gpu_id="${CUDA_VISIBLE_DEVICES:-}"
+gpu_ids=""
+gpu_option_set=0
 case_ids=()
 validate_only=0
 wait_gpu=0
@@ -25,13 +27,16 @@ usage() {
   bash scripts/run_gpu_reference_task.sh --task T-078 --gpu 2 --exclusive --wait-gpu
   bash scripts/run_gpu_reference_task.sh --task T-079 --gpu 2
   bash scripts/run_gpu_reference_task.sh --task T-080 --gpu 2
+  bash scripts/run_gpu_reference_task.sh --task T-085 --gpus 2,3 --wait-gpu
   bash scripts/run_gpu_reference_task.sh --task T-076 --gpu 2 --case REF-mm-plus-mm-native
   bash scripts/run_gpu_reference_task.sh --task T-078 --validate-only
 
 参数：
-  --task T-076|T-077|T-078|T-079|T-080|T-081|T-082|T-083   必填
+  --task T-076|T-077|T-078|T-079|T-080|T-081|T-082|T-083|T-084|T-085|T-086   必填
   T-083 原生功能例使用 world_size=1，只需1卡；不证明跨rank通信收益。
+  T-085 完整原生 suite 含真实2-rank NCCL，必须用 --gpus 指定两张卡。
   --gpu ID             实际运行时使用的物理 GPU 编号；也可预先设置 CUDA_VISIBLE_DEVICES
+  --gpus ID1,ID2       T-085 实际运行的两张物理 GPU
   --case CASE_ID       可选，只运行指定 case；可重复指定多个 case
   --validate-only      只做零设备静态校验
   --exclusive          可选独占策略：启动时无计算进程；默认 shared，允许已有进程
@@ -48,7 +53,7 @@ EOF
 
 while (($#)); do
     case "$1" in
-        --task|--gpu|--case|--wait-timeout|--poll-interval|--min-free-memory-mib)
+        --task|--gpu|--gpus|--case|--wait-timeout|--poll-interval|--min-free-memory-mib)
             if (($# < 2)) || [[ -z "$2" || "$2" == --* ]]; then
                 echo "错误：$1 缺少参数值。" >&2
                 exit 2
@@ -62,6 +67,11 @@ while (($#)); do
             ;;
         --gpu)
             gpu_id="${2:-}"
+            gpu_option_set=1
+            shift 2
+            ;;
+        --gpus)
+            gpu_ids="${2:-}"
             shift 2
             ;;
         --case)
@@ -133,7 +143,7 @@ case "${task_id}" in
         task_runner="${tracker_root}/scripts/run_t080_reference_all.sh"
         result_root="${data_root}/tmp/t080-reference-results"
         ;;
-    T-081|T081|T-082|T082|T-083|T083)
+    T-081|T081|T-082|T082|T-083|T083|T-084|T084|T-085|T085|T-086|T086)
         task_id="T-${task_id//[!0-9]/}"
         task_suffix="${task_id,,}"
         task_suffix="${task_suffix//-/}"
@@ -141,11 +151,38 @@ case "${task_id}" in
         result_root="${data_root}/tmp/${task_suffix}-reference-results"
         ;;
     *)
-        echo "错误：--task 必须是 T-076～T-083。" >&2
+        echo "错误：--task 必须是 T-076～T-086。" >&2
         usage >&2
         exit 2
         ;;
 esac
+
+if [[ "${task_id}" == "T-085" ]]; then
+    dispatch_args=()
+    if ((validate_only)); then
+        dispatch_args+=(--validate-only)
+    else
+        if ((gpu_option_set)); then
+            echo "错误：T-085 完整 suite 需要 --gpus ID1,ID2，不能使用 --gpu。" >&2
+            exit 2
+        fi
+        dispatch_args+=(--gpus "${gpu_ids}")
+    fi
+    for case_id in "${case_ids[@]}"; do dispatch_args+=(--case "${case_id}"); done
+    if ((wait_gpu)); then dispatch_args+=(--wait-gpu); fi
+    if [[ "${execution_mode}" == exclusive ]]; then dispatch_args+=(--exclusive); fi
+    dispatch_args+=(
+        --wait-timeout "${wait_timeout}"
+        --poll-interval "${poll_interval}"
+        --min-free-memory-mib "${min_free_memory}"
+    )
+    exec bash "${tracker_root}/scripts/run_t085_gpu_all.sh" "${dispatch_args[@]}"
+fi
+
+if [[ -n "${gpu_ids}" ]]; then
+    echo "错误：只有 T-085 接受 --gpus；其他任务请使用 --gpu。" >&2
+    exit 2
+fi
 
 # shellcheck disable=SC1090
 source "${tracker_root}/scripts/gpu_wait.sh"

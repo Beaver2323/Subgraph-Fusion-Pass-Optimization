@@ -115,7 +115,7 @@ class ReferenceTests(unittest.TestCase):
         manifest = json.loads((ROOT / "upstream/t078_manifest.yaml").read_text())
         plan = json.loads((ROOT / "upstream/t078_reference_plan.yaml").read_text())
         derived = [case for case in plan["cases"] if case["tracking_mode"] == "derived"]
-        self.assertEqual(len(derived), 2)
+        self.assertEqual(len(derived), 3)
         for case in derived:
             command = reference.case_command(case, ROOT, ROOT)
             self.assertIn("--source-test", command)
@@ -128,7 +128,16 @@ class ReferenceTests(unittest.TestCase):
             if item["acceptance_unit_id"] == "AU-post-grad-fuse-addcdiv-to-fma"
         )
         self.assertEqual(len(unit["variants"]), 5)
-        self.assertNotIn("pending_variants", unit)
+        self.assertEqual(len(unit["pending_variants"]), 1)
+        pending = unit["pending_variants"][0]
+        self.assertEqual(pending["variant_id"], "fp16-value1-bitwise-regression")
+        self.assertEqual(pending["expected_counter"], "GPU/NPU addcdiv_fma_fused=0")
+        self.assertEqual(
+            pending["npu_status"],
+            "fixed-on-device-20260909-bitwise-counter0",
+        )
+        self.assertEqual(pending["extension_evidence"]["mismatch_count"], 0)
+        self.assertEqual(pending["extension_evidence"]["actual_counter"], 0)
         fp16 = next(
             variant
             for variant in unit["variants"]
@@ -139,6 +148,13 @@ class ReferenceTests(unittest.TestCase):
             "supported-source-fixed-backend-specific-rounding",
         )
         self.assertEqual(fp16["extension_evidence"]["expected_counter"], 1)
+        value_one = next(
+            case
+            for case in derived
+            if case["case_id"] == "REF-addcdiv-fma-fp16-value1-derived"
+        )
+        self.assertEqual(value_one["entrypoint_args"], ["--dtype", "float16", "--value", "1"])
+        self.assertFalse(value_one["expected_match"])
 
     def test_derived_case_cannot_change_more_than_dtype(self):
         manifest = json.loads((ROOT / "upstream/t078_manifest.yaml").read_text())
@@ -418,7 +434,7 @@ class PreparationTests(unittest.TestCase):
                 "entrypoint": "runners/missing_worker.py",
             }
 
-        self.assertEqual(self.validate_changed(valid), (4, 14, 22))
+        self.assertEqual(self.validate_changed(valid), (4, 15, 23))
         with self.assertRaisesRegex(ValueError, "实际文件"):
             self.validate_changed(missing)
 
@@ -493,7 +509,10 @@ class BacklogTests(unittest.TestCase):
         drafts = [batch for batch in data["batches"] if batch["status"] == "draft-awaiting-contract-review"]
         self.assertTrue(all(not batch["reference_ready"] for batch in drafts))
         self.assertTrue(all(batch["performance_readiness"] == "needs-community-benchmark-search-and-worker" for batch in drafts))
-        self.assertEqual([b["task_id"] for b in drafts], [f"T-{i:03d}" for i in range(84, 114)])
+        self.assertEqual(
+            [b["task_id"] for b in drafts],
+            [f"T-{i:03d}" for i in range(87, 114)],
+        )
 
 
 if __name__ == "__main__":

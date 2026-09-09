@@ -17,8 +17,8 @@ TRACKER = Path("/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization")
 ISSUE = TRACKER / "issues/REF-addcdiv-fma-codegen-native"
 OVERLAY = TRACKER / "runners/t078_source_overlay"
 # value=1 在 decomposition 中消去乘一，不属于 div->mul->add FMA pattern。
-# 原生 bitwise case 单独要求它正确且 addcdiv_fma_fused=0。
-VALUES = (0.3, 2.0, 7.7)
+# 它仍纳入一键回归，但期望 counter=0 且普通 div->add 位级正确。
+VALUES = (0.3, 1.0, 2.0, 7.7)
 GUARDS = ("integer-self-guard", "tensor-value-guard")
 
 
@@ -136,7 +136,8 @@ def main() -> int:
         item.get("status") == "passed"
         and item.get("return_code") == 0
         and item.get("bitwise_equal_to_addcdiv_eager") is True
-        and item.get("addcdiv_fma_fused") == 1
+        and item.get("addcdiv_fma_fused")
+        == (0 if item.get("value") == 1 else 1)
         and item.get("codegen_contract_valid") is True
         for item in records
     ) and all(

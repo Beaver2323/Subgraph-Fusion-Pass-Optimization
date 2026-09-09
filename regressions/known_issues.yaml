@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-06T09:50:00+08:00",
+  "generated_at": "2026-09-09T00:43:01+08:00",
   "issues": [
     {
       "issue_id": "T077-decompose-mm-small-pointwise-backward",
@@ -41,10 +41,10 @@
       "root_cause": "upstream registration 限定 CUDA/XPU，triton_experimental 未提供经 NPU 能力验证的对应 pattern；fallback 扫描还覆盖了可用 addcdiv lowering。",
       "repair": {
         "layer": "post-grad-pattern-and-lowering",
-        "strategy": "仅注册 NPU+FP32+非 Tensor scalar 的重融合，并在 fallback 扫描后窄注册 addcdiv div_rn+fma lowering；FP16/BF16 不扩围。",
+        "strategy": "FP32/BF16使用经验证的div_rn+fma；FP16 value!=1使用NPU专属显式舍入lowering；value=1保持不命中。",
         "candidate_state": "shared-worktree-not-committed-not-merged",
         "source_files": ["torch_npu/_inductor/triton_experimental/fx_passes.py", "torch_npu/_inductor/triton_experimental/lowering.py", "torch_npu/_inductor/triton_experimental/overrides.py"],
-        "verification": "value=1 邻接 counter=0 且 bitwise equal；value=2/codegen counter=1、tl.fma/div_rn 存在且 bitwise equal。"
+        "verification": "FP32 value=1邻接counter=0且bitwise equal；FP32/BF16 value=2命中并正确；FP16 value!=1三值真机bitwise通过。FP16 value=1的独立普通div+add回归另列。"
       },
       "artifacts": {
         "npu_result": "results/current/AU-post-grad-fuse-addcdiv-to-fma/npu_result.json",
@@ -52,6 +52,32 @@
         "verification_report": "issues/REF-addcdiv-fma-codegen-native/修复验证报告.md"
       },
       "next_action": "产品改动从共享脏工作树拆分审查并提交；合入前不得移动到 fixed_issues。"
+    },
+    {
+      "issue_id": "T078-addcdiv-fp16-value1-div-add-precision",
+      "status": "repair-verified-gpu-reference-pending",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "upstream_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_baseline": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc plus current source overlay",
+      "failure_class": "CORRECTNESS_FAIL",
+      "first_divergence": "ordinary-pointwise-codegen-rounding-boundary",
+      "affected_contract": "FP16 value=1的div->add必须保持addcdiv_fma_fused=0，同时compiled与NPU eager位级一致",
+      "symptom": "实际Ascend910B2上counter=0，但1176/4096元素不同，最大绝对误差0.015625；生成代码在FP32除法后直接做FP32加法。",
+      "root_cause": "triton_experimental延用上游aten.div.Tensor lowering时，FP16 load被提升为FP32计算类型；div与后续add融合后quotient未先落回FP16，与NPU eager先物化FP16 div结果的语义不同。",
+      "repair": {
+        "layer": "torch_npu/_inductor/triton_experimental/lowering.py",
+        "strategy": "窄覆盖NPU FP16 aten.div.Tensor lowering，在quotient后显式to(fp16)->to(fp32)；不恢复add(div)->addcdiv伪命中。",
+        "candidate_state": "source-fixed-device-verified-not-merged",
+        "verification": "Ascend910B2六个fresh process通过：value=1 bitwise、mismatch=0、counter=0、codegen一次FP16舍入；value=0.3/2/7.7与两guard也通过。新增产品UT真机1/1通过。"
+      },
+      "artifacts": {
+        "device_failure": "results/current/AU-post-grad-fuse-addcdiv-to-fma/value_one_device_failure_20260909.json",
+        "device_fix": "results/current/AU-post-grad-fuse-addcdiv-to-fma/value_one_device_fix_20260909.json",
+        "full_evidence_before": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-current/value-one-failure",
+        "full_evidence_after": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/value-one",
+        "comparison": "results/current/AU-post-grad-fuse-addcdiv-to-fma/comparison_result.json"
+      },
+      "next_action": "仅待GPU执行REF-addcdiv-fma-fp16-value1-derived；回传后复核GPU位级与counter=0，再将扩展状态改为完全闭环。"
     },
     {
       "issue_id": "T078-partial-reuse-min2-triton-ascend",

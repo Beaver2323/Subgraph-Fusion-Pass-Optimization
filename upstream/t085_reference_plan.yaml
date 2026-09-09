@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "generated_at": "2026-09-09T00:35:28+08:00",
+  "status": "gpu-ready-zero-device-validated",
+  "performance_plan": {
+    "path": "upstream/t085_performance_plan.yaml",
+    "status": "implemented-awaiting-runtime-validation-with-one-gated-unit"
+  },
+  "case_guide": {
+    "path": "docs/T085_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t085_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG与TORCH_TRACE；不注入设备适配",
+    "benchmark_gate": "functional-reference-valid-and-human-reviewed-first",
+    "default_timeout_seconds": 3600,
+    "minimum_gpus": 2,
+    "distributed_world_size": 2
+  },
+  "cases": [
+    {
+      "case_id": "REF-overlap-device-put-sync-native",
+      "acceptance_unit_id": "AU-post-grad-overlap-scheduling-device-put-sync",
+      "source_test": "test/distributed/test_inductor_collectives.py::TestSyncDecisionCrossRanks.test_overlap_scheduling_device_put_sync",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "async-device-put-sync-positive",
+        "blocking-device-put-preserved"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "真实2-rank CUDA/NCCL执行，所有device_put的non_blocking最终均为False",
+        "eager与compiled routed_output在rtol=1e-3、atol=1e-3下相等",
+        "skip/xfail、world_size<2或fake process group均不得计通过"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "evidence_scope": "two-rank-cuda-nccl-compiled-functional"
+    },
+    {
+      "case_id": "REF-partitioned-scatter-positive-native",
+      "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestPartitionedScatterOpt.test_pr_reference_accuracy",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "high-contention-positive"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "三个高争用index_put(accumulate=True)均满足社区精度容差",
+        "counters[inductor][partitioned_scatter_applied]至少为3"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "community-benchmark-exists-but-cuda-default-disabled",
+      "evidence_scope": "single-rank-real-gpu-compiled-functional"
+    },
+    {
+      "case_id": "REF-partitioned-scatter-accumulate-false-native",
+      "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestPartitionedScatterOpt.test_skip_accumulate_false",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "accumulate-false-negative"
+      ],
+      "expected_match": false,
+      "expected_assertions": [
+        "accumulate=False输出bitwise一致",
+        "partitioned_scatter_applied等于0"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-applicable-negative",
+      "evidence_scope": "single-rank-real-gpu-negative"
+    },
+    {
+      "case_id": "REF-partitioned-scatter-disabled-native",
+      "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+      "source_test": "test/inductor/test_scatter_optimization.py::TestPartitionedScatterOpt.test_pass_disabled",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "explicit-off-negative"
+      ],
+      "expected_match": false,
+      "expected_assertions": [
+        "partitioned_scatter_enabled=False时输出与eager一致",
+        "partitioned_scatter_applied等于0"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-applicable-explicit-off",
+      "evidence_scope": "single-rank-real-gpu-explicit-off"
+    },
+    {
+      "case_id": "REF-pointless-cumsum-native",
+      "acceptance_unit_id": "AU-post-grad-pointless-cumsum",
+      "source_test": "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_cumsum",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "integer-and-bool-promotion",
+        "floating-constant-positive",
+        "explicit-output-dtype-positive"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "11个社区函数全部执行，generated code均不含aten.cumsum",
+        "每个函数compiled结果与原函数相等且pattern_matcher_count至少为1",
+        "必须结合FX确认目标handler，不能把其他pattern计数冒充本单元命中"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference",
+      "evidence_scope": "single-rank-real-gpu-compiled-functional"
+    }
+  ],
+  "non_executed_variants": []
+}

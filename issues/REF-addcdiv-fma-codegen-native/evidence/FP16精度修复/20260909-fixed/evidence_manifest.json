@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-09T18:05:53+08:00",
+  "task": "T-078",
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "backend": "triton_experimental",
+  "source_run_dir": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/fp16-source-fix-20260909T174900+0800",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1695,
+      "sha256": "7a374e3af02b6409a8b0a9c1a1c081950e2db570a92af3d899253d3fc0404bfb"
+    },
+    {
+      "path": "bf16-value-one/arm_result.json",
+      "bytes": 1828,
+      "sha256": "2507a68e2fc6ef3b92c79cdaa1d6bbba929ffeb6f54f5ffb61a013f364d705b5"
+    },
+    {
+      "path": "fp16_source_fix_summary.json",
+      "bytes": 10658,
+      "sha256": "c5c660171588c8def9e54e8d08a46eeeb72ce7be558947edc10fed28556e1323"
+    },
+    {
+      "path": "value-one/arm_result.json",
+      "bytes": 1884,
+      "sha256": "2846bba5a4847f353a07dd15600b6ef6b51454beda86d2d6ca378fbc7fedaef6"
+    },
+    {
+      "path": "value-one/fx_graph_readable.py",
+      "bytes": 542,
+      "sha256": "2531b318287bbc759fe404c4e498e342d06e650a709df6c7bc1738d9f8c8d510"
+    },
+    {
+      "path": "value-one/fx_graph_transformed.py",
+      "bytes": 542,
+      "sha256": "2531b318287bbc759fe404c4e498e342d06e650a709df6c7bc1738d9f8c8d510"
+    },
+    {
+      "path": "value-one/generated_code.py",
+      "bytes": 8370,
+      "sha256": "3bffc3c806ca1366adb46f11cd4ab08334e6b885047eac4c1f6ca9826162e812"
+    },
+    {
+      "path": "value-one/ir_post_fusion.txt",
+      "bytes": 1723,
+      "sha256": "9590dc2dd5d5aa6e48ac4b26c9c5a22c9d896f5fa6e9331e362eaff1fe5862b6"
+    },
+    {
+      "path": "value-one/ir_pre_fusion.txt",
+      "bytes": 1794,
+      "sha256": "f813f5d813eced5eb9a824fd82d56b0deed17a00b3f2634acdd5ca37d07154fd"
+    },
+    {
+      "path": "value-one/output_code.py",
+      "bytes": 8370,
+      "sha256": "3bffc3c806ca1366adb46f11cd4ab08334e6b885047eac4c1f6ca9826162e812"
+    }
+  ]
+}

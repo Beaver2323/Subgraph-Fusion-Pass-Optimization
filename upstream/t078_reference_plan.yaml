@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "task_id": "T-078",
-  "generated_at": "2026-09-08T07:51:59+08:00",
-  "status": "direct-reference-complete-addcdiv-lowp-derived-reference-valid",
+  "generated_at": "2026-09-09T18:05:53+08:00",
+  "status": "existing-reference-valid-fp16-value1-derived-gpu-pending-npu-fixed",
   "performance_plan": {"path": "upstream/t078_performance_plan.yaml", "status": "performance-disposition-and-product-gate-complete"},
   "case_guide": {"path": "docs/T078_FUNCTION_PERFORMANCE_GUIDE.md", "language": "zh-CN"},
   "manifest": {
@@ -78,6 +78,34 @@
       "expected_assertions": ["BF16 compiled/eager 位级一致", "addcdiv_fma_fused=1", "generated code 包含 tl.fma 与 triton.language.div_rn"],
       "required_artifacts": ["fx-before", "fx-after"],
       "benchmark": "npu-performance-complete-perf-neutral"
+    },
+    {
+      "case_id": "REF-addcdiv-fma-fp16-value1-derived",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda",
+      "tracking_mode": "derived",
+      "entrypoint": "runners/t078_addcdiv_dtype_reference.py",
+      "entrypoint_args": ["--dtype", "float16", "--value", "1"],
+      "derivation": {
+        "basis": "community-test-dtype-extension",
+        "changed_dimensions": ["dtype"],
+        "preserved_contract": [
+          "shape=64x64",
+          "value=1社区既有子分支",
+          "eager/compiled bitwise equal",
+          "addcdiv_fma_fused=0"
+        ]
+      },
+      "variant_ids": ["fp16-value1-bitwise-regression"],
+      "expected_match": false,
+      "expected_tests": 1,
+      "expected_assertions": [
+        "FP16 compiled/eager 位级一致",
+        "addcdiv_fma_fused=0",
+        "不得通过FMA重融合掩盖普通div+add精度问题"
+      ],
+      "required_artifacts": ["fx-before", "fx-after"],
+      "benchmark": "correctness-neighbor-no-performance-denominator"
     },
     {
       "case_id": "REF-partial-reuse-positive-native",

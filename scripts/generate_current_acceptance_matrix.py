@@ -145,6 +145,8 @@ def reference_status(unit: dict, reference_contract: dict) -> str:
 
 def phase(row: dict) -> str:
     if row["pending_variant_count"]:
+        if "regressed-on-device" in row["coverage_status"]:
+            return "coverage-extension-npu-regression-open"
         return "coverage-extension-awaiting-gpu-reference"
     if row["comparison_result_path"]:
         return "functional-comparison-closed"

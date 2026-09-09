@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-09T00:34:29+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-084五个provisional单元逐项复核源码、社区测试与合法OFF/ON",
+    "selected_acceptance_units": [
+      "AU-post-grad-dedup-reduce-scatters"
+    ],
+    "corrections": [
+      "dedup_reduce_scatters不只有一个间接索引：test_dedup_reduce_scatter是直接CUDA/NCCL编译、数值和单collective断言；同文件TestDedupReduceScatter另有Fake PG结构正负例，只作补充静态证据。",
+      "map与scan已有test_control_flow.py直接CUDA编译数值例，不再沿用test_triton_kernels.py::MutationTests.test_while_loop这一错误间接映射；但两项是无配置开关的必需HOP分解，不能制造合法目标OFF，留待无OFF性能政策评审。",
+      "triton_kernel_wrapper_functional已有直接CUDA编译与mutation HOP断言，但该分解同样无配置开关；关闭会留下lowering不接受的functional HOP，不能作为性能OFF。",
+      "auto_functionalized社区主测例使用CPU自定义算子，未找到冻结revision上的直接CUDA合同；不能把CPU/FakeTensor结构执行计作GPU reference。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": 1,
+    "scope": "world_size=1直接CUDA/NCCL功能与codegen基线；不证明跨rank通信收益",
+    "device_identity": "pending-native-GPU-reference",
+    "runtime_fingerprint": "pending-native-GPU-reference"
+  },
+  "counting_policy": {
+    "current_manifest_units": 1,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "只有直接GPU社区合同有效、无skip且FX证据可复核后冻结；无合法目标OFF的必需结构分解暂不进入本批分母"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
+      "contract_name": "post-grad线性reduce-scatter去重",
+      "stage": "post_grad",
+      "review_status": "mapped-static-await-gpu-reference",
+      "denominator_eligible": "pending-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/post_grad.py",
+          "line": 341,
+          "symbol": "dedup_reduce_scatters",
+          "role": "config-gated-post-grad-entry"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/fsdp.py",
+          "line": 167,
+          "symbol": "dedup_fsdp_reduce_scatter",
+          "role": "fixpoint-graph-rewrite"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_dedup_reduce_scatter",
+          "role": "primary-positive",
+          "evidence_scope": "world_size=1真实CUDA/NCCL；配置开启后两个avg reduce-scatter改为输入先add、一次reduce-scatter；断言生成代码仅一次collective并比较compiled/eager数值"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "two-duplicate-avg-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "两个相同group_size/group_name/reduce_op/dtype且wait结果只被add使用的avg reduce-scatter合并为一次",
+          "expected_counter": "生成代码reduce_scatter_tensor.default恰为1；FX应呈现输入先add再reduce-scatter/wait",
+          "reference_status": "pending-native-gpu",
+          "npu_status": "pending-triton-experimental"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "adapter",
+        "adapter_reason": "社区TestCollectivesInductor固定CUDA/NCCL；NPU必须保留原函数、shape、avg语义和2→1合同，仅替换设备/真实进程组并显式选择triton_experimental",
+        "allowed_local_deviation": [
+          "GPU只读采集FX与原生TORCH_COMPILE_DEBUG，不改社区测试体",
+          "NPU在原生CUDA入口阻断后，最小替换device与NCCL为NPU/HCCL，并扩展到真实world_size=2性能门禁"
+        ],
+        "forbidden_local_deviation": [
+          "跳过、xfail或FakeTensor计通过",
+          "把world_size=1功能结果解释为跨rank收益",
+          "关闭整个pattern matcher或直接调用helper冒充post_grad路径",
+          "使用default、DVM或MLIR历史结果代替triton_experimental"
+        ]
+      },
+      "npu_control": {
+        "config": "torch._inductor.config.dedup_reduce_scatters",
+        "off": false,
+        "on": true,
+        "status": "awaiting-real-device-validation",
+        "next_action": "GPU reference冻结后，在triton_experimental真实HCCL两rank验证2→1、数值、无graph break/fallback，再签性能gate"
+      },
+      "historical_evidence": [
+        "test/distributed/test_inductor_collectives.py::TestDedupReduceScatter包含2/4路正例及不同group、非线性reduce_op、多用户、不同dtype负例；使用Fake PG与手工FX，仅作结构补证，不计GPU动态通过"
+      ]
+    }
+  ],
+  "deferred_candidates": [
+    {
+      "provisional_unit_id": "AU-post-grad-decompose-auto-functionalized",
+      "status": "deferred-no-direct-gpu-community-contract",
+      "reason": "社区test_auto_functionalize.py可证明CPU自定义mutating op分解，但冻结revision未找到直接CUDA数值合同；CPU/FakeTensor不得冒充GPU reference。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-gpu-functional-contract-and-no-legal-off",
+      "next_action": "先评审GPU自定义mutating op最小派生合同，再单独定义必需分解的无OFF性能处置"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-decompose-map-to-while-loop",
+      "status": "deferred-required-decomposition-without-legal-off",
+      "reason": "社区test_control_flow.py::MapTests是直接CUDA数值合同；pass把map_impl降为while_loop。但目标无配置开关，OFF会遗留Inductor不能lower的map_impl，无法形成同后端合法性能分母。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-no-legal-off-control",
+      "next_action": "评审必需结构分解的性能免测/编译成本政策后重开；禁止临时绕过pass制造OFF"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-decompose-scan-to-while-loop",
+      "status": "deferred-required-decomposition-without-legal-off",
+      "reason": "社区test_control_flow.py::ScanTests是直接CUDA数值合同；pass把scan降为while_loop并预分配输出。但目标无配置开关，OFF不是可执行同后端路径。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-no-legal-off-control",
+      "next_action": "评审必需结构分解的性能免测/编译成本政策后重开；禁止用显式while_loop对照冒充目标OFF"
+    },
+    {
+      "provisional_unit_id": "AU-post-grad-decompose-triton-kernel-wrapper-functional",
+      "status": "deferred-required-decomposition-without-legal-off",
+      "reason": "test_triton_kernel_backend_options_preserved_in_fx_wrapper_hop可直接证明CUDA编译后保留mutation HOP及选项；functional HOP分解无配置开关，OFF会进入不支持lowering而不是等价基线。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-no-legal-off-control",
+      "next_action": "按必需结构分解政策记录功能价值与编译成本，获得合法对照定义后重开"
+    }
+  ]
+}

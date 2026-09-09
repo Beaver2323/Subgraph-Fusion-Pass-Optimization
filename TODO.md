@@ -1,7 +1,10 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-08 09:12 CST（UTC+08:00）
-> 状态：T-076～T-083 共28个acceptance units及 T-078 addcdiv FP16/BF16 覆盖扩展已完成功能闭环；T-076/T-077严格再认证单列，T-084～T-113保留草案编号。产品改动仍待独立产品仓评审/合入。
+> 更新时间：2026-09-09 18:05:53 CST（UTC+08:00）
+> 状态：T-076～T-083 原冻结范围共28个acceptance units有效；T-078 addcdiv 的 FP16
+> `value=1` 普通 div+add 精度回归已修复并通过 NPU 真机验证，当前等待 GPU
+> dtype/value 邻接 reference。T-084～T-086 已完成
+> GPU-ready 准备，后续编号保留。产品改动仍待独立产品仓评审/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -201,6 +204,10 @@ T-077 GPU 准备：
 - [x] BF16 以 FMA/div_rn 位级闭环并完成 `PERF_NEUTRAL` 处置；
 - [x] FP16 的 `value!=1` 原 FMA 图以显式除法/乘法舍入 lowering 修复；`value=1` 按
   `addcdiv-fma-bitwise-native` 合同保持不命中、counter=0，不再注册 `add(div)` 重融合；
+- [x] 修复 FP16 `value=1` 普通 `div -> add` 路径与 NPU eager 的位级回归；修复前
+  1176/4096 mismatch、最大误差 0.015625，修复后 mismatch=0、最大误差=0、counter=0；
+- [ ] 在 GPU 执行 `REF-addcdiv-fma-fp16-value1-derived` dtype/value 邻接 reference，回传后
+  完成跨后端对照并冻结该扩展 variant；
 - [x] FP16 性能记为“正确性修复完成但无合法修复前 OFF 分母”，不沿用 FP32/BF16 verdict，
   也不拿错误路径制造收益。
 
@@ -245,6 +252,9 @@ T-077 GPU 准备：
 - [x] 使用`triton_experimental`完成T-081/T-082逐单元数值/改图功能门禁，以及T-083真实HCCL 2 rank门禁；
 - [x] T-083 仅在真实多 rank 数值/通信功能审核通过后开放性能，未以 world_size=1 原生测试代替；
 - [x] T-081～T-083 共7个单元完成全局互斥下的六臂正式性能处置，并保存逐单元源码/生成代码解释；
+- [x] T-084～T-086 对15个provisional候选完成逐项审核，准备5个GPU-ready单元、8 cases、
+  11 variants及性能worker；10个候选按证据理由延期；
+- [ ] GPU执行T-084、T-085、T-086并回传固定handoff；T-085完整suite使用两张GPU；
 - [ ] 建立 upstream source/test/mapping drift 检测；
 - [x] 支持一条命令运行 T-079/T-080 NPU suite；
 - [x] 支持一条命令生成 comparison report；T-079/T-080 分别由 `finalize_t079_results.py`、`finalize_t080_results.py` 生成正式结果；
@@ -264,7 +274,7 @@ T-077 GPU 准备：
 - [x] 实现并动态验证 T-079/T-080 目标级性能 worker；
 - [x] GPU 依次执行 T-079/T-080 reference，NPU 按原生优先完成最小适配审核、功能与命中后再测性能；
 - [x] T-081～T-083 完成 GPU reference、NPU `triton_experimental` 功能/改图、T-083 双 rank HCCL 与7/7性能处置；
-- [ ] 按草案从 T-084 继续审核后续 T；T-081～T-083 deferred 保留原任务归属，不凑数或重编号；独立 lowering/template 清单另补后去重；
+- [ ] 按草案从 T-087 继续审核后续 T；T-081～T-086 deferred 保留原任务归属，不凑数或重编号；独立 lowering/template 清单另补后去重；
 - [ ] MM 产品修复经独立评审后推送/合入（本轮未操作产品仓库）。
 
 1. [x] T-075：冻结首批 acceptance-unit schema 并复核 5 个单元；

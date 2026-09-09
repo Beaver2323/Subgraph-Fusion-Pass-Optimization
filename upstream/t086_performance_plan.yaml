@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-086",
+  "generated_at": "2026-09-09T00:35:07+08:00",
+  "status": "implemented-awaiting-runtime-validation",
+  "implementation": {
+    "status": "implemented-awaiting-runtime-validation",
+    "entrypoint": "runners/t086_performance_worker.py",
+    "launcher": "scripts/run_t086_performance.py"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "进程启动后、导入torch/torch_npu前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable时记录证据并免测；worker没有绕过产品gate的参数"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU全reference有效并人工复核后，先在目标设备复核OFF/ON数值、输入mutation、目标index_put到index_put_改写、无graph break或CPU fallback；NPU允许已注册的IndexPutFallback extern lowering，但必须保留其生成代码证据；签名门禁后才计时",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw per-sample arrays"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "先每arm求p50/p99，三个OFF与三个ON分别取中位数；保留固定交错顺序和原始样本"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 1,
+    "performance_minimum_devices": 1,
+    "performance_world_size": 1,
+    "actual_device_execution_required": true,
+    "fake_tensor_allowed_as_performance_oracle": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/",
+      "test/distributed/"
+    ],
+    "terms": [
+      "reinplace",
+      "index_put",
+      "inplaceable_ops",
+      "generated_kernel_count"
+    ],
+    "result": "未发现针对reinplace_inplaceable_ops并能做精确同后端OFF/ON的社区benchmark；社区只有功能、kernel-count与回归测试。",
+    "source_priority": "性能worker复用社区正例的完整函数、shape和index数量；明确标为tracker派生目标子图，不称社区原生benchmark或端到端模型"
+  },
+  "npu_static_precheck": {
+    "source_scope": "当前控制节点torch_npu源码，仅用于准备；不替代动态结果，正式证据绑定运行时loaded source sha256",
+    "path": "torch_npu/_inductor/triton_experimental/lowering.py:459-491",
+    "finding": "npu_index_put先clone再进入IndexPutFallback；npu_index_put_直接把self交给同一extern lowering。因此reinplace理论上可省clone，但实际收益必须测量。",
+    "fallback_classification": "IndexPutFallback是triton_experimental已注册的设备extern lowering，允许；Dynamo graph break、CPU fallback或未审核fallback禁止"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+      "worker_unit": "reinplace-index-put",
+      "performance_status": "worker-static-only-awaiting-functional-gate",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_torchinductor.py::GPUTests.test_index_put_reinplace_cuda",
+          "test/inductor/test_torchinductor.py::GPUTests.test_index_put_failed_reinplace_cuda"
+        ],
+        "reason": "无社区目标级性能benchmark；主workload逐字保留正例语义，负例只作功能门禁"
+      },
+      "functional_gate": "ON必须捕获index_put.default减少且index_put_.default增加，OFF不得发生该改写；两臂输出、输入mutation与eager一致，fullgraph且无graph break/CPU fallback。NPU允许注册的IndexPutFallback extern lowering并须采集代码；负例在正式计时前单独确认不会错误重入原位。",
+      "workloads": [
+        {
+          "workload_id": "reinplace-index-put-community-shape",
+          "role": "primary",
+          "shape_contract": "复用社区x=[1024] fp32、idx=arange(10) int64；src=ones(10)，执行x.index_put_((idx,),src)后返回expand(2,1024)",
+          "measurement_scope": "测量完整社区目标函数的单次compiled调用，包含index_put及expand返回；属于目标级子图，不包含模型前后处理、训练step或数据加载"
+        }
+      ],
+      "off_on_control": "只将post_grad模块内reinplace_inplaceable_ops替换为同签名只读观察/空操作；不关闭post_grad、pattern_matcher或其他passes。每个arm独立进程。",
+      "artifacts": [
+        "环境、backend、PyTorch commit与实际loaded源码sha256",
+        "目标pass before/after FX及index_put/index_put_计数",
+        "TORCH_COMPILE_DEBUG output_code.py、IR与结构trace",
+        "eager/compiled输出、输入mutation及stride/alias检查",
+        "逐样本host/Event、allocated/reserved与compile latency",
+        "PID、时间、seed、输入合同、gate sha256与失败traceback"
+      ],
+      "negative_cases": [
+        "live-input-index-put-negative必须保持functional路径",
+        "ON未改写、OFF误改写、数值/mutation/alias错误、graph break/CPU fallback、显式产品disable均拒绝计时"
+      ]
+    }
+  ]
+}

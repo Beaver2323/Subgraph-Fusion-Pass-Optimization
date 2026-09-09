@@ -1,0 +1,252 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-09T17:57:24+08:00",
+  "task": "T-078",
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "backend": "triton_experimental",
+  "dtype": "float16",
+  "status": "valid-source-fix",
+  "fresh_process_count": 6,
+  "values": [
+    {
+      "schema_version": "1.0",
+      "task": "T-078",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "dtype": "float16",
+      "value": 0.3,
+      "arm": "re-fused",
+      "backend": "triton_experimental",
+      "status": "passed",
+      "product_source_modified": true,
+      "cpu_fallback_added": false,
+      "performance_measured": false,
+      "torch_version": "2.14.0a0+git8e86e0a",
+      "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_version": "2.14.0a0+git83cc452",
+      "source_modules": {
+        "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py",
+        "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+        "lowering": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/lowering.py"
+      },
+      "input_sha256": [
+        "9337f121b1b2b7e31cd406f03dc8457076d07d907f51f34da65fcb9e8fb108e6",
+        "3a55ec853cbbe94fb155b5db7219a1a465b7ed67ec167bd8f5b32fe464e1b5b9",
+        "c7d12c36d82fb2dd8c660e472e7e83cb53c409eb60499bf233af38b549380f30"
+      ],
+      "eager_sha256": "81ae07b20566eee9b48ed99f4069dddb3db2597441e0fbb6dd7c433aee6bea75",
+      "compiled_sha256": "81ae07b20566eee9b48ed99f4069dddb3db2597441e0fbb6dd7c433aee6bea75",
+      "shape": [
+        64,
+        64
+      ],
+      "output_dtype": "torch.float16",
+      "bitwise_equal_to_addcdiv_eager": true,
+      "max_abs_error_to_addcdiv_eager": 0.0,
+      "mean_abs_error_to_addcdiv_eager": 0.0,
+      "mismatch_count": 0,
+      "addcdiv_fma_fused": 1,
+      "generated_code_sha256": "3bceba2715f49c0a379e9936403a8e8d790cf8bf5f5bc418c619ea3b31f98fc9",
+      "generated_code_contains_fma": false,
+      "generated_code_contains_div_rn": false,
+      "generated_code_fp16_round_count": 2,
+      "codegen_contract": "至少 2 个显式 FP16 舍入，且不使用 FMA/div_rn",
+      "codegen_contract_valid": true,
+      "expected_fusion": 1,
+      "return_code": 0
+    },
+    {
+      "schema_version": "1.0",
+      "task": "T-078",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "dtype": "float16",
+      "value": 1.0,
+      "arm": "re-fused",
+      "backend": "triton_experimental",
+      "status": "passed",
+      "product_source_modified": true,
+      "cpu_fallback_added": false,
+      "performance_measured": false,
+      "torch_version": "2.14.0a0+git8e86e0a",
+      "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_version": "2.14.0a0+git83cc452",
+      "source_modules": {
+        "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py",
+        "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+        "lowering": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/lowering.py"
+      },
+      "input_sha256": [
+        "9337f121b1b2b7e31cd406f03dc8457076d07d907f51f34da65fcb9e8fb108e6",
+        "3a55ec853cbbe94fb155b5db7219a1a465b7ed67ec167bd8f5b32fe464e1b5b9",
+        "c7d12c36d82fb2dd8c660e472e7e83cb53c409eb60499bf233af38b549380f30"
+      ],
+      "eager_sha256": "ebdc46f3b4817f570a86390a53a0b5e1b3e9a9e4efdeaad87698170b7e29c48f",
+      "compiled_sha256": "ebdc46f3b4817f570a86390a53a0b5e1b3e9a9e4efdeaad87698170b7e29c48f",
+      "shape": [
+        64,
+        64
+      ],
+      "output_dtype": "torch.float16",
+      "bitwise_equal_to_addcdiv_eager": true,
+      "max_abs_error_to_addcdiv_eager": 0.0,
+      "mean_abs_error_to_addcdiv_eager": 0.0,
+      "mismatch_count": 0,
+      "addcdiv_fma_fused": 0,
+      "generated_code_sha256": "3bffc3c806ca1366adb46f11cd4ab08334e6b885047eac4c1f6ca9826162e812",
+      "generated_code_contains_fma": false,
+      "generated_code_contains_div_rn": false,
+      "generated_code_fp16_round_count": 1,
+      "codegen_contract": "value=1 保持 div->add 且 counter=0；除法后至少 1 次显式 FP16 舍入，不使用 FMA/div_rn",
+      "codegen_contract_valid": true,
+      "expected_fusion": 0,
+      "return_code": 0
+    },
+    {
+      "schema_version": "1.0",
+      "task": "T-078",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "dtype": "float16",
+      "value": 2.0,
+      "arm": "re-fused",
+      "backend": "triton_experimental",
+      "status": "passed",
+      "product_source_modified": true,
+      "cpu_fallback_added": false,
+      "performance_measured": false,
+      "torch_version": "2.14.0a0+git8e86e0a",
+      "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_version": "2.14.0a0+git83cc452",
+      "source_modules": {
+        "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py",
+        "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+        "lowering": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/lowering.py"
+      },
+      "input_sha256": [
+        "9337f121b1b2b7e31cd406f03dc8457076d07d907f51f34da65fcb9e8fb108e6",
+        "3a55ec853cbbe94fb155b5db7219a1a465b7ed67ec167bd8f5b32fe464e1b5b9",
+        "c7d12c36d82fb2dd8c660e472e7e83cb53c409eb60499bf233af38b549380f30"
+      ],
+      "eager_sha256": "189ea25003f9aaa9b842765ef513d5a7c092e0e2753cb613d11f2a4f08e96609",
+      "compiled_sha256": "189ea25003f9aaa9b842765ef513d5a7c092e0e2753cb613d11f2a4f08e96609",
+      "shape": [
+        64,
+        64
+      ],
+      "output_dtype": "torch.float16",
+      "bitwise_equal_to_addcdiv_eager": true,
+      "max_abs_error_to_addcdiv_eager": 0.0,
+      "mean_abs_error_to_addcdiv_eager": 0.0,
+      "mismatch_count": 0,
+      "addcdiv_fma_fused": 1,
+      "generated_code_sha256": "b4600da7e3cc36fde3dd3ad54e95ad8e725e9b113d1a18ab519b550de269db6a",
+      "generated_code_contains_fma": false,
+      "generated_code_contains_div_rn": false,
+      "generated_code_fp16_round_count": 2,
+      "codegen_contract": "至少 2 个显式 FP16 舍入，且不使用 FMA/div_rn",
+      "codegen_contract_valid": true,
+      "expected_fusion": 1,
+      "return_code": 0
+    },
+    {
+      "schema_version": "1.0",
+      "task": "T-078",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "dtype": "float16",
+      "value": 7.7,
+      "arm": "re-fused",
+      "backend": "triton_experimental",
+      "status": "passed",
+      "product_source_modified": true,
+      "cpu_fallback_added": false,
+      "performance_measured": false,
+      "torch_version": "2.14.0a0+git8e86e0a",
+      "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_version": "2.14.0a0+git83cc452",
+      "source_modules": {
+        "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py",
+        "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+        "lowering": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/lowering.py"
+      },
+      "input_sha256": [
+        "9337f121b1b2b7e31cd406f03dc8457076d07d907f51f34da65fcb9e8fb108e6",
+        "3a55ec853cbbe94fb155b5db7219a1a465b7ed67ec167bd8f5b32fe464e1b5b9",
+        "c7d12c36d82fb2dd8c660e472e7e83cb53c409eb60499bf233af38b549380f30"
+      ],
+      "eager_sha256": "323a9c1ec8699d55bb26142f6870e9ddb758766cc1151c59f7a43960372843cc",
+      "compiled_sha256": "323a9c1ec8699d55bb26142f6870e9ddb758766cc1151c59f7a43960372843cc",
+      "shape": [
+        64,
+        64
+      ],
+      "output_dtype": "torch.float16",
+      "bitwise_equal_to_addcdiv_eager": true,
+      "max_abs_error_to_addcdiv_eager": 0.0,
+      "mean_abs_error_to_addcdiv_eager": 0.0,
+      "mismatch_count": 0,
+      "addcdiv_fma_fused": 1,
+      "generated_code_sha256": "956ae56440a23f73bf3b4898fd2d66a1367fd84211bc097173f384fe3551e5db",
+      "generated_code_contains_fma": false,
+      "generated_code_contains_div_rn": false,
+      "generated_code_fp16_round_count": 2,
+      "codegen_contract": "至少 2 个显式 FP16 舍入，且不使用 FMA/div_rn",
+      "codegen_contract_valid": true,
+      "expected_fusion": 1,
+      "return_code": 0
+    }
+  ],
+  "guards": [
+    {
+      "tracking_mode": "source-fix-neighbor-verification",
+      "case": "integer-self-guard",
+      "source": "tracker-derived-from-upstream-addcdiv-contract",
+      "backend": "triton_experimental",
+      "formal_source_modules": {
+        "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py",
+        "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+        "lowering": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/lowering.py"
+      },
+      "cpu_fallback_added": false,
+      "disabled_test_added": false,
+      "status": "passed",
+      "shape": [
+        64,
+        64
+      ],
+      "dtype": "torch.float32",
+      "bitwise_equal": true,
+      "max_abs_error": 0.0,
+      "expected_addcdiv_fma_fused": 0,
+      "actual_addcdiv_fma_fused": 0,
+      "guard_preserved": true,
+      "bitwise_required": false,
+      "return_code": 0
+    },
+    {
+      "tracking_mode": "source-fix-neighbor-verification",
+      "case": "tensor-value-guard",
+      "source": "tracker-derived-from-upstream-addcdiv-contract",
+      "backend": "triton_experimental",
+      "formal_source_modules": {
+        "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py",
+        "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+        "lowering": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/lowering.py"
+      },
+      "cpu_fallback_added": false,
+      "disabled_test_added": false,
+      "status": "passed",
+      "shape": [
+        64,
+        64
+      ],
+      "dtype": "torch.float32",
+      "bitwise_equal": true,
+      "max_abs_error": 0.0,
+      "expected_addcdiv_fma_fused": 0,
+      "actual_addcdiv_fma_fused": 0,
+      "guard_preserved": true,
+      "bitwise_required": false,
+      "return_code": 0
+    }
+  ],
+  "performance_measured": false,
+  "performance_disposition": "待单独记录；修复前 OFF 与 eager 不等价，不能作为有效收益 denominator"
+}

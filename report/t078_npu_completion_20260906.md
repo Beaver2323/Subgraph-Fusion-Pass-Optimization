@@ -1,15 +1,24 @@
-# T-078 GPU reference、NPU 修复与性能处置闭环
+# T-078 原冻结范围闭环与 addcdiv 低精度后续状态
 
 > 更新时间：2026-09-06 09:50 CST（UTC+08:00）
 
+> 2026-09-09 18:05:53 CST 修复结论：FP16 `value=1` 普通 `div -> add` 回归已在
+> NPU `triton_experimental` lowering 中恢复 quotient FP16 舍入边界。Ascend 910B2
+> 实测 mismatch 从 1176/4096 降为 0，最大误差从 0.015625 降为 0，
+> `addcdiv_fma_fused` 仍为 0。NPU 修复已验证，只待 GPU dtype/value 邻接
+> reference；下方 00:43:01 的失败数据作为修复前历史保留。
 > 2026-09-08 07:51:59 CST 增量结论：BF16 已完成 NPU 三臂、正式源码修复和性能处置并保持启用；
 > FP16 三条 compiled 路径曾共同偏离 eager；2026-09-08 已完成后端专属显式舍入修复。
 > 2026-09-08 19:33 CST 合同纠正：`value=1` 只作 bitwise 邻接，预期不命中 FMA；NPU
 > `add(div)` 补充重融合已移除，旧 counter=1 证据不计数。
 > 原 20 variants 历史快照不覆盖，当前结论见文末增量和 issue 的 FP16 精度修复报告。
+> 2026-09-09 00:43:01 CST 真机修订：FP16 `value!=1` 修复再次通过实际 Ascend 910B2；
+> FP16 `value=1` 保持社区要求的 `counter=0`，但普通 `div -> add` 路径与 NPU eager 出现
+> 1176/4096 元素不同、最大误差 0.015625。原 4 单元/20 variants 冻结结论不撤销，但
+> addcdiv 低精度扩展现为 `5 verified + 1 pending regression`，不得表述为全域闭环。
 > 2026-09-08 06:07 CST 覆盖修订：本文“闭环”仅适用于当时冻结的 20 个 variants，addcdiv
-> 社区 case 实际只有 FP32。上游 guard 允许 FP16/BF16，现已新增 2 个 pending dtype variants；
-> 在 GPU reference 与 NPU 三臂精度归因完成前，不得把本文 FP32 功能/性能结论外推至低精度。
+> 社区 case 实际只有 FP32。上游 guard 允许 FP16/BF16，当时新增 2 个 pending dtype variants；
+> 这两条后续已完成 GPU reference 与 NPU 归因，最新状态以更靠前的 2026-09-09 修订为准。
 > 详见 `docs/T078_ADDCDIV_LOWP_COVERAGE.md`。
 > PyTorch：`8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > torch_npu 基线：`83cc452480c3546fd5cccf853bfe3a360ce9dbfc`；本文涉及的产品改动仍在共享工作树，尚未由本报告宣称已合入。
@@ -126,7 +135,8 @@ SHA256 为 `1c4759582da3a19b382504606932e14002117334c609a544d4b136627f142b17`。
 - 一键性能入口对 T-078 现只校验并展示正式结果，不再重跑显式关闭的 ON 分支。
 - 修复/门禁的产品文件在共享 torch_npu 工作树中，与其他未提交改动共存；提交产品仓前必须单独
   做 diff 归属审查，不能把整个脏工作树打包进 T-078。
-- 下一主线任务是 T-079 GPU reference；T-078 只保留回归与 drift 检查，不再作为开放开发任务。
+- 原主线已继续完成 T-079～T-083；T-078 FP16 value=1 普通 div+add 精度回归
+  已在 NPU 修复并保持 FMA counter=0，只待 GPU dtype/value 邻接 reference。
 
 ## 2026-09-08 addcdiv 低精度覆盖增量
 
@@ -151,3 +161,15 @@ integer-self 与 tensor-valued value 均 counter=0。旧 sidecar 不覆盖，新
 `fp16_source_fix_result_20260908.json`。修复前 OFF 因不正确而不能作为性能 denominator。
 完整源码框、调用栈和修复前后 FX/IR/output_code 见
 `issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md`。
+
+### 2026-09-09 实际设备再验证
+
+在实际 Ascend 910B2、`triton_experimental` 上，`value=0.3/2/7.7` 与两个 guard 再次通过；
+单独执行 FP16 `value=1` 时，修复前结构和 counter 虽正确，数值不满足 NPU
+eager 位级合同。修复没有恢复 `add(div)` 重融合，而是只为 NPU FP16 div 在
+consumer 前恢复 quotient 舍入。六个 fresh process 验证全部通过：value=1 bitwise
+一致、mismatch=0、最大误差=0、counter=0。
+
+修复前证据在 `evidence/FP16精度修复/20260909-current/`；修复后 FX、IR、
+`output_code.py` 和汇总在 `evidence/FP16精度修复/20260909-fixed/`。当前状态为
+NPU repair verified，等待 GPU 邻接 reference。

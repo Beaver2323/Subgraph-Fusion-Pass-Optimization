@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-08T08:55:38+08:00",
-  "status": "t078-addcdiv-lowp-fp16-bf16-source-fixed",
+  "generated_at": "2026-09-09T18:05:53+08:00",
+  "status": "t078-addcdiv-fp16-value1-npu-fixed-gpu-reference-pending",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -61,12 +61,12 @@
     "primary_fact_source": "PyTorch community test plus GPU/reference baseline",
     "inventory_role": "registration candidate only for discovery and coverage",
     "tracking_key": "human-reviewed upstream optimization contract acceptance unit",
-    "denominator_rule": "原 12/12 direct GPU cases继续作为4个acceptance units的冻结分母；FP16/BF16 dtype扩展均有GPU reference。BF16以FMA路径闭环；FP16仅对value!=1的原FMA图使用NPU专用显式舍入lowering。value=1按社区bitwise合同预期不命中，不计入FMA修复或性能分母。",
+    "denominator_rule": "原 12/12 direct GPU cases继续作为4个acceptance units的冻结分母；FP16/BF16 value=2 dtype扩展均有GPU reference。BF16以FMA路径闭环；FP16 value!=1使用NPU专用显式舍入lowering。FP16 value=1按社区结构合同不命中；NPU普通div+add舍入边界已修复并真机逐位通过，但新增GPU dtype/value邻接reference仍待回传，不计入FMA性能分母。",
     "current_manifest_units": 4,
     "current_frozen_denominator_units": 4,
     "current_formally_closed_units": 4,
-    "current_fully_covered_units": 4,
-    "current_units_with_pending_extension": 0
+    "current_fully_covered_units": 3,
+    "current_units_with_pending_extension": 1
   },
   "acceptance_units": [
     {
@@ -88,9 +88,12 @@
         {"variant_id": "scaled-value-bitwise-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "value=2 的 addcdiv 重融合且与 eager bitwise 一致", "expected_counter": "addcdiv_fma_fused=1 in codegen contract", "reference_status": "valid-reference", "npu_status": "supported-source-fixed-perf-neutral"},
         {"variant_id": "fma-div-rn-codegen-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "最终 Triton codegen 使用 tl.fma 与 div_rn", "expected_counter": "inductor.addcdiv_fma_fused=1", "reference_status": "valid-reference", "npu_status": "supported-source-fixed-perf-neutral"},
         {"variant_id": "bfloat16-value2-fma-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "社区 value=2、64x64 合同仅扩展 dtype=BF16；GPU/NPU compiled 与 eager 位级一致且 NPU 生成 FMA/div_rn", "expected_counter": "addcdiv_fma_fused=1", "reference_status": "valid-reference", "npu_status": "supported-source-fixed-perf-neutral", "extension_evidence": {"result_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/bfloat16_source_fix_result_20260908.json", "result_sha256": "78bf819dda32bc6c9d19a75af52b0c6812914dd8cce5f712eb0e534985445945", "expected_dtype": "torch.bfloat16", "expected_counter": 1}},
-        {"variant_id": "fp16-value2-fma-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "GPU保持社区FMA/div_rn合同；NPU eager FP16不采用同一FMA舍入语义，因此NPU专用重融合lowering在单Triton kernel内显式保留div与mul后的FP16舍入。计数范围只含value!=1；历史value=1重融合记录已声明不计数。", "expected_counter": "GPU=1且FMA/div_rn；NPU的value!=1=1且显式FP16舍入、不含FMA/div_rn", "reference_status": "valid-derived-reference", "npu_status": "supported-source-fixed-backend-specific-rounding", "extension_evidence": {"result_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/fp16_source_fix_result_20260908.json", "result_sha256": "dbd82db5aa78c0ef984f754d874c7a0f2ed14196ff8e586e97778b49abd03a29", "expected_dtype": "float16", "expected_counter": 1, "counting_scope": "value!=1 only", "supersession_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/value_one_contract_correction_20260908.json"}}
+        {"variant_id": "fp16-value2-fma-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "GPU保持社区FMA/div_rn合同；NPU eager FP16不采用同一FMA舍入语义，因此NPU专用重融合lowering在单Triton kernel内显式保留div与mul后的FP16舍入。计数范围只含value!=1；历史value=1重融合记录已声明不计数。", "expected_counter": "GPU=1且FMA/div_rn；NPU的value!=1=1且显式FP16舍入、不含FMA/div_rn", "reference_status": "valid-derived-reference", "npu_status": "supported-source-fixed-backend-specific-rounding", "extension_evidence": {"result_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/fp16_source_revalidation_20260909.json", "result_sha256": "a905a785c73cbc80ba5526159723213de3fc92961a6bd6988ea75978fe384f56", "expected_dtype": "float16", "expected_counter": 1, "counting_scope": "value!=1 only", "supersession_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/value_one_contract_correction_20260908.json"}}
       ],
-      "coverage_phase": "functional-comparison-closed",
+      "pending_variants": [
+        {"variant_id": "fp16-value1-bitwise-regression", "kind": "regression", "expected_reference_match": false, "expected_behavior": "FP16 value=1在decomposition后保持div+add且addcdiv_fma_fused=0；GPU与NPU分别要求compiled与同设备eager位级一致。不得为修复精度而伪造FMA命中。", "expected_counter": "GPU/NPU addcdiv_fma_fused=0", "reference_status": "pending-derived-dtype-and-value-neighbor", "npu_status": "fixed-on-device-20260909-bitwise-counter0", "extension_evidence": {"failure_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/value_one_device_failure_20260909.json", "fix_path": "results/current/AU-post-grad-fuse-addcdiv-to-fma/value_one_device_fix_20260909.json", "fix_sha256": "2846bba5a4847f353a07dd15600b6ef6b51454beda86d2d6ca378fbc7fedaef6", "expected_counter": 0, "actual_counter": 0, "mismatch_count": 0}}
+      ],
+      "coverage_phase": "coverage-extension-gpu-reference-pending",
       "tracking": {
         "reference_mode": "direct",
         "npu_mode": "adapter",
@@ -98,7 +101,7 @@
         "allowed_local_deviation": ["device=npu", "backend=triton_experimental", "artifact capture"],
         "forbidden_local_deviation": ["改变 value 分支", "放宽 bitwise 合同", "把GPU的FMA/div_rn指令合同直接套到NPU FP16", "删除FP32/BF16的tl.fma/div_rn代码断言", "删除FP16显式舍入与禁用FMA断言"]
       },
-      "npu_control": {"status": "fp32-bf16-fma-and-fp16-scaled-explicit-rounding-complete", "next_action": "保留FP32/BF16位级与FMA/div_rn回归；FP16仅在value!=1原FMA图上验证两次显式舍入且不得生成FMA/div_rn。value=1必须保持counter=0，只由bitwise邻接合同验证，不得增加add(div)重融合。FP16修复前OFF路径不等价于eager，不得作为有效性能收益denominator。"},
+      "npu_control": {"status": "fp16-value1-div-add-precision-fixed-gpu-reference-pending", "next_action": "NPU triton_experimental已在aten.div.Tensor的FP16 lowering恢复quotient舍入边界；value=1真机bitwise、mismatch=0、counter=0，value=0.3/2/7.7与两个guard均通过。保留BF16/FP32原路径，不增加add(div)重融合。仅待GPU侧执行REF-addcdiv-fma-fp16-value1-derived完成新增邻接reference。"},
       "historical_evidence": ["report/t074_upstream_pass_test_index_20260829.md"]
     },
     {

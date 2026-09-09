@@ -60,7 +60,15 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
         )
         self.assertEqual(
             sum(row["current_phase"] == "functional-comparison-closed" for row in rows),
-            28,
+            27,
+        )
+        self.assertEqual(
+            sum(
+                row["current_phase"]
+                == "coverage-extension-gpu-reference-pending"
+                for row in rows
+            ),
+            1,
         )
         self.assertEqual(
             sum(
@@ -78,7 +86,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             28,
         )
 
-    def test_t078_addcdiv_lowp_extension_is_closed(self):
+    def test_t078_addcdiv_lowp_value_one_fix_and_gpu_pending_are_visible(self):
         rows = matrix.build_rows("2026-09-08T06:07:40+08:00")
         row = next(
             item
@@ -86,17 +94,19 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             if item["acceptance_unit_id"]
             == "AU-post-grad-fuse-addcdiv-to-fma"
         )
-        self.assertEqual(row["variant_count"], 5)
+        self.assertEqual(row["variant_count"], 6)
         self.assertEqual(row["verified_variant_count"], 5)
-        self.assertEqual(row["pending_variant_count"], 0)
-        self.assertEqual(row["coverage_status"], "fully-covered")
+        self.assertEqual(row["pending_variant_count"], 1)
+        self.assertIn("fp16-value1-bitwise-regression", row["coverage_status"])
+        self.assertIn("fixed-on-device", row["coverage_status"])
         self.assertEqual(
             row["current_phase"],
-            "functional-comparison-closed",
+            "coverage-extension-gpu-reference-pending",
         )
         self.assertEqual(row["community_alignment_status"], "PARTIAL_ALIGNED")
         self.assertEqual(row["community_alignment_source"], "explicit")
-        self.assertIn("NPU eager", row["community_divergent_scope"])
+        self.assertIn("NPU FP16", row["community_divergent_scope"])
+        self.assertIn("FP16 value=1", row["community_open_scope"])
 
     def test_legacy_results_are_not_inferred_as_fully_aligned(self):
         rows = matrix.build_rows("2026-09-08T21:10:00+08:00")

@@ -1,8 +1,10 @@
 # T-078 addcdiv FP16/BF16 覆盖修订与验证步骤
 
-> 更新时间：2026-09-08 22:44:08 CST（UTC+08:00）
-> 当前状态：FP32/BF16 已完成功能与性能闭环；FP16 GPU reference 有效，NPU 已通过显式低精度
-> 舍入 lowering 修复 `value!=1` 原 FMA 图。`value=1` 预期不命中，已移除补充 pattern。
+> 更新时间：2026-09-09 18:05:53 CST（UTC+08:00）
+> 当前状态：FP32/BF16 已完成功能与性能闭环；FP16 value!=1 已用显式低精度
+> 舍入 lowering 修复。`value=1` 仍保持 `counter=0`，普通 `div -> add` 路径也已在
+> NPU 恢复 quotient FP16 舍入边界并通过真机位级验证。该新增 variant 只等待 GPU
+> dtype/value 邻接 reference。
 > 修复前 OFF 不正确，FP16 暂无合法
 > pass 收益 denominator。
 
@@ -56,14 +58,18 @@ FMA 避免普通 mul/add 之间多一次 FP32 舍入，最终 store 才落回 FP
 
 ## 2. 本轮最小扩展
 
-社区原生 12 条 case 和已有 FP32 结论不变。新增两条 `tracking_mode=derived` 测例：
+社区原生 12 条 case 和已有 FP32 结论不变。已完成两条 `tracking_mode=derived` value=2 测例：
 
 - `REF-addcdiv-fma-fp16-derived`
 - `REF-addcdiv-fma-bfloat16-derived`
 
-派生入口位于 `runners/t078_addcdiv_dtype_reference.py`。它只把 dtype 改为 FP16/BF16，保持社区
-`64x64`、`value=2`、eager/compiled 对照、counter=1、`tl.fma` 和 `div_rn` 判据。它不是社区
-原生测例，结果中会写成 `derived-valid-after-community-contract`。
+2026-09-09 又增加一条只改变 dtype、选择社区既有 value=1 子分支的待跑邻接 case：
+
+- `REF-addcdiv-fma-fp16-value1-derived`
+
+派生入口位于 `runners/t078_addcdiv_dtype_reference.py`。value=2 两例保持社区 `64x64`、
+eager/compiled、counter=1、`tl.fma` 和 `div_rn` 判据；value=1 邻接保持社区已有子分支，要求
+bitwise 且 counter=0。三者都只改变 dtype，不是社区原生低精度测例。
 
 关键断言如下：
 
@@ -99,11 +105,13 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
   --task T-078 \
   --gpu 2 \
   --case REF-addcdiv-fma-fp16-derived \
-  --case REF-addcdiv-fma-bfloat16-derived
+  --case REF-addcdiv-fma-bfloat16-derived \
+  --case REF-addcdiv-fma-fp16-value1-derived
 ```
 
-成功条件不是“脚本退出 0”这么宽泛，而是两条 case 都满足：测试数为 1、无 skip、FX before/after
-存在、位级一致、counter=1 且生成代码包含 FMA/div_rn。失败必须原样回传，不能改为容差通过。
+成功条件不是“脚本退出 0”这么宽泛：三条 case 都须测试数为1、无skip、FX before/after存在且
+位级一致；value=2 两例还要求counter=1与FMA/div_rn，value=1则要求counter=0。失败必须原样回传，
+不能改为容差通过。
 
 ## 4. NPU 三臂归因
 
@@ -141,7 +149,9 @@ torch.compile
   `PERF_NEUTRAL`，保持启用。
 - FP16：GPU reference 的正式扩展合同为 `value=2`。NPU 对 `value!=1` 原 FMA 图显式保存除法、
   乘法后的 FP16 舍入并保持 counter=1；`value=1` 只属于 bitwise 邻接，预期 counter=0。
-- 当前矩阵显示 5 个覆盖 variants：5 个已验证、0 个 pending。
+- 当前矩阵显示 6 个覆盖 variants：原 5 个已验证；value=1 扩展已在 NPU 修复，
+  但 GPU reference 待回传。新增 pending 不改变原
+  4 个单元的冻结 denominator，但该 acceptance unit 不能再表述为低精度全域闭环。
 
 ## 6. 2026-09-08 GPU 回传复核
 
@@ -159,9 +169,17 @@ CUDA 12.6、A100 上执行：
 ## 7. NPU 修复与性能结果
 
 产品源码的当前范围为 `(FP32, FP16, BF16)`。FP32/BF16 使用 FMA/div_rn；FP16 使用后端专属
-显式舍入 lowering。正式计数范围是 FP16 `value=0.3/2/7.7`：均 bitwise true、最大误差 0、
-counter=1。旧证据中的 `value=1 counter=1` 来自已移除的 `add(div)` 补充 pattern，只保留为
-被纠正历史；它不参与 FMA acceptance unit 或性能统计。
+显式舍入 lowering。正式计数范围是 FP16 `value=0.3/2/7.7`：2026-09-09 在实际 Ascend 910B2
+上再次确认均 bitwise true、最大误差 0、counter=1。旧证据中的 `value=1 counter=1` 来自已
+移除的 `add(div)` 补充 pattern，只保留为被纠正历史；它不参与 FMA acceptance unit 或性能统计。
+
+同次真机复核单独执行当前 `value=1` 分支后，结构合同正确（`div -> add`、
+counter=0、无 FMA/div_rn），但修复前 compiled 与 NPU eager 有 `1176/4096` 个元素
+不同，最大绝对误差 `0.015625`。`output_code.py` 显示 quotient 没有 FP16 中间舍入。
+
+当前修复不恢复 `add(div)` 重融合，而是只在 NPU FP16 `aten.div.Tensor` lowering
+中恢复 quotient 的 downcast/upcast 边界。修复后 mismatch=0、最大误差=0、counter=0，
+生成代码包含 1 次 `.to(tl.float16)` 且仍无 FMA/div_rn。
 BF16 性能沿用社区功能 case 的 `64×64/value=2`，
 三轮 OFF/ON 的 NPU Event p50 回退 `0.78%`、p99 改善 `9.86%`，没有显存或 dispatch 变化，按
 阈值判定 `PERF_NEUTRAL`。
@@ -171,12 +189,19 @@ BF16 性能沿用社区功能 case 的 `64×64/value=2`，
 - `results/current/AU-post-grad-fuse-addcdiv-to-fma/lowp_three_arm_result_20260908.json`；
 - 同目录的 `bfloat16_source_fix_result_20260908.json` 和
   `fp16_precision_boundary_result_20260908.json`（修复前历史）、
-  `fp16_source_fix_result_20260908.json`（当前）；
+  `fp16_source_revalidation_20260909.json`（当前 value!=1 真机复核）及
+  `value_one_device_failure_20260909.json`（修复前历史）和
+  `value_one_device_fix_20260909.json`（修复后真机结果）；
 - `results/current/T-078/addcdiv_bfloat16_performance_summary_20260908.json`。
 
 FP16 没有报告正式 OFF/ON 收益：修复前 OFF 本身不等价于 eager，不能作为收益 denominator。
 详细根因、源码框、调用栈、FX/IR/output_code 对照见
 [FP16 精度修复报告](../issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md)。
+
+2026-09-09 修复前/后的完整 FX/IR/codegen 证据分别见
+[`20260909-current`](../issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-current/README.md)
+和
+[`20260909-fixed`](../issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/README.md)。
 
 社区 FP16 eager、Inductor lowering 与通用 `emulate_precision_casts` 的边界详见
 [社区 FP16 精度处理与 value=1 合同纠正](../issues/REF-addcdiv-fma-codegen-native/社区FP16精度处理与value1合同纠正.md)。

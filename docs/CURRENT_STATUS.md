@@ -1,9 +1,11 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-08 19:33 CST（UTC+08:00）
+> 更新时间：2026-09-09 18:05:53 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076～T-083共28个acceptance units已冻结GPU reference，并全部完成NPU/comparison与性能处置；T-076/T-077严格再认证单列，后续编号保留；产品改动尚未合入。
+> 当前阶段：T-076～T-083 原冻结范围共28个acceptance units有效；T-078 新增低精度
+> regression 已在 NPU 修复，等待 GPU 邻接 reference；T-084～T-086 已准备5个GPU-ready单元
+> 等待设备运行。T-076/T-077严格再认证单列。
 
 ## 1. 总结
 
@@ -66,8 +68,10 @@ T-078 原冻结范围的 4 个 post-grad 单元、12/12 原生 cases、20/20 var
 三条 compiled 路径共同偏离 eager，根因为缺少除法、乘法后的 FP16 舍入；现已通过 NPU 专属
 显式舍入 lowering 修复 `value!=1` 的原 FMA 图；`value=1` 已纠正为社区 bitwise 邻接，
 预期不命中且 counter=0，不再注册 `add(div)` 重融合。此前 `value=1 counter=1` 的附加证据仅作
-被纠正历史、不参与验收；该单元仍为 `5 verified + 0 pending`，因为 FP16 扩展 variant 原合同是
-`value=2`。NPU
+被纠正历史、不参与验收。2026-09-09 真机补测发现 FP16 `value=1` 的普通
+`div -> add` compiled 丢失 quotient FP16 舍入，修复前有 1176/4096 mismatch、最大误差
+0.015625。当前 NPU 后端修复在 div 与 add 之间恢复一次 FP16 round-trip，真机
+bitwise 通过、mismatch=0、counter=0。该扩展状态为 `NPU fixed + GPU reference pending`。NPU
 `triton_experimental` 上补齐 addcdiv FP32/BF16/FP16 pattern/lowering，并修复
 partial amin→min 的 Triton Ascend NaN helper；两项均通过同合同回归。性能处置结果为 addcdiv
 `PERF_NEUTRAL`、partial `PERF_MIXED`、addmm unfuse `PERF_REGRESSED`、baddbmm unfuse
@@ -182,8 +186,9 @@ report/         不可改写的实验事实和 T-074 数据
   known issues，修复候选已验证。
 - T-076、T-077 性能处置均完成；T-077 为 measured=4、capability-assessed=1、pending=0。机器可读结果位于
   `results/current/T-076/performance_summary.json` 与 `results/current/T-077/performance_summary.json`。
-- T-078 原冻结范围的 12/12 GPU 原生 cases、20/20 variants、4/4 NPU comparison 均已闭环；
-  addcdiv BF16/FP16 扩展均已闭环，FP16 使用 NPU 专属显式舍入 lowering。addcdiv/partial 修复已验证，候选性能
+- T-078 原冻结范围的 12/12 GPU 原生 cases、20/20 variants、4/4 NPU comparison 均有效；
+  addcdiv BF16 与 FP16 value!=1 已验证，FP16 value=1 普通 div+add 已在 NPU 修复并位级通过，
+  待 GPU 邻接 reference。addcdiv/partial 已验证范围的候选性能
   和最终 addmm/baddbmm 产品门禁均已落盘。正式数据位于
 `results/current/T-078/` 与四个对应 acceptance-unit 目录。
 
@@ -210,15 +215,16 @@ T-078 已从上述集合审核并闭环 1 个 `no-test-found` 与 3 个 indirect
 
 2026-09-06：验收校验加固和零设备回归已落地，见
 [修复记录](../report/tracker_validation_hardening_20260906.md)。完整后续草案见
-[TASK_BACKLOG](TASK_BACKLOG.md)：137 个剩余 provisional eligible 单元暂列 33 批；
+[TASK_BACKLOG](TASK_BACKLOG.md)：125 个剩余 provisional eligible 单元暂列 33 批，其中 T-084～T-086
+已审核并准备5个单元；
 30 条非计数结构记录单列。该数量只覆盖旧 FX inventory，不含尚未独立建表的 lowering/template。
 
 ```text
 T-077 修复支线：复核候选 `dfbcc25b76743ea6c1c5cd61b6b30f0a910148a6`，经授权后推送/合入
 torch_npu，并用同一六变体合同做安装态回归。
 
-T-078：12/12 GPU reference、4/4 NPU comparison、条件 repair、候选性能和最终产品 gate 已闭环；
-后续只做同合同回归和 source drift 检查，不再绕过显式门禁补测。
+T-078：原12/12 GPU reference、4/4 NPU comparison、条件 repair、候选性能和最终产品 gate有效；
+FP16 value=1 普通 div+add 已修复并保持 addcdiv FMA counter=0；待 GPU 邻接 reference 回传。
 
 T-079、T-080 均已正式闭环。T-080 保留 const-scatter CrossEntropy 的社区完整 benchmark；
 prepare-softmax 因产品显式 lowering fallback 免测；constructor mover 从社区功能正例派生性能图。
@@ -227,6 +233,10 @@ T-081～T-083已完成2/2/3个社区合同的GPU运行：11/11 cases、24/24 var
 双rank HCCL验证3→1/2→1 collective。7个单元均完成全局互斥下的六臂性能处置。
 CPU-only/fake-PG/间接覆盖或缺少直接测例的剩余候选按原批次保留 deferred。
 活动矩阵共28行，28行均已完成GPU、NPU/comparison与性能处置。
+
+T-084～T-086已完成零设备准备：分别接入1/3/1个单元，共8个原生GPU cases、11个variants；
+10个不满足合同的候选明确延期。T-085含真实2-rank NCCL例，GPU完整suite必须使用两张卡。
+三批均已准备功能和性能讲解及worker，但设备执行前不进入当前28行冻结矩阵。
 
 T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或同合同重验。新 1.3 review
 分别可恢复 80/68 份关键正文，用于逐项 FX 学习与审计，但不是完整历史 archive。
@@ -237,7 +247,8 @@ T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或�
 ## 8. 当前环境边界
 
 - NPU 新测试从 `/home/z50063656/tmp` 发起；GPU T-076 从 `/data/z50063656/tmp` 发起；
-- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-081 --gpu ID`（支持 T-076～T-083），脚本自动进入
+- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-084 --gpu ID`（支持 T-076～T-086；
+  T-085 使用 `--gpus ID1,ID2`），脚本自动进入
   工作目录、激活环境、校验、运行、导出 1.3 review handoff 与备用网页分片并维护 `latest`，
   不再人工查找 timestamp；默认 handoff 是单行 JSON，超过 96 KiB 时自动生成分片并打印应上传的
   manifest 路径；评审包恢复摘要/FX/关键 case 正文，其余 artifacts 保留 SHA256；

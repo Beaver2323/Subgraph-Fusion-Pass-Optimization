@@ -1,6 +1,6 @@
 # 社区 FP16 精度处理与 value=1 合同纠正
 
-> 更新时间：2026-09-08 22:44:08 CST（UTC+08:00）
+> 更新时间：2026-09-09 18:05:53 CST（UTC+08:00）
 > PyTorch 基线：`8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`
 > NPU 验证后端：`triton_experimental`
 
@@ -176,8 +176,11 @@ value!=1: div -> mul -> add，可命中，counter=1
 value=1:  div -> add，预期不命中，counter=0
 ```
 
-如果未来发现 NPU FP16 `value=1` 的普通 `div -> add` 路径与 eager 不一致，应作为独立的
-低精度 pointwise/lowering 问题处理，不能通过伪造一次 FMA pattern 命中来掩盖。
+2026-09-09 已在实际 Ascend 910B2 上确认 NPU FP16 `value=1` 的普通 `div -> add` 路径
+修复前与 eager 不一致：counter=0，但 1176/4096 个元素不同，最大绝对误差
+`0.015625`。该问题按独立低精度 pointwise/lowering 回归处理，没有伪造 FMA
+pattern 命中。修复后 quotient 在 div 与 add 之间显式落回 FP16，真机 mismatch=0、
+最大误差=0、counter 仍为 0。
 
 ## 7. 本轮纠正
 
@@ -188,9 +191,10 @@ value=1:  div -> add，预期不命中，counter=0
 - 机器可读纠正入口：
   `results/current/AU-post-grad-fuse-addcdiv-to-fma/value_one_contract_correction_20260908.json`。
 
-19:49 CST 尝试在当前执行层重跑时，5 个 fresh process 均在执行测试代码前被 `aclInit 507008`
-阻断（无法取得设备数），因此该次运行不计入功能结论。静态合同与 runner 校验已通过；修正后的
-动态再认证仍需在 NPU 可见层执行，不能拿这次环境失败冒充代码失败或 PASS。
+19:49 CST 的 `aclInit 507008` 沙箱尝试仍保留为不计数环境失败。随后在 NPU 可见执行层完成
+真机重跑：三个 `value!=1` 与两个 guard 全部通过；另起 fresh process 的 FP16 `value=1`
+执行到生成 kernel 并暴露上述 correctness regression。随后的修复及六进程再验证也是
+代码在实际设备上的执行结果，不是设备不可见造成的假通过。
 
 ## 8. 进度矩阵中的社区对齐结论
 
@@ -198,10 +202,10 @@ value=1:  div -> add，预期不命中，counter=0
 
 | 范围 | 结论 |
 | --- | --- |
-| 已对齐 | `value=1` 在 GPU/NPU 均不命中 FMA pattern；FP32/BF16 的 value!=1 命中与正确性合同成立 |
+| 已对齐 | FP32 `value=1` 在 GPU/NPU 均不命中 FMA pattern且正确；FP32/BF16 的 value!=1 命中与正确性合同成立 |
 | 实现差异 | GPU FP16 为 `div_rn+FMA`；NPU FP16 为匹配 NPU eager 显式保留两个低精度舍入边界 |
-| 未决范围 | 当前正式 variants 无未决项；若 NPU eager/Triton 舍入语义变化则重新打开评审 |
-| 处置 | 保留经过位级验证的后端专属 FP16 lowering，不伪造 value=1 命中；后续发现语义或正确性不一致时进入 repair |
+| 未决范围 | FP16 `value=1` 的 GPU dtype/value 邻接 reference |
+| 处置 | 保留后端专属 FP16 value!=1 lowering；value=1 用普通 div lowering 恢复 quotient 舍入并保持 counter=0 |
 
 机器可读原件位于
 `results/current/AU-post-grad-fuse-addcdiv-to-fma/comparison_result.json`，当前进度展示位于

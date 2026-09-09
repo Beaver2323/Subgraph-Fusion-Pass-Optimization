@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "generated_at": "2026-09-09T00:35:28+08:00",
+  "status": "implemented-awaiting-runtime-validation-with-capability-gate",
+  "implementation": {
+    "status": "implemented-awaiting-runtime-validation",
+    "entrypoint": "runners/t085_performance_worker.py",
+    "launcher": "scripts/run_t085_performance.sh",
+    "orchestrator": "scripts/run_t085_performance.py"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "进程启动后、导入torch或torch_npu前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "显式backend/product关闭只记录并免测；generic upstream device guard记capability-pending，独立评审前不制造ON"
+  },
+  "measurement_contract": {
+    "correctness_gate": "对应GPU reference有效且NPU triton_experimental原生/适配功能、目标改写、数值、graph-break/fallback全部人工复核后才签gate",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99；overlap含CPU同步段时只作设备侧补充指标",
+      "compile latency separate",
+      "raw per-sample arrays"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL",
+      "safety_only": "overlap device-put结果不以加速为验收条件"
+    },
+    "rounds": 3,
+    "aggregation": "OFF1→ON1→ON2→OFF2→OFF3→ON3独立进程；每臂保留原始样本，三轮同模式中位数"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 2,
+    "pointless_cumsum_performance_devices": 1,
+    "overlap_performance_devices": 2,
+    "overlap_world_size": 2,
+    "real_process_group_required": true,
+    "fake_process_group_allowed": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/",
+      "test/distributed/"
+    ],
+    "terms": [
+      "pointless_cumsum",
+      "overlap_scheduling_device_put_sync",
+      "partitioned_scatter",
+      "atomic_contention"
+    ],
+    "result": "partitioned-scatter找到社区目标benchmark；pointless-cumsum与overlap未找到专属目标级benchmark。",
+    "boundary": "partitioned-scatter社区benchmark的1.5倍门槛明确来自ROCm MI300X且CUDA默认关闭，不迁移到CUDA/NPU；另两项由社区功能图派生并标注非完整模型端到端。"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-overlap-scheduling-device-put-sync",
+      "worker_unit": "overlap-device-put",
+      "performance_status": "worker-ready-awaiting-functional-gate",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/distributed/test_inductor_collectives.py::TestSyncDecisionCrossRanks.test_overlap_scheduling_device_put_sync"
+        ],
+        "reason": "未发现专属benchmark；保持社区2-rank all-to-all、split计算、async/sync device_put和tolist完整子图"
+      },
+      "functional_gate": "真实2-rank NCCL/HCCL；ON必须进入schedule_overlap并将至少一个async device_put改为sync，OFF不得调用目标pass；两臂逐rank输出正确且零fallback/graph-break",
+      "workloads": [
+        {
+          "workload_id": "overlap-device-put-community-shape",
+          "role": "primary-safety-and-cost",
+          "shape_contract": "world_size=2、4 local experts、512 tokens、hidden=128、top_k=2；复用社区输入生成与两个all_to_all路径",
+          "measurement_scope": "完整通信子图端到端，包含GPU计算、GPU→CPU同步与tolist；不是训练模型。host为主，Event不覆盖CPU等待只能作补充。"
+        }
+      ],
+      "off_on_control": "仅切aten_distributed_optimizations.enable_overlap_scheduling；其余调度参数固定为社区analytical配置，独立进程执行",
+      "artifacts": [
+        "目标pass调用计数与device_put转换数",
+        "post-grad前后FX、output_code.py与IR",
+        "逐rank逐样本host/Event和显存峰值",
+        "后端、进程组、rank/world_size、源码sha256与环境"
+      ],
+      "negative_cases": [
+        "OFF调用目标pass或ON未转换device_put拒绝计时",
+        "fake PG、单rank、数值不一致、fallback或graph break拒绝计时"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+      "worker_unit": null,
+      "performance_status": "cuda-explicit-default-off-npu-capability-pending",
+      "case_source": {
+        "kind": "community-benchmark-reuse",
+        "nodeids": [
+          "test/inductor/test_scatter_optimization.py::TestPartitionedScatterOpt.test_perf_atomic_contention"
+        ],
+        "reason": "社区benchmark完整存在，但源码只在HIP默认开启且性能门槛来自ROCm；当前只登记来源，不执行CUDA/NPU六臂"
+      },
+      "functional_gate": "GPU社区功能结果可保留；CUDA性能因显式默认关闭免测。NPU属于generic非HIP guard省略，先做triton_experimental能力评审，未签产品决策前禁止强开或force。",
+      "workloads": [
+        {
+          "workload_id": "partitioned-scatter-community-benchmark-record-only",
+          "role": "blocked-record",
+          "shape_contract": "N=1,000,000、D=100、n=501、3个fp32 index_put(accumulate=True)、索引范围[0,8)",
+          "measurement_scope": "社区目标级microbenchmark；当前仅记录，不把ROCm 1.5倍门槛外推至CUDA/NPU"
+        }
+      ],
+      "off_on_control": "不执行；不得使用partitioned_scatter_force或手工打开HIP专用默认制造合法NPU ON路径",
+      "artifacts": [
+        "config.py中HIP-only默认代码",
+        "社区benchmark源码位置与ROCm收益说明",
+        "未来NPU能力评审、显存门禁与产品决策"
+      ],
+      "negative_cases": [
+        "accumulate=False",
+        "显式配置关闭",
+        "未评审NPU capability时拒绝性能"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-pointless-cumsum",
+      "worker_unit": "pointless-cumsum",
+      "performance_status": "worker-ready-awaiting-functional-gate",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pointless_cumsum"
+        ],
+        "reason": "无专属benchmark；复用社区fn10的FP16 full[5000]→cumsum(out=FP32)作为最大既有shape"
+      },
+      "functional_gate": "只禁用/启用pointless_cumsum_replacement目标注册；ON handler>0且生成图不含aten.cumsum，OFF handler=0；两臂输出严格相等、无fallback/graph-break",
+      "workloads": [
+        {
+          "workload_id": "pointless-cumsum-fn10-community-shape",
+          "role": "primary",
+          "shape_contract": "torch.full([5000],1.0,float16,device)后torch.cumsum(dim=0,dtype=float32)，与社区fn10一致",
+          "measurement_scope": "整个常量构造+cumsum编译函数的目标级microbenchmark；不是模型端到端，不推广到输入张量cumsum"
+        }
+      ],
+      "off_on_control": "仅修改pointless_cumsum_replacement注册项的extra_check；不关闭全局pattern_matcher；fresh process per arm",
+      "artifacts": [
+        "目标handler调用计数与改写前后FX",
+        "output_code.py与IR",
+        "逐样本host/Event、编译耗时与显存峰值",
+        "后端、源码sha256、输入/输出dtype与shape"
+      ],
+      "negative_cases": [
+        "OFF误命中或ON未命中拒绝计时",
+        "数值/dtype不一致、fallback、graph break或显式产品关闭拒绝计时"
+      ]
+    }
+  ]
+}

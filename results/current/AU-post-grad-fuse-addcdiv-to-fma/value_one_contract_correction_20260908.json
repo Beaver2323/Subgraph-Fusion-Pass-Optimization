@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-08T19:33:00+08:00",
+  "generated_at": "2026-09-09T18:05:53+08:00",
   "task": "T-078",
   "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
   "case_id": "REF-addcdiv-fma-bitwise-native",
@@ -28,11 +28,36 @@
   "historical_artifact_policy": "保留原始工件但不计入当前功能、命中或性能结论",
   "source_change": "已移除 NPU add(div) 到 addcdiv(value=1) 的补充重融合注册",
   "dynamic_revalidation": {
-    "status": "environment-blocked-not-counted",
-    "attempted_at": "2026-09-08T19:49:20+08:00",
-    "run_dir": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/fp16-source-fix-20260908T194920+0800",
-    "error": "aclInit 507008: current execution layer could not obtain NPU device count",
-    "code_executed": false,
-    "required_next": "在 NPU 可见执行层重跑修正后的 3 个 value!=1 与 2 个 guard；value=1 运行 bitwise-native 并要求 counter=0"
+    "status": "executed-correctness-regression",
+    "attempted_at": "2026-09-09T00:42:00+08:00",
+    "run_dir": "/home/z50063656/tmp/t078-npu-results/REF-addcdiv-fma-codegen-native/value-one-current-20260909T004200",
+    "backend": "triton_experimental",
+    "device": "Ascend 910B2 (physical 2, process-local npu:0)",
+    "code_executed": true,
+    "actual_addcdiv_fma_fused": 0,
+    "generated_code_contains_fma": false,
+    "generated_code_contains_div_rn": false,
+    "generated_code_fp16_round_count": 0,
+    "bitwise_equal_to_npu_eager": false,
+    "mismatch_count": 1176,
+    "max_abs_error": 0.015625,
+    "evidence": "results/current/AU-post-grad-fuse-addcdiv-to-fma/value_one_device_failure_20260909.json",
+    "required_next": "该失败已甲2026-09-09的NPU FP16 aten.div.Tensor quotient舍入修复解决；历史失败保留作为before证据。"
+  },
+  "repair_revalidation": {
+    "status": "npu-fixed-gpu-reference-pending",
+    "verified_at": "2026-09-09T17:57:24+08:00",
+    "backend": "triton_experimental",
+    "device": "Ascend 910B2",
+    "actual_addcdiv_fma_fused": 0,
+    "generated_code_contains_fma": false,
+    "generated_code_contains_div_rn": false,
+    "generated_code_fp16_round_count": 1,
+    "bitwise_equal_to_npu_eager": true,
+    "mismatch_count": 0,
+    "max_abs_error": 0.0,
+    "fix_evidence": "results/current/AU-post-grad-fuse-addcdiv-to-fma/value_one_device_fix_20260909.json",
+    "full_evidence": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/value-one",
+    "required_next": "GPU执行REF-addcdiv-fma-fp16-value1-derived并回传reference。"
   }
 }

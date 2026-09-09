@@ -12,7 +12,10 @@ from pathlib import Path
 import re
 
 
-ALIASES = {"AU-post-grad-move-constructors-to-cuda": "AU-post-grad-move-constructors-to-gpu"}
+ALIASES = {
+    "AU-post-grad-move-constructors-to-cuda": "AU-post-grad-move-constructors-to-gpu",
+    "AU-post-grad-overlap-scheduling": "AU-post-grad-overlap-scheduling-device-put-sync",
+}
 FAMILY_ORDER = (
     "joint_graph", "post_grad", "split_cat", "pre_grad", "misc_patterns",
     "replace_random", "efficient_conv_bn_eval", "freezing_patterns", "binary_folding",
@@ -42,8 +45,10 @@ def build(repo_root: Path, generated_at: str) -> dict:
         planning_seed = previous.get("planning_seed_units", previous["planning_manifest_units"])
         previous_selected = set(previous["planning_manifest_units"])
         reviewed_ids = {
-            unit["provisional_unit_id"] for batch in previous["batches"]
-            if batch["task_id"] in {"T-081", "T-082", "T-083"} for unit in batch["units"]
+            ALIASES.get(unit["provisional_unit_id"], unit["provisional_unit_id"])
+            for batch in previous["batches"]
+            if batch["task_id"] in {"T-081", "T-082", "T-083", "T-084", "T-085", "T-086"}
+            for unit in batch["units"]
         }
         if previous_selected - set(selected) or (set(selected) - previous_selected) - reviewed_ids:
             raise ValueError("manifest 单元集合已变化：请显式审核批次迁移并保留既有 T 编号，禁止自动重编号")
@@ -89,7 +94,10 @@ def build(repo_root: Path, generated_at: str) -> dict:
         manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
         ready = {unit["acceptance_unit_id"] for unit in manifest["acceptance_units"]}
         deferred = {unit["provisional_unit_id"]: unit for unit in manifest.get("deferred_candidates", [])}
-        original_ids = {unit["provisional_unit_id"] for unit in batch["units"]}
+        original_ids = {
+            ALIASES.get(unit["provisional_unit_id"], unit["provisional_unit_id"])
+            for unit in batch["units"]
+        }
         if ready & deferred.keys() or ready | deferred.keys() != original_ids:
             raise ValueError(f"{batch['task_id']}准备/延期审核未完整覆盖原批次，禁止重编号")
         reference_frozen = (
@@ -120,12 +128,12 @@ def build(repo_root: Path, generated_at: str) -> dict:
         for unit in batch["units"]:
             unit["review_disposition"] = (
                 "gpu-npu-functional-and-performance-complete"
-                if formally_closed and unit["provisional_unit_id"] in ready
+                if formally_closed and ALIASES.get(unit["provisional_unit_id"], unit["provisional_unit_id"]) in ready
                 else
                 "reference-frozen-awaiting-npu"
-                if reference_frozen and unit["provisional_unit_id"] in ready
+                if reference_frozen and ALIASES.get(unit["provisional_unit_id"], unit["provisional_unit_id"]) in ready
                 else "prepared-awaiting-gpu"
-                if unit["provisional_unit_id"] in ready
+                if ALIASES.get(unit["provisional_unit_id"], unit["provisional_unit_id"]) in ready
                 else "deferred-not-counting"
             )
     return {
@@ -159,7 +167,7 @@ def markdown(data: dict) -> str:
         "机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。", "",
         f"T-074 的 {counts['inventory_units']} 个 provisional 单元中，活动 manifest 已接入 {counts['selected_manifest_units']} 个；",
         f"未接入的 {counts['remaining_provisional_units']} 个候选中，{counts['deferred_review_units']} 个留在已审批次延期，其余保留 {counts['draft_batches']} 个草案批次；另有 {counts['non_counting_review_records']} 条非计数结构记录待审。", "",
-        "T-081～T-083 的已选7单元已完成原生GPU reference、NPU triton_experimental功能验证与性能处置；7个原候选明确延期。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-084及以后编号。", "",
+        "T-081～T-083 的已选7单元已完成原生GPU reference、NPU triton_experimental功能验证与性能处置；T-084～T-086已准备5单元、延期10候选并等待GPU。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-087及以后编号。", "",
         "| 草案任务 | 源码 family | 暂列单元数 | 状态 |", "| --- | --- | ---: | --- |"]
     for batch in data["batches"]:
         if batch.get("formally_closed"):

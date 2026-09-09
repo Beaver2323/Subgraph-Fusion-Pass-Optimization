@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "task": "T-078",
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "dtype": "bfloat16",
+  "value": 1.0,
+  "arm": "re-fused",
+  "backend": "triton_experimental",
+  "status": "passed",
+  "product_source_modified": true,
+  "cpu_fallback_added": false,
+  "performance_measured": false,
+  "torch_version": "2.14.0a0+git8e86e0a",
+  "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "torch_npu_version": "2.14.0a0+git83cc452",
+  "source_modules": {
+    "overrides": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py",
+    "fx_passes": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/fx_passes.py",
+    "lowering": "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/lowering.py"
+  },
+  "input_sha256": [
+    "1cbab2b5219554ba077ef25dbecff7a09dbe4e0f74ef1d35f4a770e8c68c39bb",
+    "3ca6276cda2cf0dbe69f010e061260f44db31f60570350b5b7805bce5276a749",
+    "4b06c7a305aa03a64a288fbaa3c3a14c448d9af8d41f4e20a906e594b1474ed8"
+  ],
+  "eager_sha256": "1d8d1ec27c0711ed409e970dc821778c2e52ae22c59373431947f152dc9330fc",
+  "compiled_sha256": "1d8d1ec27c0711ed409e970dc821778c2e52ae22c59373431947f152dc9330fc",
+  "shape": [
+    64,
+    64
+  ],
+  "output_dtype": "torch.bfloat16",
+  "bitwise_equal_to_addcdiv_eager": true,
+  "max_abs_error_to_addcdiv_eager": 0.0,
+  "mean_abs_error_to_addcdiv_eager": 0.0,
+  "mismatch_count": 0,
+  "addcdiv_fma_fused": 0,
+  "generated_code_sha256": "b78474d67c1416a603b61b58b28f69fe7d7987c46635a4c5cdae8ebe5491bcd6",
+  "generated_code_contains_fma": false,
+  "generated_code_contains_div_rn": false,
+  "generated_code_fp16_round_count": 0,
+  "codegen_contract": "归因 arm 不施加修复后 codegen 合同",
+  "codegen_contract_valid": true,
+  "expected_fusion": 0
+}

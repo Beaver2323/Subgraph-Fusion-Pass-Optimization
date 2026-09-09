@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-08 03:17 CST（UTC+08:00）
+> 索引更新时间：2026-09-09 18:05:53 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -21,9 +21,10 @@
 | [t077_gpu_reference_20260902.md](t077_gpu_reference_20260902.md) | T-077 GPU 文本 handoff 的 11/11 case、17/17 variant、环境、哈希与 1.3 FX 正文复核 | reference 已冻结；68 份关键正文可恢复 |
 | [t077_npu_completion_20260902.md](t077_npu_completion_20260902.md) | T-077 五单元 NPU/comparison 闭环与 MM lowering 修复验证 | 正式闭环 5/5；候选尚未合入 |
 | [T-077 small-MM 根因分析](../issues/REF-decompose-mm-native/根因分析.md) / [修复验证](../issues/REF-decompose-mm-native/修复验证报告.md) | 触发代码、必要调用栈、首个 lowering 分歧、修复代码与六变体复验 | 候选 `dfbcc25` 已验证、尚未合入 |
+| [T-078 FP16 value=1 根因](../issues/REF-addcdiv-fma-codegen-native/根因分析.md) / [精度修复](../issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md) | 不重融合合同、NPU quotient 舍入根因、修复前/后 FX、IR、output_code 和六进程验证 | NPU 已修复并真机通过；待 GPU 邻接 reference |
 | [t077_pattern_gpu_npu_guide_20260902.md](t077_pattern_gpu_npu_guide_20260902.md) | T-077 pattern 意图、源码块、GPU/NPU 对照和修复代码 | 17/17 variant 已解释 |
 | [t078_mapping_review_20260903.md](t078_mapping_review_20260903.md) | 第三批四单元的人工映射修正、源码意图和 GPU 合同 | 12 direct cases/20 variants 已准备，等待 reference |
-| [t078_npu_completion_20260906.md](t078_npu_completion_20260906.md) | 第三批 GPU reference、NPU 修复、逐单元性能与最终产品门禁 | 12/12 GPU cases、4/4 NPU comparison 已闭环；紧凑 handoff 无 FX 正文 |
+| [t078_npu_completion_20260906.md](t078_npu_completion_20260906.md) | 第三批原冻结范围及 addcdiv 低精度后续 | 原12/12 GPU cases、4/4 NPU comparison有效；FP16 value=1已在NPU修复，待GPU邻接reference |
 | [t079_t080_mapping_review_20260904.md](t079_t080_mapping_review_20260904.md) | 第四/五批七单元的人工映射、源码意图、性能来源与后端边界 | 17 direct cases/27 variants 已准备，等待 reference |
 | [T-078 功能/性能 guide](../docs/T078_FUNCTION_PERFORMANCE_GUIDE.md) | 四单元功能 case、GPU/NPU 行为、修复与派生 benchmark 的源码化讲解 | 20/20 variants 已解释，含正式动态 verdict |
 | [t079_gpu_reference_review_20260907.md](t079_gpu_reference_review_20260907.md) | T-079 1.3 review 的完整性、逐 case FX 与冻结边界 | GPU 复核时点 4/4 cases、14/14 variants 已冻结；后续状态见下一行 guide |
@@ -33,6 +34,7 @@
 | [T-081～T-083 GPU复核](t081_t083_gpu_reference_review_20260908.md) | 新三批11 cases/24 variants的输入校验、FX行为、证据范围与观察器最小修复 | 7个单元GPU分母已冻结；该报告的GPU时点边界保留 |
 | [T-081～T-083 NPU/性能闭环](t081_t083_npu_function_performance_20260908.md) | 7单元源码、调用栈、GPU/NPU行为、真实问题、最小适配和六臂性能 | NPU功能7/7、性能处置7/7；T-083为真实HCCL双rank |
 | [T-081 测例 guide](../docs/T081_FUNCTION_PERFORMANCE_GUIDE.md) / [T-082](../docs/T082_FUNCTION_PERFORMANCE_GUIDE.md) / [T-083](../docs/T083_FUNCTION_PERFORMANCE_GUIDE.md) | 新三批2/2/3单元的源码、实际GPU/NPU行为、功能/性能测例 | 7个单元全部完成正式处置 |
+| [T-084 测例 guide](../docs/T084_FUNCTION_PERFORMANCE_GUIDE.md) / [T-085](../docs/T085_FUNCTION_PERFORMANCE_GUIDE.md) / [T-086](../docs/T086_FUNCTION_PERFORMANCE_GUIDE.md) | 5个GPU-ready单元的源码合同、功能/性能来源、OFF/ON和延期理由 | 零设备准备完成，GPU/NPU均未运行 |
 | [REF-mm-plus-mm-native NPU 复现报告](../issues/REF-mm-plus-mm-native/复现报告.md) | 原生直接 `NO_TESTS`、最小 adapter、4/4 NPU 目标合同和 graph-mode 证据 | 统一 comparison 已落盘；`BEHAVIOR_UNCHANGED` |
 | [REF-pad-mm-dynamic-m-native NPU 复现报告](../issues/REF-pad-mm-dynamic-m-native/复现报告.md) | 原生 `NO_TESTS`、TRITON-only lowering 阻断、产品 gate baseline | 归属单元已正式闭环 |
 | [t076_gpu_reference_20260901.md](t076_gpu_reference_20260901.md) | 13/13 GPU direct valid、环境、哈希与 1.3 FX 正文复核 | reference 已冻结；80 份关键正文可恢复，完整大 artifacts 保留在 GPU |

@@ -556,7 +556,7 @@ T-076～T-080 的 21 个单元已按对应批次记录完成 GPU/NPU comparison 
 
 提交代码、计划或验收数据之前，从 `/home/z50063656/tmp` 执行
 `python /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/validate_all.py --write-audit`。
-统一入口覆盖零设备回归、T-076～T-083 reference 入口、NPU/comparison、性能准备计划、backlog
+统一入口覆盖零设备回归、T-076～T-086 reference 入口、NPU/comparison、性能准备计划、backlog
 与递归语法检查；嵌套 source overlay/worker 也须检查，但静态检查不得执行其代码。
 
 规则登记在 `schemas/audit_policy.json`。改变验收口径须同步规则版本、schema/validator 和反例测试；

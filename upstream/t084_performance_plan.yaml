@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-084",
+  "generated_at": "2026-09-09T00:34:29+08:00",
+  "status": "worker-static-only-awaiting-gpu-and-npu-functional-gates",
+  "implementation": {
+    "status": "implemented-awaiting-runtime-validation",
+    "entrypoint": "runners/t084_performance_worker.py",
+    "launcher": "scripts/run_t084_performance.py"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "进程启动后、导入torch/torch_npu前设置TORCHINDUCTOR_NPU_BACKEND；每臂新进程",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "发现产品明确disable则记录并免测；worker不提供绕过产品gate参数"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU直接reference有效后，NPU triton_experimental真实HCCL两rank先验证OFF/ON数值、2→1目标改写、无graph break/fallback，再由原件sha256签发性能gate",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw per-sample arrays and cross-rank maxima"
+    ],
+    "memory": [
+      "peak allocated per rank",
+      "peak reserved per rank"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "每样本取两rank最大值；每臂求p50/p99，三轮同模式取中位数"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 1,
+    "performance_minimum_devices": 2,
+    "performance_world_size": 2,
+    "real_collective_required": true,
+    "fake_process_group_allowed": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/",
+      "test/distributed/"
+    ],
+    "terms": [
+      "dedup_reduce_scatters",
+      "dedup_fsdp_reduce_scatter",
+      "reduce_scatter_tensor",
+      "TestDedupReduceScatter"
+    ],
+    "result": "未找到目标级同后端OFF/ON社区benchmark；社区只有直接功能/codegen测试和Fake PG helper结构测试。",
+    "source_priority": "性能worker复用社区直接功能函数的两个[4,128] fp32输入与avg语义，仅将world_size从1扩为2以建立真实通信；明确为tracker派生而非社区端到端benchmark"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
+      "worker_unit": "dedup-reduce-scatter",
+      "performance_status": "worker-implemented-awaiting-runtime-validation",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_dedup_reduce_scatter"
+        ],
+        "reason": "无社区目标性能benchmark；严格保持原图、shape、dtype和avg，只扩展真实两rank并补OFF/ON计时"
+      },
+      "functional_gate": "OFF配置dedup_reduce_scatters=False必须保留2次collective；ON=True必须捕获2→1且两rank均与eager相等；fullgraph、零fallback、真实NCCL/HCCL后才能计时",
+      "workloads": [
+        {
+          "workload_id": "dedup-reduce-scatter-community-shape",
+          "role": "primary",
+          "shape_contract": "两个[4,128]连续fp32输入；avg reduce_scatter、wait后相加；社区world_size=1扩展为真实world_size=2",
+          "measurement_scope": "完整collective子图端到端，包含输入add位置变化、collective和wait；不是FSDP训练端到端模型，不外推网络重叠收益"
+        }
+      ],
+      "off_on_control": "唯一变量为torch._inductor.config.dedup_reduce_scatters false/true；reorder_for_compute_comm_overlap固定false；不关闭全局pattern matcher",
+      "artifacts": [
+        "GPU reference summary与NPU functional原件sha256",
+        "OFF/ON post-grad FX及2→1改写证据",
+        "output_code.py与IR",
+        "逐样本host/Event、编译耗时、allocated/reserved",
+        "rank/world_size/backend/loaded-source sha256/seed/输入合同"
+      ],
+      "negative_cases": [
+        "不同group/reduce_op/dtype或wait多用户不应合并；当前仅Fake PG结构补证，不冒充GPU动态结果",
+        "ON未2→1、OFF误改写、任一rank数值错误、fake PG、显式产品disable均拒绝计时"
+      ]
+    }
+  ]
+}

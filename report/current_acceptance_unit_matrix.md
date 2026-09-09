@@ -1,13 +1,13 @@
 # 当前 Acceptance Unit 兼容性矩阵
 
-> 生成时间：2026-09-08T21:10:00+08:00
+> 生成时间：2026-09-09T18:05:53+08:00
 > 数据源：`upstream/*manifest.yaml`、`results/current/` 与逐任务性能计划/汇总。
 > 后端边界：GPU reference 固定为 `inductor-default`；NPU 动态验证、比较、修复验证与性能固定为 `triton_experimental`。
 > 历史 251 行 registration 矩阵不参与本表 verdict；其用途与边界见 `report/archive/legacy-20260820-0828/pass_src_20260820/README.md`。
 
 ## 状态摘要
 
-- 活动 acceptance units：**28**；已冻结 reference：**28**；存在覆盖扩展未闭环：**0**。
+- 活动 acceptance units：**28**；已冻结 reference：**28**；存在覆盖扩展未闭环：**1**。
 - 已形成 NPU/comparison：**28**；已有正式性能处置：**28**；其余为性能计划态。
 - `comparison`/性能处置数量只说明已登记 variants；存在 pending extension 的单元必须以“覆盖”和“当前阶段”列为准，不能外推为全域闭环。
 - 当前 NPU 结果实际观测 backend：`triton_experimental`。
@@ -29,7 +29,7 @@
 | T-077 | AU-decompose-mem-bound-mm-decompose-bmm | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | EXPECTED_PRODUCT_DIVERGENCE | not-needed | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | measured-candidate-rejected / PERF_REGRESSED | functional-comparison-closed |
 | T-077 | AU-decompose-mem-bound-mm-decompose-mm | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | NPU_REGRESSION | verified | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | measured-candidate-rejected / PERF_REGRESSED | functional-comparison-closed |
 | T-077 | AU-decompose-mem-bound-mm-decompose-addmm | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | EXPECTED_PRODUCT_DIVERGENCE | not-needed | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | measured-candidate-rejected / PERF_REGRESSED | functional-comparison-closed |
-| T-078 | AU-post-grad-fuse-addcdiv-to-fma | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | PERF_NEUTRAL | verified | PARTIAL_ALIGNED / 保留经过位级验证的 NPU 专属 FP16 lowering，并将其标为后端实现差异；不伪造 value=1 命中。若后续 NPU eager 或 Triton 舍入语义变化，按同输入三臂合同重新评审并酌情修复。 | measured-retained / PERF_NEUTRAL | functional-comparison-closed |
+| T-078 | AU-post-grad-fuse-addcdiv-to-fma | post_grad | verified=5; pending=fp16-value1-bitwise-regression[reference=pending-derived-dtype-and-value-neighbor;npu=fixed-on-device-20260909-bitwise-counter0] | valid-reference-suite-with-pending-extension | triton_experimental | passed | passed-for-existing-variants | PERF_NEUTRAL-for-existing-variants | verified-for-existing-variants | PARTIAL_ALIGNED / 保留经过位级验证的 NPU 专属 FP16 value!=1 addcdiv lowering；value=1 通过 NPU FP16 aten.div.Tensor 舍入边界修复，保持 counter=0 且不伪造 FMA pattern 命中。 | measured-retained-verified-variants-only / PERF_NEUTRAL-for-existing-variants | coverage-extension-gpu-reference-pending |
 | T-078 | AU-post-grad-reuse-partial | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | PERF_MIXED | verified | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | measured-retained-shape-dependent / PERF_MIXED | functional-comparison-closed |
 | T-078 | AU-post-grad-unfuse-bias-add-to-pointwise | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | EXPECTED_PRODUCT_DIVERGENCE | verified | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | measured-candidate-rejected-explicitly-disabled / PERF_REGRESSED | functional-comparison-closed |
 | T-078 | AU-post-grad-unfuse-bias-baddbmm-to-pointwise | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | PERF_MIXED | verified | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | measured-selective-product-gate / PERF_MIXED | functional-comparison-closed |

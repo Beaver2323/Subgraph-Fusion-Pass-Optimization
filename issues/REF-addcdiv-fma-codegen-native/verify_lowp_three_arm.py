@@ -175,6 +175,21 @@ def main():
             codegen_contract = (
                 f"至少 {minimum_rounds} 个显式 FP16 舍入，且不使用 FMA/div_rn"
             )
+        elif (
+            args.arm == "re-fused"
+            and args.dtype == "float16"
+            and expected_fusion == 0
+        ):
+            minimum_rounds = 1
+            codegen_contract_valid = (
+                fp16_round_count >= minimum_rounds
+                and "tl.fma" not in code
+                and "triton.language.div_rn" not in code
+            )
+            codegen_contract = (
+                "value=1 保持 div->add 且 counter=0；"
+                "除法后至少 1 次显式 FP16 舍入，不使用 FMA/div_rn"
+            )
         elif args.arm == "re-fused" and expected_fusion == 1:
             codegen_contract_valid = (
                 "triton.language.div_rn" in code

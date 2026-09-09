@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""静态校验 T-078～T-080 的 reference、性能计划和中文讲解。
+"""静态校验已准备任务的 reference、性能计划和中文讲解。
 
 该脚本只使用 Python 标准库，不导入 torch，也不访问设备。
 """
@@ -13,7 +13,10 @@ from datetime import datetime
 from pathlib import Path
 
 
-TASKS = ("T-078", "T-079", "T-080", "T-081", "T-082", "T-083")
+TASKS = (
+    "T-078", "T-079", "T-080", "T-081", "T-082", "T-083",
+    "T-084", "T-085", "T-086",
+)
 
 
 def load_json(path: Path) -> dict:
@@ -135,6 +138,10 @@ def validate_task(repo_root: Path, task_id: str) -> tuple[int, int, int]:
         manifest_nodeids = {
             test["nodeid"] for test in manifest_by_id[unit_id].get("community_tests", [])
         }
+        manifest_nodeids.update(
+            test["nodeid"]
+            for test in manifest_by_id[unit_id].get("community_benchmarks", [])
+        )
         for key in (
             "performance_status",
             "case_source",

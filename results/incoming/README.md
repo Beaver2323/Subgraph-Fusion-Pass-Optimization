@@ -1,10 +1,11 @@
 # GPU handoff 接收目录
 
-> 更新时间：2026-09-07 22:36 CST（UTC+08:00）
+> 更新时间：2026-09-09 18:05:53 CST（UTC+08:00）
 
 此目录用于接收 GPU 回传文本，尚不是已验收的正式结果。T-076～T-080 均已有有效文件，目录由
 Git中的实际handoff保留。T-081～T-083回传已于2026-09-08完成复核：11/11 cases、24/24
 variants有效；机器复核记录见`results/current/T-081`～`T-083/gpu_reference_review.json`。
+T-084～T-086 的接收目录已建立，但尚无设备结果；其中 README 仅是任务合同和上传说明，不是 PASS。
 
 将 GPU 的 `latest-text-handoff.json` 完整内容复制到控制节点对应路径：
 
