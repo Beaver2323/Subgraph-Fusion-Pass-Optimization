@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0", "task_id": "T-087", "generated_at": "2026-09-10T23:14:54+08:00", "status": "gpu-ready-awaiting-native-execution",
+  "performance_plan": {"path": "upstream/t087_performance_plan.yaml", "status": "implemented-awaiting-runtime-validation"},
+  "case_guide": {"path": "docs/T087_FUNCTION_PERFORMANCE_GUIDE.md", "language": "zh-CN"},
+  "manifest": {"path": "upstream/t087_manifest.yaml", "schema_version": "1.0", "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"},
+  "execution_policy": {"order": "native-community-test-first-then-minimal-adapter-if-required", "case_isolation": "fresh-process", "failure_behavior": "continue-and-record", "artifact_capture": "原生TORCH_COMPILE_DEBUG与FX before/after", "benchmark_gate": "functional-reference-valid-first", "default_timeout_seconds": 3600, "minimum_gpus": 1, "distributed_world_size": null},
+  "cases": [
+    {"case_id": "REF-reorder-locality-training-native", "acceptance_unit_id": "AU-post-grad-reorder-for-locality", "source_test": "test/inductor/test_reorder_for_locality_in_training.py::TestReorderForLocalityInTrainingCUDA.test_training_flag_reorders_and_preserves_semantics_cuda", "tracking_mode": "direct", "variant_ids": ["training-locality-positive"], "expected_match": true, "expected_assertions": ["真实CUDA前后向完整执行且无skip/xfail", "ON调用reorder并实际移动节点，OFF不调用", "OFF/ON梯度和optimizer step后参数一致"], "required_artifacts": ["fx-before", "fx-after"], "benchmark": "not-configured-functional-reference"},
+    {"case_id": "REF-reorder-locality-master-off-native", "acceptance_unit_id": "AU-post-grad-reorder-for-locality", "source_test": "test/inductor/test_reorder_for_locality_in_training.py::TestReorderForLocalityInTrainingCUDA.test_training_flag_noop_when_reorder_off_cuda", "tracking_mode": "direct", "variant_ids": ["master-switch-off-negative"], "expected_match": false, "expected_assertions": ["真实CUDA训练图完整执行", "reorder_for_locality=False时子开关不得调用目标pass"], "required_artifacts": ["fx-before", "fx-after"], "benchmark": "not-configured-functional-reference"},
+    {"case_id": "REF-respecialize-current-device-native", "acceptance_unit_id": "AU-post-grad-respecialize-current-device", "source_test": "test/distributed/tensor/test_compile_on_one_rank.py::TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor", "tracking_mode": "direct", "variant_ids": ["current-device-respecialization-positive"], "expected_match": true, "expected_assertions": ["真实CUDA fullgraph Inductor执行", "generated code包含torch.cuda.current_device()", "generated code不包含cuda:N或固化device index"], "required_artifacts": ["fx-before", "fx-after"], "benchmark": "performance-exempt-no-legal-off"}
+  ],
+  "non_executed_variants": []
+}

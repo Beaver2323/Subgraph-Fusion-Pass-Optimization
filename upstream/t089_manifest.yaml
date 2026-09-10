@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0", "generated_at": "2026-09-10T23:14:54+08:00", "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {"pytorch": {"commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "branch": "release/2.14", "relevant_tracked_files_state": "clean"}},
+  "mapping_review": {"input_scope": "T-089五个split_cat候选逐项复核", "selected_acceptance_units": ["AU-split-cat-move-view-after-cat"], "corrections": ["move_view_after_cat已有直接requires_gpu_and_triton测例。", "move_reshape_out_of_split_stack实际注册到pre_grad_fusion_options，原草案stage需纠正且社区入口为CPU，不能纳入本批post-grad GPU分母。", "其余unbind/mutate候选缺少直接GPU目标合同。"]},
+  "reference_contract": {"device_class": "GPU", "backend": "inductor-default", "execution_order": "native-community-test-first-then-minimal-adapter-if-required", "minimum_gpus": 1, "distributed_world_size": null, "scope": "原生GPU move_view_after_cat pattern/counter/数值", "suite_status": "pending-gpu-reference"},
+  "counting_policy": {"current_manifest_units": 1, "current_frozen_denominator_units": 0, "current_formally_closed_units": 0, "denominator_rule": "直接GPU合同有效且FX复核后冻结"},
+  "acceptance_units": [{
+    "acceptance_unit_id": "AU-split-cat-move-view-after-cat", "contract_name": "把逐片view移到cat之后", "stage": "post_grad", "review_status": "prepared-awaiting-gpu-reference", "denominator_eligible": "yes-provisional", "coverage_phase": "awaiting-gpu-reference",
+    "upstream_sources": [{"path": "torch/_inductor/fx_passes/split_cat.py", "line": 2935, "symbol": "move_view_after_cat", "role": "registered-graph-pattern"}],
+    "community_tests": [{"nodeid": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_move_view_after_cat_aten", "role": "primary-positive", "evidence_scope": "真实GPU；normalization=4、move_view=1并比较数值"}],
+    "variants": [{"variant_id": "all-contiguous-split-views-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "连续完整split的多个reshape+cat收束为输入permute/reshape", "expected_counter": "move_view_after_cat_aten_pass=1", "reference_status": "not-run", "npu_status": "not-run"}],
+    "tracking": {"reference_mode": "direct", "npu_mode": "triton-experimental-derived-from-community-functional-case", "allowed_local_deviation": ["仅替换设备并选择triton_experimental"], "forbidden_local_deviation": ["删掉clone多用户语义", "借用pre_grad结果"]},
+    "npu_control": {"config": "post_grad_fusion_options.move_view_after_cat_aten_pass", "off": "omit-target-pass", "on": {}, "status": "prepared", "next_action": "GPU冻结后执行NPU功能、FX及六臂性能"}
+  }],
+  "deferred_candidates": [
+    {"provisional_unit_id": "AU-split-cat-merge-unbind-stack", "status": "deferred-cpu-only", "reason": "非aten社区入口为CPU。", "denominator_eligible": false, "performance_readiness": "blocked-by-gpu-contract", "next_action": "补GPU合同"},
+    {"provisional_unit_id": "AU-split-cat-merge-unbind-stack-aten", "status": "deferred-no-dedicated-direct-gpu-test", "reason": "当前候选未找到独立GPU目标counter合同。", "denominator_eligible": false, "performance_readiness": "blocked-by-direct-test", "next_action": "补直接测例"},
+    {"provisional_unit_id": "AU-split-cat-move-reshape-out-of-split-stack", "status": "deferred-stage-correction-and-cpu-only", "reason": "该pass属于pre_grad_fusion_options且当前社区测试为CPU；不能按post_grad归档。", "denominator_eligible": false, "performance_readiness": "blocked-by-stage-and-gpu-contract", "next_action": "以后续pre_grad批次重新建合同"},
+    {"provisional_unit_id": "AU-split-cat-mutate-cat-node", "status": "deferred-cpu-only", "reason": "社区入口没有真实GPU执行。", "denominator_eligible": false, "performance_readiness": "blocked-by-gpu-contract", "next_action": "补GPU合同"}
+  ]
+}

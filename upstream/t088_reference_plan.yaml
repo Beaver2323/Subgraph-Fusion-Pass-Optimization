@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0", "task_id": "T-088", "generated_at": "2026-09-10T23:14:54+08:00", "status": "gpu-ready-awaiting-native-execution",
+  "performance_plan": {"path": "upstream/t088_performance_plan.yaml", "status": "implemented-awaiting-runtime-validation"},
+  "case_guide": {"path": "docs/T088_FUNCTION_PERFORMANCE_GUIDE.md", "language": "zh-CN"},
+  "manifest": {"path": "upstream/t088_manifest.yaml", "schema_version": "1.0", "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"},
+  "execution_policy": {"order": "native-community-test-first-then-minimal-adapter-if-required", "case_isolation": "fresh-process", "failure_behavior": "continue-and-record", "artifact_capture": "原生TORCH_COMPILE_DEBUG与FX before/after", "benchmark_gate": "functional-reference-valid-first", "default_timeout_seconds": 3600, "minimum_gpus": 1, "distributed_world_size": null},
+  "cases": [
+    {"case_id": "REF-select-cat-aten-native", "acceptance_unit_id": "AU-split-cat-merge-select-cat-aten", "source_test": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_select_cat_post_grad", "tracking_mode": "direct", "variant_ids": ["consecutive-full-select-positive"], "expected_match": true, "expected_assertions": ["真实GPU与Triton执行且无skip", "normalization_aten_pass=4、select_cat_aten_pass=1", "compiled/eager输出一致"], "required_artifacts": ["fx-before", "fx-after"], "benchmark": "not-configured-functional-reference"},
+    {"case_id": "REF-split-cat-aten-native", "acceptance_unit_id": "AU-split-cat-merge-split-cat-aten", "source_test": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad", "tracking_mode": "direct", "variant_ids": ["consecutive-split-cat-positive"], "expected_match": true, "expected_assertions": ["真实GPU与Triton执行", "normalization_aten_pass及split_cat_aten_pass精确计数", "输出与参数保持一致"], "required_artifacts": ["fx-before", "fx-after"], "benchmark": "not-configured-functional-reference"},
+    {"case_id": "REF-split-cat-aten-singular-native", "acceptance_unit_id": "AU-split-cat-merge-split-cat-aten", "source_test": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad_singular", "tracking_mode": "direct", "variant_ids": ["singular-below-threshold-negative"], "expected_match": false, "expected_assertions": ["真实GPU与Triton执行", "normalization_aten_pass=4且split_cat_aten_pass=0", "负例输出一致"], "required_artifacts": ["fx-before", "fx-after"], "benchmark": "not-configured-functional-reference"}
+  ],
+  "non_executed_variants": []
+}

@@ -69,6 +69,22 @@ TASK_FILES = {
         "manifest": "upstream/t086_manifest.yaml",
         "performance_plan": "upstream/t086_performance_plan.yaml",
     },
+    "T-087": {
+        "manifest": "upstream/t087_manifest.yaml",
+        "performance_plan": "upstream/t087_performance_plan.yaml",
+    },
+    "T-088": {
+        "manifest": "upstream/t088_manifest.yaml",
+        "performance_plan": "upstream/t088_performance_plan.yaml",
+    },
+    "T-089": {
+        "manifest": "upstream/t089_manifest.yaml",
+        "performance_plan": "upstream/t089_performance_plan.yaml",
+    },
+    "T-090": {
+        "manifest": "upstream/t090_manifest.yaml",
+        "performance_plan": "upstream/t090_performance_plan.yaml",
+    },
 }
 
 FIELDNAMES = [
@@ -169,7 +185,7 @@ def phase(row: dict) -> str:
         return "functional-comparison-closed"
     if row["npu_result_path"]:
         return "npu-result-awaiting-comparison"
-    if row["reference_status"].startswith("pending"):
+    if row["reference_status"].startswith(("pending", "yes-provisional")):
         return "awaiting-gpu-reference"
     return "awaiting-npu"
 

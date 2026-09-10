@@ -1,11 +1,12 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
+> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
 > 状态：T-076～T-086 原冻结范围共33个acceptance units有效；T-078 addcdiv 的 FP16
 > `value=1` 普通 div+add 精度回归已修复并通过 NPU 真机验证，当前等待 GPU
 > dtype/value 邻接 reference；新上传包实际为已存在的CUDA FMA codegen合同，未关闭该缺口。
 > T-084～T-086 已完成8/8 GPU cases、11/11 variants、5/5 NPU功能及5/5性能处置；
-> 下一批为T-087。产品改动仍待独立产品仓评审/合入。
+> T-087～T-090已准备6个GPU-ready单元、8 cases和8 variants，13个候选显式延期；
+> 下一批为T-091。产品改动仍待独立产品仓评审/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -278,7 +279,11 @@ T-077 GPU 准备：
 - [x] 实现并动态验证 T-079/T-080 目标级性能 worker；
 - [x] GPU 依次执行 T-079/T-080 reference，NPU 按原生优先完成最小适配审核、功能与命中后再测性能；
 - [x] T-081～T-083 完成 GPU reference、NPU `triton_experimental` 功能/改图、T-083 双 rank HCCL 与7/7性能处置；
-- [ ] 按草案从 T-087 继续审核后续 T；T-081～T-086 deferred 保留原任务归属，不凑数或重编号；独立 lowering/template 清单另补后去重；
+- [x] T-087～T-090逐候选审核：19项中6项建立原生GPU合同，13项按CPU/Fake/间接证据、阶段或直接目标合同缺口延期；
+- [x] T-087～T-090准备8个原生cases/8个variants、中文讲解、incoming目录和一键GPU入口；
+- [x] 为5个合法OFF/ON单元准备`triton_experimental`两臂功能及六臂性能worker；`respecialize_current_device`按无合法OFF免测；
+- [ ] GPU依次执行T-087～T-090并回传handoff；复核后再进入NPU功能、必要最小适配/修复和性能；
+- [ ] 按草案从T-091继续审核；既有deferred保留原任务归属，不凑数或重编号；独立lowering/template清单另补后去重；
 - [ ] MM 产品修复经独立评审后推送/合入（本轮未操作产品仓库）。
 
 1. [x] T-075：冻结首批 acceptance-unit schema 并复核 5 个单元；

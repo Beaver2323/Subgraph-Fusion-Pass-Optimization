@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
+> 文档更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -65,6 +65,10 @@
   11/11 variants、5/5 NPU `triton_experimental` 功能和5/5性能处置均完成。T-084 为
   `PERF_IMPROVED`；T-085 为2个`PERF_REGRESSED`和1个高波动`PERF_MIXED`，其中
   pointless-cumsum已增加NPU默认关闭gate；T-086为`PERF_MIXED`。其余10项延期。
+- T-087～T-090 已审核19个草案候选：6个单元进入GPU-ready（8个原生cases/8个variants），
+  13个因CPU/Fake/间接证据、阶段归属或无直接目标合同延期。5个可比较单元已有
+  `triton_experimental`功能/六臂性能worker；`respecialize_current_device`是lowering前必需
+  正确性改写，无合法OFF，性能明确免测。活动矩阵现为39行，其中33行已冻结、6行等待GPU。
 - T-078 的 `copy_tests` 入口已纠偏：社区实际方法带 `_cuda` 后缀；runner 不再把不存在的无后缀
   方法静态判为有效。
 
@@ -130,11 +134,11 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | --- | --- |
 | [TODO.md](TODO.md) | 当前优先级、任务状态与完成标准 |
 | [WORKFLOW.md](WORKFLOW.md) | 双机执行流程、schema、判定与修复状态机 |
-| [report/current_acceptance_unit_matrix.md](report/current_acceptance_unit_matrix.md) | 活动 28 个单元：28 个 GPU reference 已冻结、28 个已完成 NPU/comparison 和性能处置；严格历史再认证单列，NPU backend 强校验为 `triton_experimental` |
+| [report/current_acceptance_unit_matrix.md](report/current_acceptance_unit_matrix.md) | 活动39个单元：33个已冻结并完成NPU/性能处置，6个T-087～T-090单元等待GPU；NPU backend强校验为`triton_experimental` |
 | [report/current_acceptance_unit_matrix.csv](report/current_acceptance_unit_matrix.csv) | 上述当前矩阵的机器可读版本与证据路径 |
 | [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) | 2026-08-31 校准结论、T-074 边界与下一任务 |
 | [docs/SCOPE_AND_CODE_MAP.md](docs/SCOPE_AND_CODE_MAP.md) | 任务范围、Inductor 调用链和源码入口 |
-| [docs/TASK_BACKLOG.md](docs/TASK_BACKLOG.md) | T-081～T-086 准备/暂缓决策及 T-087～T-113 草案；保留旧编号与覆盖边界 |
+| [docs/TASK_BACKLOG.md](docs/TASK_BACKLOG.md) | T-081～T-090准备/暂缓决策及T-091以后草案；保留旧编号与覆盖边界 |
 | [report/tracker_validation_hardening_20260906.md](report/tracker_validation_hardening_20260906.md) | 验收误判修复、零设备回归与性能准备尚未完成的边界 |
 | [T-076/T-077 本轮核验](report/t076_t077_history_reaudit_20260907.md) | 关键 FX、原始日志、数值/梯度 oracle 与性能溯源分别核验；轻量历史日志补证命令 |
 | [docs/GUIDE.md](docs/GUIDE.md) | 机制说明与历史案例阅读指南 |
@@ -151,13 +155,14 @@ artifacts；NPU 机器负责映射、runner 生成、NPU 执行、差异分析�
 | [T-076 P-018 gate 分析](issues/REF-addmm-contract-native/根因分析.md) / [候选验证](issues/REF-addmm-contract-native/修复验证报告.md) | addmm 社区 pattern、安装态 gate、必要调用栈、live opt-out 和候选验证矩阵 |
 | [T-077 small-MM 根因](issues/REF-decompose-mm-native/根因分析.md) / [修复验证](issues/REF-decompose-mm-native/修复验证报告.md) | 数值回归的触发代码、必要调用栈、首个 lowering 分歧、修复前后生成路径与六变体验证 |
 | [T-078 FP16 value=1 根因](issues/REF-addcdiv-fma-codegen-native/根因分析.md) / [精度修复](issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md) / [修复验证](issues/REF-addcdiv-fma-codegen-native/修复验证报告.md) | value=1 不重融合合同、NPU quotient 舍入根因、修复前/后 FX、IR、output_code 与真机结果 |
-| [results/incoming/README.md](results/incoming/README.md) | GPU 文本 handoff 接收目录，T-076～T-086 文件夹随 clone/pull 建立 |
+| [results/incoming/README.md](results/incoming/README.md) | GPU文本handoff接收目录，T-076～T-090文件夹随clone/pull建立 |
 | [docs/T078_FUNCTION_PERFORMANCE_GUIDE.md](docs/T078_FUNCTION_PERFORMANCE_GUIDE.md) | T-078 四单元的功能 case、派生性能 case、源码与判据讲解 |
 | [docs/T078_ADDCDIV_LOWP_COVERAGE.md](docs/T078_ADDCDIV_LOWP_COVERAGE.md) | addcdiv FP16/BF16 覆盖缺口、GPU 派生 case 与 NPU 三臂精度归因步骤 |
 | [docs/T079_FUNCTION_PERFORMANCE_GUIDE.md](docs/T079_FUNCTION_PERFORMANCE_GUIDE.md) | T-079 四单元的图消除功能/性能证据讲解 |
 | [docs/T080_FUNCTION_PERFORMANCE_GUIDE.md](docs/T080_FUNCTION_PERFORMANCE_GUIDE.md) | T-080 社区 benchmark 复用、功能 guard 与 OFF/ON 讲解 |
 | [T-081 测例讲解](docs/T081_FUNCTION_PERFORMANCE_GUIDE.md) / [T-082](docs/T082_FUNCTION_PERFORMANCE_GUIDE.md) / [T-083](docs/T083_FUNCTION_PERFORMANCE_GUIDE.md) | 新三批源码合同、GPU/NPU 行为、功能/性能来源、OFF/ON 与 deferred 边界；7/7 已正式处置 |
 | [T-084 测例讲解](docs/T084_FUNCTION_PERFORMANCE_GUIDE.md) / [T-085](docs/T085_FUNCTION_PERFORMANCE_GUIDE.md) / [T-086](docs/T086_FUNCTION_PERFORMANCE_GUIDE.md) | 三批共5个单元的功能来源、GPU/NPU实测、性能处置、`triton_experimental`门禁与10个deferred边界 |
+| [T-087](docs/T087_FUNCTION_PERFORMANCE_GUIDE.md) / [T-088](docs/T088_FUNCTION_PERFORMANCE_GUIDE.md) / [T-089](docs/T089_FUNCTION_PERFORMANCE_GUIDE.md) / [T-090](docs/T090_FUNCTION_PERFORMANCE_GUIDE.md) | 6个GPU-ready单元的源码意图、功能/性能测例、NPU门禁、1个无合法OFF免测和13个deferred边界 |
 | [T-081～T-083 GPU复核](report/t081_t083_gpu_reference_review_20260908.md) | 11/11 cases、24/24 variants、FX对照、证据范围、观察器最小修复及NPU下一门禁 |
 | [T-081～T-083 NPU/性能闭环](report/t081_t083_npu_function_performance_20260908.md) | 7/7 `triton_experimental` 功能、真实双 rank HCCL、六臂性能、代码框、调用栈与最小适配 |
 | [report/t076_t077_performance_20260903.md](report/t076_t077_performance_20260903.md) | 两批性能处置、backend 门禁、B2B capability 与 T-077 四项 OFF/ON 实测 |
@@ -191,7 +196,7 @@ FX 正文/signature 与结果/inventory 哈希见 `report/t076_gpu_reference_202
 `results/current/REF-mm-plus-mm-native/`。pad-mm 单元级 comparison 见
 `results/current/AU-pad-mm-mm/`。T-076 NPU 闭环汇总见
 `report/t076_npu_completion_20260902.md`。T-077 第二波 reference 和 NPU 5/5 comparison 也已完成；
-GPU 后续统一使用 `scripts/run_gpu_reference_task.sh --task T-084 --gpu ID`（支持 T-076～T-086；
+GPU 后续统一使用 `scripts/run_gpu_reference_task.sh --task T-087 --gpu ID`（支持 T-076～T-090；
 T-085 使用 `--gpus ID1,ID2`）。
 T-077 性能 5/5 已处置、pending=0；T-078 原 12/12 GPU reference、4/4 NPU comparison、
 修复、候选性能与最终产品门禁有效。addcdiv BF16 与 FP16 value!=1 扩展已验证；FP16
@@ -205,7 +210,7 @@ value=1 已在保持 FMA counter=0 的前提下修复普通 div+add 舍入边界
 结果强制校验 `triton_experimental`；未修复数值回归可作为合法失败证据落盘，但不算正式闭环。
 GPU 导出失败时 `latest-text-handoff.json` 显示本轮失败状态，不再保留上轮成功入口。
 原 T-081～T-113 的 33 批中，T-081～T-086 已完成 GPU/NPU/性能闭环并冻结12个单元；
-未选中候选保留原批次 deferred 理由，T-087～T-113 编号不移动。非计数结构记录与独立 lowering/template 缺口
+T-087～T-090已准备6个单元并等待GPU。未选中候选保留原批次deferred理由，T-091～T-113编号不移动。非计数结构记录与独立lowering/template缺口
 继续单列；活动任务数不等于冻结分母，精确列表见 backlog。
 
 ## 执行环境合同

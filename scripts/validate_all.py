@@ -38,7 +38,10 @@ def commands(root, pytorch_root):
         "--check",
     ]
     yield "task_backlog", [python, str(root / "scripts/build_task_backlog.py"), "--check"]
-    for task in ("", "t077_", "t078_", "t079_", "t080_", "t081_", "t082_", "t083_"):
+    for task in (
+        "", "t077_", "t078_", "t079_", "t080_", "t081_", "t082_", "t083_",
+        "t084_", "t085_", "t086_", "t087_", "t088_", "t089_", "t090_",
+    ):
         yield f"{task}reference_plan", ["bash", str(root / f"scripts/run_{task}reference_all.sh"), "--pytorch-root", str(pytorch_root), "--validate-only"]
     yield "whitespace", ["git", "-C", str(root), "diff", "--check"]
 

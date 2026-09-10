@@ -47,7 +47,10 @@ def build(repo_root: Path, generated_at: str) -> dict:
         reviewed_ids = {
             ALIASES.get(unit["provisional_unit_id"], unit["provisional_unit_id"])
             for batch in previous["batches"]
-            if batch["task_id"] in {"T-081", "T-082", "T-083", "T-084", "T-085", "T-086"}
+            if batch["task_id"] in {
+                "T-081", "T-082", "T-083", "T-084", "T-085", "T-086",
+                "T-087", "T-088", "T-089", "T-090",
+            }
             for unit in batch["units"]
         }
         if previous_selected - set(selected) or (set(selected) - previous_selected) - reviewed_ids:
@@ -167,7 +170,7 @@ def markdown(data: dict) -> str:
         "机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。", "",
         f"T-074 的 {counts['inventory_units']} 个 provisional 单元中，活动 manifest 已接入 {counts['selected_manifest_units']} 个；",
         f"未接入的 {counts['remaining_provisional_units']} 个候选中，{counts['deferred_review_units']} 个留在已审批次延期，其余保留 {counts['draft_batches']} 个草案批次；另有 {counts['non_counting_review_records']} 条非计数结构记录待审。", "",
-        "T-081～T-086 的已选12单元已完成原生GPU reference、NPU triton_experimental功能验证与性能处置；T-084～T-086另有10个候选延期。下一批为T-087。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-087及以后编号。", "",
+        "T-081～T-086 的已选12单元已完成原生GPU reference、NPU triton_experimental功能验证与性能处置；T-087～T-090已从19个候选中准备6个GPU原生单元并明确延期13个。下一批为T-091。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排。", "",
         "| 草案任务 | 源码 family | 暂列单元数 | 状态 |", "| --- | --- | ---: | --- |"]
     for batch in data["batches"]:
         if batch.get("formally_closed"):

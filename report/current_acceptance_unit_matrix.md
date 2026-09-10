@@ -1,13 +1,13 @@
 # 当前 Acceptance Unit 兼容性矩阵
 
-> 生成时间：2026-09-10T07:33:34+08:00
+> 生成时间：2026-09-10T23:14:54+08:00
 > 数据源：`upstream/*manifest.yaml`、`results/current/` 与逐任务性能计划/汇总。
 > 后端边界：GPU reference 固定为 `inductor-default`；NPU 动态验证、比较、修复验证与性能固定为 `triton_experimental`。
 > 历史 251 行 registration 矩阵不参与本表 verdict；其用途与边界见 `report/archive/legacy-20260820-0828/pass_src_20260820/README.md`。
 
 ## 状态摘要
 
-- 活动 acceptance units：**33**；已冻结 reference：**33**；存在覆盖扩展未闭环：**1**。
+- 活动 acceptance units：**39**；已冻结 reference：**33**；存在覆盖扩展未闭环：**1**。
 - 已形成 NPU/comparison：**33**；已有正式性能处置：**33**；其余为性能计划态。
 - `comparison`/性能处置数量只说明已登记 variants；存在 pending extension 的单元必须以“覆盖”和“当前阶段”列为准，不能外推为全域闭环。
 - 当前 NPU 结果实际观测 backend：`triton_experimental`。
@@ -52,6 +52,12 @@
 | T-085 | AU-post-grad-partitioned-scatter-optimization | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | PARTIALLY_ALIGNED / 能力路径正确但不改变默认关闭；NPU显存探针替换CUDA专用探针。 | measured-regressed / PERF_REGRESSED | formally-closed |
 | T-085 | AU-post-grad-pointless-cumsum | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | PARTIALLY_ALIGNED / 保留上游CPU/CUDA行为，仅在triton_experimental NPU通过可逆gate关闭。 | measured-regressed / PERF_REGRESSED | formally-closed |
 | T-086 | AU-post-grad-reinplace-inplaceable-ops | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | ALIGNED_WITH_BACKEND_LOWERING_DIFFERENCE / 保留功能改写；性能结论为混合，不外推稳定收益。 | measured-mixed / PERF_MIXED | formally-closed |
+| T-087 | AU-post-grad-reorder-for-locality | post_grad | fully-covered | yes-provisional | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | prepared-awaiting-functional-gate / planned | awaiting-gpu-reference |
+| T-087 | AU-post-grad-respecialize-current-device | post_grad | fully-covered | yes-provisional | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | exempt-no-legal-off-path / PERF_EXEMPT | awaiting-gpu-reference |
+| T-088 | AU-split-cat-merge-select-cat-aten | post_grad | fully-covered | yes-provisional | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | prepared-awaiting-functional-gate / planned | awaiting-gpu-reference |
+| T-088 | AU-split-cat-merge-split-cat-aten | post_grad | fully-covered | yes-provisional | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | prepared-awaiting-functional-gate / planned | awaiting-gpu-reference |
+| T-089 | AU-split-cat-move-view-after-cat | post_grad | fully-covered | yes-provisional | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | prepared-awaiting-functional-gate / planned | awaiting-gpu-reference |
+| T-090 | AU-split-cat-normalize-cat-default-aten | post_grad | fully-covered | yes-provisional | 待测（要求 triton_experimental） | not-run | not-run | not-run | not-run | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | prepared-awaiting-functional-gate / planned | awaiting-gpu-reference |
 
 ## 使用说明
 

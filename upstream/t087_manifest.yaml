@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T23:14:54+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {"pytorch": {"commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "branch": "release/2.14", "relevant_tracked_files_state": "clean"}},
+  "mapping_review": {
+    "input_scope": "T-087四个post_grad候选逐项复核源码、社区测试、设备执行与合法OFF/ON",
+    "selected_acceptance_units": ["AU-post-grad-reorder-for-locality", "AU-post-grad-respecialize-current-device"],
+    "corrections": [
+      "reorder_for_locality已有真实CUDA前后向训练测例，且false/true是合法目标OFF/ON。",
+      "respecialize_current_device已有真实CUDA编译与generated code断言，但它是lowering前必需正确性改写，没有合法可执行OFF，因此功能纳入、性能明确免测。",
+      "replace_collectives_with_low_contention当前社区测例为CPU FX加mock配置，stable_sort为纯FX helper；两者不能冻结GPU分母。"
+    ]
+  },
+  "reference_contract": {"device_class": "GPU", "backend": "inductor-default", "execution_order": "native-community-test-first-then-minimal-adapter-if-required", "minimum_gpus": 1, "distributed_world_size": null, "scope": "原生CUDA编译、数值、梯度及generated-code合同", "suite_status": "pending-gpu-reference"},
+  "counting_policy": {"current_manifest_units": 2, "current_frozen_denominator_units": 0, "current_formally_closed_units": 0, "denominator_rule": "原生GPU suite有效、零skip并完成人工FX复核后冻结"},
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+      "contract_name": "训练图局部性重排及双层开关保护",
+      "stage": "post_grad",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 193, "symbol": "reorder_for_locality", "role": "config-gated-post-grad-graph-pass"}],
+      "community_tests": [
+        {"nodeid": "test/inductor/test_reorder_for_locality_in_training.py::TestReorderForLocalityInTrainingCUDA.test_training_flag_reorders_and_preserves_semantics_cuda", "role": "primary-positive", "evidence_scope": "真实CUDA前后向；比较梯度/参数并断言ON实际移动节点、OFF不调用"},
+        {"nodeid": "test/inductor/test_reorder_for_locality_in_training.py::TestReorderForLocalityInTrainingCUDA.test_training_flag_noop_when_reorder_off_cuda", "role": "negative-gate", "evidence_scope": "reorder总开关关闭时训练子开关不得绕过"}
+      ],
+      "variants": [
+        {"variant_id": "training-locality-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "ON重排至少一个节点且前后向语义不变", "expected_counter": "rec_on.calls>0 and moved=true", "reference_status": "not-run", "npu_status": "not-run"},
+        {"variant_id": "master-switch-off-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "总开关关闭时不运行局部性重排", "expected_counter": "calls=0", "reference_status": "not-run", "npu_status": "not-run"}
+      ],
+      "tracking": {"reference_mode": "direct", "npu_mode": "triton-experimental-derived-from-community-functional-case", "allowed_local_deviation": ["NPU仅替换设备并显式选择triton_experimental，保持模型、shape、seed、前后向与开关合同"], "forbidden_local_deviation": ["使用CPU/Fake结果计通过", "关闭整个post_grad或借用其他backend结果"]},
+      "npu_control": {"config": "reorder_for_locality and reorder_for_locality_in_training", "off": false, "on": true, "status": "prepared", "next_action": "GPU分母冻结后在NPU真实设备确认重排、数值、梯度，再签发性能门禁"}
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-respecialize-current-device",
+      "contract_name": "compile-on-one-rank当前设备节点再特化",
+      "stage": "post_grad",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [{"path": "torch/_inductor/fx_passes/post_grad.py", "line": 145, "symbol": "respecialize_current_device_nodes", "role": "mandatory-pre-lowering-rewrite"}],
+      "community_tests": [{"nodeid": "test/distributed/tensor/test_compile_on_one_rank.py::TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor", "role": "primary-positive", "evidence_scope": "真实CUDA Inductor编译；generated code运行时解析current_device且不固化cuda:N/index"}],
+      "variants": [{"variant_id": "current-device-respecialization-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "coor.current_device节点在lowering前替换为运行时当前设备", "expected_counter": "generated code包含current_device且无baked device index", "reference_status": "not-run", "npu_status": "not-run"}],
+      "tracking": {"reference_mode": "direct", "npu_mode": "triton-experimental-minimal-device-adapter-if-required", "allowed_local_deviation": ["NPU只做设备名与后端最小适配，保留compile_on_one_rank和generated-code合同"], "forbidden_local_deviation": ["删除目标pass制造OFF", "把编译失败当性能基线"]},
+      "npu_control": {"config": "none-mandatory-correctness-rewrite", "off": "not-legal", "on": "always", "status": "prepared-functional-performance-exempt", "next_action": "只做真实NPU功能/codegen确认；无合法OFF，性能免测"}
+    }
+  ],
+  "deferred_candidates": [
+    {"provisional_unit_id": "AU-post-grad-replace-collectives-with-low-contention", "status": "deferred-no-direct-gpu-community-contract", "reason": "当前test_skip_overlap_check构造CPU FX并mock配置，没有真实GPU collective/编译执行。", "denominator_eligible": false, "performance_readiness": "blocked-by-gpu-functional-contract", "next_action": "补真实设备与collective合同后重开"},
+    {"provisional_unit_id": "AU-post-grad-stable-sort", "status": "deferred-pure-fx-helper-evidence", "reason": "test_stable_topological_sort只直接调用helper处理纯FX图，不能证明post_grad真实GPU入口。", "denominator_eligible": false, "performance_readiness": "blocked-by-direct-entry-and-device-evidence", "next_action": "找到或增加真实GPU post_grad邻接合同后重开"}
+  ]
+}

@@ -511,7 +511,7 @@ class BacklogTests(unittest.TestCase):
         self.assertTrue(all(batch["performance_readiness"] == "needs-community-benchmark-search-and-worker" for batch in drafts))
         self.assertEqual(
             [b["task_id"] for b in drafts],
-            [f"T-{i:03d}" for i in range(87, 114)],
+            [f"T-{i:03d}" for i in range(91, 114)],
         )
 
 

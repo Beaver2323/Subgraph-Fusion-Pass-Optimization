@@ -3934,3 +3934,16 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
 - Manifest正式闭环数更新为1/3/1，活动33行矩阵接入NPU功能、显式社区部分对齐和五份性能结论。
   详细报告见`report/t084_t086_npu_function_performance_and_fix_20260910.md`。源码候选仍需在
   torch_npu产品仓独立评审、提交、重建wheel并复验；不得把source overlay写成安装态已合入。
+
+### E-244：T-087～T-090 合同与执行准备（2026-09-10）
+
+- 登记时间：2026-09-10 23:14:54 CST（UTC+08:00）。逐项复核19个草案候选，选择6个有直接
+  原生GPU合同的acceptance units，建立8 cases/8 variants；其余13项保留在原批次deferred，
+  明确CPU/Fake/间接证据、阶段归属或直接目标合同缺口，不重编号。
+- 扩展通用GPU一键入口至T-090，补四个reference wrapper、四个固定incoming目录和设备实例化
+  test method的通用静态解析；零设备校验不导入torch。
+- 新增共享NPU功能/性能worker：导入torch前选择`triton_experimental`，每臂新进程，5个合法
+  OFF/ON单元使用固定六臂；`respecialize_current_device`属于lowering前必需正确性改写，无合法
+  OFF，明确`PERF_EXEMPT`而不制造失败基线。
+- 活动矩阵由33行扩为39行：原33行冻结结论不变，新6行均为`awaiting-gpu-reference`，不得提前
+  声称NPU功能或性能完成。

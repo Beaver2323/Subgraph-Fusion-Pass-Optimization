@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0", "task_id": "T-090", "generated_at": "2026-09-10T23:14:54+08:00", "status": "prepared-awaiting-gpu-and-npu-functional-gates",
+  "implementation": {"status": "implemented-awaiting-runtime-validation", "entrypoint": "runners/t087_t090_performance_worker.py", "launcher": "scripts/run_t087_t090_performance.py"},
+  "backend_contract": {"npu_backend": "triton_experimental", "selection_timing": "导入torch/torch_npu前选择", "process_isolation": "fresh-process-per-arm", "off_on_order": ["OFF1", "ON1", "ON2", "OFF2", "OFF3", "ON3"], "explicit_disable_policy": "明确disable则免测，禁止绕过"},
+  "measurement_contract": {"correctness_gate": "GPU reference有效且人工确认精确cat handler后，NPU OFF/ON确认改图、数值与零fallback", "warmup": 10, "runs": 100, "timing": ["host synchronized p50/p99", "device Event p50/p99", "compile latency", "raw samples"], "memory": ["peak allocated", "peak reserved"], "verdict_thresholds": {"improved_percent": 5, "regressed_percent": -5, "otherwise": "PERF_NEUTRAL"}, "rounds": 3, "aggregation": "OFF/ON三臂中位数"},
+  "hardware_contract": {"gpu_reference_minimum_devices": 1, "performance_minimum_devices": 1, "performance_world_size": 1, "actual_device_execution_required": true, "fake_tensor_allowed_as_performance_oracle": false},
+  "benchmark_search": {"revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "paths": ["benchmarks/", "test/inductor/"], "terms": ["normalize_cat_default_aten", "normalization_aten_pass", "benchmark"], "result": "无单handler社区benchmark；使用组合功能图，worker精确观察handler。", "source_priority": "复用test_split_cat_post_grad第一段图和shape；不外推到其他normalization"},
+  "acceptance_units": [{
+    "acceptance_unit_id": "AU-split-cat-normalize-cat-default-aten", "worker_unit": "normalize-cat-aten", "performance_status": "prepared-awaiting-functional-gate", "verdict": "planned",
+    "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad"], "reason": "组合测例提供直接GPU normalization counter；worker另对normalize_cat_default_aten精确插桩"},
+    "functional_gate": "ON精确normalize_cat_default_aten调用且改图、OFF不调用；split_cat下游固定；输出与eager一致且零fallback。",
+    "workloads": [{"workload_id": "normalize-cat-aten-community-shape", "role": "primary", "shape_contract": "x/y=[1024,128]、z=[1024,32] fp32的_TestSplitCat第一段", "measurement_scope": "组合目标子图；仅归因精确cat normalization handler，不代表其他normalization"}],
+    "off_on_control": "split_cat_aten_pass固定ON；唯一变量为normalization_aten_pass省略/加入。",
+    "artifacts": ["GPU/NPU原件sha256", "精确handler before/after FX", "output_code.py/IR", "host/Event/显存/编译耗时原样本"],
+    "negative_cases": ["不得把组合counter外推到clamp/detach/reshape", "ON未精确改图、OFF误调用、fallback/disable拒绝"]
+  }]
+}

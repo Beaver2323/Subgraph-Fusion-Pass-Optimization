@@ -25,7 +25,7 @@ matrix = load_generator()
 class CurrentAcceptanceMatrixTests(unittest.TestCase):
     def test_current_units_and_task_boundaries(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(len(rows), 33)
+        self.assertEqual(len(rows), 39)
         self.assertEqual(
             Counter(row["task_id"] for row in rows),
             Counter({
@@ -40,9 +40,13 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                 "T-084": 1,
                 "T-085": 3,
                 "T-086": 1,
+                "T-087": 2,
+                "T-088": 2,
+                "T-089": 1,
+                "T-090": 1,
             }),
         )
-        self.assertEqual(len({row["acceptance_unit_id"] for row in rows}), 33)
+        self.assertEqual(len({row["acceptance_unit_id"] for row in rows}), 39)
 
     def test_npu_backend_never_inherits_reference_backend(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
@@ -64,7 +68,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 33
         )
         self.assertEqual(
-            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 0
+            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 6
         )
         self.assertEqual(
             sum(row["current_phase"] == "awaiting-npu" for row in rows), 0

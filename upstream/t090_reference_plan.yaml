@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0", "task_id": "T-090", "generated_at": "2026-09-10T23:14:54+08:00", "status": "gpu-ready-awaiting-native-execution",
+  "performance_plan": {"path": "upstream/t090_performance_plan.yaml", "status": "implemented-awaiting-runtime-validation"},
+  "case_guide": {"path": "docs/T090_FUNCTION_PERFORMANCE_GUIDE.md", "language": "zh-CN"},
+  "manifest": {"path": "upstream/t090_manifest.yaml", "schema_version": "1.0", "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"},
+  "execution_policy": {"order": "native-community-test-first-then-minimal-adapter-if-required", "case_isolation": "fresh-process", "failure_behavior": "continue-and-record", "artifact_capture": "原生TORCH_COMPILE_DEBUG与FX before/after；组合测例需人工确认精确cat handler", "benchmark_gate": "functional-reference-valid-first", "default_timeout_seconds": 3600, "minimum_gpus": 1, "distributed_world_size": null},
+  "cases": [{"case_id": "REF-normalize-cat-default-aten-native", "acceptance_unit_id": "AU-split-cat-normalize-cat-default-aten", "source_test": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad", "tracking_mode": "direct", "variant_ids": ["cat-positional-dim-normalization-positive"], "expected_match": true, "expected_assertions": ["真实GPU组合测例执行且无skip", "normalization_aten_pass=5且split_cat_aten_pass=1", "人工复核FX确认本单元仅计normalize_cat_default_aten，不外推其他normalization handler"], "required_artifacts": ["fx-before", "fx-after"], "benchmark": "not-configured-functional-reference"}],
+  "non_executed_variants": []
+}

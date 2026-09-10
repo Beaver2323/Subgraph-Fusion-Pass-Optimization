@@ -126,9 +126,9 @@ def python_qualnames(path: Path) -> set[str]:
     Visitor().visit(tree)
 
     # Some PyTorch community suites define reusable tests on a template class and
-    # materialize the runnable GPU class with copy_tests(Source, Target, suffix).
-    # copy_tests appends the suffix to every method name.  Resolve the CUDA name
-    # statically so validation still avoids importing torch.
+    # materialize the runnable GPU class with instantiate_device_type_tests or
+    # copy_tests. Resolve the CUDA name statically so validation avoids importing
+    # torch and still validates the exact executable selector.
     for node in ast.walk(tree):
         if (
             isinstance(node, ast.Call)
@@ -136,15 +136,27 @@ def python_qualnames(path: Path) -> set[str]:
             and node.func.id == "instantiate_device_type_tests"
             and node.args
             and isinstance(node.args[0], ast.Name)
-            and node.args[0].id == "TestInductorDynamic"
-            and path.name == "test_torchinductor_dynamic_shapes.py"
-            and not any(keyword.arg in {"only_for", "except_for"} for keyword in node.keywords)
         ):
             source = node.args[0].id
-            for qualname in list(result):
-                if qualname.startswith(source + "."):
-                    method = qualname.removeprefix(source + ".")
-                    result.add(f"{source}CUDA.{method}_cuda")
+            only_for: set[str] | None = None
+            except_for: set[str] = set()
+            for keyword in node.keywords:
+                if keyword.arg not in {"only_for", "except_for"}:
+                    continue
+                try:
+                    value = ast.literal_eval(keyword.value)
+                except (ValueError, TypeError):
+                    value = None
+                values = {value} if isinstance(value, str) else set(value or [])
+                if keyword.arg == "only_for":
+                    only_for = values
+                else:
+                    except_for = values
+            if (only_for is None or "cuda" in only_for) and "cuda" not in except_for:
+                for qualname in list(result):
+                    if qualname.startswith(source + "."):
+                        method = qualname.removeprefix(source + ".")
+                        result.add(f"{source}CUDA.{method}_cuda")
         if not (
             isinstance(node, ast.Call)
             and isinstance(node.func, ast.Name)

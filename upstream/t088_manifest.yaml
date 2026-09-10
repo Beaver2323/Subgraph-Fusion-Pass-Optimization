@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T23:14:54+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {"pytorch": {"commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "branch": "release/2.14", "relevant_tracked_files_state": "clean"}},
+  "mapping_review": {"input_scope": "T-088五个split_cat候选逐项复核", "selected_acceptance_units": ["AU-split-cat-merge-select-cat-aten", "AU-split-cat-merge-split-cat-aten"], "corrections": ["两个aten handler均有requires_gpu_and_triton原生GPU编译、数值和精确counter测试。", "merge_getitem_cat、merge_split_squeeze、merge_splits的当前社区入口使用CPU张量，只作历史结构证据，不冻结GPU分母。"]},
+  "reference_contract": {"device_class": "GPU", "backend": "inductor-default", "execution_order": "native-community-test-first-then-minimal-adapter-if-required", "minimum_gpus": 1, "distributed_world_size": null, "scope": "原生GPU split_cat post-grad pattern、counter及数值", "suite_status": "pending-gpu-reference"},
+  "counting_policy": {"current_manifest_units": 2, "current_frozen_denominator_units": 0, "current_formally_closed_units": 0, "denominator_rule": "直接GPU测例有效并复核FX后冻结"},
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-split-cat-merge-select-cat-aten", "contract_name": "连续select与cat合并为view", "stage": "post_grad", "review_status": "prepared-awaiting-gpu-reference", "denominator_eligible": "yes-provisional", "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [{"path": "torch/_inductor/fx_passes/split_cat.py", "line": 1907, "symbol": "merge_select_cat_aten", "role": "registered-graph-pattern"}],
+      "community_tests": [{"nodeid": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_select_cat_post_grad", "role": "primary-positive", "evidence_scope": "真实GPU；normalization=4、select_cat=1且compiled/eager一致"}],
+      "variants": [{"variant_id": "consecutive-full-select-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "完整连续select+cat替换为view；不完整分支保持", "expected_counter": "select_cat_aten_pass=1", "reference_status": "not-run", "npu_status": "not-run"}],
+      "tracking": {"reference_mode": "direct", "npu_mode": "triton-experimental-derived-from-community-functional-case", "allowed_local_deviation": ["仅替换设备并显式选择NPU后端"], "forbidden_local_deviation": ["修改shape或连续索引合同", "关闭全部pattern matcher"]},
+      "npu_control": {"config": "post_grad_fusion_options.select_cat_aten_pass", "off": "omit-target-pass", "on": {}, "status": "prepared", "next_action": "GPU冻结后进行NPU OFF/ON功能与性能"}
+    },
+    {
+      "acceptance_unit_id": "AU-split-cat-merge-split-cat-aten", "contract_name": "split连续片段与cat收束", "stage": "post_grad", "review_status": "prepared-awaiting-gpu-reference", "denominator_eligible": "yes-provisional", "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [{"path": "torch/_inductor/fx_passes/split_cat.py", "line": 1803, "symbol": "merge_split_cat_aten", "role": "registered-graph-pattern"}],
+      "community_tests": [
+        {"nodeid": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad", "role": "primary-positive", "evidence_scope": "真实GPU；normalization=5、split_cat=1并比较数值/参数"},
+        {"nodeid": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad_singular", "role": "negative-threshold", "evidence_scope": "真实GPU；单片cat不应命中，split_cat=0"}
+      ],
+      "variants": [
+        {"variant_id": "consecutive-split-cat-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "连续且达到阈值的split片段合并为原输入或slice", "expected_counter": "split_cat_aten_pass=1", "reference_status": "not-run", "npu_status": "not-run"},
+        {"variant_id": "singular-below-threshold-negative", "kind": "negative", "expected_reference_match": false, "expected_behavior": "单片cat不改写", "expected_counter": "split_cat_aten_pass=0", "reference_status": "not-run", "npu_status": "not-run"}
+      ],
+      "tracking": {"reference_mode": "direct", "npu_mode": "triton-experimental-derived-from-community-functional-case", "allowed_local_deviation": ["NPU仅替换设备，保持threshold_to_cat=5与输入"], "forbidden_local_deviation": ["删掉负例", "修改阈值制造命中"]},
+      "npu_control": {"config": "post_grad_fusion_options.split_cat_aten_pass", "off": "omit-target-pass", "on": {"threshold_to_cat": 5}, "status": "prepared", "next_action": "先正负功能门禁，再做正例六臂性能"}
+    }
+  ],
+  "deferred_candidates": [
+    {"provisional_unit_id": "AU-split-cat-merge-getitem-cat", "status": "deferred-cpu-only-community-test", "reason": "当前社区测试使用CPU tensors。", "denominator_eligible": false, "performance_readiness": "blocked-by-direct-gpu-contract", "next_action": "补原生GPU入口后重开"},
+    {"provisional_unit_id": "AU-split-cat-merge-split-squeeze", "status": "deferred-cpu-only-community-test", "reason": "当前社区入口为CPU FX/编译证据。", "denominator_eligible": false, "performance_readiness": "blocked-by-direct-gpu-contract", "next_action": "补GPU合同后重开"},
+    {"provisional_unit_id": "AU-split-cat-merge-splits", "status": "deferred-cpu-only-community-test", "reason": "当前社区入口没有直接GPU设备执行。", "denominator_eligible": false, "performance_readiness": "blocked-by-direct-gpu-contract", "next_action": "补GPU合同后重开"}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0", "task_id": "T-089", "generated_at": "2026-09-10T23:14:54+08:00", "status": "prepared-awaiting-gpu-and-npu-functional-gates",
+  "implementation": {"status": "implemented-awaiting-runtime-validation", "entrypoint": "runners/t087_t090_performance_worker.py", "launcher": "scripts/run_t087_t090_performance.py"},
+  "backend_contract": {"npu_backend": "triton_experimental", "selection_timing": "导入torch/torch_npu前选择", "process_isolation": "fresh-process-per-arm", "off_on_order": ["OFF1", "ON1", "ON2", "OFF2", "OFF3", "ON3"], "explicit_disable_policy": "明确disable则免测，禁止绕过"},
+  "measurement_contract": {"correctness_gate": "GPU reference有效后，NPU确认精确handler、实际改图、数值、零graph break/fallback", "warmup": 10, "runs": 100, "timing": ["host synchronized p50/p99", "device Event p50/p99", "compile latency", "raw samples"], "memory": ["peak allocated", "peak reserved"], "verdict_thresholds": {"improved_percent": 5, "regressed_percent": -5, "otherwise": "PERF_NEUTRAL"}, "rounds": 3, "aggregation": "OFF/ON三臂中位数"},
+  "hardware_contract": {"gpu_reference_minimum_devices": 1, "performance_minimum_devices": 1, "performance_world_size": 1, "actual_device_execution_required": true, "fake_tensor_allowed_as_performance_oracle": false},
+  "benchmark_search": {"revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "paths": ["benchmarks/", "test/inductor/"], "terms": ["move_view_after_cat_aten_pass", "benchmark"], "result": "无目标级社区benchmark。", "source_priority": "逐字复用社区图和[7,8,96]输入派生"},
+  "acceptance_units": [{
+    "acceptance_unit_id": "AU-split-cat-move-view-after-cat", "worker_unit": "move-view-after-cat", "performance_status": "prepared-awaiting-functional-gate", "verdict": "planned",
+    "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_move_view_after_cat_aten"], "reason": "无社区性能benchmark；复用_TestMoveViewAferCat与shape"},
+    "functional_gate": "ON精确handler且改图、OFF不调用；保留clone多用户语义，输出与eager一致且零fallback。",
+    "workloads": [{"workload_id": "move-view-after-cat-community-shape", "role": "primary", "shape_contract": "x=[7,8,96] fp32；7路split/view、clone与两层cat", "measurement_scope": "完整社区目标函数compiled调用，不含模型外层"}],
+    "off_on_control": "normalization_aten_pass固定ON，只省略/加入move_view_after_cat_aten_pass。",
+    "artifacts": ["功能原件sha256", "精确handler前后FX", "output_code.py/IR", "host/Event/显存/编译耗时原样本"],
+    "negative_cases": ["clone多用户与输出布局必须保留", "ON未改图、OFF误调用、fallback/disable拒绝"]
+  }]
+}

@@ -1,11 +1,12 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
+> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
 > 当前阶段：T-076～T-086 原冻结范围共33个acceptance units有效；T-078 新增低精度
 > regression 已在 NPU 修复，等待正确的 FP16 value=1 GPU 邻接 reference；T-084～T-086 的
 > 5个单元已完成GPU、NPU功能与性能处置。T-076/T-077严格再认证单列。
+> T-087～T-090另有6个已审核单元进入GPU-ready，尚未冻结、尚未执行NPU或性能。
 
 ## 1. 总结
 
@@ -232,8 +233,9 @@ T-081～T-083已完成2/2/3个社区合同的GPU运行：11/11 cases、24/24 var
 随后在`triton_experimental`完成7/7数值、命中和实际改图。T-083没有沿用world_size=1结论，另用真实
 双rank HCCL验证3→1/2→1 collective。7个单元均完成全局互斥下的六臂性能处置。
 CPU-only/fake-PG/间接覆盖或缺少直接测例的剩余候选按原批次保留 deferred。
-活动矩阵共33行：T-076～T-086的33个冻结单元均已有GPU、NPU/comparison与性能处置；
-T-078另有1个FP16 value=1扩展variant仍等待正确GPU邻接reference。
+活动矩阵共39行：T-076～T-086的33个冻结单元均已有GPU、NPU/comparison与性能处置；
+T-087～T-090的6行等待GPU reference，不能计入冻结完成率。T-078另有1个FP16 value=1扩展
+variant仍等待正确GPU邻接reference。
 
 T-084～T-086分别闭环1/3/1个单元。T-084真实2-rank HCCL为`PERF_IMPROVED`；T-085的
 pointless-cumsum与partitioned-scatter回退，overlap因轮间高波动为`PERF_MIXED`；T-086
@@ -245,7 +247,8 @@ T-078新上传的`BF16-value=1-text-handoff`实际只包含
 `REF-addcdiv-fma-codegen-native`，证明CUDA codegen含`div_rn`和`tl.fma`，但没有执行
 `REF-addcdiv-fma-fp16-value1-derived`。因此误命名包作为有效codegen邻接补证保留，FP16 value=1
 GPU dtype/value缺口不关闭。
-T-084～T-086 的功能和性能讲解、worker及实际设备结果均已进入当前33行矩阵；上述T-078
+T-084～T-086 的功能和性能讲解、worker及实际设备结果均已进入当前39行矩阵；T-087～T-090
+仅以准备态进入矩阵；上述T-078
 扩展variant仍独立等待GPU，不借用其他codegen邻接证据关闭。
 
 T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或同合同重验。新 1.3 review
@@ -257,7 +260,7 @@ T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或�
 ## 8. 当前环境边界
 
 - NPU 新测试从 `/home/z50063656/tmp` 发起；GPU T-076 从 `/data/z50063656/tmp` 发起；
-- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-084 --gpu ID`（支持 T-076～T-086；
+- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-087 --gpu ID`（支持 T-076～T-090；
   T-085 使用 `--gpus ID1,ID2`），脚本自动进入
   工作目录、激活环境、校验、运行、导出 1.3 review handoff 与备用网页分片并维护 `latest`，
   不再人工查找 timestamp；默认 handoff 是单行 JSON，超过 96 KiB 时自动生成分片并打印应上传的

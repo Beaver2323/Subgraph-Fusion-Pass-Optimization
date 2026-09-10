@@ -1,13 +1,13 @@
 # 后续批次与覆盖边界
 
-> 更新时间：2026-09-10T06:55:00+08:00
+> 更新时间：2026-09-10T23:14:54+08:00
 
 机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。
 
-T-074 的 188 个 provisional 单元中，活动 manifest 已接入 33 个；
-未接入的 125 个候选中，17 个留在已审批次延期，其余保留 27 个草案批次；另有 30 条非计数结构记录待审。
+T-074 的 188 个 provisional 单元中，活动 manifest 已接入 39 个；
+未接入的 119 个候选中，30 个留在已审批次延期，其余保留 23 个草案批次；另有 30 条非计数结构记录待审。
 
-T-081～T-086 的已选12单元已完成原生GPU reference、NPU triton_experimental功能验证与性能处置；T-084～T-086另有10个候选延期。下一批为T-087。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排T-087及以后编号。
+T-081～T-086 的已选12单元已完成原生GPU reference、NPU triton_experimental功能验证与性能处置；T-087～T-090已从19个候选中准备6个GPU原生单元并明确延期13个。下一批为T-091。其余草案不是GPU-ready。保留全部原批次和旧ID，不重排。
 
 | 草案任务 | 源码 family | 暂列单元数 | 状态 |
 | --- | --- | ---: | --- |
@@ -17,10 +17,10 @@ T-081～T-086 的已选12单元已完成原生GPU reference、NPU triton_experim
 | T-084 | `post_grad` | 5 | 已闭环1，延期4 |
 | T-085 | `post_grad` | 5 | 已闭环3，延期2 |
 | T-086 | `post_grad` | 5 | 已闭环1，延期4 |
-| T-087 | `post_grad` | 4 | 功能映射、性能来源与worker待准备 |
-| T-088 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
-| T-089 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
-| T-090 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
+| T-087 | `post_grad` | 4 | 已准备2，延期2；等GPU |
+| T-088 | `split_cat` | 5 | 已准备2，延期3；等GPU |
+| T-089 | `split_cat` | 5 | 已准备1，延期4；等GPU |
+| T-090 | `split_cat` | 5 | 已准备1，延期4；等GPU |
 | T-091 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
 | T-092 | `split_cat` | 5 | 功能映射、性能来源与worker待准备 |
 | T-093 | `split_cat` | 3 | 功能映射、性能来源与worker待准备 |

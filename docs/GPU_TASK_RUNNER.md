@@ -1,9 +1,8 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
+> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
-> 当前任务：`T-076`～`T-086`（T-081～T-086均已完成本轮GPU reference；命令仍可按相同
-> 合同重跑；延期候选不执行）
+> 当前任务：`T-076`～`T-090`（T-081～T-086已完成；T-087～T-090等待执行；延期候选不执行）
 
 ## 1. pull 后一键运行
 
@@ -29,7 +28,7 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 1. 进入 `/data/z50063656/tmp`；
 2. 激活 `/data/z50063656/envs/PassGPURef`；
 3. 设置 CUDA、cuDNN、pip/Triton/Inductor cache；
-4. 先执行该任务的零设备静态校验；T-078～T-086 同时检查功能计划、性能计划和中文 case guide；
+4. 先执行该任务的零设备静态校验；T-078～T-090 同时检查功能计划、性能计划和中文 case guide；
 5. 按共享/独占策略检查指定物理 GPU；指定 `--wait-gpu` 时等待条件满足；
 6. 执行任务对应的原生 community suite；
 7. 自动取得本轮 `reference-<timestamp>` 目录；
@@ -130,7 +129,7 @@ sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
 功能 reference 会清除继承的 `DO_PERF_TEST`/`USE_LARGE_INPUT`，避免误跑社区大规模性能分支。
 部分 skip、expected failure、实际测试数与选定方法数不一致，都会阻止 valid reference。
 
-T-076～T-086 分别对应 `t076-reference-results`～`t086-reference-results`。T-085 是双卡
+T-076～T-090 分别对应 `t076-reference-results`～`t090-reference-results`。T-085 是双卡
 suite，使用 `--gpus`；其余任务使用 `--gpu`。
 
 ### 2.1 复制 JSON 到控制节点的固定接收目录
@@ -171,7 +170,7 @@ handoff_upload_input=/data/z50063656/tmp/t078-reference-results/latest/text-hand
 └── T-080/text-handoff.json
 ```
 
-clone/pull后可见T-076～T-086接收目录：已有handoff由实际文件保留，新批次由README保留；
+clone/pull后可见T-076～T-090接收目录：已有handoff由实际文件保留，新批次由README保留；
 见[接收目录说明](../results/incoming/README.md)。上面的 JSON 文件由用户粘贴生成，不提供空模板。
 例如 T-078，更新后直接用编辑器粘贴保存即可；旧 checkout 尚未更新时可先手工创建目录：
 
@@ -239,6 +238,24 @@ CUDA/NCCL case 必须指定两张卡；T-086：1单元/2 cases/2 variants。三�
 [T-084](T084_FUNCTION_PERFORMANCE_GUIDE.md)、[T-085](T085_FUNCTION_PERFORMANCE_GUIDE.md)、
 [T-086](T086_FUNCTION_PERFORMANCE_GUIDE.md)。
 
+T-087～T-090 均为单卡原生 GPU suite，可依次运行：
+
+```bash
+cd /data/z50063656/tmp
+
+for task in T-087 T-088 T-089 T-090; do
+  bash \
+    "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
+    --task "${task}" \
+    --gpu 2 \
+    --wait-gpu
+done
+```
+
+四批分别为2/2/1/1个单元、3/3/1/1个cases。详见
+[T-087](T087_FUNCTION_PERFORMANCE_GUIDE.md)、[T-088](T088_FUNCTION_PERFORMANCE_GUIDE.md)、
+[T-089](T089_FUNCTION_PERFORMANCE_GUIDE.md)、[T-090](T090_FUNCTION_PERFORMANCE_GUIDE.md)。
+
 只做静态校验，不需要 GPU 编号：
 
 ```bash
@@ -271,6 +288,10 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 | `T-084` | `scripts/run_t084_reference_all.sh` | `/data/z50063656/tmp/t084-reference-results` |
 | `T-085` | `scripts/run_t085_gpu_all.sh`（双卡） | `/data/z50063656/tmp/t085-reference-results` |
 | `T-086` | `scripts/run_t086_reference_all.sh` | `/data/z50063656/tmp/t086-reference-results` |
+| `T-087` | `scripts/run_t087_reference_all.sh` | `/data/z50063656/tmp/t087-reference-results` |
+| `T-088` | `scripts/run_t088_reference_all.sh` | `/data/z50063656/tmp/t088-reference-results` |
+| `T-089` | `scripts/run_t089_reference_all.sh` | `/data/z50063656/tmp/t089-reference-results` |
+| `T-090` | `scripts/run_t090_reference_all.sh` | `/data/z50063656/tmp/t090-reference-results` |
 
 ## 4. 路径覆盖
 
@@ -297,5 +318,5 @@ export PASS_TRACKER_WORK_DIR=/data/z50063656/tmp
 - 脚本最终返回原 runner 退出码，不能把失败、skip 或 no-tests 当成成功；
 - suite 已启动并发布结果后，将 `latest-text-handoff.json` 的完整文本复制回 NPU 控制节点；启动前失败则回传控制台错误。
 
-T-078～T-086 的 reference wrapper 会先打印 `prepared_task_validation=OK`。这只表示测例来源、
+T-078～T-090 的 reference wrapper 会先打印 `prepared_task_validation=OK`。这只表示测例来源、
 单元覆盖、性能合同与讲解文档齐全，不表示 GPU/NPU 已执行，也不解锁 NPU 性能测试。
