@@ -27,6 +27,11 @@ TARGETS = {
         "world_size": 1,
         "workload": "pointless-cumsum-fn10-community-shape",
     },
+    "partitioned-scatter": {
+        "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+        "world_size": 1,
+        "workload": "partitioned-scatter-community-benchmark-shape",
+    },
 }
 
 
@@ -40,9 +45,25 @@ def input_spec(unit: str) -> list[dict[str, object]]:
                 "output_dtype": "torch.float32",
             }
         ]
+    if unit == "overlap-device-put":
+        return [
+            {
+                "role": "num_tokens_per_expert",
+                "shape": [8],
+                "dtype": "torch.int64",
+            },
+            {
+                "role": "routed_input",
+                "shape": [1024, 128],
+                "dtype": "torch.float32",
+            },
+        ]
     return [
-        {"role": "num_tokens_per_expert", "shape": [8], "dtype": "torch.int64"},
-        {"role": "routed_input", "shape": [1024, 128], "dtype": "torch.float32"},
+        {"role": "out0", "shape": [501, 100], "dtype": "torch.float32"},
+        {"role": "out1", "shape": [501, 100], "dtype": "torch.float32"},
+        {"role": "out2", "shape": [501, 100], "dtype": "torch.float32"},
+        {"role": "index", "shape": [1000000], "dtype": "torch.int64"},
+        {"role": "values", "shape": [1000000, 100], "dtype": "torch.float32"},
     ]
 
 
@@ -96,44 +117,48 @@ def read_gate(path: Path, unit: str, device: str) -> dict:
             raise ValueError(f"性能gate字段{key}不符：需要{value!r}")
     if not gate.get("reviewed_at") or not gate.get("reviewer"):
         raise ValueError("性能gate缺少人工复核者或时间")
-    evidence = gate.get("evidence", {})
-    evidence_path = Path(evidence.get("path", ""))
-    if not evidence_path.is_absolute():
-        evidence_path = path.parent / evidence_path
-    if not evidence_path.is_file() or sha256(evidence_path) != evidence.get("sha256"):
-        raise ValueError("性能gate绑定的功能原件不存在或sha256不符")
-    original = json.loads(evidence_path.read_text(encoding="utf-8"))
-    for key in (
-        "task_id",
-        "acceptance_unit_id",
-        "backend",
-        "pytorch_commit",
-        "correctness",
-        "target_rewrite",
-        "graph_breaks",
-        "fallbacks",
-        "product_disabled",
-        "measurement_workload",
-        "world_size",
-        "input_spec",
-        "worker_sha256",
-    ):
-        if original.get(key) != expected[key]:
-            raise ValueError(f"功能原件字段{key}与gate不一致")
-    if original.get("numerical_execution") is not True:
-        raise ValueError("结构-only证据不能签发性能gate")
-    sources = original.get("source_files", {})
-    if not isinstance(sources, dict) or not sources:
-        raise ValueError("功能原件缺少实际源码路径与sha256")
-    for name, digest in sources.items():
-        source = Path(name)
-        if not source.is_file() or sha256(source) != digest:
-            raise ValueError("功能原件绑定的当前源码不存在或已变化")
-    if unit == "overlap-device-put" and original.get("process_group_backend") not in {
-        "nccl",
-        "hccl",
-    }:
-        raise ValueError("overlap性能必须绑定真实NCCL/HCCL 2-rank功能证据")
+    for evidence_name in ("gpu_reference", "target_functional"):
+        evidence = gate.get(evidence_name, {})
+        evidence_path = Path(evidence.get("path", ""))
+        if not evidence_path.is_absolute():
+            evidence_path = path.parent / evidence_path
+        if (
+            not evidence_path.is_file()
+            or sha256(evidence_path) != evidence.get("sha256")
+        ):
+            raise ValueError(f"性能gate绑定的{evidence_name}原件不存在或sha256不符")
+        original = json.loads(evidence_path.read_text(encoding="utf-8"))
+        if evidence_name == "gpu_reference":
+            reviewed_valid = (
+                str(original.get("review_status", "")).startswith("accepted")
+                and original.get("task_id") == TASK_ID
+                and original.get("pytorch_commit") == COMMIT
+                and target["acceptance_unit_id"]
+                in original.get("acceptance_units", [])
+                and original.get("suite", {}).get("valid_cases")
+                == original.get("suite", {}).get("cases")
+                and original.get("suite", {}).get("tests_skipped") == 0
+                and original.get("suite", {}).get("adapters_used") == 0
+            )
+            if not reviewed_valid:
+                raise ValueError("GPU reference复核原件无效或未包含当前单元")
+            continue
+        for key in expected:
+            if original.get(key) != expected[key]:
+                raise ValueError(f"功能原件字段{key}与gate不一致")
+        if original.get("numerical_execution") is not True:
+            raise ValueError("结构-only证据不能签发性能gate")
+        sources = original.get("source_files", {})
+        if not isinstance(sources, dict) or not sources:
+            raise ValueError("功能原件缺少实际源码路径与sha256")
+        for name, digest in sources.items():
+            source = Path(name)
+            if not source.is_file() or sha256(source) != digest:
+                raise ValueError("功能原件绑定的当前源码不存在或已变化")
+        if unit == "overlap-device-put" and original.get(
+            "process_group_backend"
+        ) not in {"nccl", "hccl"}:
+            raise ValueError("overlap性能必须绑定真实NCCL/HCCL 2-rank功能证据")
     return gate
 
 
@@ -149,6 +174,7 @@ def source_hashes() -> dict[str, str]:
             for token in (
                 "torch/_inductor/fx_passes/post_grad.py",
                 "torch/_inductor/fx_passes/overlap_scheduling.py",
+                "torch/_inductor/fx_passes/reduced_atomic_contention.py",
                 "torch/_inductor/pattern_matcher.py",
                 "torch_npu/_inductor",
             )
@@ -165,6 +191,16 @@ def event_sample(runtime, function) -> tuple[float, object]:
     end.record()
     runtime.synchronize()
     return float(start.elapsed_time(end)), value
+
+
+def assert_outputs_close(torch, actual, expected, *, atol=1e-3, rtol=1e-3):
+    actual_leaves = torch.utils._pytree.tree_leaves(actual)
+    expected_leaves = torch.utils._pytree.tree_leaves(expected)
+    if len(actual_leaves) != len(expected_leaves):
+        raise AssertionError("输出树结构不一致")
+    for actual_leaf, expected_leaf in zip(actual_leaves, expected_leaves):
+        if not torch.allclose(actual_leaf, expected_leaf, atol=atol, rtol=rtol):
+            raise AssertionError("输出数值与eager不一致")
 
 
 def run_pointless_cumsum(torch, config, runtime, device: str, mode: str, rank_dir: Path):
@@ -310,6 +346,142 @@ def run_overlap(torch, config, runtime, device: str, mode: str, rank_dir: Path):
     return lambda: compiled(counts, routed), expected, state, compile_ms
 
 
+def run_partitioned_scatter(
+    torch,
+    config,
+    runtime,
+    device: str,
+    mode: str,
+    phase: str,
+    rank_dir: Path,
+):
+    """复用社区性能图，并补跑社区accuracy/negative合同。"""
+    from torch._dynamo.utils import counters
+    from torch._inductor.fx_passes import post_grad
+    from torch._inductor.fx_passes import reduced_atomic_contention as scatter
+
+    memory_builder = scatter._build_scatter_memory_state
+    marker = "_torch_npu_triton_experimental_scatter_memory"
+    if device.startswith("npu") and not getattr(memory_builder, marker, False):
+        raise RuntimeError("NPU partitioned-scatter显存门禁适配未激活")
+
+    state = {
+        "pass_calls": 0,
+        "memory_probe_calls": 0,
+        "memory_state": [],
+        "partitioned_scatter_applied": 0,
+        "negative_accumulate_false_applied": None,
+    }
+    original_pass = post_grad.partitioned_scatter_optimization_pass
+
+    def observed_memory(graph):
+        state["memory_probe_calls"] += 1
+        result = memory_builder(graph)
+        state["memory_state"].append(
+            None
+            if result is None
+            else {
+                "total_device_bytes": result.total_gpu_bytes,
+                "non_model_floor_bytes": result.non_model_floor_bytes,
+                "allowed_peak_bytes": result.allowed_peak_bytes,
+                "profiled_nodes": len(result.peak_mem_by_node),
+            }
+        )
+        return result
+
+    def observed_pass(graph):
+        index = state["pass_calls"]
+        state["pass_calls"] += 1
+        (rank_dir / f"target-{index}-before.txt").write_text(
+            graph.python_code("self").src, encoding="utf-8"
+        )
+        result = original_pass(graph)
+        (rank_dir / f"target-{index}-after.txt").write_text(
+            result.python_code("self").src, encoding="utf-8"
+        )
+        return result
+
+    scatter._build_scatter_memory_state = observed_memory
+    post_grad.partitioned_scatter_optimization_pass = observed_pass
+
+    def scatter_fn(out0, out1, out2, index, values):
+        out0 = out0.index_put([index], values, accumulate=True)
+        out1 = out1.index_put([index], values, accumulate=True)
+        out2 = out2.index_put([index], values, accumulate=True)
+        return out0, out1, out2
+
+    torch.manual_seed(42)
+    n_rows, width, output_rows = 1_000_000, 100, 501
+    values = torch.randn(n_rows, width, dtype=torch.float32, device=device)
+    outputs = tuple(
+        torch.zeros(output_rows, width, dtype=torch.float32, device=device)
+        for _ in range(3)
+    )
+    index = torch.randint(0, 8, (n_rows,), dtype=torch.int64, device=device)
+    args = (*outputs, index, values)
+    expected = scatter_fn(*args)
+    settings = {
+        "fx_graph_cache": False,
+        "force_disable_caches": True,
+        "partitioned_scatter_enabled": mode == "on",
+        "partitioned_scatter_force": False,
+    }
+    counters.clear()
+    torch._dynamo.reset()
+    started = time.perf_counter()
+    with config.patch(settings):
+        compiled = torch.compile(scatter_fn, backend="inductor", fullgraph=True)
+        actual = compiled(*args)
+    runtime.synchronize()
+    compile_ms = (time.perf_counter() - started) * 1000
+    assert_outputs_close(torch, actual, expected, atol=1.0, rtol=1e-2)
+    state["partitioned_scatter_applied"] = counters["inductor"][
+        "partitioned_scatter_applied"
+    ]
+    if mode == "on":
+        if state["partitioned_scatter_applied"] < 3:
+            raise AssertionError("ON未分区化三个高争用scatter")
+        if state["memory_probe_calls"] < 1 or not any(state["memory_state"]):
+            raise AssertionError("ON未使用真实NPU显存预算")
+    elif state["partitioned_scatter_applied"] != 0 or state["pass_calls"] != 0:
+        raise AssertionError("OFF仍进入partitioned-scatter改写")
+
+    if phase == "functional":
+
+        def negative_fn(out, negative_index, negative_values):
+            return out.index_put(
+                [negative_index], negative_values, accumulate=False
+            )
+
+        negative_out = torch.zeros(256, dtype=torch.float32, device=device)
+        negative_index = torch.randperm(256, dtype=torch.int64, device=device)
+        negative_values = torch.randn(256, dtype=torch.float32, device=device)
+        negative_expected = negative_fn(
+            negative_out, negative_index, negative_values
+        )
+        before_negative = counters["inductor"]["partitioned_scatter_applied"]
+        torch._dynamo.reset()
+        with config.patch(settings):
+            negative_compiled = torch.compile(
+                negative_fn, backend="inductor", fullgraph=True
+            )
+            negative_actual = negative_compiled(
+                negative_out, negative_index, negative_values
+            )
+        runtime.synchronize()
+        if not torch.equal(negative_actual, negative_expected):
+            raise AssertionError("accumulate=False负例与eager不一致")
+        negative_delta = (
+            counters["inductor"]["partitioned_scatter_applied"]
+            - before_negative
+        )
+        state["negative_accumulate_false_applied"] = negative_delta
+        if negative_delta != 0:
+            raise AssertionError("accumulate=False负例被错误分区化")
+    write_json(rank_dir / "target_state.json", state)
+    return lambda: compiled(*args), expected, state, compile_ms
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--unit", choices=TARGETS, required=True)
@@ -382,9 +554,13 @@ def main() -> int:
         function, expected, state, compile_ms = run_pointless_cumsum(
             torch, config, runtime, device, args.mode, rank_dir
         )
-    else:
+    elif args.unit == "overlap-device-put":
         function, expected, state, compile_ms = run_overlap(
             torch, config, runtime, device, args.mode, rank_dir
+        )
+    else:
+        function, expected, state, compile_ms = run_partitioned_scatter(
+            torch, config, runtime, device, args.mode, args.phase, rank_dir
         )
 
     for _ in range(args.warmup):
@@ -405,10 +581,10 @@ def main() -> int:
         host_ms.append((time.perf_counter_ns() - started) / 1e6)
         value, event_actual = event_sample(runtime, function)
         event_ms.append(value)
-        if not torch.allclose(actual, expected, rtol=1e-3, atol=1e-3):
-            raise AssertionError("计时期间host样本数值不一致")
-        if not torch.allclose(event_actual, expected, rtol=1e-3, atol=1e-3):
-            raise AssertionError("计时期间Event样本数值不一致")
+        atol = 1.0 if args.unit == "partitioned-scatter" else 1e-3
+        rtol = 1e-2 if args.unit == "partitioned-scatter" else 1e-3
+        assert_outputs_close(torch, actual, expected, atol=atol, rtol=rtol)
+        assert_outputs_close(torch, event_actual, expected, atol=atol, rtol=rtol)
 
     result = {
         "schema_version": "1.0",

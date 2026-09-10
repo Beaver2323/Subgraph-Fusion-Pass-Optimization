@@ -1,0 +1,42 @@
+{
+  "task_id": "T-085",
+  "acceptance_unit_id": "AU-post-grad-overlap-scheduling-device-put-sync",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "overlap-device-put-community-shape",
+  "world_size": 2,
+  "input_spec": [
+    {
+      "role": "num_tokens_per_expert",
+      "shape": [
+        8
+      ],
+      "dtype": "torch.int64"
+    },
+    {
+      "role": "routed_input",
+      "shape": [
+        1024,
+        128
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "9afce76396db88a0a42b95596b23a711eb1428acf56ad2b6b32ae5a6580b36c4",
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-10T05:58:24.252878+08:00",
+  "reviewer": "tracker-control-node",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "7a7d4fe71597d77fc2aa5dc6937019794d8950cc718c8bb118fdd8ff543490aa"
+  },
+  "target_functional": {
+    "path": "../functional/overlap-device-put.json",
+    "sha256": "8cac983be29c8dcf4bf7aaf59116e7c9cc015e77b2a41c9789052a7c51d16ca1"
+  }
+}

@@ -1,0 +1,33 @@
+
+
+
+def forward(self, arg0_1, arg1_1, arg2_1, arg3_1, arg4_1):
+    iota_default_2 = torch.ops.prims.iota.default(1000000, start = 0, step = 1, dtype = torch.int64, device = device(type='npu', index=0), requires_grad = False)
+    bitwise_and_scalar_2 = torch.ops.aten.bitwise_and.Scalar(iota_default_2, 63);  iota_default_2 = None
+    full_default_2 = torch.ops.aten.full.default([32064, 100], 0, dtype = torch.float32, layout = torch.strided, device = device(type='npu', index=0), pin_memory = False)
+    mul_tensor_2 = torch.ops.aten.mul.Tensor(bitwise_and_scalar_2, 501);  bitwise_and_scalar_2 = None
+    add_tensor_4 = torch.ops.aten.add.Tensor(arg2_1, mul_tensor_2);  mul_tensor_2 = None
+    index_put_default_2 = torch.ops.aten.index_put.default(full_default_2, [add_tensor_4], arg1_1, True);  full_default_2 = add_tensor_4 = None
+    view_default_2 = torch.ops.aten.view.default(index_put_default_2, [64, 501, 100]);  index_put_default_2 = None
+    sum_dim_int_list_2 = torch.ops.aten.sum.dim_IntList(view_default_2, [0]);  view_default_2 = None
+    add_tensor_5 = torch.ops.aten.add.Tensor(arg0_1, sum_dim_int_list_2);  arg0_1 = sum_dim_int_list_2 = None
+    iota_default_1 = torch.ops.prims.iota.default(1000000, start = 0, step = 1, dtype = torch.int64, device = device(type='npu', index=0), requires_grad = False)
+    bitwise_and_scalar_1 = torch.ops.aten.bitwise_and.Scalar(iota_default_1, 63);  iota_default_1 = None
+    full_default_1 = torch.ops.aten.full.default([32064, 100], 0, dtype = torch.float32, layout = torch.strided, device = device(type='npu', index=0), pin_memory = False)
+    mul_tensor_1 = torch.ops.aten.mul.Tensor(bitwise_and_scalar_1, 501);  bitwise_and_scalar_1 = None
+    add_tensor_2 = torch.ops.aten.add.Tensor(arg2_1, mul_tensor_1);  mul_tensor_1 = None
+    index_put_default_1 = torch.ops.aten.index_put.default(full_default_1, [add_tensor_2], arg1_1, True);  full_default_1 = add_tensor_2 = None
+    view_default_1 = torch.ops.aten.view.default(index_put_default_1, [64, 501, 100]);  index_put_default_1 = None
+    sum_dim_int_list_1 = torch.ops.aten.sum.dim_IntList(view_default_1, [0]);  view_default_1 = None
+    add_tensor_3 = torch.ops.aten.add.Tensor(arg3_1, sum_dim_int_list_1);  arg3_1 = sum_dim_int_list_1 = None
+    iota_default = torch.ops.prims.iota.default(1000000, start = 0, step = 1, dtype = torch.int64, device = device(type='npu', index=0), requires_grad = False)
+    bitwise_and_scalar = torch.ops.aten.bitwise_and.Scalar(iota_default, 63);  iota_default = None
+    full_default = torch.ops.aten.full.default([32064, 100], 0, dtype = torch.float32, layout = torch.strided, device = device(type='npu', index=0), pin_memory = False)
+    mul_tensor = torch.ops.aten.mul.Tensor(bitwise_and_scalar, 501);  bitwise_and_scalar = None
+    add_tensor = torch.ops.aten.add.Tensor(arg2_1, mul_tensor);  arg2_1 = mul_tensor = None
+    index_put_default = torch.ops.aten.index_put.default(full_default, [add_tensor], arg1_1, True);  full_default = add_tensor = arg1_1 = None
+    view_default = torch.ops.aten.view.default(index_put_default, [64, 501, 100]);  index_put_default = None
+    sum_dim_int_list = torch.ops.aten.sum.dim_IntList(view_default, [0]);  view_default = None
+    add_tensor_1 = torch.ops.aten.add.Tensor(arg4_1, sum_dim_int_list);  arg4_1 = sum_dim_int_list = None
+    return (add_tensor_5, add_tensor_3, add_tensor_1)
+    

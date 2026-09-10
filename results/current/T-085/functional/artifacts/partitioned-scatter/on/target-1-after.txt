@@ -1,0 +1,7 @@
+
+
+
+def forward(self, arg0_1, arg1_1, arg2_1):
+    index_put = torch.ops.aten.index_put.default(arg0_1, [arg2_1], arg1_1);  arg0_1 = arg2_1 = arg1_1 = None
+    return (index_put,)
+    

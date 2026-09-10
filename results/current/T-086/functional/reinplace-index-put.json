@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-086",
+  "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "fallback_scope": "graph-break-or-CPU-fallback-only",
+  "allowed_device_lowering": "registered-IndexPutFallback-extern",
+  "product_disabled": false,
+  "measurement_workload": "reinplace-index-put-community-shape",
+  "world_size": 1,
+  "input_spec": [
+    {
+      "shape": [
+        1024
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        10
+      ],
+      "dtype": "torch.int64"
+    }
+  ],
+  "worker_sha256": "9ac84528a5ad20079a16000aa8034b20a2b3aa82d7f3c56021550294b4f7e6c2",
+  "source_files": {
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/reduced_atomic_contention.py": "769bac44156cfb24243b18cc319a533e826cada062098b83792df11048aeebdb",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/reinplace.py": "c45e3fd1f9147e58a384e20c61cb6f91da521da4683563e6215a9f9cdb452847",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/post_grad.py": "0793616f6e7d3612a4a935412b380571b47f5fb7d15042c8cdbcfc0b88271431",
+    "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/config.py": "68ae6164377297481de5dcd3329dc4701f6005dfddb60c46aaac92850c9f763b",
+    "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/overrides.py": "8505acc5de573932dee7b7fb5e8db54b6d0969cb70a6277aa713e4a36a89fa3b"
+  },
+  "arms": {
+    "off": {
+      "pid": 2359348,
+      "target_rewrite": "disabled-control",
+      "state": {
+        "pass_invocations": 2,
+        "graph_changes": 0,
+        "snapshots": [
+          {
+            "before": {
+              "index_put": 1,
+              "index_put_": 0,
+              "copy_": 1
+            },
+            "after": {
+              "index_put": 1,
+              "index_put_": 0,
+              "copy_": 1
+            }
+          },
+          {
+            "before": {
+              "index_put": 1,
+              "index_put_": 0,
+              "copy_": 0
+            },
+            "after": {
+              "index_put": 1,
+              "index_put_": 0,
+              "copy_": 0
+            }
+          }
+        ],
+        "negative_guard": {
+          "status": "passed",
+          "snapshot_count": 1,
+          "input_preserved": true
+        }
+      },
+      "evidence": "off/functional_result.json"
+    },
+    "on": {
+      "pid": 2373904,
+      "target_rewrite": "confirmed",
+      "state": {
+        "pass_invocations": 2,
+        "graph_changes": 1,
+        "snapshots": [
+          {
+            "before": {
+              "index_put": 1,
+              "index_put_": 0,
+              "copy_": 1
+            },
+            "after": {
+              "index_put": 0,
+              "index_put_": 1,
+              "copy_": 0
+            }
+          },
+          {
+            "before": {
+              "index_put": 1,
+              "index_put_": 0,
+              "copy_": 0
+            },
+            "after": {
+              "index_put": 1,
+              "index_put_": 0,
+              "copy_": 0
+            }
+          }
+        ],
+        "negative_guard": {
+          "status": "passed",
+          "snapshot_count": 1,
+          "input_preserved": true
+        }
+      },
+      "evidence": "on/functional_result.json"
+    }
+  },
+  "generated_at": "2026-09-10T04:59:02.917045+08:00",
+  "source_run_dir": "/home/z50063656/tmp/t086-performance-results/functional-20260910T045711-9ex_o2b_",
+  "artifact_inventory": [
+    {
+      "mode": "off",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/off/fx_graph_readable.py",
+      "sha256": "b0baeb57f43d76546558c7034988670c16ae4f288d23f3dd8dfd2a2e00cadc8f",
+      "bytes": 1006
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/off/fx_graph_transformed.py",
+      "sha256": "b0baeb57f43d76546558c7034988670c16ae4f288d23f3dd8dfd2a2e00cadc8f",
+      "bytes": 1006
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/off/ir_post_fusion.txt",
+      "sha256": "cf9fe6121f5e93aac488c681b3d5a4dc90d28e7808e4a5a620f4eb2702baa266",
+      "bytes": 3651
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/off/ir_pre_fusion.txt",
+      "sha256": "ad040e3842b0d2757b438f0e6ede705b7eceec3b7b49636da6bbe02e83b9a71f",
+      "bytes": 3721
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/off/output_code.py",
+      "sha256": "af5c3f05b585da8c544737140fc3674c012ab0b2c71dd6a81c23bda8c6d149aa",
+      "bytes": 16245
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/off/target-0-before.txt",
+      "sha256": "ba67d5f2b5c293f9861372fb0b9650b00fb7522a07d47c8c8c5e59a03128fa61",
+      "bytes": 736
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/off/target-1-before.txt",
+      "sha256": "fbe7e08c8821ea2da08a925bc3773efbfc2cd22678a47959c782bb864f35bedb",
+      "bytes": 485
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/off/target-0-after.txt",
+      "sha256": "ba67d5f2b5c293f9861372fb0b9650b00fb7522a07d47c8c8c5e59a03128fa61",
+      "bytes": 736
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/off/target-1-after.txt",
+      "sha256": "fbe7e08c8821ea2da08a925bc3773efbfc2cd22678a47959c782bb864f35bedb",
+      "bytes": 485
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/on/fx_graph_readable.py",
+      "sha256": "b0baeb57f43d76546558c7034988670c16ae4f288d23f3dd8dfd2a2e00cadc8f",
+      "bytes": 1006
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/on/fx_graph_transformed.py",
+      "sha256": "49f4b614f77e908f1a70412e2d236847aca13e7b762ee55357077a0a7cadb9b3",
+      "bytes": 915
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/on/ir_post_fusion.txt",
+      "sha256": "23cd8164f4841cf7c543f53c6463ca755b5bb4554b7d6499caff31923e3ebb06",
+      "bytes": 1415
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/on/ir_pre_fusion.txt",
+      "sha256": "429e49f2a25080135fb03daf6979357e37696251ee30c6c5bad00d777bcb78c6",
+      "bytes": 1414
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/on/output_code.py",
+      "sha256": "faa31c3b2a7cf3aca033453dd6c2190c18660032be145a295d1877d077cbcbab",
+      "bytes": 7465
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/on/target-0-before.txt",
+      "sha256": "ba67d5f2b5c293f9861372fb0b9650b00fb7522a07d47c8c8c5e59a03128fa61",
+      "bytes": 736
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/on/target-1-before.txt",
+      "sha256": "fbe7e08c8821ea2da08a925bc3773efbfc2cd22678a47959c782bb864f35bedb",
+      "bytes": 485
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/on/target-0-after.txt",
+      "sha256": "2ac42e9b2e7bd9bad4b0687e4a738e78c58dc69eba6394cb1c662f66c409e662",
+      "bytes": 614
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-086/functional/artifacts/reinplace-index-put/on/target-1-after.txt",
+      "sha256": "fbe7e08c8821ea2da08a925bc3773efbfc2cd22678a47959c782bb864f35bedb",
+      "bytes": 485
+    }
+  ],
+  "reviewed_at": "2026-09-10T05:58:24.268563+08:00",
+  "reviewer": "tracker-control-node"
+}

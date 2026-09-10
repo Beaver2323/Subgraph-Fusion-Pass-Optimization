@@ -1,0 +1,243 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T06:45:04.545967+08:00",
+  "task_id": "T-086",
+  "status": "performance-disposition-complete",
+  "backend": "triton_experimental",
+  "measurement_contract": {
+    "order": [
+      "off1",
+      "on1",
+      "on2",
+      "off2",
+      "off3",
+      "on3"
+    ],
+    "process_isolation": "fresh-process-per-arm",
+    "warmup": 10,
+    "runs": 100,
+    "timing": "同步host wall与NPU Event p50/p99",
+    "scope": "社区目标图或社区功能图派生microbenchmark；非完整模型端到端"
+  },
+  "completion": {
+    "acceptance_units": 1,
+    "measured_units": 1,
+    "pending_units": 0
+  },
+  "verdict_counts": {
+    "PERF_MIXED": 1
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+      "unit": "reinplace-index-put",
+      "pattern_explanation": {
+        "intent": "在别名/生命周期安全时把index_put+copy_改为index_put_，消除中间结果和复制。",
+        "source": [
+          "torch/_inductor/fx_passes/reinplace.py:reinplace_inplaceable_ops",
+          "torch/_inductor/fx_passes/post_grad.py:post_grad_passes"
+        ],
+        "gpu_behavior": "A100原生正例发生index_put_改写，负例保持不变。",
+        "npu_behavior": "Ascend910B2发生相同FX改写；最终index_put_走已注册NPU extern lowering，不属于CPU fallback或Triton融合核。"
+      },
+      "performance_status": "measured-mixed",
+      "verdict": "PERF_MIXED",
+      "product_action": "不声明稳定收益；保留功能行为并扩大尾延迟复核",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 0.6240999791771173,
+            "on": 0.5127149634063244,
+            "improvement_percent": 17.847303234596374
+          },
+          "p99": {
+            "off": 0.7627402385696814,
+            "on": 1.3929998083043467,
+            "improvement_percent": -82.63095846582726
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.49100999534130096,
+            "on": 0.40344999730587006,
+            "improvement_percent": 17.832630469073845
+          },
+          "p99": {
+            "off": 0.5962356072664267,
+            "on": 0.6240488010644923,
+            "improvement_percent": -4.664799193322484
+          }
+        }
+      },
+      "round_p50_spread_ratio": null,
+      "memory": {
+        "allocated": {
+          "off": 19456,
+          "on": 14848
+        },
+        "reserved": {
+          "off": 2097152,
+          "on": 2097152
+        }
+      },
+      "codegen": {
+        "off": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/fx_graph_readable.py",
+              "sha256": "b0baeb57f43d76546558c7034988670c16ae4f288d23f3dd8dfd2a2e00cadc8f",
+              "bytes": 1006
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/fx_graph_transformed.py",
+              "sha256": "b0baeb57f43d76546558c7034988670c16ae4f288d23f3dd8dfd2a2e00cadc8f",
+              "bytes": 1006
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/ir_pre_fusion.txt",
+              "sha256": "ad040e3842b0d2757b438f0e6ede705b7eceec3b7b49636da6bbe02e83b9a71f",
+              "bytes": 3721
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/ir_post_fusion.txt",
+              "sha256": "cf9fe6121f5e93aac488c681b3d5a4dc90d28e7808e4a5a620f4eb2702baa266",
+              "bytes": 3651
+            },
+            "output_code.py": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/output_code.py",
+              "sha256": "10843f71acf1aca43f3fcd0c79c8b54911a9a7f648b4438973fe210856e206f6",
+              "bytes": 16245
+            }
+          },
+          "triton_kernel_definitions": 3,
+          "reduce_scatter_calls": 0,
+          "native_cumsum_calls": 0,
+          "npu_index_put_inplace_calls": 1
+        },
+        "on": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/fx_graph_readable.py",
+              "sha256": "b0baeb57f43d76546558c7034988670c16ae4f288d23f3dd8dfd2a2e00cadc8f",
+              "bytes": 1006
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/fx_graph_transformed.py",
+              "sha256": "49f4b614f77e908f1a70412e2d236847aca13e7b762ee55357077a0a7cadb9b3",
+              "bytes": 915
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/ir_pre_fusion.txt",
+              "sha256": "429e49f2a25080135fb03daf6979357e37696251ee30c6c5bad00d777bcb78c6",
+              "bytes": 1414
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/ir_post_fusion.txt",
+              "sha256": "23cd8164f4841cf7c543f53c6463ca755b5bb4554b7d6499caff31923e3ebb06",
+              "bytes": 1415
+            },
+            "output_code.py": {
+              "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/output_code.py",
+              "sha256": "5b937f6042bf8a5e7268bb64912dd86c53f3ef92b6e742ffccc11e94c2fe9e6a",
+              "bytes": 7465
+            }
+          },
+          "triton_kernel_definitions": 1,
+          "reduce_scatter_calls": 0,
+          "native_cumsum_calls": 0,
+          "npu_index_put_inplace_calls": 1
+        }
+      },
+      "raw_run_dir": "/home/z50063656/tmp/t086-performance-results/benchmark-20260910T062546-kx8vcs7b",
+      "raw_summary_sha256": "4562092319d4c79c5f9d88637f02d5fb71054cb7a1177f4fc752406a41a6c6f7",
+      "gate_sha256": "4d0a75a4f320f7771cba7dbc651373c6748ad8dc5986354aeed5dc0e046ecf9d",
+      "artifact_inventory": [
+        {
+          "path": "results/current/T-086/performance/raw/reinplace-index-put/performance_summary.json",
+          "sha256": "4562092319d4c79c5f9d88637f02d5fb71054cb7a1177f4fc752406a41a6c6f7",
+          "bytes": 70613
+        },
+        {
+          "path": "results/current/T-086/performance/raw/reinplace-index-put/off1-worker_result.json",
+          "sha256": "7c832878f58b34bdaac3fdba2a974fc7dbc5c51d6d9f1182bdd17684a25ca702",
+          "bytes": 73348
+        },
+        {
+          "path": "results/current/T-086/performance/raw/reinplace-index-put/on1-worker_result.json",
+          "sha256": "7f61c96d3918afc950e46e171a929782c3ec0b68a7d7cd219eeb85bca4356c9d",
+          "bytes": 72894
+        },
+        {
+          "path": "results/current/T-086/performance/raw/reinplace-index-put/on2-worker_result.json",
+          "sha256": "172f924cba82be48e0b2b45f31823ad772d870cb3b1644fb779a4bbc50ca0136",
+          "bytes": 72930
+        },
+        {
+          "path": "results/current/T-086/performance/raw/reinplace-index-put/off2-worker_result.json",
+          "sha256": "8ddd24e545019c297bae97a0401fbe0ec959f97fb06e6b9b794dcb387d6dccfb",
+          "bytes": 73371
+        },
+        {
+          "path": "results/current/T-086/performance/raw/reinplace-index-put/off3-worker_result.json",
+          "sha256": "a237439743520a377bc8c95790938e610ac53e9f58d33c2fdfab0a922cb60b59",
+          "bytes": 73393
+        },
+        {
+          "path": "results/current/T-086/performance/raw/reinplace-index-put/on3-worker_result.json",
+          "sha256": "2c2f075f59c7d7e8f4acab4b1cb0ed49757ef488f9ab00159c52e9d54c70de34",
+          "bytes": 72889
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/fx_graph_readable.py",
+          "sha256": "b0baeb57f43d76546558c7034988670c16ae4f288d23f3dd8dfd2a2e00cadc8f",
+          "bytes": 1006
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/fx_graph_transformed.py",
+          "sha256": "b0baeb57f43d76546558c7034988670c16ae4f288d23f3dd8dfd2a2e00cadc8f",
+          "bytes": 1006
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/ir_pre_fusion.txt",
+          "sha256": "ad040e3842b0d2757b438f0e6ede705b7eceec3b7b49636da6bbe02e83b9a71f",
+          "bytes": 3721
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/ir_post_fusion.txt",
+          "sha256": "cf9fe6121f5e93aac488c681b3d5a4dc90d28e7808e4a5a620f4eb2702baa266",
+          "bytes": 3651
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/off/output_code.py",
+          "sha256": "10843f71acf1aca43f3fcd0c79c8b54911a9a7f648b4438973fe210856e206f6",
+          "bytes": 16245
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/fx_graph_readable.py",
+          "sha256": "b0baeb57f43d76546558c7034988670c16ae4f288d23f3dd8dfd2a2e00cadc8f",
+          "bytes": 1006
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/fx_graph_transformed.py",
+          "sha256": "49f4b614f77e908f1a70412e2d236847aca13e7b762ee55357077a0a7cadb9b3",
+          "bytes": 915
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/ir_pre_fusion.txt",
+          "sha256": "429e49f2a25080135fb03daf6979357e37696251ee30c6c5bad00d777bcb78c6",
+          "bytes": 1414
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/ir_post_fusion.txt",
+          "sha256": "23cd8164f4841cf7c543f53c6463ca755b5bb4554b7d6499caff31923e3ebb06",
+          "bytes": 1415
+        },
+        {
+          "path": "results/current/T-086/performance/codegen/reinplace-index-put/on/output_code.py",
+          "sha256": "5b937f6042bf8a5e7268bb64912dd86c53f3ef92b6e742ffccc11e94c2fe9e6a",
+          "bytes": 7465
+        }
+      ]
+    }
+  ]
+}

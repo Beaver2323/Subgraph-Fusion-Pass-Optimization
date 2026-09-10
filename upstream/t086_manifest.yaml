@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-09T00:35:07+08:00",
-  "status": "gpu-reference-and-performance-prepared-awaiting-device-validation",
+  "generated_at": "2026-09-10T06:55:00+08:00",
+  "status": "formally-closed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -29,12 +29,14 @@
     "minimum_gpus": 1,
     "distributed_world_size": null,
     "scope": "原生GPUTests实际CUDA编译、数值、mutation/alias及kernel-count合同；零设备准备阶段不预填运行结论",
-    "suite_status": "prepared-awaiting-gpu-run"
+    "suite_status": "valid-reference-suite",
+    "device_identity": "NVIDIA A100-SXM4-80GB sm80",
+    "runtime_fingerprint": "3d5bc880dd891596ea6299a26083ee68255deee72b98b2b0fd77e678dcb26e97"
   },
   "counting_policy": {
     "current_manifest_units": 1,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0,
+    "current_frozen_denominator_units": 1,
+    "current_formally_closed_units": 1,
     "denominator_rule": "只有原生GPU case无skip/xfail、eager/compiled与mutation合同通过、FX artifacts有效并经人工复核后，才冻结该单元"
   },
   "acceptance_units": [
@@ -42,8 +44,9 @@
       "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
       "contract_name": "post-grad可安全index_put重入原位与活跃输入保护",
       "stage": "post_grad",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "pending-gpu-reference-review",
+      "review_status": "formally-closed-performance-mixed",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/post_grad.py",
@@ -77,7 +80,7 @@
           "expected_reference_match": true,
           "expected_behavior": "functional index_put可安全改为index_put_并消除copy-back，返回expand视图保持正确",
           "expected_counter": "generated_kernel_count=1；性能worker要求index_put.default减少且index_put_.default增加",
-          "reference_status": "prepared",
+          "reference_status": "valid-reference",
           "npu_status": "not-run"
         },
         {
@@ -86,13 +89,13 @@
           "expected_reference_match": false,
           "expected_behavior": "输入与更新结果同时存活时保持functional index_put，禁止破坏alias/mutation语义",
           "expected_counter": "generated_kernel_count=2；不得错误改成index_put_",
-          "reference_status": "prepared",
+          "reference_status": "valid-reference",
           "npu_status": "not-run"
         }
       ],
       "tracking": {
         "reference_mode": "direct",
-        "npu_mode": "triton-experimental-required-after-gpu-reference",
+        "npu_mode": "triton-experimental-real-device-validated",
         "allowed_local_deviation": [
           "只读FX/生成代码观察",
           "NPU原生阻断后另行审核仅device/backend的最小适配"
@@ -106,8 +109,8 @@
         ]
       },
       "npu_control": {
-        "status": "not-run",
-        "next_action": "GPU reference复核后，在导入torch/torch_npu前选择triton_experimental，以fresh process完成OFF/ON功能与性能"
+        "status": "validated-performance-mixed",
+        "next_action": "保留安全重入原位行为；扩大模型级尾延迟复核，不声明稳定性能收益"
       },
       "historical_evidence": []
     }

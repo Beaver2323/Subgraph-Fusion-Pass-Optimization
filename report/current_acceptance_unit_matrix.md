@@ -1,14 +1,14 @@
 # 当前 Acceptance Unit 兼容性矩阵
 
-> 生成时间：2026-09-09T18:05:53+08:00
+> 生成时间：2026-09-10T07:33:34+08:00
 > 数据源：`upstream/*manifest.yaml`、`results/current/` 与逐任务性能计划/汇总。
 > 后端边界：GPU reference 固定为 `inductor-default`；NPU 动态验证、比较、修复验证与性能固定为 `triton_experimental`。
 > 历史 251 行 registration 矩阵不参与本表 verdict；其用途与边界见 `report/archive/legacy-20260820-0828/pass_src_20260820/README.md`。
 
 ## 状态摘要
 
-- 活动 acceptance units：**28**；已冻结 reference：**28**；存在覆盖扩展未闭环：**1**。
-- 已形成 NPU/comparison：**28**；已有正式性能处置：**28**；其余为性能计划态。
+- 活动 acceptance units：**33**；已冻结 reference：**33**；存在覆盖扩展未闭环：**1**。
+- 已形成 NPU/comparison：**33**；已有正式性能处置：**33**；其余为性能计划态。
 - `comparison`/性能处置数量只说明已登记 variants；存在 pending extension 的单元必须以“覆盖”和“当前阶段”列为准，不能外推为全域闭环。
 - 当前 NPU 结果实际观测 backend：`triton_experimental`。
 - 本表汇总已登记结论，不代表严格历史再认证通过；T-076/T-077 的独立补证状态见 [最新审计](../results/audits/latest.json)。
@@ -47,6 +47,11 @@
 | T-083 | AU-post-grad-bucket-all-gathers | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | measured-regressed / PERF_REGRESSED | functional-comparison-closed |
 | T-083 | AU-post-grad-bucket-all-reduce | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | measured-improved / PERF_IMPROVED | functional-comparison-closed |
 | T-083 | AU-post-grad-bucket-reduce-scatters | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | PENDING_REVIEW / 保留原功能/性能结论，但不得据此外推为完全社区对齐 | measured-mixed / PERF_MIXED | functional-comparison-closed |
+| T-084 | AU-post-grad-dedup-reduce-scatters | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | ALIGNED_WITH_ADAPTER / 设备/进程组作最小适配；合同与社区一致，性能只按NPU两rank实测判定。 | measured-improved / PERF_IMPROVED | formally-closed |
+| T-085 | AU-post-grad-overlap-scheduling-device-put-sync | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | ALIGNED_WITH_ADAPTER / 保留社区安全改写；带宽来源是后端最小适配，不把高方差数据写成收益。 | measured-mixed-high-variance / PERF_MIXED | formally-closed |
+| T-085 | AU-post-grad-partitioned-scatter-optimization | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | PARTIALLY_ALIGNED / 能力路径正确但不改变默认关闭；NPU显存探针替换CUDA专用探针。 | measured-regressed / PERF_REGRESSED | formally-closed |
+| T-085 | AU-post-grad-pointless-cumsum | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | PARTIALLY_ALIGNED / 保留上游CPU/CUDA行为，仅在triton_experimental NPU通过可逆gate关闭。 | measured-regressed / PERF_REGRESSED | formally-closed |
+| T-086 | AU-post-grad-reinplace-inplaceable-ops | post_grad | fully-covered | valid-reference-suite | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | ALIGNED_WITH_BACKEND_LOWERING_DIFFERENCE / 保留功能改写；性能结论为混合，不外推稳定收益。 | measured-mixed / PERF_MIXED | formally-closed |
 
 ## 使用说明
 

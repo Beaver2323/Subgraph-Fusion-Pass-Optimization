@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-084",
+  "generated_at": "2026-09-10T05:58:24.270275+08:00",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "dedup-reduce-scatter",
+      "acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-084/functional/dedup-reduce-scatter.json",
+      "gate": "results/current/T-084/performance_gates/dedup-reduce-scatter.json",
+      "artifacts": 12
+    }
+  ]
+}

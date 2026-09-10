@@ -1,0 +1,66 @@
+{
+  "task_id": "T-085",
+  "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "partitioned-scatter-community-benchmark-shape",
+  "world_size": 1,
+  "input_spec": [
+    {
+      "role": "out0",
+      "shape": [
+        501,
+        100
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "role": "out1",
+      "shape": [
+        501,
+        100
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "role": "out2",
+      "shape": [
+        501,
+        100
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "role": "index",
+      "shape": [
+        1000000
+      ],
+      "dtype": "torch.int64"
+    },
+    {
+      "role": "values",
+      "shape": [
+        1000000,
+        100
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "9afce76396db88a0a42b95596b23a711eb1428acf56ad2b6b32ae5a6580b36c4",
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-10T05:58:24.260147+08:00",
+  "reviewer": "tracker-control-node",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "7a7d4fe71597d77fc2aa5dc6937019794d8950cc718c8bb118fdd8ff543490aa"
+  },
+  "target_functional": {
+    "path": "../functional/partitioned-scatter.json",
+    "sha256": "2e816ea9d1590a2667c882da81053e6fa784e59cd9140aca748406761e2dab0f"
+  }
+}

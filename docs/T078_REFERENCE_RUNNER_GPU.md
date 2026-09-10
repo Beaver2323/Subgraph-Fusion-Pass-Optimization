@@ -1,8 +1,12 @@
 # T-078 GPU/reference Runner 操作说明
 
-> 更新时间：2026-09-09 00:43:01 CST（UTC+08:00）
+> 更新时间：2026-09-10 04:20:00 CST（UTC+08:00）
 > 状态：原 12/12 community direct 与 FP16/BF16 value=2 派生 reference 有效；新增 FP16
 > value=1 位级邻接派生 case 待 GPU 运行
+
+2026-09-09 回传的 `BF16-value=1-text-handoff` 实际 case 是
+`REF-addcdiv-fma-codegen-native`；该 codegen 证据有效，但没有执行本页要求的
+`REF-addcdiv-fma-fp16-value1-derived`，所以待办不关闭。
 
 覆盖修订：上游 addcdiv guard 允许全部 floating dtype，而原生社区 case 实际只使用默认 FP32。
 当前一键入口因此执行 15 条 case、处置 23 个 variants；三条低精度扩展均明确标成 `derived`，
@@ -99,8 +103,9 @@ python -m json.tool "${TEXT_HANDOFF}" >/dev/null
 sha256sum "${TEXT_HANDOFF}"
 ```
 
-请复制 `latest-text-handoff.json` 的完整文本。原 12/12 direct case 的冻结结论不回滚；新增低精度
-两条只有均为 `passed` 且 `reference_valid=true` 才能关闭 dtype 扩展。失败、skip、no-tests 或 FX
+请复制 `latest-text-handoff.json` 的完整文本。原 12/12 direct case 与 value=2 dtype 邻接的冻结结论
+不回滚；当前只需 `REF-addcdiv-fma-fp16-value1-derived` 为 `passed` 且
+`reference_valid=true` 才能关闭 value=1 扩展。失败、skip、no-tests 或 FX
 artifacts 缺失都必须原样保留，不能记作 PASS。
 新版一键入口默认携带可恢复的 FX、日志、生成代码和常见 IR 原文；旧 1.0 文件不能恢复正文。
 完整校验、手工重导出旧 run、GitHub 文本复制与恢复说明见

@@ -85,10 +85,24 @@ def validate(pytorch_root: Path | None = None) -> dict[str, int]:
     units = manifest.get("acceptance_units")
     require(isinstance(units, list) and len(units) == 1, "T-086只能选择1个已审核单元")
     require(units[0].get("acceptance_unit_id") == UNIT, "选择单元错误")
-    require(
-        manifest.get("counting_policy", {}).get("current_frozen_denominator_units") == 0,
-        "设备运行前不得冻结分母",
+    frozen = manifest.get("counting_policy", {}).get(
+        "current_frozen_denominator_units"
     )
+    suite_status = manifest.get("reference_contract", {}).get("suite_status")
+    if suite_status == "valid-reference-suite":
+        require(frozen == 1, "GPU reference验收后必须冻结1个单元")
+        review = load("results/current/T-086/gpu_reference_review.json")
+        require(
+            review.get("review_status") == "accepted-real-gpu-reference"
+            and review.get("pytorch_commit")
+            == manifest["source_baselines"]["pytorch"]["commit"]
+            and review.get("suite", {}).get("valid_cases") == 2
+            and review.get("suite", {}).get("tests_skipped") == 0
+            and review.get("evidence_scope", {}).get("real_cuda_execution") is True,
+            "T-086 GPU复核记录与冻结合同不一致",
+        )
+    else:
+        require(frozen == 0, "GPU reference未验收前不得冻结分母")
     deferred = {
         item.get("provisional_unit_id")
         for item in manifest.get("deferred_candidates", [])
@@ -126,7 +140,11 @@ def validate(pytorch_root: Path | None = None) -> dict[str, int]:
     )
     community = {item["nodeid"] for item in units[0]["community_tests"]}
     require(set(perf["case_source"]["nodeids"]) == community, "性能来源nodeid未绑定社区合同")
-    require(performance["implementation"]["status"] == "implemented-awaiting-runtime-validation", "worker状态不能冒充实测")
+    require(
+        performance["implementation"]["status"]
+        in {"implemented-awaiting-runtime-validation", "implemented-runtime-validated"},
+        "worker状态必须与实际动态验证一致",
+    )
 
     worker = ROOT / performance["implementation"]["entrypoint"]
     launcher = ROOT / performance["implementation"]["launcher"]
@@ -165,7 +183,7 @@ def main() -> int:
         "t086_preparation_validation=OK "
         f"units={counts['acceptance_units']} cases={counts['cases']} "
         f"variants={counts['variants']} deferred={len(DEFERRED)} "
-        "device_execution=false"
+        "validator_device_execution=false"
     )
     return 0
 

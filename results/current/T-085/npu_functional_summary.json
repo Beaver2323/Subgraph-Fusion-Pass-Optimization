@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "generated_at": "2026-09-10T05:58:24.270275+08:00",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "pointless-cumsum",
+      "acceptance_unit_id": "AU-post-grad-pointless-cumsum",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-085/functional/pointless-cumsum.json",
+      "gate": "results/current/T-085/performance_gates/pointless-cumsum.json",
+      "artifacts": 10
+    },
+    {
+      "unit": "overlap-device-put",
+      "acceptance_unit_id": "AU-post-grad-overlap-scheduling-device-put-sync",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-085/functional/overlap-device-put.json",
+      "gate": "results/current/T-085/performance_gates/overlap-device-put.json",
+      "artifacts": 12
+    },
+    {
+      "unit": "partitioned-scatter",
+      "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-085/functional/partitioned-scatter.json",
+      "gate": "results/current/T-085/performance_gates/partitioned-scatter.json",
+      "artifacts": 14
+    }
+  ]
+}

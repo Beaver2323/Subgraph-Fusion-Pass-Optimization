@@ -1,9 +1,9 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-09 00:43:01 CST（UTC+08:00）
+> 更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
-> 当前任务：`T-076`～`T-086`（T-081～T-083已完成本轮GPU reference；T-084～T-086
-> 已准备待跑；延期候选不执行）
+> 当前任务：`T-076`～`T-086`（T-081～T-086均已完成本轮GPU reference；命令仍可按相同
+> 合同重跑；延期候选不执行）
 
 ## 1. pull 后一键运行
 
@@ -234,8 +234,8 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
 ```
 
 T-084：1单元/1 case/1 variant；T-085：3单元/5 cases/8 variants，因含真实 2-rank
-CUDA/NCCL case 必须指定两张卡；T-086：1单元/2 cases/2 variants。三批合计 5 个 GPU-ready
-单元，设备执行前不冻结分母、不预填收益。学习入口为
+CUDA/NCCL case 必须指定两张卡；T-086：1单元/2 cases/2 variants。三批已于2026-09-09完成
+8/8 cases、11/11 variants并冻结5个GPU分母，2026-09-10又完成5/5 NPU功能与性能处置。学习入口为
 [T-084](T084_FUNCTION_PERFORMANCE_GUIDE.md)、[T-085](T085_FUNCTION_PERFORMANCE_GUIDE.md)、
 [T-086](T086_FUNCTION_PERFORMANCE_GUIDE.md)。
 

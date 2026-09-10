@@ -1,8 +1,8 @@
 # T-086 功能与性能测例讲解
 
-> 更新时间：2026-09-09 00:43:01 CST（UTC+08:00）
+> 更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
 >
-> 当前状态：零设备准备完成；1 个 acceptance unit、2 个原生 GPU cases、2 个 variants 等待实际设备运行。本文不记录任何 GPU/NPU 通过结论。
+> 当前状态：1/1 单元正式闭环；2/2 GPU cases、NPU OFF/ON 功能与六臂性能已完成。
 
 T-086 对 backlog 的 5 个 provisional units 做了源码回查。只有
 `AU-post-grad-reinplace-inplaceable-ops` 具备实际 GPU 原生正负合同，进入本批执行分母；其余 4 项
@@ -11,6 +11,17 @@ T-086 对 backlog 的 5 个 provisional units 做了源码回查。只有
 
 NPU 动态验证、修复复核和性能测量只能使用 `triton_experimental`。后端必须在导入
 `torch`/`torch_npu` 之前选择，OFF/ON 必须是不同进程。显式产品关闭时记录关闭证据并免测，不得绕过。
+
+## 实测闭环结论
+
+NPU 正例把 `index_put.default + copy_` 改为 `index_put_.default`，live-input 负例不改写；数值、
+mutation 与 alias 保护通过。生成代码中的 `index_put_` 走 torch_npu 已注册 extern lowering，
+不是 CPU fallback，也不是 Triton scatter 融合核。六臂结果的 host/Event p50 都改善约 `17.8%`，
+但 host p99 回退 `82.63%`、Event p99 回退 `4.66%`；allocated 从 `19,456 B` 降至
+`14,848 B`。因此结论是 `PERF_MIXED`，保留安全功能，不声明稳定收益。
+
+完整 FX 前后、IR、`output_code.py`、调用链与测量边界见
+[T-084～T-086 NPU 闭环报告](../report/t084_t086_npu_function_performance_and_fix_20260910.md)。
 
 ## GPU 一键执行
 
@@ -125,7 +136,7 @@ assertGeneratedKernelCountEqual(self, 2)
 返回值同时暴露原输入与更新结果。如果错误改为 `index_put_`，原输入会被污染。该负例要求两个输出均与
 eager一致，并以两个生成 kernel 固定“不得重入原位”的结构边界。
 
-### GPU/NPU 待验证对照
+### GPU/NPU 实测对照
 
 GPU 先运行以上两个原生方法，采集 `fx_graph_readable.py`、`fx_graph_transformed.py`、`output_code.py`
 及 IR。GPU 通过后才进入 NPU。NPU 必须在 `triton_experimental` 下复用相同 shape、index数量、live/dead
@@ -135,7 +146,8 @@ GPU 先运行以上两个原生方法，采集 `fx_graph_readable.py`、`fx_grap
 - 负例：保留 functional `index_put`，原输入未被污染；
 - 两例：`fullgraph=True`，无 graph break/CPU fallback。
 
-当前只是准备计划，尚未得到上述实际设备结果，因此不能写成“GPU/NPU行为一致”。
+上述正负合同均已在实际设备完成；GPU/NPU在FX重入原位和活跃输入保护上对齐。NPU最终执行仍走
+注册的`IndexPutFallback` extern lowering，这一后端实现差异单列保留。
 
 这里的 fallback 需按层级解释。当前控制节点 `triton_experimental` 已为 `index_put/index_put_` 注册设备
 extern lowering；它不是 Dynamo graph break 或回退到 CPU：

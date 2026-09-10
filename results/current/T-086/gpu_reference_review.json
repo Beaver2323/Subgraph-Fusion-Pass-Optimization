@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-086",
+  "generated_at": "2026-09-10T04:20:00+08:00",
+  "review_status": "accepted-real-gpu-reference",
+  "source_handoff": "results/incoming/T-086/text-handoff.json",
+  "source_handoff_sha256": "56e863b880f3493489bf5b2dd5ac967460be785b9175e6d54bd56d1d38339a6e",
+  "run_id": "reference-20260909T195231+0800-n_nc042d",
+  "payload_sha256": "d3212a66f942d6e4a228c1b8fa65812595ce4508ff66980648f41f283978cede",
+  "environment_fingerprint": "3d5bc880dd891596ea6299a26083ee68255deee72b98b2b0fd77e678dcb26e97",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "backend": "inductor-default",
+  "device": "NVIDIA A100-SXM4-80GB sm80",
+  "acceptance_units": [
+    "AU-post-grad-reinplace-inplaceable-ops"
+  ],
+  "suite": {
+    "cases": 2,
+    "valid_cases": 2,
+    "variants": 2,
+    "tests_ran": 2,
+    "tests_skipped": 0,
+    "expected_failures": 0,
+    "adapters_used": 0
+  },
+  "observations": {
+    "positive": {
+      "dtypes": ["float32", "float16"],
+      "before": "index_put.default + copy_",
+      "after": "index_put_.default without copy_",
+      "generated_kernel_count": 1,
+      "compiled_eager_mutation_correctness": "passed"
+    },
+    "negative": {
+      "dtypes": ["float32", "float16"],
+      "before": "index_put.default",
+      "after": "index_put.default",
+      "generated_kernel_count": 2,
+      "live_input_guard": "preserved"
+    }
+  },
+  "evidence_scope": {
+    "real_cuda_execution": true,
+    "mutation_and_alias_contract_proven": true,
+    "positive_rewrite_proven": true,
+    "negative_guard_proven": true,
+    "npu_execution_proven": false,
+    "npu_performance_allowed": false
+  },
+  "review_notes": [
+    "两个原生GPUTests均实际迁移fixture到CUDA并比较compiled/eager及mutation。",
+    "正例消除functional index_put后的copy-back并改为index_put_；负例因原input仍存活而保持不变。",
+    "GPU冻结不等于NPU支持，仍需triton_experimental真机功能门禁。"
+  ],
+  "next_action": "在triton_experimental fresh process中执行OFF/ON，验证FP32/FP16数值、mutation/alias、目标改写和零fallback；通过后运行六臂性能。"
+}

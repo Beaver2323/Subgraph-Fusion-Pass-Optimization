@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "generated_at": "2026-09-10T04:20:00+08:00",
+  "review_status": "accepted-mixed-rank-gpu-reference",
+  "source_handoff": "results/incoming/T-085/manifest.json",
+  "source_handoff_sha256": "974328ad16ef992cb7c3330a1e07f71a00274c7850ca36cda9c722e4ca1ff913",
+  "transport_note": "原上传遗漏manifest；控制节点依据5个连续分片自带的source/offset/part哈希重建索引后，由官方导入器完成整包与逐文件校验。",
+  "run_id": "reference-20260909T194320+0800-1cd_nvn0",
+  "payload_sha256": "918f1052b8d2566d46c7c89e8c3c7f574aa469142b0d00ffae1178304b819446",
+  "environment_fingerprint": "41fc8e7d400ffa74c6732f2a725a9d5f97dd6c200c55fda6b50efeef521ce4ca",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "backend": "inductor-default",
+  "device": "2 x NVIDIA A100-SXM4-80GB sm80",
+  "acceptance_units": [
+    "AU-post-grad-overlap-scheduling-device-put-sync",
+    "AU-post-grad-partitioned-scatter-optimization",
+    "AU-post-grad-pointless-cumsum"
+  ],
+  "suite": {
+    "cases": 5,
+    "valid_cases": 5,
+    "variants": 8,
+    "tests_ran": 5,
+    "tests_skipped": 0,
+    "expected_failures": 0,
+    "adapters_used": 0
+  },
+  "observations": {
+    "overlap_device_put_sync": {
+      "world_size": 2,
+      "process_group_backend": "nccl",
+      "before_non_blocking": true,
+      "after_non_blocking": false,
+      "compiled_eager_correctness": "passed"
+    },
+    "partitioned_scatter": {
+      "positive_index_put_count": 3,
+      "positive_rewritten_to_partitioned_inplace": true,
+      "accumulate_false_preserved": true,
+      "explicit_off_preserved": true,
+      "compiled_eager_correctness": "passed"
+    },
+    "pointless_cumsum": {
+      "community_subcases": 11,
+      "fx_graphs": 11,
+      "cumsum_removed": true,
+      "dtype_and_numerical_contract": "passed"
+    }
+  },
+  "evidence_scope": {
+    "overlap_real_two_rank_cuda_nccl": true,
+    "partitioned_scatter_real_single_gpu": true,
+    "pointless_cumsum_real_single_gpu": true,
+    "npu_execution_proven": false,
+    "npu_performance_allowed": false
+  },
+  "review_notes": [
+    "overlap例是真实2-rank CUDA/NCCL，不是fake process group。",
+    "partitioned-scatter正例和两个负例均保持社区原测试体；ROCm的1.5倍收益门槛不外推到CUDA或NPU。",
+    "pointless-cumsum一个unittest内部执行11个dtype/shape函数，FX正文显示cumsum被消除。"
+  ],
+  "next_action": "逐单元在triton_experimental下先跑原生入口；阻断后只做经审核的NPU/HCCL或device最小适配，功能和目标改写通过后再签性能门禁。"
+}

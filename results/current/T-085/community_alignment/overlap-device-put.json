@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "acceptance_unit_id": "AU-post-grad-overlap-scheduling-device-put-sync",
+  "unit": "overlap-device-put",
+  "generated_at": "2026-09-10T07:33:34+08:00",
+  "source_functional": {
+    "path": "../functional/overlap-device-put.json",
+    "sha256": "8cac983be29c8dcf4bf7aaf59116e7c9cc015e77b2a41c9789052a7c51d16ca1"
+  },
+  "community_alignment": {
+    "status": "ALIGNED_WITH_ADAPTER",
+    "aligned_scope": [
+      "异步device_put转同步",
+      "真实两rank数值与collective顺序"
+    ],
+    "divergent_scope": [],
+    "open_scope": [
+      "NPU分析估时使用显式NPU带宽，社区CUDA路径运行时探测CUDA带宽"
+    ],
+    "disposition": "保留社区安全改写；带宽来源是后端最小适配，不把高方差数据写成收益。"
+  }
+}

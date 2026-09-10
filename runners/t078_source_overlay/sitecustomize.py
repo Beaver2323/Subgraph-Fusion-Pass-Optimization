@@ -18,6 +18,7 @@ MODULES = {
         "lowering",
         "npu_triton_helpers",
         "npu_triton_heuristics",
+        "runtime_estimation",
     )
 }
 MODULES[

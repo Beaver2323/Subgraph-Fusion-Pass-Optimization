@@ -36,16 +36,17 @@ class T085PreparationTests(unittest.TestCase):
         self.assertEqual(counts["deferred"], 2)
         self.assertFalse(any(name == "torch" or name.startswith("torch.") for name in imported))
 
-    def test_partitioned_scatter_is_not_executable_performance_target(self):
+    def test_partitioned_scatter_completed_capability_and_performance(self):
         plan = json.loads((ROOT / "upstream/t085_performance_plan.yaml").read_text())
         scatter = next(
             unit
             for unit in plan["acceptance_units"]
             if unit["acceptance_unit_id"] == "AU-post-grad-partitioned-scatter-optimization"
         )
-        self.assertIsNone(scatter["worker_unit"])
-        self.assertIn("capability-pending", scatter["performance_status"])
-        self.assertNotIn("partitioned-scatter", worker.TARGETS)
+        self.assertEqual(scatter["worker_unit"], "partitioned-scatter")
+        self.assertIn("capability-functional-gate", scatter["performance_status"])
+        self.assertEqual(scatter["verdict"], "PERF_REGRESSED")
+        self.assertIn("partitioned-scatter", worker.TARGETS)
 
     def test_backend_is_selected_before_import(self):
         source = (ROOT / "runners/t085_performance_worker.py").read_text()

@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "acceptance_unit_id": "AU-post-grad-pointless-cumsum",
+  "unit": "pointless-cumsum",
+  "generated_at": "2026-09-10T07:33:34+08:00",
+  "source_functional": {
+    "path": "../functional/pointless-cumsum.json",
+    "sha256": "b3755dd4db1d55ed8b42d1706e92e4e17f9992650d4bcc3115341ef5b7649c73"
+  },
+  "community_alignment": {
+    "status": "PARTIALLY_ALIGNED",
+    "aligned_scope": [
+      "开启候选时命中full+cumsum并保持数值/dtype"
+    ],
+    "divergent_scope": [
+      "NPU性能显著回退，因此产品默认关闭；CUDA社区仍允许命中"
+    ],
+    "open_scope": [],
+    "disposition": "保留上游CPU/CUDA行为，仅在triton_experimental NPU通过可逆gate关闭。"
+  }
+}

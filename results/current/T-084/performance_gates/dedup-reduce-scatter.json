@@ -1,0 +1,41 @@
+{
+  "task_id": "T-084",
+  "acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "dedup-reduce-scatter-community-shape",
+  "world_size": 2,
+  "input_spec": [
+    {
+      "shape": [
+        4,
+        128
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        4,
+        128
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "b27f5d799a088b621d04806f3d5ab2166f33d4a36a264e1b48e2987447d9d315",
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-10T05:58:24.240133+08:00",
+  "reviewer": "tracker-control-node",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "4d5bf421f983bd829c00992b4e2680430cced349254ef9346ad25188b2e7d28d"
+  },
+  "target_functional": {
+    "path": "../functional/dedup-reduce-scatter.json",
+    "sha256": "261ee9bc35c98ea45545077e2a80080e8ae50f045b5dea6c1ee5c487da807a31"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-078",
+  "generated_at": "2026-09-10T04:20:00+08:00",
+  "review_status": "accepted-existing-codegen-neighbor-does-not-close-fp16-value1",
+  "source_handoff": "results/incoming/T-078/BF16-value=1-text-handoff",
+  "source_handoff_sha256": "8b80bc973d7350ec0e41e9d479b9410400940d3f8e9fe12b760583c1d8dad1fc",
+  "filename_classification": "misnamed-upload",
+  "actual_case_id": "REF-addcdiv-fma-codegen-native",
+  "actual_variant_id": "fma-div-rn-codegen-positive",
+  "requested_pending_case_id": "REF-addcdiv-fma-fp16-value1-derived",
+  "run_id": "reference-20260909T195529+0800-ljhv3d1h",
+  "payload_sha256": "4ae45aaf6544d9a6f250029b9dbcd24e597b28158e14a4bc49e97dd9accfe412",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "device": "NVIDIA A100-SXM4-80GB sm80",
+  "execution": {
+    "real_cuda_compile": true,
+    "community_test": "GPUTests.test_addcdiv_fma_uses_fma_and_div_rn_cuda",
+    "tests_ran": 1,
+    "tests_skipped": 0,
+    "counter_assertion": "addcdiv_fma_fused=1",
+    "ir_operations": ["div_rn", "fma"],
+    "output_code_operations": ["triton.language.div_rn", "tl.fma"],
+    "correctness": "community-assertion-passed"
+  },
+  "pending_boundary": "该结果没有执行FP16 value=1派生数值例，不能关闭fp16-value1-bitwise-regression的GPU邻接缺口。"
+}

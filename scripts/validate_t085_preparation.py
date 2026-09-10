@@ -77,10 +77,30 @@ def validate(repo_root: Path, pytorch_root: Path) -> dict[str, int]:
     units = {unit["acceptance_unit_id"]: unit for unit in manifest["acceptance_units"]}
     if set(units) != EXPECTED_UNITS or len(units) != len(manifest["acceptance_units"]):
         raise ValueError("T-085 acceptance units集合或唯一性不符")
-    if manifest["counting_policy"]["current_frozen_denominator_units"] != 0:
-        raise ValueError("设备未运行前不得冻结分母")
-    if manifest["counting_policy"]["current_formally_closed_units"] != 0:
-        raise ValueError("设备未运行前不得声明正式闭环")
+    frozen = manifest["counting_policy"]["current_frozen_denominator_units"]
+    suite_status = manifest.get("reference_contract", {}).get("suite_status")
+    if suite_status == "valid-reference-suite":
+        if frozen != len(units):
+            raise ValueError("GPU reference验收后冻结数必须等于已选单元数")
+        review = load(repo_root / "results/current/T-085/gpu_reference_review.json")
+        if (
+            review.get("review_status") != "accepted-mixed-rank-gpu-reference"
+            or review.get("pytorch_commit") != EXPECTED_COMMIT
+            or review.get("suite", {}).get("valid_cases") != len(reference["cases"])
+            or review.get("suite", {}).get("tests_skipped") != 0
+            or review.get("evidence_scope", {}).get(
+                "overlap_real_two_rank_cuda_nccl"
+            )
+            is not True
+        ):
+            raise ValueError("T-085 GPU复核记录与冻结合同不一致")
+    elif frozen != 0:
+        raise ValueError("GPU reference未验收前不得冻结分母")
+    if manifest["counting_policy"]["current_formally_closed_units"] not in {
+        0,
+        len(units),
+    }:
+        raise ValueError("正式闭环数只能为0或已选单元总数")
     if len(manifest.get("deferred_candidates", [])) != 2:
         raise ValueError("两个不合格候选必须留有deferred记录")
 
@@ -114,10 +134,19 @@ def validate(repo_root: Path, pytorch_root: Path) -> dict[str, int]:
     if backend.get("off_on_order") != ["OFF1", "ON1", "ON2", "OFF2", "OFF3", "ON3"]:
         raise ValueError("六臂顺序不符")
     scatter = performance_units["AU-post-grad-partitioned-scatter-optimization"]
-    if scatter.get("worker_unit") is not None or "capability-pending" not in scatter.get("performance_status", ""):
-        raise ValueError("partitioned-scatter必须保持不可执行capability gate")
+    if (
+        scatter.get("worker_unit") != "partitioned-scatter"
+        or "capability-functional-gate"
+        not in scatter.get("performance_status", "")
+    ):
+        raise ValueError("partitioned-scatter必须先经过NPU capability功能门禁")
     if "force" not in scatter["off_on_control"]:
         raise ValueError("partitioned-scatter必须明确禁止force制造ON")
+    if performance["implementation"]["status"] not in {
+        "implemented-awaiting-runtime-validation",
+        "implemented-runtime-validated",
+    }:
+        raise ValueError("性能worker状态非法")
 
     ast.parse(worker_path.read_text(encoding="utf-8"), filename=str(worker_path))
     ast.parse(
@@ -125,8 +154,12 @@ def validate(repo_root: Path, pytorch_root: Path) -> dict[str, int]:
         filename=str(orchestrator_path),
     )
     worker = load_module("t085_worker_contract", worker_path)
-    if set(worker.TARGETS) != {"pointless-cumsum", "overlap-device-put"}:
-        raise ValueError("worker不得包含被门禁的partitioned-scatter")
+    if set(worker.TARGETS) != {
+        "pointless-cumsum",
+        "overlap-device-put",
+        "partitioned-scatter",
+    }:
+        raise ValueError("worker必须覆盖T-085三个验收单元")
 
     guide = guide_path.read_text(encoding="utf-8")
     for marker in (
@@ -153,7 +186,7 @@ def validate(repo_root: Path, pytorch_root: Path) -> dict[str, int]:
         "variants": sum(len(case["variant_ids"]) for case in reference["cases"]),
         "deferred": len(manifest["deferred_candidates"]),
         "performance_runnable": len(worker.TARGETS),
-        "performance_blocked": 1,
+        "performance_blocked": 0,
     }
 
 
@@ -167,7 +200,7 @@ def main() -> int:
     print(
         "t085_preparation_validation=OK "
         + " ".join(f"{key}={value}" for key, value in counts.items())
-        + " torch_imported=0 device_executed=0"
+        + " torch_imported=0 validator_device_execution=false"
     )
     return 0
 

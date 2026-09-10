@@ -1,0 +1,41 @@
+{
+  "task_id": "T-086",
+  "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "reinplace-index-put-community-shape",
+  "world_size": 1,
+  "input_spec": [
+    {
+      "shape": [
+        1024
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        10
+      ],
+      "dtype": "torch.int64"
+    }
+  ],
+  "worker_sha256": "9ac84528a5ad20079a16000aa8034b20a2b3aa82d7f3c56021550294b4f7e6c2",
+  "fallback_scope": "graph-break-or-CPU-fallback-only",
+  "allowed_device_lowering": "registered-IndexPutFallback-extern",
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-10T05:58:24.268563+08:00",
+  "reviewer": "tracker-control-node",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "c6dfbaefc8c6cb7827a0e37f047d4205918c22e4d338497b8d4e677ca6415ad7"
+  },
+  "target_functional": {
+    "path": "../functional/reinplace-index-put.json",
+    "sha256": "c702e6beaefcd9c7c8164213943a775b7309af317245cf7f6ee613ac2c2a8c6f"
+  }
+}

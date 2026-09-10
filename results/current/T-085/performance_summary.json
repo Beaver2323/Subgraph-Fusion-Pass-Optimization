@@ -1,0 +1,709 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T06:45:04.545967+08:00",
+  "task_id": "T-085",
+  "status": "performance-disposition-complete",
+  "backend": "triton_experimental",
+  "measurement_contract": {
+    "order": [
+      "off1",
+      "on1",
+      "on2",
+      "off2",
+      "off3",
+      "on3"
+    ],
+    "process_isolation": "fresh-process-per-arm",
+    "warmup": 10,
+    "runs": 100,
+    "timing": "同步host wall与NPU Event p50/p99",
+    "scope": "社区目标图或社区功能图派生microbenchmark；非完整模型端到端"
+  },
+  "completion": {
+    "acceptance_units": 3,
+    "measured_units": 3,
+    "pending_units": 0
+  },
+  "verdict_counts": {
+    "PERF_REGRESSED": 2,
+    "PERF_MIXED": 1
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-pointless-cumsum",
+      "unit": "pointless-cumsum",
+      "pattern_explanation": {
+        "intent": "把常量full的cumsum替换为arange乘常量，期望消除通用scan。",
+        "source": [
+          "torch/_inductor/fx_passes/post_grad.py:pointless_cumsum_replacement"
+        ],
+        "gpu_behavior": "A100原生社区11个dtype/输出dtype变体通过；GPU结果只证明语义合同。",
+        "npu_behavior": "社区最大shape上ON由1个Triton full+原生cumsum变为2个Triton kernel，稳定回退，已增加NPU专属默认关闭门禁。"
+      },
+      "performance_status": "measured-regressed",
+      "verdict": "PERF_REGRESSED",
+      "product_action": "已增加triton_experimental NPU专属默认关闭门禁",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 0.30645,
+            "on": 0.58142,
+            "improvement_percent": -89.72752488170993
+          },
+          "p99": {
+            "off": 0.3297434000000006,
+            "on": 0.7699924000000001,
+            "improvement_percent": -133.51260404302218
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.3071499913930893,
+            "on": 0.586139976978302,
+            "improvement_percent": -90.83183897217255
+          },
+          "p99": {
+            "off": 0.36620300650598203,
+            "on": 0.7079885774850846,
+            "improvement_percent": -93.33226786971215
+          }
+        }
+      },
+      "round_p50_spread_ratio": {
+        "off": 1.2033742094260234,
+        "on": 1.1921304108479096
+      },
+      "memory": {
+        "peak_allocated": {
+          "off": 16890880,
+          "on": 16829440
+        },
+        "peak_reserved": {
+          "off": 20971520,
+          "on": 20971520
+        }
+      },
+      "codegen": {
+        "off": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/fx_graph_readable.py",
+              "sha256": "d8f7ddb5a2045bad87a173137f26f95777a5fd8c2304e86c248aee9f0c56d6c1",
+              "bytes": 763
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/fx_graph_transformed.py",
+              "sha256": "d8f7ddb5a2045bad87a173137f26f95777a5fd8c2304e86c248aee9f0c56d6c1",
+              "bytes": 763
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/ir_pre_fusion.txt",
+              "sha256": "79dccb577712f779406b092e3ea24afaab835294cad9b1168b3ad64305e96ad5",
+              "bytes": 1328
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/ir_post_fusion.txt",
+              "sha256": "d440fed83a2da399f51d39e6e4eadadb15686b1773facaa82db89513f706d3a6",
+              "bytes": 1329
+            },
+            "output_code.py": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/output_code.py",
+              "sha256": "96f4442b11a1acf3482fa9d93f4b5fc0754d7440102362a8d807f7c210bce7e2",
+              "bytes": 7400
+            }
+          },
+          "triton_kernel_definitions": 1,
+          "reduce_scatter_calls": 0,
+          "native_cumsum_calls": 1,
+          "npu_index_put_inplace_calls": 0
+        },
+        "on": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/fx_graph_readable.py",
+              "sha256": "d8f7ddb5a2045bad87a173137f26f95777a5fd8c2304e86c248aee9f0c56d6c1",
+              "bytes": 763
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/fx_graph_transformed.py",
+              "sha256": "0dccdb67eb36321566787fc7753a21d95171de97c9f71260f3947d746231b0a0",
+              "bytes": 1600
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/ir_pre_fusion.txt",
+              "sha256": "5089b3b383c812fb81deb382e800ae65163677a927b754f0089ff7a3dd3479a6",
+              "bytes": 3170
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/ir_post_fusion.txt",
+              "sha256": "5138927850a4adc47edd2dfb9cd53be206c2ac02bda3dd159f3409f2c99daada",
+              "bytes": 3172
+            },
+            "output_code.py": {
+              "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/output_code.py",
+              "sha256": "c70f634faa1e42421f62bee1676accfb6ce97f8e69d3b2db860c7667cd2a98f1",
+              "bytes": 12595
+            }
+          },
+          "triton_kernel_definitions": 2,
+          "reduce_scatter_calls": 0,
+          "native_cumsum_calls": 0,
+          "npu_index_put_inplace_calls": 0
+        }
+      },
+      "raw_run_dir": "/home/z50063656/tmp/t085-performance-results/benchmark-pointless-cumsum-20260910T060702-1i7wskwz",
+      "raw_summary_sha256": "f424f90dcaba0979cc9844da000e2a071f72aa476f176a95fa420238572b0f0e",
+      "gate_sha256": "8d704640333e07869ad4e482cfcd088e7db2ce6f7bae7c4af75f01abb1d471d6",
+      "artifact_inventory": [
+        {
+          "path": "results/current/T-085/performance/raw/pointless-cumsum/performance_summary.json",
+          "sha256": "f424f90dcaba0979cc9844da000e2a071f72aa476f176a95fa420238572b0f0e",
+          "bytes": 36313
+        },
+        {
+          "path": "results/current/T-085/performance/raw/pointless-cumsum/off1-worker_result.json",
+          "sha256": "438e7f87a7789f4f8830298241589e4a016b4a1bf6a56ceef3c9e29a28bb3a15",
+          "bytes": 11539
+        },
+        {
+          "path": "results/current/T-085/performance/raw/pointless-cumsum/on1-worker_result.json",
+          "sha256": "65cb0b69759c237c0541c9b62ef9a2e0a27e656371beefaad009de5c174df4d9",
+          "bytes": 11481
+        },
+        {
+          "path": "results/current/T-085/performance/raw/pointless-cumsum/on2-worker_result.json",
+          "sha256": "d456d4326978193b2aa5c60c359cc46e89d7f30d48d738f1e5a4b02117f236e6",
+          "bytes": 11491
+        },
+        {
+          "path": "results/current/T-085/performance/raw/pointless-cumsum/off2-worker_result.json",
+          "sha256": "aa5b0cccc53e11470dd173a0b0bba52485720a49f57c9f8adf50c131914970b0",
+          "bytes": 11527
+        },
+        {
+          "path": "results/current/T-085/performance/raw/pointless-cumsum/off3-worker_result.json",
+          "sha256": "deec03392d61cacf09b2705877617b0c008a817aa9eeb061b130b777bb41f90c",
+          "bytes": 11529
+        },
+        {
+          "path": "results/current/T-085/performance/raw/pointless-cumsum/on3-worker_result.json",
+          "sha256": "59a7047ad9db1c00520bff0988331710a4ba31378efce7c25a129df311d5d42f",
+          "bytes": 11481
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/fx_graph_readable.py",
+          "sha256": "d8f7ddb5a2045bad87a173137f26f95777a5fd8c2304e86c248aee9f0c56d6c1",
+          "bytes": 763
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/fx_graph_transformed.py",
+          "sha256": "d8f7ddb5a2045bad87a173137f26f95777a5fd8c2304e86c248aee9f0c56d6c1",
+          "bytes": 763
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/ir_pre_fusion.txt",
+          "sha256": "79dccb577712f779406b092e3ea24afaab835294cad9b1168b3ad64305e96ad5",
+          "bytes": 1328
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/ir_post_fusion.txt",
+          "sha256": "d440fed83a2da399f51d39e6e4eadadb15686b1773facaa82db89513f706d3a6",
+          "bytes": 1329
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/off/output_code.py",
+          "sha256": "96f4442b11a1acf3482fa9d93f4b5fc0754d7440102362a8d807f7c210bce7e2",
+          "bytes": 7400
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/fx_graph_readable.py",
+          "sha256": "d8f7ddb5a2045bad87a173137f26f95777a5fd8c2304e86c248aee9f0c56d6c1",
+          "bytes": 763
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/fx_graph_transformed.py",
+          "sha256": "0dccdb67eb36321566787fc7753a21d95171de97c9f71260f3947d746231b0a0",
+          "bytes": 1600
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/ir_pre_fusion.txt",
+          "sha256": "5089b3b383c812fb81deb382e800ae65163677a927b754f0089ff7a3dd3479a6",
+          "bytes": 3170
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/ir_post_fusion.txt",
+          "sha256": "5138927850a4adc47edd2dfb9cd53be206c2ac02bda3dd159f3409f2c99daada",
+          "bytes": 3172
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/pointless-cumsum/on/output_code.py",
+          "sha256": "c70f634faa1e42421f62bee1676accfb6ce97f8e69d3b2db860c7667cd2a98f1",
+          "bytes": 12595
+        }
+      ],
+      "product_gate_verification": {
+        "path": "results/current/T-085/fixes/pointless-cumsum/product_gate_result.json",
+        "sha256": "e99f0730d811319b593d6d9d372b47d1cac7fde7f6bde4b36a52c2dbcff65d9d",
+        "device_execution": true
+      }
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-overlap-scheduling-device-put-sync",
+      "unit": "overlap-device-put",
+      "pattern_explanation": {
+        "intent": "调度重排前把异步device_put改成同步，避免CPU过早读取未完成拷贝。",
+        "source": [
+          "torch/_inductor/fx_passes/overlap_scheduling.py:make_all_device_put_sync",
+          "torch/_inductor/fx_passes/post_grad.py:schedule_overlap_bucketing_from_inductor_configs"
+        ],
+        "gpu_behavior": "A100真实2-rank NCCL社区reference直接断言device_put同步化和数值。",
+        "npu_behavior": "Ascend910B2真实2-rank HCCL完成同一安全改写；分析估时器的CUDA带宽探针已最小替换为NPU显式带宽配置。"
+      },
+      "performance_status": "measured-mixed-high-variance",
+      "verdict": "PERF_MIXED",
+      "product_action": "不声明性能收益；保留安全功能并扩大稳定拓扑/模型复核",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 1.2549,
+            "on": 1.1622050000000002,
+            "improvement_percent": 7.386644354131784
+          },
+          "p99": {
+            "off": 4.134360800000016,
+            "on": 1.3721731000000004,
+            "improvement_percent": 66.81051397352657
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 1.1875099539756775,
+            "on": 1.1592000126838684,
+            "improvement_percent": 2.383975072969277
+          },
+          "p99": {
+            "off": 4.772650351524357,
+            "on": 1.348418841362,
+            "improvement_percent": 71.74695940314749
+          }
+        }
+      },
+      "round_p50_spread_ratio": {
+        "off": 3.0371255736256932,
+        "on": 2.5099850301884477
+      },
+      "memory": {
+        "peak_allocated": {
+          "off": 2698240,
+          "on": 2698240
+        },
+        "peak_reserved": {
+          "off": 4194304,
+          "on": 4194304
+        }
+      },
+      "codegen": {
+        "off": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/off/fx_graph_readable.py",
+              "sha256": "dbce53381c33c9acd70c3472e37bcadcb1d6683b1f4a9c9a0bb1d6bc0ffd2144",
+              "bytes": 4465
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/off/fx_graph_transformed.py",
+              "sha256": "1dd371b3d9bf87efa32a047b1690d53911c9efa325d7f7d9a9c017fccac904a9",
+              "bytes": 4471
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/off/ir_pre_fusion.txt",
+              "sha256": "5b4a74696d9bca94f88d84fcb61b75c297131150a77ea02eb0575e7976d7e64b",
+              "bytes": 9435
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/off/ir_post_fusion.txt",
+              "sha256": "5b4a74696d9bca94f88d84fcb61b75c297131150a77ea02eb0575e7976d7e64b",
+              "bytes": 9435
+            },
+            "output_code.py": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/off/output_code.py",
+              "sha256": "23cd55581a9973702c5e3c0dd899ffece0b740caea008c21bfc3006cb979eebe",
+              "bytes": 7470
+            }
+          },
+          "triton_kernel_definitions": 0,
+          "reduce_scatter_calls": 0,
+          "native_cumsum_calls": 0,
+          "npu_index_put_inplace_calls": 0
+        },
+        "on": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/on/fx_graph_readable.py",
+              "sha256": "dbce53381c33c9acd70c3472e37bcadcb1d6683b1f4a9c9a0bb1d6bc0ffd2144",
+              "bytes": 4465
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/on/fx_graph_transformed.py",
+              "sha256": "4c9124a3eb43828d27d0a581e4249cddb1544cbd79807a97ca9bef43d942c8c1",
+              "bytes": 4472
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/on/ir_pre_fusion.txt",
+              "sha256": "dd07a1258e79c15e759301ca69bc27658c0d6df3d33f7faae8b90f80144907bd",
+              "bytes": 9419
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/on/ir_post_fusion.txt",
+              "sha256": "dd07a1258e79c15e759301ca69bc27658c0d6df3d33f7faae8b90f80144907bd",
+              "bytes": 9419
+            },
+            "output_code.py": {
+              "path": "results/current/T-085/performance/codegen/overlap-device-put/on/output_code.py",
+              "sha256": "86aaa5643e3de8de3ea6640092e95efdd606adfd555264dd10db82012b14f08d",
+              "bytes": 7350
+            }
+          },
+          "triton_kernel_definitions": 0,
+          "reduce_scatter_calls": 0,
+          "native_cumsum_calls": 0,
+          "npu_index_put_inplace_calls": 0
+        }
+      },
+      "raw_run_dir": "/home/z50063656/tmp/t085-performance-results/benchmark-overlap-device-put-20260910T061219-cxejpp6y",
+      "raw_summary_sha256": "e1808d17a07f9b6a03df47d6fa1cac571289292c1fe26399200e1d05c2344533",
+      "gate_sha256": "5a6ad313e0cce7b6ef058c89d91ae995bdb12e48c7fb5cb6b91614b80db5e91d",
+      "artifact_inventory": [
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/performance_summary.json",
+          "sha256": "e1808d17a07f9b6a03df47d6fa1cac571289292c1fe26399200e1d05c2344533",
+          "bytes": 36111
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/off1-rank-0-worker_result.json",
+          "sha256": "10dd3d4e2d2cca5335070bb21fdd0a7b6965863ef784d8ec8d767fe3b00dc92e",
+          "bytes": 11399
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/off1-rank-1-worker_result.json",
+          "sha256": "8c7ded321d22e27dad190179baddb510a8e30ccea23de55b641f01cad525de90",
+          "bytes": 11390
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/on1-rank-0-worker_result.json",
+          "sha256": "fc96f904523121c230f9b2f019cd48a832a9e19858494712f44c534a543e35d9",
+          "bytes": 11397
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/on1-rank-1-worker_result.json",
+          "sha256": "b4c83cf6181b5acc2ff5105ed6226b11d11d7faf1700ae067f25f861a99a945c",
+          "bytes": 11389
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/on2-rank-0-worker_result.json",
+          "sha256": "89b5363e66ee020c816604d97fb21f65a6b8477ca44282b7c9736247ce2e87a6",
+          "bytes": 11392
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/on2-rank-1-worker_result.json",
+          "sha256": "fef5aed501ba91a7e5ab205ee2966a35514c4503a29765d72de4b8a85f1ec014",
+          "bytes": 11380
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/off2-rank-0-worker_result.json",
+          "sha256": "22253b62bed867de80a2c22b8195237d614e86c1777d8871c322150737d11543",
+          "bytes": 11362
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/off2-rank-1-worker_result.json",
+          "sha256": "7b4e244dbfa9c8f3af1fd55b52da9dc66a92a6212c038188888b5cbb85bc1b6b",
+          "bytes": 11358
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/off3-rank-0-worker_result.json",
+          "sha256": "c29a96bf3221780bf147b30ad5f3a001dc57d28108f96241ad10a22deab5163b",
+          "bytes": 11395
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/off3-rank-1-worker_result.json",
+          "sha256": "9b086c78fea8846f8cbe3280bd280c6d1714a999ea4001436b2d3e41a6aa68f6",
+          "bytes": 11385
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/on3-rank-0-worker_result.json",
+          "sha256": "a1731eab998ea3db64c6fe9261e80fb2dcd89d277457d8a1ff4157606ad80674",
+          "bytes": 11384
+        },
+        {
+          "path": "results/current/T-085/performance/raw/overlap-device-put/on3-rank-1-worker_result.json",
+          "sha256": "60bf4388d5a166c25fffe5d025cdb3e4dd54fcd0288b7aa53bbd2dd8dccce2cd",
+          "bytes": 11369
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/off/fx_graph_readable.py",
+          "sha256": "dbce53381c33c9acd70c3472e37bcadcb1d6683b1f4a9c9a0bb1d6bc0ffd2144",
+          "bytes": 4465
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/off/fx_graph_transformed.py",
+          "sha256": "1dd371b3d9bf87efa32a047b1690d53911c9efa325d7f7d9a9c017fccac904a9",
+          "bytes": 4471
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/off/ir_pre_fusion.txt",
+          "sha256": "5b4a74696d9bca94f88d84fcb61b75c297131150a77ea02eb0575e7976d7e64b",
+          "bytes": 9435
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/off/ir_post_fusion.txt",
+          "sha256": "5b4a74696d9bca94f88d84fcb61b75c297131150a77ea02eb0575e7976d7e64b",
+          "bytes": 9435
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/off/output_code.py",
+          "sha256": "23cd55581a9973702c5e3c0dd899ffece0b740caea008c21bfc3006cb979eebe",
+          "bytes": 7470
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/on/fx_graph_readable.py",
+          "sha256": "dbce53381c33c9acd70c3472e37bcadcb1d6683b1f4a9c9a0bb1d6bc0ffd2144",
+          "bytes": 4465
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/on/fx_graph_transformed.py",
+          "sha256": "4c9124a3eb43828d27d0a581e4249cddb1544cbd79807a97ca9bef43d942c8c1",
+          "bytes": 4472
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/on/ir_pre_fusion.txt",
+          "sha256": "dd07a1258e79c15e759301ca69bc27658c0d6df3d33f7faae8b90f80144907bd",
+          "bytes": 9419
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/on/ir_post_fusion.txt",
+          "sha256": "dd07a1258e79c15e759301ca69bc27658c0d6df3d33f7faae8b90f80144907bd",
+          "bytes": 9419
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/overlap-device-put/on/output_code.py",
+          "sha256": "86aaa5643e3de8de3ea6640092e95efdd606adfd555264dd10db82012b14f08d",
+          "bytes": 7350
+        }
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+      "unit": "partitioned-scatter",
+      "pattern_explanation": {
+        "intent": "把高争用原子scatter拆成多个分区buffer，最后归约，以空间换更低原子冲突。",
+        "source": [
+          "torch/_inductor/fx_passes/reduced_atomic_contention.py:partitioned_scatter_optimization_pass",
+          "torch/_inductor/fx_passes/post_grad.py:post_grad_passes"
+        ],
+        "gpu_behavior": "A100原生功能reference三次改写、负例与显式OFF通过；CUDA默认关闭且未测性能。",
+        "npu_behavior": "直接复用社区百万行benchmark，ON改写3次并使用真实NPU显存预算，但六臂稳定回退。"
+      },
+      "performance_status": "measured-regressed",
+      "verdict": "PERF_REGRESSED",
+      "product_action": "保持默认关闭",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 9.944855,
+            "on": 10.69918,
+            "improvement_percent": -7.585077912146529
+          },
+          "p99": {
+            "off": 10.304821400000002,
+            "on": 11.0562687,
+            "improvement_percent": -7.292191400813591
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 9.880929946899414,
+            "on": 10.639479637145996,
+            "improvement_percent": -7.676905861321394
+          },
+          "p99": {
+            "off": 10.263245897293091,
+            "on": 10.991788034439091,
+            "improvement_percent": -7.098554827943388
+          }
+        }
+      },
+      "round_p50_spread_ratio": {
+        "off": 1.0061778797927734,
+        "on": 1.0044584227894906
+      },
+      "memory": {
+        "peak_allocated": {
+          "off": 473164800,
+          "on": 493790720
+        },
+        "peak_reserved": {
+          "off": 488636416,
+          "on": 551550976
+        }
+      },
+      "codegen": {
+        "off": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/fx_graph_readable.py",
+              "sha256": "70007c271b453d724e54f675990690a90bbc635525d858229ab5a1e1c4ae2a0d",
+              "bytes": 1176
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/fx_graph_transformed.py",
+              "sha256": "70007c271b453d724e54f675990690a90bbc635525d858229ab5a1e1c4ae2a0d",
+              "bytes": 1176
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/ir_pre_fusion.txt",
+              "sha256": "6e2da1a9fb9d1136f96a45fc4db45a7ea071918415118bd7094400b8d05d162d",
+              "bytes": 4971
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/ir_post_fusion.txt",
+              "sha256": "263dc17e1c328f3db93b896a282a25934c4995ffd19dafc7346aee00731b3e62",
+              "bytes": 4821
+            },
+            "output_code.py": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/output_code.py",
+              "sha256": "970b73637e4cb3af03e2a5ecf0a626919bc7067d7a0412565bbf15e509a70860",
+              "bytes": 8887
+            }
+          },
+          "triton_kernel_definitions": 1,
+          "reduce_scatter_calls": 0,
+          "native_cumsum_calls": 0,
+          "npu_index_put_inplace_calls": 3
+        },
+        "on": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/fx_graph_readable.py",
+              "sha256": "70007c271b453d724e54f675990690a90bbc635525d858229ab5a1e1c4ae2a0d",
+              "bytes": 1176
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/fx_graph_transformed.py",
+              "sha256": "d3056eda2268e9075da53d84a6b446bf189d946f066aa530d68891e0c298def9",
+              "bytes": 4654
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/ir_pre_fusion.txt",
+              "sha256": "5877ace1e8fa75502e78b7edd4939ea19d7bd6a9d3ba2a003e781e1c22e39797",
+              "bytes": 20960
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/ir_post_fusion.txt",
+              "sha256": "486c12de9302649277be1cab3b6d4bacc3ceecc2d8c1dd90e27d9a3fe62e5047",
+              "bytes": 23227
+            },
+            "output_code.py": {
+              "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/output_code.py",
+              "sha256": "a1d9f63cf76f88e04387faed80d54babb39b376c14fa15bd1e6b9b48c4e58d96",
+              "bytes": 23349
+            }
+          },
+          "triton_kernel_definitions": 3,
+          "reduce_scatter_calls": 0,
+          "native_cumsum_calls": 0,
+          "npu_index_put_inplace_calls": 3
+        }
+      },
+      "raw_run_dir": "/home/z50063656/tmp/t085-performance-results/benchmark-partitioned-scatter-20260910T061919-5hqwwffu",
+      "raw_summary_sha256": "8708755789aa2067ba877c76c7b2a99ef69a678341a26bbb49f5bc2756a4da48",
+      "gate_sha256": "c2946fb13d3a05839d071f0b83123a2f1e6df4a3220046c9936f66dde599cb52",
+      "artifact_inventory": [
+        {
+          "path": "results/current/T-085/performance/raw/partitioned-scatter/performance_summary.json",
+          "sha256": "8708755789aa2067ba877c76c7b2a99ef69a678341a26bbb49f5bc2756a4da48",
+          "bytes": 36648
+        },
+        {
+          "path": "results/current/T-085/performance/raw/partitioned-scatter/off1-worker_result.json",
+          "sha256": "ad1da47ccc85f5b7970da354d5813aa615bd9e580c2a7616cc315b94799d406a",
+          "bytes": 11993
+        },
+        {
+          "path": "results/current/T-085/performance/raw/partitioned-scatter/on1-worker_result.json",
+          "sha256": "9e574c5e9b5f199bf119e1e94323987bdcbc06de6a2b450ec8737225eee90ed6",
+          "bytes": 12348
+        },
+        {
+          "path": "results/current/T-085/performance/raw/partitioned-scatter/on2-worker_result.json",
+          "sha256": "99c835bfdf0cfecf0d268ebfbcce9aed2f1ee8b9343e6fa40836948e5fa5d2be",
+          "bytes": 12335
+        },
+        {
+          "path": "results/current/T-085/performance/raw/partitioned-scatter/off2-worker_result.json",
+          "sha256": "121582bdc8f857e4e28c9695db194e4f21891f20ce9143788148c327fc63b881",
+          "bytes": 11997
+        },
+        {
+          "path": "results/current/T-085/performance/raw/partitioned-scatter/off3-worker_result.json",
+          "sha256": "69cbbeab0542cd4f70aa1322a4bd617fe92a47afee203b8ded7bb23726d79892",
+          "bytes": 11977
+        },
+        {
+          "path": "results/current/T-085/performance/raw/partitioned-scatter/on3-worker_result.json",
+          "sha256": "c5ff28493badcf2486f6c7db3e3da7338f10e48dc5d313c8e786a72bd8622386",
+          "bytes": 12325
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/fx_graph_readable.py",
+          "sha256": "70007c271b453d724e54f675990690a90bbc635525d858229ab5a1e1c4ae2a0d",
+          "bytes": 1176
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/fx_graph_transformed.py",
+          "sha256": "70007c271b453d724e54f675990690a90bbc635525d858229ab5a1e1c4ae2a0d",
+          "bytes": 1176
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/ir_pre_fusion.txt",
+          "sha256": "6e2da1a9fb9d1136f96a45fc4db45a7ea071918415118bd7094400b8d05d162d",
+          "bytes": 4971
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/ir_post_fusion.txt",
+          "sha256": "263dc17e1c328f3db93b896a282a25934c4995ffd19dafc7346aee00731b3e62",
+          "bytes": 4821
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/off/output_code.py",
+          "sha256": "970b73637e4cb3af03e2a5ecf0a626919bc7067d7a0412565bbf15e509a70860",
+          "bytes": 8887
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/fx_graph_readable.py",
+          "sha256": "70007c271b453d724e54f675990690a90bbc635525d858229ab5a1e1c4ae2a0d",
+          "bytes": 1176
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/fx_graph_transformed.py",
+          "sha256": "d3056eda2268e9075da53d84a6b446bf189d946f066aa530d68891e0c298def9",
+          "bytes": 4654
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/ir_pre_fusion.txt",
+          "sha256": "5877ace1e8fa75502e78b7edd4939ea19d7bd6a9d3ba2a003e781e1c22e39797",
+          "bytes": 20960
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/ir_post_fusion.txt",
+          "sha256": "486c12de9302649277be1cab3b6d4bacc3ceecc2d8c1dd90e27d9a3fe62e5047",
+          "bytes": 23227
+        },
+        {
+          "path": "results/current/T-085/performance/codegen/partitioned-scatter/on/output_code.py",
+          "sha256": "a1d9f63cf76f88e04387faed80d54babb39b376c14fa15bd1e6b9b48c4e58d96",
+          "bytes": 23349
+        }
+      ]
+    }
+  ]
+}

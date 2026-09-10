@@ -1,11 +1,11 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-09 18:05:53 CST（UTC+08:00）
+> 更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
-> 当前阶段：T-076～T-083 原冻结范围共28个acceptance units有效；T-078 新增低精度
-> regression 已在 NPU 修复，等待 GPU 邻接 reference；T-084～T-086 已准备5个GPU-ready单元
-> 等待设备运行。T-076/T-077严格再认证单列。
+> 当前阶段：T-076～T-086 原冻结范围共33个acceptance units有效；T-078 新增低精度
+> regression 已在 NPU 修复，等待正确的 FP16 value=1 GPU 邻接 reference；T-084～T-086 的
+> 5个单元已完成GPU、NPU功能与性能处置。T-076/T-077严格再认证单列。
 
 ## 1. 总结
 
@@ -232,11 +232,21 @@ T-081～T-083已完成2/2/3个社区合同的GPU运行：11/11 cases、24/24 var
 随后在`triton_experimental`完成7/7数值、命中和实际改图。T-083没有沿用world_size=1结论，另用真实
 双rank HCCL验证3→1/2→1 collective。7个单元均完成全局互斥下的六臂性能处置。
 CPU-only/fake-PG/间接覆盖或缺少直接测例的剩余候选按原批次保留 deferred。
-活动矩阵共28行，28行均已完成GPU、NPU/comparison与性能处置。
+活动矩阵共33行：T-076～T-086的33个冻结单元均已有GPU、NPU/comparison与性能处置；
+T-078另有1个FP16 value=1扩展variant仍等待正确GPU邻接reference。
 
-T-084～T-086已完成零设备准备：分别接入1/3/1个单元，共8个原生GPU cases、11个variants；
-10个不满足合同的候选明确延期。T-085含真实2-rank NCCL例，GPU完整suite必须使用两张卡。
-三批均已准备功能和性能讲解及worker，但设备执行前不进入当前28行冻结矩阵。
+T-084～T-086分别闭环1/3/1个单元。T-084真实2-rank HCCL为`PERF_IMPROVED`；T-085的
+pointless-cumsum与partitioned-scatter回退，overlap因轮间高波动为`PERF_MIXED`；T-086
+重入原位功能一致但尾延迟混合。pointless-cumsum已增加NPU专属默认关闭gate并真机确认。
+完整代码框、调用链、适配和FX/IR/generated code见
+[NPU闭环报告](../report/t084_t086_npu_function_performance_and_fix_20260910.md)。
+
+T-078新上传的`BF16-value=1-text-handoff`实际只包含
+`REF-addcdiv-fma-codegen-native`，证明CUDA codegen含`div_rn`和`tl.fma`，但没有执行
+`REF-addcdiv-fma-fp16-value1-derived`。因此误命名包作为有效codegen邻接补证保留，FP16 value=1
+GPU dtype/value缺口不关闭。
+T-084～T-086 的功能和性能讲解、worker及实际设备结果均已进入当前33行矩阵；上述T-078
+扩展variant仍独立等待GPU，不借用其他codegen邻接证据关闭。
 
 T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或同合同重验。新 1.3 review
 分别可恢复 80/68 份关键正文，用于逐项 FX 学习与审计，但不是完整历史 archive。

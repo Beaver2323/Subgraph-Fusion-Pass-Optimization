@@ -1,0 +1,35 @@
+{
+  "task_id": "T-085",
+  "acceptance_unit_id": "AU-post-grad-pointless-cumsum",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "pointless-cumsum-fn10-community-shape",
+  "world_size": 1,
+  "input_spec": [
+    {
+      "role": "constructed-constant",
+      "shape": [
+        5000
+      ],
+      "dtype": "torch.float16",
+      "output_dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "9afce76396db88a0a42b95596b23a711eb1428acf56ad2b6b32ae5a6580b36c4",
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-10T05:58:24.246430+08:00",
+  "reviewer": "tracker-control-node",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "7a7d4fe71597d77fc2aa5dc6937019794d8950cc718c8bb118fdd8ff543490aa"
+  },
+  "target_functional": {
+    "path": "../functional/pointless-cumsum.json",
+    "sha256": "b3755dd4db1d55ed8b42d1706e92e4e17f9992650d4bcc3115341ef5b7649c73"
+  }
+}

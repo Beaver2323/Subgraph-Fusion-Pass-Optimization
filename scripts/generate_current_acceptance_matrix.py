@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import csv
 from datetime import datetime
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -55,6 +56,18 @@ TASK_FILES = {
     "T-083": {
         "manifest": "upstream/t083_manifest.yaml",
         "performance_plan": "upstream/t083_performance_plan.yaml",
+    },
+    "T-084": {
+        "manifest": "upstream/t084_manifest.yaml",
+        "performance_plan": "upstream/t084_performance_plan.yaml",
+    },
+    "T-085": {
+        "manifest": "upstream/t085_manifest.yaml",
+        "performance_plan": "upstream/t085_performance_plan.yaml",
+    },
+    "T-086": {
+        "manifest": "upstream/t086_manifest.yaml",
+        "performance_plan": "upstream/t086_performance_plan.yaml",
     },
 }
 
@@ -105,6 +118,10 @@ def read_json(path: Path) -> dict:
     if not isinstance(value, dict):
         raise ValueError(f"顶层必须是对象：{path}")
     return value
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def index_documents(pattern: str, id_key: str) -> dict[str, tuple[Path, dict]]:
@@ -185,7 +202,7 @@ def community_alignment(comparison: dict | None) -> dict[str, str]:
 def build_rows(generated_at: str) -> list[dict]:
     npu_results = index_documents("results/current/*/npu_result.json", "acceptance_unit_id")
     functional_results = index_documents(
-        "results/current/T-*/functional/*-on.json", "acceptance_unit_id"
+        "results/current/T-*/functional/*.json", "acceptance_unit_id"
     )
     overlap = set(npu_results) & set(functional_results)
     if overlap:
@@ -193,6 +210,9 @@ def build_rows(generated_at: str) -> list[dict]:
     npu_results.update(functional_results)
     comparisons = index_documents(
         "results/current/*/comparison_result.json", "acceptance_unit_id"
+    )
+    alignment_sidecars = index_documents(
+        "results/current/T-*/community_alignment/*.json", "acceptance_unit_id"
     )
 
     performance: dict[str, tuple[str, Path, dict, dict]] = {}
@@ -298,9 +318,29 @@ def build_rows(generated_at: str) -> list[dict]:
                 comparison_verdict = "BEHAVIOR_UNCHANGED"
                 repair_status = "not-needed"
 
-            alignment = community_alignment(
-                comparison if not compact_functional else npu
+            alignment_payload = comparison if not compact_functional else npu
+            alignment_sidecar_path, alignment_sidecar = alignment_sidecars.get(
+                unit_id, (None, None)
             )
+            if alignment_sidecar is not None:
+                if alignment_sidecar.get("task_id") != task_id:
+                    raise ValueError(
+                        f"社区对齐 sidecar 任务归属错误：{alignment_sidecar_path}"
+                    )
+                source = alignment_sidecar.get("source_functional", {})
+                source_path = (
+                    alignment_sidecar_path.parent / str(source.get("path", ""))
+                ).resolve()
+                if npu_path is None or source_path != npu_path.resolve():
+                    raise ValueError(
+                        f"社区对齐 sidecar 未绑定当前功能原件：{alignment_sidecar_path}"
+                    )
+                if not source_path.is_file() or sha256(source_path) != source.get("sha256"):
+                    raise ValueError(
+                        f"社区对齐 sidecar 功能原件哈希失效：{alignment_sidecar_path}"
+                    )
+                alignment_payload = alignment_sidecar
+            alignment = community_alignment(alignment_payload)
 
             plan_item = plan_items[unit_id]
             performance_status = str(plan_item.get("performance_status") or "unknown")
@@ -311,6 +351,8 @@ def build_rows(generated_at: str) -> list[dict]:
                 source_times.append(str(npu.get("generated_at") or ""))
             if comparison is not None:
                 source_times.append(str(comparison.get("generated_at") or ""))
+            if alignment_sidecar is not None:
+                source_times.append(str(alignment_sidecar.get("generated_at") or ""))
 
             actual_performance = performance.get(unit_id)
             if actual_performance is not None:
@@ -395,11 +437,13 @@ def build_rows(generated_at: str) -> list[dict]:
     unknown_npu = set(npu_results) - unit_ids
     unknown_comparisons = set(comparisons) - unit_ids
     unknown_performance = set(performance) - unit_ids
-    if unknown_npu or unknown_comparisons or unknown_performance:
+    unknown_alignments = set(alignment_sidecars) - unit_ids
+    if unknown_npu or unknown_comparisons or unknown_performance or unknown_alignments:
         raise ValueError(
             "current result 存在未纳入 manifest 的单元："
             f"npu={sorted(unknown_npu)}, comparison={sorted(unknown_comparisons)}, "
-            f"performance={sorted(unknown_performance)}"
+            f"performance={sorted(unknown_performance)}, "
+            f"alignment={sorted(unknown_alignments)}"
         )
     return rows
 

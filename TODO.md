@@ -1,10 +1,11 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-09 18:05:53 CST（UTC+08:00）
-> 状态：T-076～T-083 原冻结范围共28个acceptance units有效；T-078 addcdiv 的 FP16
+> 更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
+> 状态：T-076～T-086 原冻结范围共33个acceptance units有效；T-078 addcdiv 的 FP16
 > `value=1` 普通 div+add 精度回归已修复并通过 NPU 真机验证，当前等待 GPU
-> dtype/value 邻接 reference。T-084～T-086 已完成
-> GPU-ready 准备，后续编号保留。产品改动仍待独立产品仓评审/合入。
+> dtype/value 邻接 reference；新上传包实际为已存在的CUDA FMA codegen合同，未关闭该缺口。
+> T-084～T-086 已完成8/8 GPU cases、11/11 variants、5/5 NPU功能及5/5性能处置；
+> 下一批为T-087。产品改动仍待独立产品仓评审/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -14,8 +15,8 @@
 - acceptance unit 是跟踪、比较和 verdict 的基本单位；
 - 一个 registration 可以展开多个 pattern/variant，也可能与其他 registration 共同服务一个 contract；
 - 只有人工审核并冻结的 acceptance unit 才能进入完成率分母；
-- T-074 当前 188/158 均为 provisional；T-076～T-083 冻结单元共28个，正式 NPU/comparison
-  与性能处置均为 28 份；产品改动合入状态单列。
+- T-074 当前 188/158 均为 provisional；T-076～T-086 冻结单元共33个，正式 NPU/comparison
+  与性能处置均为 33 份；产品改动合入状态单列。
 
 ## 当前门禁补强与历史复核
 
@@ -254,7 +255,10 @@ T-077 GPU 准备：
 - [x] T-081～T-083 共7个单元完成全局互斥下的六臂正式性能处置，并保存逐单元源码/生成代码解释；
 - [x] T-084～T-086 对15个provisional候选完成逐项审核，准备5个GPU-ready单元、8 cases、
   11 variants及性能worker；10个候选按证据理由延期；
-- [ ] GPU执行T-084、T-085、T-086并回传固定handoff；T-085完整suite使用两张GPU；
+- [x] GPU执行T-084、T-085、T-086并回传固定handoff；8/8 cases、11/11 variants有效，T-085 overlap使用真实两卡NCCL；
+- [x] 使用`triton_experimental`完成T-084～T-086共5个单元的NPU原生优先、必要最小适配、功能/命中/改图门禁与性能处置；
+- [x] T-085 overlap与partitioned-scatter分别补NPU带宽来源、显存探针最小适配；pointless-cumsum性能回退后增加NPU默认关闭gate并真机复验；
+- [ ] 开始T-087的人工映射、GPU reference与性能准备；
 - [ ] 建立 upstream source/test/mapping drift 检测；
 - [x] 支持一条命令运行 T-079/T-080 NPU suite；
 - [x] 支持一条命令生成 comparison report；T-079/T-080 分别由 `finalize_t079_results.py`、`finalize_t080_results.py` 生成正式结果；

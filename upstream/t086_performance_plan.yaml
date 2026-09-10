@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "task_id": "T-086",
-  "generated_at": "2026-09-09T00:35:07+08:00",
-  "status": "implemented-awaiting-runtime-validation",
+  "generated_at": "2026-09-10T06:55:00+08:00",
+  "status": "performance-disposition-complete",
   "implementation": {
-    "status": "implemented-awaiting-runtime-validation",
+    "status": "implemented-runtime-validated",
     "entrypoint": "runners/t086_performance_worker.py",
     "launcher": "scripts/run_t086_performance.py"
   },
@@ -77,7 +77,9 @@
     {
       "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
       "worker_unit": "reinplace-index-put",
-      "performance_status": "worker-static-only-awaiting-functional-gate",
+      "performance_status": "measured-mixed-tail-latency",
+      "verdict": "PERF_MIXED",
+      "product_action": "保留功能行为，扩大尾延迟复核",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [

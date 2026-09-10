@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-09T00:35:28+08:00",
-  "status": "gpu-ready-zero-device-validated",
+  "generated_at": "2026-09-10T06:55:00+08:00",
+  "status": "formally-closed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -33,13 +33,16 @@
     "minimum_gpus": 2,
     "distributed_world_size": 2,
     "scope": "真实CUDA功能reference；overlap单元要求2-rank NCCL，其余单元使用所选GPU中的rank0",
-    "status": "prepared-not-executed"
+    "status": "executed-and-reviewed",
+    "suite_status": "valid-reference-suite",
+    "device_identity": "2 x NVIDIA A100-SXM4-80GB sm80",
+    "runtime_fingerprint": "41fc8e7d400ffa74c6732f2a725a9d5f97dd6c200c55fda6b50efeef521ce4ca"
   },
   "counting_policy": {
     "reviewed_provisional_units": 5,
     "current_manifest_units": 3,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0,
+    "current_frozen_denominator_units": 3,
+    "current_formally_closed_units": 3,
     "deferred_units": 2,
     "denominator_rule": "GPU原生测试、目标命中/负例和可恢复FX正文全部通过人工复核后才冻结"
   },
@@ -48,8 +51,9 @@
       "acceptance_unit_id": "AU-post-grad-overlap-scheduling-device-put-sync",
       "contract_name": "overlap scheduling将异步device_put改为同步以阻止脏读",
       "stage": "post_grad",
-      "review_status": "gpu-ready-awaiting-runtime",
-      "denominator_eligible": "pending-gpu-reference",
+      "review_status": "formally-closed-performance-mixed",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/post_grad.py",
@@ -76,18 +80,20 @@
           "variant_id": "async-device-put-sync-positive",
           "kind": "positive",
           "expected_reference_match": true,
-          "expected_behavior": "至少一个non_blocking=True device_put被改为False，2-rank输出与eager一致"
+          "expected_behavior": "至少一个non_blocking=True device_put被改为False，2-rank输出与eager一致",
+          "reference_status": "valid-reference"
         },
         {
           "variant_id": "blocking-device-put-preserved",
           "kind": "regression",
           "expected_reference_match": true,
-          "expected_behavior": "原本同步的device_put保持False，collective顺序和数值不变"
+          "expected_behavior": "原本同步的device_put保持False，collective顺序和数值不变",
+          "reference_status": "valid-reference"
         }
       ],
       "tracking": {
         "reference_mode": "direct",
-        "npu_mode": "pending-native-triton-experimental-then-reviewed-adapter",
+        "npu_mode": "triton-experimental-real-two-rank-hccl-adapter",
         "allowed_local_deviation": [
           "NPU原生CUDA/NCCL阻断留证后，将设备和进程组最小替换为NPU/HCCL",
           "只读记录pass入口前后FX、转换计数与collective顺序"
@@ -103,8 +109,9 @@
       "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
       "contract_name": "高争用index_put累加分区化并受正确性、启发式和显存门禁约束",
       "stage": "post_grad",
-      "review_status": "gpu-ready-awaiting-runtime-performance-gated",
-      "denominator_eligible": "pending-gpu-reference",
+      "review_status": "formally-closed-performance-regressed-default-off",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/post_grad.py",
@@ -148,24 +155,27 @@
           "variant_id": "high-contention-positive",
           "kind": "positive",
           "expected_reference_match": true,
-          "expected_behavior": "三个高争用累加scatter均分区化，输出在社区容差内"
+          "expected_behavior": "三个高争用累加scatter均分区化，输出在社区容差内",
+          "reference_status": "valid-reference"
         },
         {
           "variant_id": "accumulate-false-negative",
           "kind": "negative",
           "expected_reference_match": false,
-          "expected_behavior": "非累加index_put不改写"
+          "expected_behavior": "非累加index_put不改写",
+          "reference_status": "valid-reference"
         },
         {
           "variant_id": "explicit-off-negative",
           "kind": "negative",
           "expected_reference_match": false,
-          "expected_behavior": "partitioned_scatter_enabled=False时不改写"
+          "expected_behavior": "partitioned_scatter_enabled=False时不改写",
+          "reference_status": "valid-reference"
         }
       ],
       "tracking": {
         "reference_mode": "direct",
-        "npu_mode": "capability-pending-triton-experimental",
+        "npu_mode": "triton-experimental-capability-validated-default-off",
         "allowed_local_deviation": [
           "保留社区真实GPU功能例及源码内既有ON/OFF",
           "NPU只在generic HIP默认门禁经独立评审后决定是否进入动态验证"
@@ -181,8 +191,9 @@
       "acceptance_unit_id": "AU-post-grad-pointless-cumsum",
       "contract_name": "常量full的cumsum替换为arange乘常量并保持dtype语义",
       "stage": "post_grad",
-      "review_status": "gpu-ready-awaiting-runtime",
-      "denominator_eligible": "pending-gpu-reference",
+      "review_status": "formally-closed-performance-regressed-product-gated",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/post_grad.py",
@@ -203,24 +214,27 @@
           "variant_id": "integer-and-bool-promotion",
           "kind": "positive",
           "expected_reference_match": true,
-          "expected_behavior": "整数/布尔full遵守cumsum int64或显式输出dtype规则"
+          "expected_behavior": "整数/布尔full遵守cumsum int64或显式输出dtype规则",
+          "reference_status": "valid-reference"
         },
         {
           "variant_id": "floating-constant-positive",
           "kind": "positive",
           "expected_reference_match": true,
-          "expected_behavior": "FP32常量cumsum由arange乘常量表达且结果相等"
+          "expected_behavior": "FP32常量cumsum由arange乘常量表达且结果相等",
+          "reference_status": "valid-reference"
         },
         {
           "variant_id": "explicit-output-dtype-positive",
           "kind": "positive",
           "expected_reference_match": true,
-          "expected_behavior": "FP16/FP32输入指定FP32/FP64输出时保持dtype和数值"
+          "expected_behavior": "FP16/FP32输入指定FP32/FP64输出时保持dtype和数值",
+          "reference_status": "valid-reference"
         }
       ],
       "tracking": {
         "reference_mode": "direct",
-        "npu_mode": "pending-native-triton-experimental-then-reviewed-adapter",
+        "npu_mode": "triton-experimental-validated-product-default-off",
         "allowed_local_deviation": [
           "只读观察目标handler和改写前后FX",
           "NPU原生阻断后才评审最小设备适配"

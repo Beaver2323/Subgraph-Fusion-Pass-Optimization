@@ -1,0 +1,199 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+  "unit": "partitioned-scatter",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "partitioned-scatter-community-benchmark-shape",
+  "world_size": 1,
+  "process_group_backend": null,
+  "input_spec": [
+    {
+      "role": "out0",
+      "shape": [
+        501,
+        100
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "role": "out1",
+      "shape": [
+        501,
+        100
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "role": "out2",
+      "shape": [
+        501,
+        100
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "role": "index",
+      "shape": [
+        1000000
+      ],
+      "dtype": "torch.int64"
+    },
+    {
+      "role": "values",
+      "shape": [
+        1000000,
+        100
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "9afce76396db88a0a42b95596b23a711eb1428acf56ad2b6b32ae5a6580b36c4",
+  "source_files": {
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/reduced_atomic_contention.py": "769bac44156cfb24243b18cc319a533e826cada062098b83792df11048aeebdb",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/post_grad.py": "0793616f6e7d3612a4a935412b380571b47f5fb7d15042c8cdbcfc0b88271431",
+    "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/config.py": "3c6231bda15c29d848f130f1a6d6c973ff6df2b957a51e867ac58840d45713c7",
+    "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/runtime_estimation.py": "bc14cc51bcf48f6f11dede29960e1fd75c9e03ba23ad32f8d5c373e567944d35",
+    "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py": "5fda1b22727822d4ec6e4f95f7fec8bf1b5c979b38dfe4f894f35d4927401636"
+  },
+  "arms": {
+    "off": {
+      "pids": [
+        3350589
+      ],
+      "observations": [
+        {
+          "pass_calls": 0,
+          "memory_probe_calls": 0,
+          "memory_state": [],
+          "partitioned_scatter_applied": 0,
+          "negative_accumulate_false_applied": 0
+        }
+      ],
+      "evidence": [
+        "off/rank-0/worker_result.json"
+      ]
+    },
+    "on": {
+      "pids": [
+        3384286
+      ],
+      "observations": [
+        {
+          "pass_calls": 2,
+          "memory_probe_calls": 1,
+          "memory_state": [
+            {
+              "total_device_bytes": 65452113920,
+              "non_model_floor_bytes": 1500000000,
+              "allowed_peak_bytes": 63952113920,
+              "profiled_nodes": 3
+            }
+          ],
+          "partitioned_scatter_applied": 3,
+          "negative_accumulate_false_applied": 0
+        }
+      ],
+      "evidence": [
+        "on/rank-0/worker_result.json"
+      ]
+    }
+  },
+  "generated_at": "2026-09-10T05:47:23.455666+08:00",
+  "source_run_dir": "/home/z50063656/tmp/t085-performance-results/functional-partitioned-scatter-20260910T054442-vb4ys8_j",
+  "artifact_inventory": [
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/off/fx_graph_readable.py",
+      "sha256": "70007c271b453d724e54f675990690a90bbc635525d858229ab5a1e1c4ae2a0d",
+      "bytes": 1176
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/off/fx_graph_transformed.py",
+      "sha256": "70007c271b453d724e54f675990690a90bbc635525d858229ab5a1e1c4ae2a0d",
+      "bytes": 1176
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/off/ir_post_fusion.txt",
+      "sha256": "263dc17e1c328f3db93b896a282a25934c4995ffd19dafc7346aee00731b3e62",
+      "bytes": 4821
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/off/ir_pre_fusion.txt",
+      "sha256": "6e2da1a9fb9d1136f96a45fc4db45a7ea071918415118bd7094400b8d05d162d",
+      "bytes": 4971
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/off/output_code.py",
+      "sha256": "3927babcba4efd23b1add883e29f1d177e41ad8f6b294de7469d530b7010c9ae",
+      "bytes": 8887
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/on/fx_graph_readable.py",
+      "sha256": "70007c271b453d724e54f675990690a90bbc635525d858229ab5a1e1c4ae2a0d",
+      "bytes": 1176
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/on/fx_graph_transformed.py",
+      "sha256": "d3056eda2268e9075da53d84a6b446bf189d946f066aa530d68891e0c298def9",
+      "bytes": 4654
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/on/ir_post_fusion.txt",
+      "sha256": "486c12de9302649277be1cab3b6d4bacc3ceecc2d8c1dd90e27d9a3fe62e5047",
+      "bytes": 23227
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/on/ir_pre_fusion.txt",
+      "sha256": "5877ace1e8fa75502e78b7edd4939ea19d7bd6a9d3ba2a003e781e1c22e39797",
+      "bytes": 20960
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/on/output_code.py",
+      "sha256": "44160d24a4158a384a13aea54e90cbf62d9a5b135336589e0fe6a8b298d4c74a",
+      "bytes": 23349
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/on/target-0-before.txt",
+      "sha256": "4c2be703583deaa83fd06c74d14669c193582cb4febb8b6a445318ba59a05370",
+      "bytes": 428
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/on/target-1-before.txt",
+      "sha256": "f8ef828e174eadec648ac4a50be34253dfaa8ae09abc36b1195ddf159ca1dd52",
+      "bytes": 183
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/on/target-0-after.txt",
+      "sha256": "2c73020a2a49780c911e4fdd98e0050cb172e55b7e988344f0451401a104077e",
+      "bytes": 3387
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/partitioned-scatter/on/target-1-after.txt",
+      "sha256": "f8ef828e174eadec648ac4a50be34253dfaa8ae09abc36b1195ddf159ca1dd52",
+      "bytes": 183
+    }
+  ],
+  "reviewed_at": "2026-09-10T05:58:24.260147+08:00",
+  "reviewer": "tracker-control-node"
+}

@@ -1,0 +1,259 @@
+op0: ExternKernelSchedulerNode(FallbackKernel)
+op0.writes = [StarDep(name='buf0', mode=None)]
+op0.unmet_dependencies = []
+op0.met_dependencies = [StarDep(name='arg0_1', mode=None)]
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: FallbackKernel
+    buf0.layout = FixedLayout('npu:0', torch.int64, size=[8], stride=[1])
+    buf0.users = [NodeUser(node=ExternKernelSchedulerNode(name='op1'), can_inplace=False, is_weak=False)]
+]
+op0.node.kernel = torch.ops._c10d_functional.all_to_all_single.default
+
+
+op1: ExternKernelSchedulerNode(FallbackKernel)
+op1.writes = [StarDep(name='buf1', mode=None)]
+op1.unmet_dependencies = [StarDep(name='buf0', mode=None)]
+op1.met_dependencies = []
+op1.min_input_distance = 1
+op1.max_input_distance = 1
+op1.outputs = [
+    buf1: FallbackKernel
+    buf1.layout = FixedLayout('npu:0', torch.int64, size=[8], stride=[1])
+    buf1.users = [NodeUser(node=ExternKernelSchedulerNode(name='op2'), can_inplace=False, is_weak=False)]
+]
+op1.node.kernel = torch.ops._c10d_functional.wait_tensor.default
+
+
+op2: ExternKernelSchedulerNode(FallbackKernel)
+op2.writes = [StarDep(name='buf2', mode=None)]
+op2.unmet_dependencies = [StarDep(name='buf1', mode=None)]
+op2.met_dependencies = []
+op2.min_input_distance = 2
+op2.max_input_distance = 2
+op2.outputs = [
+    buf2: FallbackKernel
+    buf2.layout = FixedLayout('npu:0', torch.int64, size=[2], stride=[1])
+    buf2.users = [NodeUser(node=ExternKernelSchedulerNode(name='op3'), can_inplace=False, is_weak=False)]
+]
+op2.node.kernel = torch.ops.aten.sum.dim_IntList
+
+
+op3: ExternKernelSchedulerNode(DeviceCopy)
+op3.writes = [StarDep(name='buf3', mode=None)]
+op3.unmet_dependencies = [StarDep(name='buf2', mode=None)]
+op3.met_dependencies = []
+op3.min_input_distance = 3
+op3.max_input_distance = 3
+op3.outputs = [
+    buf3: DeviceCopy
+    buf3.layout = FixedLayout('cpu', torch.int64, size=[2], stride=[1])
+    buf3.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op4'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op7'), can_inplace=False, is_weak=False),
+    ]
+]
+op3.node.kernel = None
+
+
+op4: ExternKernelSchedulerNode(FallbackKernel)
+op4.writes = [StarDep(name='buf4', mode=None)]
+op4.unmet_dependencies = [StarDep(name='buf3', mode=None)]
+op4.met_dependencies = []
+op4.min_input_distance = 4
+op4.max_input_distance = 4
+op4.outputs = [
+    buf4: FallbackKernel
+    buf4.layout = MultiOutputLayout(device=device(type='cpu'))
+    buf4.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op5'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op6'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op14'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op15'), can_inplace=False, is_weak=False),
+        NodeUser(node=OUTPUT, can_inplace=False, is_weak=False),
+    ]
+]
+op4.node.kernel = torch.ops.aten._local_scalar_dense.default
+
+
+op5: ExternKernelSchedulerNode(AssertScalar)
+op5.writes = [StarDep(name='buf5', mode=None)]
+op5.unmet_dependencies = [StarDep(name='buf4', mode=None)]
+op5.met_dependencies = []
+op5.min_input_distance = 5
+op5.max_input_distance = 5
+op5.outputs = [
+    buf5: AssertScalar
+    buf5.layout = NoneLayout(device=device(type='cpu'), size=[0], stride=[0])
+    buf5.users = []
+]
+op5.node.kernel = None
+
+
+op6: ExternKernelSchedulerNode(AssertScalar)
+op6.writes = [StarDep(name='buf6', mode=None)]
+op6.unmet_dependencies = [StarDep(name='buf4', mode=None)]
+op6.met_dependencies = []
+op6.min_input_distance = 5
+op6.max_input_distance = 5
+op6.outputs = [
+    buf6: AssertScalar
+    buf6.layout = NoneLayout(device=device(type='cpu'), size=[0], stride=[0])
+    buf6.users = []
+]
+op6.node.kernel = None
+
+
+op7: ExternKernelSchedulerNode(FallbackKernel)
+op7.writes = [StarDep(name='buf7', mode=None)]
+op7.unmet_dependencies = [StarDep(name='buf3', mode=None)]
+op7.met_dependencies = []
+op7.min_input_distance = 4
+op7.max_input_distance = 4
+op7.outputs = [
+    buf7: FallbackKernel
+    buf7.layout = MultiOutputLayout(device=device(type='cpu'))
+    buf7.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op8'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op9'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op14'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op15'), can_inplace=False, is_weak=False),
+        NodeUser(node=OUTPUT, can_inplace=False, is_weak=False),
+    ]
+]
+op7.node.kernel = torch.ops.aten._local_scalar_dense.default
+
+
+op8: ExternKernelSchedulerNode(AssertScalar)
+op8.writes = [StarDep(name='buf8', mode=None)]
+op8.unmet_dependencies = [StarDep(name='buf7', mode=None)]
+op8.met_dependencies = []
+op8.min_input_distance = 5
+op8.max_input_distance = 5
+op8.outputs = [
+    buf8: AssertScalar
+    buf8.layout = NoneLayout(device=device(type='cpu'), size=[0], stride=[0])
+    buf8.users = []
+]
+op8.node.kernel = None
+
+
+op9: ExternKernelSchedulerNode(AssertScalar)
+op9.writes = [StarDep(name='buf9', mode=None)]
+op9.unmet_dependencies = [StarDep(name='buf7', mode=None)]
+op9.met_dependencies = []
+op9.min_input_distance = 5
+op9.max_input_distance = 5
+op9.outputs = [
+    buf9: AssertScalar
+    buf9.layout = NoneLayout(device=device(type='cpu'), size=[0], stride=[0])
+    buf9.users = []
+]
+op9.node.kernel = None
+
+
+op10: ExternKernelSchedulerNode(FallbackKernel)
+op10.writes = [StarDep(name='buf10', mode=None)]
+op10.unmet_dependencies = []
+op10.met_dependencies = [StarDep(name='arg0_1', mode=None)]
+op10.min_input_distance = 0
+op10.max_input_distance = 0
+op10.outputs = [
+    buf10: FallbackKernel
+    buf10.layout = FixedLayout('npu:0', torch.int64, size=[2], stride=[1])
+    buf10.users = [NodeUser(node=ExternKernelSchedulerNode(name='op11'), can_inplace=False, is_weak=False)]
+]
+op10.node.kernel = torch.ops.aten.sum.dim_IntList
+
+
+op11: ExternKernelSchedulerNode(DeviceCopy)
+op11.writes = [StarDep(name='buf11', mode=None)]
+op11.unmet_dependencies = [StarDep(name='buf10', mode=None)]
+op11.met_dependencies = []
+op11.min_input_distance = 1
+op11.max_input_distance = 1
+op11.outputs = [
+    buf11: DeviceCopy
+    buf11.layout = FixedLayout('cpu', torch.int64, size=[2], stride=[1])
+    buf11.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op12'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op13'), can_inplace=False, is_weak=False),
+    ]
+]
+op11.node.kernel = None
+
+
+op12: ExternKernelSchedulerNode(FallbackKernel)
+op12.writes = [StarDep(name='buf12', mode=None)]
+op12.unmet_dependencies = [StarDep(name='buf11', mode=None)]
+op12.met_dependencies = []
+op12.min_input_distance = 2
+op12.max_input_distance = 2
+op12.outputs = [
+    buf12: FallbackKernel
+    buf12.layout = MultiOutputLayout(device=device(type='cpu'))
+    buf12.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op14'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op15'), can_inplace=False, is_weak=False),
+        NodeUser(node=OUTPUT, can_inplace=False, is_weak=False),
+    ]
+]
+op12.node.kernel = torch.ops.aten._local_scalar_dense.default
+
+
+op13: ExternKernelSchedulerNode(FallbackKernel)
+op13.writes = [StarDep(name='buf13', mode=None)]
+op13.unmet_dependencies = [StarDep(name='buf11', mode=None)]
+op13.met_dependencies = []
+op13.min_input_distance = 2
+op13.max_input_distance = 2
+op13.outputs = [
+    buf13: FallbackKernel
+    buf13.layout = MultiOutputLayout(device=device(type='cpu'))
+    buf13.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op14'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op15'), can_inplace=False, is_weak=False),
+        NodeUser(node=OUTPUT, can_inplace=False, is_weak=False),
+    ]
+]
+op13.node.kernel = torch.ops.aten._local_scalar_dense.default
+
+
+op14: ExternKernelSchedulerNode(FallbackKernel)
+op14.writes = [StarDep(name='buf14', mode=None)]
+op14.unmet_dependencies = 
+    [   StarDep(name='buf12', mode=None),
+        StarDep(name='buf13', mode=None),
+        StarDep(name='buf4', mode=None),
+        StarDep(name='buf7', mode=None)]
+op14.met_dependencies = [StarDep(name='arg1_1', mode=None)]
+op14.min_input_distance = 3
+op14.max_input_distance = 5
+op14.outputs = [
+    buf14: FallbackKernel
+    buf14.layout = FixedLayout('npu:0', torch.float32, size=[u0 + u1, 128], stride=[128, 1])
+    buf14.users = [NodeUser(node=ExternKernelSchedulerNode(name='op15'), can_inplace=False, is_weak=False)]
+]
+op14.node.kernel = torch.ops._c10d_functional.all_to_all_single.default
+
+
+op15: ExternKernelSchedulerNode(FallbackKernel)
+op15.writes = [StarDep(name='buf15', mode=None)]
+op15.unmet_dependencies = 
+    [   StarDep(name='buf12', mode=None),
+        StarDep(name='buf13', mode=None),
+        StarDep(name='buf14', mode=None),
+        StarDep(name='buf4', mode=None),
+        StarDep(name='buf7', mode=None)]
+op15.met_dependencies = []
+op15.min_input_distance = 3
+op15.max_input_distance = 6
+op15.outputs = [
+    buf15: FallbackKernel
+    buf15.layout = FixedLayout('npu:0', torch.float32, size=[u0 + u1, 128], stride=[128, 1])
+    buf15.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op15.node.kernel = torch.ops._c10d_functional.wait_tensor.default
+
+

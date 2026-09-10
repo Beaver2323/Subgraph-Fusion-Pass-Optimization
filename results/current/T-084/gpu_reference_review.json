@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-084",
+  "generated_at": "2026-09-10T04:20:00+08:00",
+  "review_status": "accepted-single-rank-reference-only",
+  "source_handoff": "results/incoming/T-084/text-handoff.json",
+  "source_handoff_sha256": "b7cdc8eb324ef2feccee4e96c7720df3ff6611f871d90d0d29f8ed3cf5f81441",
+  "run_id": "reference-20260909T193634+0800-_ghbanb2",
+  "payload_sha256": "063f4476bbad4372d7116dc0f8744be4c7d9da8b4ecc229f4ae8976b88791cdb",
+  "environment_fingerprint": "3d5bc880dd891596ea6299a26083ee68255deee72b98b2b0fd77e678dcb26e97",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "backend": "inductor-default",
+  "device": "NVIDIA A100-SXM4-80GB sm80",
+  "distributed_world_size": 1,
+  "acceptance_units": [
+    "AU-post-grad-dedup-reduce-scatters"
+  ],
+  "suite": {
+    "cases": 1,
+    "valid_cases": 1,
+    "variants": 1,
+    "tests_ran": 1,
+    "tests_skipped": 0,
+    "expected_failures": 0,
+    "adapters_used": 0
+  },
+  "observations": {
+    "before_reduce_scatter_count": 2,
+    "after_reduce_scatter_count": 1,
+    "compiled_eager_correctness": "passed",
+    "fx_before_signature": "f933b1858fffb3f88bc8d6007186a9bed85c3802cbcde14ce7938832e73682f1",
+    "fx_after_signature": "5782af705acc73cd4761def4ee0459d0e991d973b30a88b79eca7fcec27c2290"
+  },
+  "evidence_scope": {
+    "real_cuda_nccl": true,
+    "single_rank_numerical_proven": true,
+    "cross_rank_numerical_proven": false,
+    "cross_rank_performance_allowed": false
+  },
+  "review_notes": [
+    "原生社区测试直接执行，无adapter、skip、xfail或缺例。",
+    "FX由两个avg reduce-scatter变为输入先add后一次reduce-scatter/wait。",
+    "world_size=1只能冻结功能和结构合同，不能证明跨rank语义或通信收益。"
+  ],
+  "next_action": "在triton_experimental下使用真实HCCL两rank验证数值、2到1改写和零graph break/fallback；通过后才签性能门禁。"
+}

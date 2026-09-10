@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
+  "unit": "partitioned-scatter",
+  "generated_at": "2026-09-10T07:33:34+08:00",
+  "source_functional": {
+    "path": "../functional/partitioned-scatter.json",
+    "sha256": "2e816ea9d1590a2667c882da81053e6fa784e59cd9140aca748406761e2dab0f"
+  },
+  "community_alignment": {
+    "status": "PARTIALLY_ALIGNED",
+    "aligned_scope": [
+      "三个高争用scatter改写",
+      "accumulate=False负例",
+      "社区benchmark输入合同"
+    ],
+    "divergent_scope": [
+      "社区默认只为HIP开启，NPU能力验证需独立启用",
+      "NPU六臂性能回退"
+    ],
+    "open_scope": [],
+    "disposition": "能力路径正确但不改变默认关闭；NPU显存探针替换CUDA专用探针。"
+  }
+}

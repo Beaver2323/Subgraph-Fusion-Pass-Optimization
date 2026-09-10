@@ -1,11 +1,26 @@
 # T-085 功能与性能测例讲解
 
-> 更新时间：2026-09-09 00:43:01 CST（UTC+08:00）
-> 状态：零设备准备完成，等待真实 GPU 原生执行；没有 GPU/NPU 通过结论。
+> 更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
+> 状态：3/3 单元正式闭环；GPU 5/5 cases、NPU `triton_experimental` 功能与六臂性能均完成。
 
 T-085 从 5 个 provisional 候选中选出 3 个可执行合同。冻结 PyTorch commit 为
-`8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`。GPU 先运行完整社区原生方法；NPU 后续必须在导入
-`torch`/`torch_npu` 前选择 `triton_experimental`，并用新进程隔离 OFF/ON。本文所有“预期”都不是实测结论。
+`8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`。GPU 先运行完整社区原生方法；NPU 本轮已在导入
+`torch`/`torch_npu` 前选择 `triton_experimental`，并用新进程隔离 OFF/ON。GPU实际行为见
+[复核报告](../report/t078_t084_t086_gpu_reference_review_20260910.md)。NPU 实测、问题调用链、最小适配、
+产品 gate 和性能原件见
+[T-084～T-086 NPU 闭环报告](../report/t084_t086_npu_function_performance_and_fix_20260910.md)。
+
+## 实测闭环结论
+
+| 单元 | NPU 功能 | 六臂性能 | 最终处置 |
+| --- | --- | --- | --- |
+| overlap device_put | 真实两 rank HCCL；异步转同步，数值正确 | Event p50 `+2.38%`，但 OFF/ON 轮间 spread `3.04×/2.51×` | `PERF_MIXED`；保留安全改写，不声明收益 |
+| partitioned scatter | 社区百万行 benchmark shape；3 次改写，真实 NPU 显存门禁，负例不命中 | Event p50/p99 `-7.68%/-7.10%`，峰值显存增加 | `PERF_REGRESSED`；保持默认关闭 |
+| pointless cumsum | 候选开启时命中且正确 | Event p50/p99 `-90.83%/-93.33%`，1 个 Triton 核+原生 cumsum 变成 2 个 Triton 核 | `PERF_REGRESSED`；增加 NPU 专属默认关闭 gate，真机复验 handler=0、原生 cumsum=1 |
+
+这里“部分对齐”是显式结论：候选开启时功能合同与 CUDA 社区一致，但 NPU 的盈利性不同，故产品
+默认行为有意分歧。性能测量发生在产品 gate 加入前；gate 加入后的真实设备验证只证明默认关闭生效，
+不会反过来改写原六臂数据。
 
 ## GPU 一键执行
 
@@ -97,9 +112,8 @@ routed_output = all_to_all_single(
 )
 ```
 
-GPU 预期：真实 2-rank NCCL、至少一个异步 `device_put` 被改为同步、数值相等。NPU 尚未实测；原生方法
-硬编码 `torch.cuda`/NCCL，必须先留下原生阻断，再评审只替换设备和 PG 为 NPU/HCCL 的最小适配，后端仍是
-`triton_experimental`。
+GPU 实测为真实 2-rank NCCL、至少一个异步 `device_put` 被改为同步、数值相等。NPU 已以只替换
+设备/PG和带宽来源的最小适配在真实2-rank HCCL完成同一合同，后端为`triton_experimental`。
 
 ### 性能测例
 
@@ -137,8 +151,8 @@ def partitioned_scatter_optimization_pass(graph):
 - `test_skip_accumulate_false`：`accumulate=False` 不命中，bitwise 相等；
 - `test_pass_disabled`：显式 OFF 时不命中，结果仍正确。
 
-GPU 预期只证明社区主动开启后的功能正确性。NPU 尚未实测；由于默认配置是“HIP 开、其他后端关”，这对 NPU
-属于 generic guard 省略而不是已经批准的 NPU 产品开启，需先完成 `triton_experimental` capability review。
+GPU 实测只证明社区主动开启后的功能正确性。NPU 已完成`triton_experimental` capability review：
+真实NPU显存门禁和三个改写均有效，但性能回退，因此仍保持默认关闭。
 
 ### 性能测例
 
@@ -181,8 +195,8 @@ def pointless_cumsum_replacement(match, shape, fill_value, device, dtype, dim):
 当 `HAS_GPU` 时文件末尾将默认设备设为 `GPU_TYPE`，所以这些无显式 device 的构造器仍在真实 GPU 上执行。
 每个分支都要求 generated code 不含 `aten.cumsum`、结果与原函数相等、pattern count 至少为 1。
 
-GPU 和 NPU 当前都尚未运行。NPU 必须确认目标 handler 而不能只用全局 `pattern_matcher_count`；后端固定
-`triton_experimental`。
+GPU 11个分支和NPU测试态ON均已运行。NPU以目标handler调用数确认命中，而不是只看全局
+`pattern_matcher_count`；产品默认gate另用真机确认handler不再调用且保留原生cumsum。
 
 ### 性能测例
 

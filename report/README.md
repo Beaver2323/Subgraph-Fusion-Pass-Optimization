@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-09 18:05:53 CST（UTC+08:00）
+> 索引更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -8,7 +8,9 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
-| [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 从活动 manifest、current results 与性能数据生成的逐 acceptance-unit 状态入口 | 28行GPU reference、NPU/comparison与性能处置均完成；历史再认证另见审计；NPU backend为`triton_experimental` |
+| [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 从活动 manifest、current results 与性能数据生成的逐 acceptance-unit 状态入口 | 33行均有GPU、NPU与性能处置；T-078另有1个扩展variant待GPU；NPU backend固定为`triton_experimental` |
+| [T-084～T-086 NPU功能/性能/修复闭环](t084_t086_npu_function_performance_and_fix_20260910.md) | 五个pattern的源码意图、GPU/NPU对照、调用栈、最小适配、FX/IR/codegen及六臂性能 | 1/3/1单元闭环；1改善、2回退、2混合；pointless-cumsum已产品gate |
+| [T-085 cumsum产品门禁](../issues/REF-pointless-cumsum-native/性能回退与产品门禁报告.md) / [overlap适配](../issues/REF-overlap-device-put-sync-native/NPU最小适配报告.md) / [partitioned-scatter适配](../issues/REF-partitioned-scatter-positive-native/NPU最小适配与性能报告.md) | 对应issue内的真实问题、调用链、最小改动及修复前后FX/IR/output_code入口 | cumsum保存前后原件；两个能力适配链接canonical证据，避免重复大文件 |
 | [t076_t077_history_reaudit_20260907.md](t076_t077_history_reaudit_20260907.md) | 当前逐项核验、源码 oracle 边界、历史性能复算与轻量日志补证命令 | 24 GPU 关键正文/19 NPU 原件/4 性能汇总已核验；严格总门禁仍 pending，原始 verdict 不改写 |
 | [t076_t077_history_reaudit_20260906.md](t076_t077_history_reaudit_20260906.md) | 历史再认证规则与统一检查入口的初版说明 | 最新缺口与命令以上一行为准 |
 | [tracker_validation_hardening_20260906.md](tracker_validation_hardening_20260906.md) | 验收校验、失败落盘与 latest 一致性修复 | 零设备回归；不重写既有 GPU/NPU 实测结果 |
@@ -34,7 +36,8 @@
 | [T-081～T-083 GPU复核](t081_t083_gpu_reference_review_20260908.md) | 新三批11 cases/24 variants的输入校验、FX行为、证据范围与观察器最小修复 | 7个单元GPU分母已冻结；该报告的GPU时点边界保留 |
 | [T-081～T-083 NPU/性能闭环](t081_t083_npu_function_performance_20260908.md) | 7单元源码、调用栈、GPU/NPU行为、真实问题、最小适配和六臂性能 | NPU功能7/7、性能处置7/7；T-083为真实HCCL双rank |
 | [T-081 测例 guide](../docs/T081_FUNCTION_PERFORMANCE_GUIDE.md) / [T-082](../docs/T082_FUNCTION_PERFORMANCE_GUIDE.md) / [T-083](../docs/T083_FUNCTION_PERFORMANCE_GUIDE.md) | 新三批2/2/3单元的源码、实际GPU/NPU行为、功能/性能测例 | 7个单元全部完成正式处置 |
-| [T-084 测例 guide](../docs/T084_FUNCTION_PERFORMANCE_GUIDE.md) / [T-085](../docs/T085_FUNCTION_PERFORMANCE_GUIDE.md) / [T-086](../docs/T086_FUNCTION_PERFORMANCE_GUIDE.md) | 5个GPU-ready单元的源码合同、功能/性能来源、OFF/ON和延期理由 | 零设备准备完成，GPU/NPU均未运行 |
+| [T-078 邻接补证与 T-084～T-086 GPU复核](t078_t084_t086_gpu_reference_review_20260910.md) | handoff完整性、`device_execution=false`边界、逐单元FX行为与真实单/双卡范围 | T-084～T-086共8/8 cases、11/11 variants、5单元GPU分母冻结；T-078误命名包不关闭FP16 value=1缺口 |
+| [T-084 测例 guide](../docs/T084_FUNCTION_PERFORMANCE_GUIDE.md) / [T-085](../docs/T085_FUNCTION_PERFORMANCE_GUIDE.md) / [T-086](../docs/T086_FUNCTION_PERFORMANCE_GUIDE.md) | 5个单元的源码合同、功能/性能来源、OFF/ON和延期理由 | GPU/NPU功能与性能处置已完成 |
 | [REF-mm-plus-mm-native NPU 复现报告](../issues/REF-mm-plus-mm-native/复现报告.md) | 原生直接 `NO_TESTS`、最小 adapter、4/4 NPU 目标合同和 graph-mode 证据 | 统一 comparison 已落盘；`BEHAVIOR_UNCHANGED` |
 | [REF-pad-mm-dynamic-m-native NPU 复现报告](../issues/REF-pad-mm-dynamic-m-native/复现报告.md) | 原生 `NO_TESTS`、TRITON-only lowering 阻断、产品 gate baseline | 归属单元已正式闭环 |
 | [t076_gpu_reference_20260901.md](t076_gpu_reference_20260901.md) | 13/13 GPU direct valid、环境、哈希与 1.3 FX 正文复核 | reference 已冻结；80 份关键正文可恢复，完整大 artifacts 保留在 GPU |

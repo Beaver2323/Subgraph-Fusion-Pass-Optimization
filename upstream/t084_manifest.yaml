@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-09T00:34:29+08:00",
-  "status": "prepared-awaiting-gpu-reference",
+  "generated_at": "2026-09-10T06:55:00+08:00",
+  "status": "formally-closed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -28,13 +28,14 @@
     "minimum_gpus": 1,
     "distributed_world_size": 1,
     "scope": "world_size=1直接CUDA/NCCL功能与codegen基线；不证明跨rank通信收益",
-    "device_identity": "pending-native-GPU-reference",
-    "runtime_fingerprint": "pending-native-GPU-reference"
+    "suite_status": "valid-reference-suite",
+    "device_identity": "NVIDIA A100-SXM4-80GB sm80",
+    "runtime_fingerprint": "3d5bc880dd891596ea6299a26083ee68255deee72b98b2b0fd77e678dcb26e97"
   },
   "counting_policy": {
     "current_manifest_units": 1,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0,
+    "current_frozen_denominator_units": 1,
+    "current_formally_closed_units": 1,
     "denominator_rule": "只有直接GPU社区合同有效、无skip且FX证据可复核后冻结；无合法目标OFF的必需结构分解暂不进入本批分母"
   },
   "acceptance_units": [
@@ -42,8 +43,9 @@
       "acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
       "contract_name": "post-grad线性reduce-scatter去重",
       "stage": "post_grad",
-      "review_status": "mapped-static-await-gpu-reference",
-      "denominator_eligible": "pending-reference",
+      "review_status": "formally-closed",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/post_grad.py",
@@ -72,13 +74,13 @@
           "expected_reference_match": true,
           "expected_behavior": "两个相同group_size/group_name/reduce_op/dtype且wait结果只被add使用的avg reduce-scatter合并为一次",
           "expected_counter": "生成代码reduce_scatter_tensor.default恰为1；FX应呈现输入先add再reduce-scatter/wait",
-          "reference_status": "pending-native-gpu",
+          "reference_status": "valid-reference",
           "npu_status": "pending-triton-experimental"
         }
       ],
       "tracking": {
         "reference_mode": "direct",
-        "npu_mode": "adapter",
+        "npu_mode": "triton-experimental-real-two-rank-hccl-adapter",
         "adapter_reason": "社区TestCollectivesInductor固定CUDA/NCCL；NPU必须保留原函数、shape、avg语义和2→1合同，仅替换设备/真实进程组并显式选择triton_experimental",
         "allowed_local_deviation": [
           "GPU只读采集FX与原生TORCH_COMPILE_DEBUG，不改社区测试体",
@@ -95,8 +97,8 @@
         "config": "torch._inductor.config.dedup_reduce_scatters",
         "off": false,
         "on": true,
-        "status": "awaiting-real-device-validation",
-        "next_action": "GPU reference冻结后，在triton_experimental真实HCCL两rank验证2→1、数值、无graph break/fallback，再签性能gate"
+        "status": "validated-and-beneficial",
+        "next_action": "保留现状；持续监控更大FSDP拓扑，不把本次目标级结果外推为完整训练收益"
       },
       "historical_evidence": [
         "test/distributed/test_inductor_collectives.py::TestDedupReduceScatter包含2/4路正例及不同group、非线性reduce_op、多用户、不同dtype负例；使用Fake PG与手工FX，仅作结构补证，不计GPU动态通过"

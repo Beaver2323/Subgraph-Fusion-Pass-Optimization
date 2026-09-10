@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "acceptance_unit_id": "AU-post-grad-overlap-scheduling-device-put-sync",
+  "unit": "overlap-device-put",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "overlap-device-put-community-shape",
+  "world_size": 2,
+  "process_group_backend": "hccl",
+  "input_spec": [
+    {
+      "role": "num_tokens_per_expert",
+      "shape": [
+        8
+      ],
+      "dtype": "torch.int64"
+    },
+    {
+      "role": "routed_input",
+      "shape": [
+        1024,
+        128
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "9afce76396db88a0a42b95596b23a711eb1428acf56ad2b6b32ae5a6580b36c4",
+  "source_files": {
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/reduced_atomic_contention.py": "769bac44156cfb24243b18cc319a533e826cada062098b83792df11048aeebdb",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/post_grad.py": "0793616f6e7d3612a4a935412b380571b47f5fb7d15042c8cdbcfc0b88271431",
+    "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/config.py": "3c6231bda15c29d848f130f1a6d6c973ff6df2b957a51e867ac58840d45713c7",
+    "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/runtime_estimation.py": "bc14cc51bcf48f6f11dede29960e1fd75c9e03ba23ad32f8d5c373e567944d35",
+    "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py": "5fda1b22727822d4ec6e4f95f7fec8bf1b5c979b38dfe4f894f35d4927401636",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/overlap_scheduling.py": "8ce68e3e2fbe716c12da67655a6aec7d4d07eb7c4582b39b5459f9679c74c637"
+  },
+  "arms": {
+    "off": {
+      "pids": [
+        3483820,
+        3483827
+      ],
+      "observations": [
+        {
+          "scheduler_calls": 0,
+          "converted_device_puts": 0
+        },
+        {
+          "scheduler_calls": 0,
+          "converted_device_puts": 0
+        }
+      ],
+      "evidence": [
+        "off/rank-0/worker_result.json",
+        "off/rank-1/worker_result.json"
+      ]
+    },
+    "on": {
+      "pids": [
+        3538683,
+        3538684
+      ],
+      "observations": [
+        {
+          "scheduler_calls": 1,
+          "converted_device_puts": 1
+        },
+        {
+          "scheduler_calls": 1,
+          "converted_device_puts": 1
+        }
+      ],
+      "evidence": [
+        "on/rank-0/worker_result.json",
+        "on/rank-1/worker_result.json"
+      ]
+    }
+  },
+  "generated_at": "2026-09-10T05:52:48.476254+08:00",
+  "source_run_dir": "/home/z50063656/tmp/t085-performance-results/functional-overlap-device-put-20260910T055019-ff624cz9",
+  "artifact_inventory": [
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/off/fx_graph_readable.py",
+      "sha256": "dbce53381c33c9acd70c3472e37bcadcb1d6683b1f4a9c9a0bb1d6bc0ffd2144",
+      "bytes": 4465
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/off/fx_graph_transformed.py",
+      "sha256": "1dd371b3d9bf87efa32a047b1690d53911c9efa325d7f7d9a9c017fccac904a9",
+      "bytes": 4471
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/off/ir_post_fusion.txt",
+      "sha256": "5b4a74696d9bca94f88d84fcb61b75c297131150a77ea02eb0575e7976d7e64b",
+      "bytes": 9435
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/off/ir_pre_fusion.txt",
+      "sha256": "5b4a74696d9bca94f88d84fcb61b75c297131150a77ea02eb0575e7976d7e64b",
+      "bytes": 9435
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/off/output_code.py",
+      "sha256": "23cd55581a9973702c5e3c0dd899ffece0b740caea008c21bfc3006cb979eebe",
+      "bytes": 7470
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/on/fx_graph_readable.py",
+      "sha256": "dbce53381c33c9acd70c3472e37bcadcb1d6683b1f4a9c9a0bb1d6bc0ffd2144",
+      "bytes": 4465
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/on/fx_graph_transformed.py",
+      "sha256": "4c9124a3eb43828d27d0a581e4249cddb1544cbd79807a97ca9bef43d942c8c1",
+      "bytes": 4472
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/on/ir_post_fusion.txt",
+      "sha256": "dd07a1258e79c15e759301ca69bc27658c0d6df3d33f7faae8b90f80144907bd",
+      "bytes": 9419
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/on/ir_pre_fusion.txt",
+      "sha256": "dd07a1258e79c15e759301ca69bc27658c0d6df3d33f7faae8b90f80144907bd",
+      "bytes": 9419
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/on/output_code.py",
+      "sha256": "86aaa5643e3de8de3ea6640092e95efdd606adfd555264dd10db82012b14f08d",
+      "bytes": 7350
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/on/target-0-before.txt",
+      "sha256": "45691f23726410d9cdbbe72965a462555745b9abcc72f41d88056347f7b81a05",
+      "bytes": 2278
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/overlap-device-put/on/target-0-after.txt",
+      "sha256": "45691f23726410d9cdbbe72965a462555745b9abcc72f41d88056347f7b81a05",
+      "bytes": 2278
+    }
+  ],
+  "reviewed_at": "2026-09-10T05:58:24.252878+08:00",
+  "reviewer": "tracker-control-node"
+}

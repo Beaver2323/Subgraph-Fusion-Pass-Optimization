@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-084",
+  "acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
+  "unit": "dedup-reduce-scatter",
+  "generated_at": "2026-09-10T07:33:34+08:00",
+  "source_functional": {
+    "path": "../functional/dedup-reduce-scatter.json",
+    "sha256": "261ee9bc35c98ea45545077e2a80080e8ae50f045b5dea6c1ee5c487da807a31"
+  },
+  "community_alignment": {
+    "status": "ALIGNED_WITH_ADAPTER",
+    "aligned_scope": [
+      "线性avg reduce-scatter从2次收敛为1次",
+      "两rank数值正确"
+    ],
+    "divergent_scope": [],
+    "open_scope": [
+      "GPU原生reference为单rank，NPU补充为真实两rankHCCL"
+    ],
+    "disposition": "设备/进程组作最小适配；合同与社区一致，性能只按NPU两rank实测判定。"
+  }
+}

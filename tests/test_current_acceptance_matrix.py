@@ -25,13 +25,24 @@ matrix = load_generator()
 class CurrentAcceptanceMatrixTests(unittest.TestCase):
     def test_current_units_and_task_boundaries(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(len(rows), 28)
+        self.assertEqual(len(rows), 33)
         self.assertEqual(
             Counter(row["task_id"] for row in rows),
-            Counter({"T-076": 5, "T-077": 5, "T-078": 4, "T-079": 4, "T-080": 3,
-                     "T-081": 2, "T-082": 2, "T-083": 3}),
+            Counter({
+                "T-076": 5,
+                "T-077": 5,
+                "T-078": 4,
+                "T-079": 4,
+                "T-080": 3,
+                "T-081": 2,
+                "T-082": 2,
+                "T-083": 3,
+                "T-084": 1,
+                "T-085": 3,
+                "T-086": 1,
+            }),
         )
-        self.assertEqual(len({row["acceptance_unit_id"] for row in rows}), 28)
+        self.assertEqual(len({row["acceptance_unit_id"] for row in rows}), 33)
 
     def test_npu_backend_never_inherits_reference_backend(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
@@ -48,9 +59,9 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
 
     def test_dynamic_and_pending_evidence_are_not_conflated(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 28)
+        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 33)
         self.assertEqual(
-            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 28
+            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 33
         )
         self.assertEqual(
             sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 0
@@ -61,6 +72,9 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
         self.assertEqual(
             sum(row["current_phase"] == "functional-comparison-closed" for row in rows),
             27,
+        )
+        self.assertEqual(
+            sum(row["current_phase"] == "formally-closed" for row in rows), 5
         )
         self.assertEqual(
             sum(
@@ -83,7 +97,20 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                 row["performance_evidence_path"].startswith("results/current/")
                 for row in rows
             ),
-            28,
+            33,
+        )
+
+    def test_t084_t086_bind_explicit_alignment_and_performance(self):
+        rows = matrix.build_rows("2026-09-10T06:55:00+08:00")
+        recent = [
+            row for row in rows if row["task_id"] in {"T-084", "T-085", "T-086"}
+        ]
+        self.assertEqual(len(recent), 5)
+        self.assertTrue(all(row["current_phase"] == "formally-closed" for row in recent))
+        self.assertTrue(all(row["community_alignment_source"] == "explicit" for row in recent))
+        self.assertEqual(
+            {row["performance_verdict"] for row in recent},
+            {"PERF_IMPROVED", "PERF_MIXED", "PERF_REGRESSED"},
         )
 
     def test_t078_addcdiv_lowp_value_one_fix_and_gpu_pending_are_visible(self):

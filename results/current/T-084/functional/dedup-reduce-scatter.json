@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-084",
+  "acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "dedup-reduce-scatter-community-shape",
+  "world_size": 2,
+  "process_group_backend": "hccl",
+  "input_spec": [
+    {
+      "shape": [
+        4,
+        128
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        4,
+        128
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "b27f5d799a088b621d04806f3d5ab2166f33d4a36a264e1b48e2987447d9d315",
+  "source_files": {
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/fsdp.py": "2bec7584c0fd89cd01b94be76603c34bf2d11f78b8b9ea203d0d3aa1fc9ef8b6",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/reduced_atomic_contention.py": "769bac44156cfb24243b18cc319a533e826cada062098b83792df11048aeebdb",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/reinplace.py": "c45e3fd1f9147e58a384e20c61cb6f91da521da4683563e6215a9f9cdb452847",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/post_grad.py": "0793616f6e7d3612a4a935412b380571b47f5fb7d15042c8cdbcfc0b88271431",
+    "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/config.py": "68ae6164377297481de5dcd3329dc4701f6005dfddb60c46aaac92850c9f763b",
+    "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/overrides.py": "8505acc5de573932dee7b7fb5e8db54b6d0969cb70a6277aa713e4a36a89fa3b"
+  },
+  "arms": {
+    "off": {
+      "pids": [
+        2418578,
+        2418579
+      ],
+      "observations": [
+        {
+          "handler_calls": 0,
+          "graph_changes": 0,
+          "collective_counts": [],
+          "post_grad_counts": [
+            2
+          ]
+        },
+        {
+          "handler_calls": 0,
+          "graph_changes": 0,
+          "collective_counts": [],
+          "post_grad_counts": [
+            2
+          ]
+        }
+      ],
+      "evidence": "off/functional_summary.json"
+    },
+    "on": {
+      "pids": [
+        2436686,
+        2436687
+      ],
+      "observations": [
+        {
+          "handler_calls": 1,
+          "graph_changes": 1,
+          "collective_counts": [
+            {
+              "before": 2,
+              "after": 1
+            }
+          ],
+          "post_grad_counts": [
+            1
+          ]
+        },
+        {
+          "handler_calls": 1,
+          "graph_changes": 1,
+          "collective_counts": [
+            {
+              "before": 2,
+              "after": 1
+            }
+          ],
+          "post_grad_counts": [
+            1
+          ]
+        }
+      ],
+      "evidence": "on/functional_summary.json"
+    }
+  },
+  "generated_at": "2026-09-10T05:58:24.233729+08:00",
+  "source_run_dir": "/home/z50063656/tmp/t084-functional-ZBlKx56U",
+  "artifact_inventory": [
+    {
+      "mode": "off",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/off/fx_graph_readable.py",
+      "sha256": "dc7f908bc175391bf5d7747da997dfdb621abb23fe581627943c2e479e9aec63",
+      "bytes": 1363
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/off/fx_graph_transformed.py",
+      "sha256": "dc7f908bc175391bf5d7747da997dfdb621abb23fe581627943c2e479e9aec63",
+      "bytes": 1363
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/off/ir_post_fusion.txt",
+      "sha256": "2ef7270877d9bf2db29a150c0d9b692a481bd3f79cc0195b6f41f376b8e48c5c",
+      "bytes": 3361
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/off/ir_pre_fusion.txt",
+      "sha256": "00b4e5a221456ac56ca241c28aeac62dc1c654a8a8443089501e6e64f4fd08f3",
+      "bytes": 3443
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/off/output_code.py",
+      "sha256": "cca57a43560c533b18e7dc4c735e0ac2122cde219aa54eea8def7c7da5641774",
+      "bytes": 9235
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/off/post-grad-final.txt",
+      "sha256": "d247a7fb10cdc8cd985ad885d5f5718d9558ef745ac115103c594209d53cdc0b",
+      "bytes": 655
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/on/fx_graph_readable.py",
+      "sha256": "dc7f908bc175391bf5d7747da997dfdb621abb23fe581627943c2e479e9aec63",
+      "bytes": 1363
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/on/fx_graph_transformed.py",
+      "sha256": "60090d7617b5f06610f6e4909d626dfb95d9e563443ce9e618f151f3c1d71ced",
+      "bytes": 794
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/on/ir_post_fusion.txt",
+      "sha256": "25ad5da82012c0f9590bb64152204950ebb7b9e4ae52240e635af10ede833507",
+      "bytes": 2315
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/on/ir_pre_fusion.txt",
+      "sha256": "96d025ce706122259d84830787eb8ff5ee43969e93d8fafd34152ad6f1756056",
+      "bytes": 2397
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/on/output_code.py",
+      "sha256": "40903b2888774f16849549920776afbd7eb7a9b55585406152998b051b3473e6",
+      "bytes": 8848
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-084/functional/artifacts/dedup-reduce-scatter/on/post-grad-final.txt",
+      "sha256": "7bc5e14ec8545209ded29451624f5a18a2ede0731a4c986b640309d40cada43d",
+      "bytes": 443
+    }
+  ],
+  "reviewed_at": "2026-09-10T05:58:24.240133+08:00",
+  "reviewer": "tracker-control-node"
+}

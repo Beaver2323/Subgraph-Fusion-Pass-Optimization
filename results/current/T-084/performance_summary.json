@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T06:45:04.545967+08:00",
+  "task_id": "T-084",
+  "status": "performance-disposition-complete",
+  "backend": "triton_experimental",
+  "measurement_contract": {
+    "order": [
+      "off1",
+      "on1",
+      "on2",
+      "off2",
+      "off3",
+      "on3"
+    ],
+    "process_isolation": "fresh-process-per-arm",
+    "warmup": 10,
+    "runs": 100,
+    "timing": "同步host wall与NPU Event p50/p99",
+    "scope": "社区目标图或社区功能图派生microbenchmark；非完整模型端到端"
+  },
+  "completion": {
+    "acceptance_units": 1,
+    "measured_units": 1,
+    "pending_units": 0
+  },
+  "verdict_counts": {
+    "PERF_IMPROVED": 1
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
+      "unit": "dedup-reduce-scatter",
+      "pattern_explanation": {
+        "intent": "把两个等价reduce-scatter输入先相加，再只发起一次collective，减少通信次数。",
+        "source": [
+          "torch/_inductor/fx_passes/fsdp.py:dedup_reduce_scatters",
+          "torch/_inductor/fx_passes/post_grad.py:post_grad_passes"
+        ],
+        "gpu_behavior": "A100原生社区reference通过；该reference为单rank结构合同，不外推双rank性能。",
+        "npu_behavior": "Ascend910B2真实2-rank HCCL中，ON把2个reduce-scatter收敛为1个并保持数值。"
+      },
+      "performance_status": "measured-improved",
+      "verdict": "PERF_IMPROVED",
+      "product_action": "保留现状",
+      "timing": {
+        "host_ms": {
+          "p50": {
+            "off": 0.7804504130035639,
+            "on": 0.6514848209917545,
+            "improvement_percent": 16.524508138253804
+          },
+          "p99": {
+            "off": 1.2885473342612446,
+            "on": 0.7670420967042463,
+            "improvement_percent": 40.47233839927114
+          }
+        },
+        "event_ms": {
+          "p50": {
+            "off": 0.6195999979972839,
+            "on": 0.4900200068950653,
+            "improvement_percent": 20.91349120740098
+          },
+          "p99": {
+            "off": 0.7416326177120213,
+            "on": 0.578497018218041,
+            "improvement_percent": 21.99682101324816
+          }
+        }
+      },
+      "round_p50_spread_ratio": null,
+      "memory": {
+        "allocated": {
+          "off": 11264,
+          "on": 12288
+        },
+        "reserved": {
+          "off": 2097152,
+          "on": 2097152
+        }
+      },
+      "codegen": {
+        "off": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/fx_graph_readable.py",
+              "sha256": "dc7f908bc175391bf5d7747da997dfdb621abb23fe581627943c2e479e9aec63",
+              "bytes": 1363
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/fx_graph_transformed.py",
+              "sha256": "dc7f908bc175391bf5d7747da997dfdb621abb23fe581627943c2e479e9aec63",
+              "bytes": 1363
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/ir_pre_fusion.txt",
+              "sha256": "00b4e5a221456ac56ca241c28aeac62dc1c654a8a8443089501e6e64f4fd08f3",
+              "bytes": 3443
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/ir_post_fusion.txt",
+              "sha256": "2ef7270877d9bf2db29a150c0d9b692a481bd3f79cc0195b6f41f376b8e48c5c",
+              "bytes": 3361
+            },
+            "output_code.py": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/output_code.py",
+              "sha256": "62ee08a38e7324448ab1d4702389c2fca32a35ce026323a3a3a394a0bfa63dfd",
+              "bytes": 9292
+            }
+          },
+          "triton_kernel_definitions": 1,
+          "reduce_scatter_calls": 2,
+          "native_cumsum_calls": 0,
+          "npu_index_put_inplace_calls": 0
+        },
+        "on": {
+          "files": {
+            "fx_graph_readable.py": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/fx_graph_readable.py",
+              "sha256": "dc7f908bc175391bf5d7747da997dfdb621abb23fe581627943c2e479e9aec63",
+              "bytes": 1363
+            },
+            "fx_graph_transformed.py": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/fx_graph_transformed.py",
+              "sha256": "60090d7617b5f06610f6e4909d626dfb95d9e563443ce9e618f151f3c1d71ced",
+              "bytes": 794
+            },
+            "ir_pre_fusion.txt": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/ir_pre_fusion.txt",
+              "sha256": "96d025ce706122259d84830787eb8ff5ee43969e93d8fafd34152ad6f1756056",
+              "bytes": 2397
+            },
+            "ir_post_fusion.txt": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/ir_post_fusion.txt",
+              "sha256": "25ad5da82012c0f9590bb64152204950ebb7b9e4ae52240e635af10ede833507",
+              "bytes": 2315
+            },
+            "output_code.py": {
+              "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/output_code.py",
+              "sha256": "71f0bf5b597cde57de84008f3f2d041be65a6ca530db7f280295924758d3b316",
+              "bytes": 8905
+            }
+          },
+          "triton_kernel_definitions": 1,
+          "reduce_scatter_calls": 1,
+          "native_cumsum_calls": 0,
+          "npu_index_put_inplace_calls": 0
+        }
+      },
+      "raw_run_dir": "/home/z50063656/tmp/t084-performance-results/benchmark-dedup-reduce-scatter-20260910T055903-704gzsgo",
+      "raw_summary_sha256": "336b9996109c2a9b0743413afb93eed9749224ab716ee0d315b5a374d4b51090",
+      "gate_sha256": "35895bb945c5a7d50022df4d1c618f132bd4824e68accf398936350d05dad585",
+      "artifact_inventory": [
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/performance_summary.json",
+          "sha256": "336b9996109c2a9b0743413afb93eed9749224ab716ee0d315b5a374d4b51090",
+          "bytes": 73129
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/off1-rank-0-worker_result.json",
+          "sha256": "449b81fe61e7118038963bdc71d5b8a0c47c2856303a168498d8de10d7eae0b4",
+          "bytes": 139016
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/off1-rank-1-worker_result.json",
+          "sha256": "a6761f769469bd402788b41652364e502052e4894e2e334ae43a1dad602cfebc",
+          "bytes": 139031
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/on1-rank-0-worker_result.json",
+          "sha256": "6f5258422409e5d7e365c98b772e6ace7956e6b9ed58948ec674207681d9fec8",
+          "bytes": 139116
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/on1-rank-1-worker_result.json",
+          "sha256": "41b949a68f1b07eb93db77a68e9bc01fc505b973f973240a9f828c3ecbc10300",
+          "bytes": 139067
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/on2-rank-0-worker_result.json",
+          "sha256": "e443231265969f49b11d64265df95060f60054351ba1e95a887d1aa375ad5704",
+          "bytes": 139110
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/on2-rank-1-worker_result.json",
+          "sha256": "68b39522a0d640df5018f2348732371634f90aa0fdfadd8e8516f651b75faa45",
+          "bytes": 139127
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/off2-rank-0-worker_result.json",
+          "sha256": "d3bdb46eff87d4c5745eb6ef34e643befac13882edba1fadc3e771af60c4c3c4",
+          "bytes": 139021
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/off2-rank-1-worker_result.json",
+          "sha256": "e5c497c9a45d1043df5ebcd4952fd0cba27fa7ab64c4ef33454badb7f832d370",
+          "bytes": 139023
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/off3-rank-0-worker_result.json",
+          "sha256": "14ce006370123b2218fb1845550f65216a6b78889408c02162c3adb4e2355134",
+          "bytes": 139019
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/off3-rank-1-worker_result.json",
+          "sha256": "03866988132389e2c5f5d62157813364f1d9b0b1544719a1b7f047ff4be9b423",
+          "bytes": 139018
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/on3-rank-0-worker_result.json",
+          "sha256": "2feba95c95db7ea03fcea843f31347acabca880143c9a93b0743cc0aad078e8b",
+          "bytes": 139102
+        },
+        {
+          "path": "results/current/T-084/performance/raw/dedup-reduce-scatter/on3-rank-1-worker_result.json",
+          "sha256": "e470d8dd16876f7665c814e9379851ae91bc03aee98ed4987cea530765ca9556",
+          "bytes": 139121
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/fx_graph_readable.py",
+          "sha256": "dc7f908bc175391bf5d7747da997dfdb621abb23fe581627943c2e479e9aec63",
+          "bytes": 1363
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/fx_graph_transformed.py",
+          "sha256": "dc7f908bc175391bf5d7747da997dfdb621abb23fe581627943c2e479e9aec63",
+          "bytes": 1363
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/ir_pre_fusion.txt",
+          "sha256": "00b4e5a221456ac56ca241c28aeac62dc1c654a8a8443089501e6e64f4fd08f3",
+          "bytes": 3443
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/ir_post_fusion.txt",
+          "sha256": "2ef7270877d9bf2db29a150c0d9b692a481bd3f79cc0195b6f41f376b8e48c5c",
+          "bytes": 3361
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/off/output_code.py",
+          "sha256": "62ee08a38e7324448ab1d4702389c2fca32a35ce026323a3a3a394a0bfa63dfd",
+          "bytes": 9292
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/fx_graph_readable.py",
+          "sha256": "dc7f908bc175391bf5d7747da997dfdb621abb23fe581627943c2e479e9aec63",
+          "bytes": 1363
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/fx_graph_transformed.py",
+          "sha256": "60090d7617b5f06610f6e4909d626dfb95d9e563443ce9e618f151f3c1d71ced",
+          "bytes": 794
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/ir_pre_fusion.txt",
+          "sha256": "96d025ce706122259d84830787eb8ff5ee43969e93d8fafd34152ad6f1756056",
+          "bytes": 2397
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/ir_post_fusion.txt",
+          "sha256": "25ad5da82012c0f9590bb64152204950ebb7b9e4ae52240e635af10ede833507",
+          "bytes": 2315
+        },
+        {
+          "path": "results/current/T-084/performance/codegen/dedup-reduce-scatter/on/output_code.py",
+          "sha256": "71f0bf5b597cde57de84008f3f2d041be65a6ca530db7f280295924758d3b316",
+          "bytes": 8905
+        }
+      ]
+    }
+  ]
+}

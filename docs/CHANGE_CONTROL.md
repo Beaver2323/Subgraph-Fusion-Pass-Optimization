@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-08 22:44:08 CST（UTC+08:00）
+> 日志校准时间：2026-09-10 06:55:00 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3915,3 +3915,22 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   该缺口不是 addcdiv 重融合新引入；产品 guard 保持关闭，功能修复前性能免测。
 - 新增独立低精度三臂/修复报告及仓库内 FX、IR、`output_code.py`、结构化结果和 BF16 性能证据；
   原 FP32 已签名结果不覆盖，只新增旁证并更新当前 manifest/matrix。
+### E-243：T-084～T-086 NPU功能、性能与产品处置闭环（2026-09-10）
+
+- 固定后端为`triton_experimental`，从`/home/z50063656/tmp`启动；五个单元均完成实际NPU
+  OFF/ON功能验证，分布式单元使用真实2-rank HCCL。功能原件保存改写前后FX、IR、
+  `output_code.py`、目标计数、数值和源码SHA256。
+- T-084 dedup reduce-scatter确认2次collective收敛为1次；六臂Event p50/p99改善
+  20.91%/22.00%，正式为`PERF_IMPROVED`。
+- T-085 overlap完成async device_put同步化；修复NPU路径误入`torch.cuda.current_device()`的
+  分析估时器带宽来源，因轮间高波动判`PERF_MIXED`。partitioned-scatter直接复用社区百万行
+  benchmark，并以`torch.npu.mem_get_info()`恢复真实显存硬门禁；Event p50/p99回退
+  7.68%/7.10%，保持默认关闭。
+- T-085 pointless-cumsum开启时功能与社区一致，但把“1个Triton full kernel+原生cumsum”变成
+  2个Triton kernel，Event p50/p99回退90.83%/93.33%。新增只作用于NPU输出的可逆默认关闭
+  gate；定向单测2/2和实际设备产品态`handler_calls=0/native_cumsum_calls=1`通过。
+- T-086正例完成`index_put+copy_ → index_put_`，live-input负例不改写；最终走已注册NPU extern
+  lowering而非CPU fallback。p50改善但host p99回退82.63%，判`PERF_MIXED`。
+- Manifest正式闭环数更新为1/3/1，活动33行矩阵接入NPU功能、显式社区部分对齐和五份性能结论。
+  详细报告见`report/t084_t086_npu_function_performance_and_fix_20260910.md`。源码候选仍需在
+  torch_npu产品仓独立评审、提交、重建wheel并复验；不得把source overlay写成安装态已合入。

@@ -1,11 +1,22 @@
 # T-084 功能与性能测例讲解
 
-> 更新时间：2026-09-09 00:43:01 CST（UTC+08:00）
-> 当前状态：1 个单元已达到 GPU-ready，等待原生 GPU 实测；4 个候选经源码与社区测试复核后延期，不进入分母。
+> 更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
+> 当前状态：1/1 单元正式闭环；GPU 原生 reference、NPU 真实两 rank HCCL 功能和六臂性能均完成。4 个候选继续延期。
 
 冻结 PyTorch revision：`8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b`。GPU 先运行社区原生
 CUDA/NCCL 测例；NPU 动态功能、修复验证和性能只允许 `triton_experimental`，且必须在导入
 `torch`/`torch_npu` 前选择后端、OFF/ON 使用新进程。
+
+## 实测闭环结论
+
+NPU `triton_experimental` 的 ON 图把两个 `reduce_scatter_tensor` 收敛为一个，两个 rank
+均与 eager 一致，无 graph break/CPU fallback。六臂（每臂 10 次预热、100 次采样）结果：host
+p50/p99 改善 `16.52%/40.47%`，NPU Event p50/p99 改善 `20.91%/22.00%`；allocated
+峰值从 `11,264 B` 增至 `12,288 B`，reserved 均为 `2 MiB`。结论为
+`PERF_IMPROVED`，保留现状，但不外推成完整 FSDP 训练收益。
+
+功能、性能、FX/IR/generated code 和适配调用链集中见
+[T-084～T-086 NPU 闭环报告](../report/t084_t086_npu_function_performance_and_fix_20260910.md)。
 
 ## GPU 一键运行
 

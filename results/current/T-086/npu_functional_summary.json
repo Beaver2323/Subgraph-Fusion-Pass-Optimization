@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-086",
+  "generated_at": "2026-09-10T05:58:24.270275+08:00",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "reinplace-index-put",
+      "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-086/functional/reinplace-index-put.json",
+      "gate": "results/current/T-086/performance_gates/reinplace-index-put.json",
+      "artifacts": 18
+    }
+  ]
+}

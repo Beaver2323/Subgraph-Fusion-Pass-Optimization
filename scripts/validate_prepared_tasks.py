@@ -175,6 +175,32 @@ def validate_task(repo_root: Path, task_id: str) -> tuple[int, int, int]:
     variant_count = sum(
         len(case.get("variant_ids", [])) for case in reference.get("cases", [])
     )
+    if task_id in {"T-084", "T-085", "T-086"}:
+        frozen = manifest.get("counting_policy", {}).get(
+            "current_frozen_denominator_units"
+        )
+        suite_status = manifest.get("reference_contract", {}).get("suite_status")
+        if suite_status == "valid-reference-suite":
+            if frozen != len(manifest_units):
+                raise ValueError(f"{task_id}：GPU冻结数与已选单元数不一致")
+            review_path = (
+                repo_root / "results/current" / task_id / "gpu_reference_review.json"
+            )
+            review = load_json(review_path)
+            suite = review.get("suite", {})
+            if (
+                review.get("task_id") != task_id
+                or review.get("pytorch_commit")
+                != manifest["source_baselines"]["pytorch"]["commit"]
+                or suite.get("cases") != case_count
+                or suite.get("valid_cases") != case_count
+                or suite.get("variants") != variant_count
+                or suite.get("tests_skipped") != 0
+                or suite.get("adapters_used") != 0
+            ):
+                raise ValueError(f"{task_id}：GPU复核记录与reference计划不一致")
+        elif frozen != 0:
+            raise ValueError(f"{task_id}：GPU reference未验收前不得冻结分母")
     return len(manifest_units), case_count, variant_count
 
 

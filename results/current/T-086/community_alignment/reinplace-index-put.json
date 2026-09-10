@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-086",
+  "acceptance_unit_id": "AU-post-grad-reinplace-inplaceable-ops",
+  "unit": "reinplace-index-put",
+  "generated_at": "2026-09-10T07:33:34+08:00",
+  "source_functional": {
+    "path": "../functional/reinplace-index-put.json",
+    "sha256": "c702e6beaefcd9c7c8164213943a775b7309af317245cf7f6ee613ac2c2a8c6f"
+  },
+  "community_alignment": {
+    "status": "ALIGNED_WITH_BACKEND_LOWERING_DIFFERENCE",
+    "aligned_scope": [
+      "dead input改为index_put_",
+      "live input负例保持functional",
+      "mutation/alias正确"
+    ],
+    "divergent_scope": [
+      "NPU index_put_最终走已注册extern lowering，并非Triton融合scatter核"
+    ],
+    "open_scope": [
+      "尾延迟仍需更大模型复核"
+    ],
+    "disposition": "保留功能改写；性能结论为混合，不外推稳定收益。"
+  }
+}

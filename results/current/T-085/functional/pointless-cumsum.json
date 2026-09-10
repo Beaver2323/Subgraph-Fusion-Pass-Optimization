@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-085",
+  "acceptance_unit_id": "AU-post-grad-pointless-cumsum",
+  "unit": "pointless-cumsum",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "pointless-cumsum-fn10-community-shape",
+  "world_size": 1,
+  "process_group_backend": null,
+  "input_spec": [
+    {
+      "role": "constructed-constant",
+      "shape": [
+        5000
+      ],
+      "dtype": "torch.float16",
+      "output_dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "9afce76396db88a0a42b95596b23a711eb1428acf56ad2b6b32ae5a6580b36c4",
+  "source_files": {
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/reduced_atomic_contention.py": "769bac44156cfb24243b18cc319a533e826cada062098b83792df11048aeebdb",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/post_grad.py": "0793616f6e7d3612a4a935412b380571b47f5fb7d15042c8cdbcfc0b88271431",
+    "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/config.py": "3c6231bda15c29d848f130f1a6d6c973ff6df2b957a51e867ac58840d45713c7",
+    "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/runtime_estimation.py": "bc14cc51bcf48f6f11dede29960e1fd75c9e03ba23ad32f8d5c373e567944d35",
+    "/home/z50063656/Pass/src/torch_npu/torch_npu/_inductor/triton_experimental/overrides.py": "5fda1b22727822d4ec6e4f95f7fec8bf1b5c979b38dfe4f894f35d4927401636"
+  },
+  "arms": {
+    "off": {
+      "pids": [
+        3435413
+      ],
+      "observations": [
+        {
+          "handler_calls": 0
+        }
+      ],
+      "evidence": [
+        "off/rank-0/worker_result.json"
+      ]
+    },
+    "on": {
+      "pids": [
+        3443032
+      ],
+      "observations": [
+        {
+          "handler_calls": 1
+        }
+      ],
+      "evidence": [
+        "on/rank-0/worker_result.json"
+      ]
+    }
+  },
+  "generated_at": "2026-09-10T05:50:00.358974+08:00",
+  "source_run_dir": "/home/z50063656/tmp/t085-performance-results/functional-pointless-cumsum-20260910T054823-iuq5yw_3",
+  "artifact_inventory": [
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/off/fx_graph_readable.py",
+      "sha256": "d8f7ddb5a2045bad87a173137f26f95777a5fd8c2304e86c248aee9f0c56d6c1",
+      "bytes": 763
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/off/fx_graph_transformed.py",
+      "sha256": "d8f7ddb5a2045bad87a173137f26f95777a5fd8c2304e86c248aee9f0c56d6c1",
+      "bytes": 763
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/off/ir_post_fusion.txt",
+      "sha256": "d440fed83a2da399f51d39e6e4eadadb15686b1773facaa82db89513f706d3a6",
+      "bytes": 1329
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/off/ir_pre_fusion.txt",
+      "sha256": "79dccb577712f779406b092e3ea24afaab835294cad9b1168b3ad64305e96ad5",
+      "bytes": 1328
+    },
+    {
+      "mode": "off",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/off/output_code.py",
+      "sha256": "300d38f5757b8d9c7635dbc5aa895315a63281f89de89651207df2d9096d44b4",
+      "bytes": 7400
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/on/fx_graph_readable.py",
+      "sha256": "d8f7ddb5a2045bad87a173137f26f95777a5fd8c2304e86c248aee9f0c56d6c1",
+      "bytes": 763
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/on/fx_graph_transformed.py",
+      "sha256": "0dccdb67eb36321566787fc7753a21d95171de97c9f71260f3947d746231b0a0",
+      "bytes": 1600
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/on/ir_post_fusion.txt",
+      "sha256": "5138927850a4adc47edd2dfb9cd53be206c2ac02bda3dd159f3409f2c99daada",
+      "bytes": 3172
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/on/ir_pre_fusion.txt",
+      "sha256": "5089b3b383c812fb81deb382e800ae65163677a927b754f0089ff7a3dd3479a6",
+      "bytes": 3170
+    },
+    {
+      "mode": "on",
+      "path": "results/current/T-085/functional/artifacts/pointless-cumsum/on/output_code.py",
+      "sha256": "06ee9061816815a2fddb3d3565c743ec9a674c1d20f7f0cbc472eb472761ef83",
+      "bytes": 12595
+    }
+  ],
+  "reviewed_at": "2026-09-10T05:58:24.246430+08:00",
+  "reviewer": "tracker-control-node"
+}

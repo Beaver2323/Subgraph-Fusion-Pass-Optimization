@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "task_id": "T-084",
-  "generated_at": "2026-09-09T00:34:29+08:00",
-  "status": "worker-static-only-awaiting-gpu-and-npu-functional-gates",
+  "generated_at": "2026-09-10T06:55:00+08:00",
+  "status": "performance-disposition-complete",
   "implementation": {
-    "status": "implemented-awaiting-runtime-validation",
+    "status": "implemented-runtime-validated",
     "entrypoint": "runners/t084_performance_worker.py",
     "launcher": "scripts/run_t084_performance.py"
   },
@@ -71,7 +71,9 @@
     {
       "acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
       "worker_unit": "dedup-reduce-scatter",
-      "performance_status": "worker-implemented-awaiting-runtime-validation",
+      "performance_status": "measured-improved",
+      "verdict": "PERF_IMPROVED",
+      "product_action": "保留现状",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [

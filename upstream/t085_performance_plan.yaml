@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "task_id": "T-085",
-  "generated_at": "2026-09-09T00:35:28+08:00",
-  "status": "implemented-awaiting-runtime-validation-with-capability-gate",
+  "generated_at": "2026-09-10T06:55:00+08:00",
+  "status": "performance-disposition-complete",
   "implementation": {
-    "status": "implemented-awaiting-runtime-validation",
+    "status": "implemented-runtime-validated",
     "entrypoint": "runners/t085_performance_worker.py",
     "launcher": "scripts/run_t085_performance.sh",
     "orchestrator": "scripts/run_t085_performance.py"
@@ -74,7 +74,9 @@
     {
       "acceptance_unit_id": "AU-post-grad-overlap-scheduling-device-put-sync",
       "worker_unit": "overlap-device-put",
-      "performance_status": "worker-ready-awaiting-functional-gate",
+      "performance_status": "measured-mixed-high-variance",
+      "verdict": "PERF_MIXED",
+      "product_action": "保留安全改写，扩大稳定拓扑与模型复核",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -105,29 +107,31 @@
     },
     {
       "acceptance_unit_id": "AU-post-grad-partitioned-scatter-optimization",
-      "worker_unit": null,
-      "performance_status": "cuda-explicit-default-off-npu-capability-pending",
+      "worker_unit": "partitioned-scatter",
+      "performance_status": "measured-after-capability-functional-gate-regressed",
+      "verdict": "PERF_REGRESSED",
+      "product_action": "保持NPU默认关闭",
       "case_source": {
         "kind": "community-benchmark-reuse",
         "nodeids": [
           "test/inductor/test_scatter_optimization.py::TestPartitionedScatterOpt.test_perf_atomic_contention"
         ],
-        "reason": "社区benchmark完整存在，但源码只在HIP默认开启且性能门槛来自ROCm；当前只登记来源，不执行CUDA/NPU六臂"
+        "reason": "社区benchmark完整存在；CUDA默认关闭继续免测。NPU generic guard经评审后以真实NPU显存预算最小适配进入功能能力验证，ROCm 1.5倍门槛不外推。"
       },
-      "functional_gate": "GPU社区功能结果可保留；CUDA性能因显式默认关闭免测。NPU属于generic非HIP guard省略，先做triton_experimental能力评审，未签产品决策前禁止强开或force。",
+      "functional_gate": "GPU社区功能结果保留，CUDA性能因显式默认关闭免测。NPU必须在triton_experimental下证明三个scatter改写、真实显存预算生效、数值容差通过且accumulate=False不命中；通过后才签性能gate。",
       "workloads": [
         {
-          "workload_id": "partitioned-scatter-community-benchmark-record-only",
-          "role": "blocked-record",
+          "workload_id": "partitioned-scatter-community-benchmark-shape",
+          "role": "primary",
           "shape_contract": "N=1,000,000、D=100、n=501、3个fp32 index_put(accumulate=True)、索引范围[0,8)",
-          "measurement_scope": "社区目标级microbenchmark；当前仅记录，不把ROCm 1.5倍门槛外推至CUDA/NPU"
+          "measurement_scope": "直接复用社区目标级microbenchmark；NPU独立六臂测量，只按本项目±5%阈值判定，不外推ROCm 1.5倍门槛"
         }
       ],
-      "off_on_control": "不执行；不得使用partitioned_scatter_force或手工打开HIP专用默认制造合法NPU ON路径",
+      "off_on_control": "仅切partitioned_scatter_enabled；partitioned_scatter_force固定False；OFF/ON均使用独立新进程。NPU ON依赖已评审的torch.npu.mem_get_info显存门禁适配。",
       "artifacts": [
         "config.py中HIP-only默认代码",
         "社区benchmark源码位置与ROCm收益说明",
-        "未来NPU能力评审、显存门禁与产品决策"
+        "NPU能力评审、显存门禁调用记录及每次分区数"
       ],
       "negative_cases": [
         "accumulate=False",
@@ -138,7 +142,9 @@
     {
       "acceptance_unit_id": "AU-post-grad-pointless-cumsum",
       "worker_unit": "pointless-cumsum",
-      "performance_status": "worker-ready-awaiting-functional-gate",
+      "performance_status": "measured-regressed-product-gated",
+      "verdict": "PERF_REGRESSED",
+      "product_action": "triton_experimental NPU专属默认关闭",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
