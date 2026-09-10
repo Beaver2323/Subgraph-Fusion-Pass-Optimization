@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-098全部3个provisional候选逐项复核源码、社区测例、设备执行、目标归属与合法OFF/ON",
+    "selected_acceptance_units": [
+      "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined"
+    ],
+    "corrections": [
+      "CPU/Fake/间接或错配测例不冻结GPU分母。",
+      "同一社区测试覆盖多个handler时按一个行为合同计数，旧ID保留延期映射。",
+      "社区索引遗漏但冻结源码存在的真实GPU目标测例允许经人工复核补入。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": null,
+    "scope": "原生CUDA编译、数值、目标命中/改写与必要梯度合同",
+    "suite_status": "pending-gpu-reference"
+  },
+  "counting_policy": {
+    "current_manifest_units": 1,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "原生GPU suite有效、零skip并完成人工FX复核后冻结"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined",
+      "contract_name": "Conv-BN eval在权重侧重参数化（inlined/decomposed合并合同）",
+      "stage": "pre_grad",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/efficient_conv_bn_eval.py",
+          "line": 158,
+          "symbol": "efficient_conv_bn_eval_graph_transform_inlined",
+          "role": "functional-batch-norm-handler"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/efficient_conv_bn_eval.py",
+          "line": 273,
+          "symbol": "efficient_conv_bn_eval_graph_transform_decomposed",
+          "role": "aten-batch-norm-handler"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalGpuTests.test_basic_cuda",
+          "role": "primary-positive-and-negative-product",
+          "evidence_scope": "真实CUDA；Conv/Linear/ConvTranspose、bias、SyncBN、decompose false/true、单/多用户；前向/反向/SGD和精确counter"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "inlined-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "functional batch_norm路径改写且单Conv计数1",
+          "expected_counter": "efficient_conv_bn_eval delta=expected",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "decomposed-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "aten batch_norm路径改写且保持梯度/更新一致",
+          "expected_counter": "efficient_conv_bn_eval delta=expected",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "multi-user-protection",
+          "kind": "mixed-positive-negative",
+          "expected_reference_match": true,
+          "expected_behavior": "仅融合单用户Conv-BN，保护重复Conv和多用户BN",
+          "expected_counter": "MultiUserConvOp delta=3",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-derived-from-community-functional-case",
+        "allowed_local_deviation": [
+          "性能仅取社区乘积中的Conv2d+BN2d代表形状；功能仍跑完整原生乘积"
+        ],
+        "forbidden_local_deviation": [
+          "将同一test_basic重复计为两个分母",
+          "跳过梯度或target counter"
+        ]
+      },
+      "npu_control": {
+        "config": "efficient_conv_bn_eval_fx_passes",
+        "off": false,
+        "on": true,
+        "status": "prepared",
+        "next_action": "GPU原生完整乘积通过后，NPU先跑代表功能合同并确认精确counter/梯度，再性能计时"
+      }
+    }
+  ],
+  "deferred_candidates": [
+    {
+      "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform",
+      "status": "deferred-no-direct-call-module-attribution",
+      "reason": "社区test_basic在Dynamo/ATen图上覆盖inlined/decomposed路径，未独立证明CallModule handler。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-decomposed",
+      "status": "merged-into-inlined-contract",
+      "reason": "同一个test_basic_cuda循环以decompose_nn_module false/true覆盖两条路径，合并到一个Conv-BN合同，禁止重复执行和重复计分母。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    }
+  ]
+}

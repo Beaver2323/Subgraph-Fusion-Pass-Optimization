@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-094",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "reviewed-no-gpu-ready-units",
+  "performance_plan": {
+    "path": "upstream/t094_performance_plan.yaml",
+    "status": "not-implemented-blocked-or-not-applicable"
+  },
+  "case_guide": {
+    "path": "docs/T094_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t094_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG与FX before/after",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600,
+    "minimum_gpus": 0,
+    "distributed_world_size": null
+  },
+  "cases": [],
+  "non_executed_variants": []
+}

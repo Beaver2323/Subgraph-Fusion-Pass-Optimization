@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-08 21:10 CST（UTC+08:00）
+> 更新时间：2026-09-10 23:48:08 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -552,11 +552,25 @@ T-076～T-080 的 21 个单元已按对应批次记录完成 GPU/NPU comparison 
 严格历史再认证和产品合入状态单列。T-074 的 `no-test-found`/indirect 只是原始覆盖提示，
 后续逐批审核必须回到真实测试实现，不按旧标签直接冻结，也不覆盖原始 inventory。
 
+### 18.1 T-101～T-113 准备件与报告约束
+
+T-101～T-113 每个批次必须同时落盘 manifest、reference plan、performance plan、GPU 入口、
+handoff 接收目录和中文功能/性能 guide。每个进入 GPU-ready 的 pattern，guide 至少包含：带文件位置
+注释的关键源码代码块、pattern/guard 意图、精确 community nodeid、GPU 预期行为、NPU
+`triton_experimental` 待验证行为、性能 workload 来源、测量层级及端到端 benchmark 是否缺失。
+批次没有合法设备测例时也保留空计划和审计原因，不能用不相关的通用测试填充。
+
+SDPA 的每个编号必须用精确 per-pattern counter 和 FX 原件归因；通用 `fuse_attention` counter
+不能单独证明同编号 pattern 命中。pattern 16 在 CUDA 上命中 matcher 后仍可能为数值保真保留数学链，
+必须写成“部分行为对齐”，不能等同于最终 SDPA replacement。T-112 的社区单 rank 测例只作为结构
+reference；跨 rank 正确性和性能必须另用固定 2-rank NCCL/HCCL 合同验证。任何派生 worker 都要标明
+它是社区功能图衍生微图还是本地最小图，不得写成社区原生性能测例或模型端到端。
+
 ## 19. 统一提交检查与历史再认证
 
 提交代码、计划或验收数据之前，从 `/home/z50063656/tmp` 执行
 `python /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/validate_all.py --write-audit`。
-统一入口覆盖零设备回归、T-076～T-090 reference 入口、NPU/comparison、性能准备计划、backlog
+统一入口覆盖零设备回归、T-076～T-113 reference 入口、NPU/comparison、性能准备计划、backlog
 与递归语法检查；嵌套 source overlay/worker 也须检查，但静态检查不得执行其代码。
 
 规则登记在 `schemas/audit_policy.json`。改变验收口径须同步规则版本、schema/validator 和反例测试；

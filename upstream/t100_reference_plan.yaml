@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-100",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "gpu-ready-awaiting-native-execution",
+  "performance_plan": {
+    "path": "upstream/t100_performance_plan.yaml",
+    "status": "implemented-awaiting-runtime-validation"
+  },
+  "case_guide": {
+    "path": "docs/T100_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t100_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG与FX before/after",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600,
+    "minimum_gpus": 1,
+    "distributed_world_size": null
+  },
+  "cases": [
+    {
+      "case_id": "REF-linear-binary-folding-native",
+      "acceptance_unit_id": "AU-binary-folding-folded-op",
+      "source_test": "test/inductor/test_binary_folding.py::FreezingGpuTests.test_linear_binary_folding_cuda",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "linear-fold-positive",
+        "broadcast-shape-negative"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "真实CUDA复制类执行且零skip",
+        "合法2D/3D scalar/tensor组合counter=1",
+        "非法广播shape counter=0且数值保持"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "tracker-derived-after-functional-gate",
+      "timeout_seconds": 7200
+    }
+  ],
+  "non_executed_variants": []
+}

@@ -1,12 +1,13 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
+> 更新时间：2026-09-10 23:48:08 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
 > 当前阶段：T-076～T-086 原冻结范围共33个acceptance units有效；T-078 新增低精度
 > regression 已在 NPU 修复，等待正确的 FP16 value=1 GPU 邻接 reference；T-084～T-086 的
 > 5个单元已完成GPU、NPU功能与性能处置。T-076/T-077严格再认证单列。
-> T-087～T-090另有6个已审核单元进入GPU-ready，尚未冻结、尚未执行NPU或性能。
+> T-087～T-113另有38个已审核单元进入GPU-ready，尚未冻结、尚未执行NPU或性能；
+> T-081～T-113已无草案批次，所有未选候选均保留明确的合并/延期原因。
 
 ## 1. 总结
 
@@ -105,7 +106,7 @@ partial amin→min 的 Triton Ascend NaN helper；两项均通过同合同回归
 - registry container 和 extension hook 已被识别为不直接进入 provisional denominator；
 - 所有动态状态保持 `not-run-current-Pass`，没有把静态映射伪装成 NPU verdict。
 
-### 3.2 仍需审核的部分
+### 3.2 批次审核完成后仍保留的 heuristic 边界
 
 当前 acceptance-unit ID 主要按 `source stem + normalized name` 生成，只对少数已知 semantic group
 做显式合并。这个规则能提供第一版去重，但不能自动证明一个组就是一个 upstream optimization
@@ -117,8 +118,14 @@ contract：
 - 仅靠测试名/token overlap 不能冻结 direct contract；
 - 自动聚合中有 15 个多 candidate 单元，9 个还同时包含多个 pass/pattern 名称，需要优先审阅。
 
-因此 188 个单元和 158 个 `yes-provisional` 只能描述 T-074 v1 的 heuristic 输出，不能作为
-项目规模、成功率或剩余 Pass 总数。
+截至 2026-09-10，158 个 provisional eligible 已全部分配并完成逐批审核：71 个进入活动
+manifest，87 个因重复、CPU/Fake/间接证据、显式关闭或缺少独立设备合同而保留明确延期理由。
+旧表中的 48 个 `no-test-found` 和 29 个 indirect 是审核输入标签，不再表示仍有同数量的未审核任务。
+30 条 registry/hook/容器类非计数记录也已按结构原因单列，不进入 GPU 分母；只有 upstream 新增
+直接合同或 source/test mapping 漂移时才重开。
+
+因此 188 个单元和 158 个 `yes-provisional` 仍只能描述 T-074 v1 的 heuristic 输出，不能作为
+项目规模、成功率或剩余 Pass 总数；“审核完成”也不等于延期项已经获得设备支持。
 
 ### 3.3 是否重新生成 T-074 v1
 
@@ -209,8 +216,9 @@ NPU-only 可逆门禁并完成默认关闭/显式重开双臂验证。正式数�
 对应 acceptance-unit 目录。
 
 T-078 已从上述集合审核并闭环 1 个 `no-test-found` 与 3 个 indirect 单元；T-080 又纠正 2 个
-`no-test-found`，其余 45 个 `no-test-found` 和 26 个 indirect 单元继续待审。仍未完成 T-077 MM 候选修复的
-产品代码评审/合入。P-018 是否并入正式产品属于候选变更评审，不再作为 T-076 未闭环回归。
+`no-test-found`。其余同类 coverage hint 已在 T-081～T-113 中完成选择或明确延期，不再列为
+未审核队列。仍未完成 T-077 MM 候选修复的产品代码评审/合入。P-018 是否并入正式产品属于候选
+变更评审，不再作为 T-076 未闭环回归。
 
 ## 7. 下一条 Codex 任务
 
@@ -233,9 +241,22 @@ T-081～T-083已完成2/2/3个社区合同的GPU运行：11/11 cases、24/24 var
 随后在`triton_experimental`完成7/7数值、命中和实际改图。T-083没有沿用world_size=1结论，另用真实
 双rank HCCL验证3→1/2→1 collective。7个单元均完成全局互斥下的六臂性能处置。
 CPU-only/fake-PG/间接覆盖或缺少直接测例的剩余候选按原批次保留 deferred。
-活动矩阵共39行：T-076～T-086的33个冻结单元均已有GPU、NPU/comparison与性能处置；
-T-087～T-090的6行等待GPU reference，不能计入冻结完成率。T-078另有1个FP16 value=1扩展
+活动矩阵共71行：T-076～T-086的33个冻结单元均已有GPU、NPU/comparison与性能处置；
+T-087～T-113的38行等待GPU reference，不能计入冻结完成率。T-078另有1个FP16 value=1扩展
 variant仍等待正确GPU邻接reference。
+
+T-091～T-100本轮审计37个候选，只将4个可独立归属且有真实CUDA入口的合同放入活动矩阵：
+stack axis规范化、A100 E8M0 log2-ceil边界替换、Conv-BN eval重参数化和Linear binary folding。
+T-100属于旧inventory漏测例后的纠偏；T-098把同一个社区乘积中的inlined/decomposed合并计一次。
+T-096的NPU路径是generic CUDA guard遗漏导致的capability-pending，不是产品明确disable；必须先留存
+`triton_experimental`原生阻断，再评审最小适配。六个零ready批次只保留延期审计，不创建空run。
+
+T-101～T-113完成52个候选的最终准备审核。T-102～T-107按编号保留27个真实CUDA SDPA
+pattern合同；25～27的`disable_cuda=True`和XPU-only测试入口作为显式关闭证据，不绕过。
+T-112补回冻结源码中新出现的原生CUDA `test_dedup_reduce_scatter`，但其`world_size=1`只证明
+生成代码2个RS降为1个；NPU执行准备了独立2-rank HCCL功能和六臂性能worker。
+T-101与已闭环T-085合并；T-108～T-111为CPU量化/MKLDNN；T-113为具体fusion调度容器。
+本轮新增28个ready、24个合并/延期，零草案，不包含任何设备运行或收益结论。
 
 T-084～T-086分别闭环1/3/1个单元。T-084真实2-rank HCCL为`PERF_IMPROVED`；T-085的
 pointless-cumsum与partitioned-scatter回退，overlap因轮间高波动为`PERF_MIXED`；T-086
@@ -247,8 +268,8 @@ T-078新上传的`BF16-value=1-text-handoff`实际只包含
 `REF-addcdiv-fma-codegen-native`，证明CUDA codegen含`div_rn`和`tl.fma`，但没有执行
 `REF-addcdiv-fma-fp16-value1-derived`。因此误命名包作为有效codegen邻接补证保留，FP16 value=1
 GPU dtype/value缺口不关闭。
-T-084～T-086 的功能和性能讲解、worker及实际设备结果均已进入当前39行矩阵；T-087～T-090
-仅以准备态进入矩阵；上述T-078
+T-084～T-086 的功能和性能讲解、worker及实际设备结果均已进入当前71行矩阵；T-087～T-113
+的38个ready合同仅以准备态进入矩阵；上述T-078
 扩展variant仍独立等待GPU，不借用其他codegen邻接证据关闭。
 
 T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或同合同重验。新 1.3 review
@@ -260,7 +281,7 @@ T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或�
 ## 8. 当前环境边界
 
 - NPU 新测试从 `/home/z50063656/tmp` 发起；GPU T-076 从 `/data/z50063656/tmp` 发起；
-- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-087 --gpu ID`（支持 T-076～T-090；
+- GPU pull 后使用 `scripts/run_gpu_reference_task.sh --task T-087 --gpu ID`（支持 T-076～T-113；
   T-085 使用 `--gpus ID1,ID2`），脚本自动进入
   工作目录、激活环境、校验、运行、导出 1.3 review handoff 与备用网页分片并维护 `latest`，
   不再人工查找 timestamp；默认 handoff 是单行 JSON，超过 96 KiB 时自动生成分片并打印应上传的

@@ -511,7 +511,30 @@ class BacklogTests(unittest.TestCase):
         self.assertTrue(all(batch["performance_readiness"] == "needs-community-benchmark-search-and-worker" for batch in drafts))
         self.assertEqual(
             [b["task_id"] for b in drafts],
-            [f"T-{i:03d}" for i in range(91, 114)],
+            [],
+        )
+
+    def test_reviewed_zero_batches_are_not_drafts_or_runnable(self):
+        data = backlog.build(ROOT, "2026-09-10T21:38:54+08:00")
+        reviewed = [
+            batch
+            for batch in data["batches"]
+            if batch["status"] == "reviewed-no-gpu-ready-units"
+        ]
+        self.assertEqual(
+            [batch["task_id"] for batch in reviewed],
+            [
+                "T-092", "T-093", "T-094", "T-095", "T-097", "T-099",
+                "T-101", "T-108", "T-109", "T-110", "T-111", "T-113",
+            ],
+        )
+        self.assertTrue(all(not batch["reference_ready"] for batch in reviewed))
+        self.assertTrue(
+            all(
+                batch["performance_readiness"]
+                == "not-applicable-no-gpu-ready-unit"
+                for batch in reviewed
+            )
         )
 
 

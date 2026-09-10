@@ -25,7 +25,7 @@ matrix = load_generator()
 class CurrentAcceptanceMatrixTests(unittest.TestCase):
     def test_current_units_and_task_boundaries(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(len(rows), 39)
+        self.assertEqual(len(rows), 71)
         self.assertEqual(
             Counter(row["task_id"] for row in rows),
             Counter({
@@ -44,9 +44,20 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                 "T-088": 2,
                 "T-089": 1,
                 "T-090": 1,
+                "T-091": 1,
+                "T-096": 1,
+                "T-098": 1,
+                "T-100": 1,
+                "T-102": 5,
+                "T-103": 5,
+                "T-104": 5,
+                "T-105": 5,
+                "T-106": 4,
+                "T-107": 3,
+                "T-112": 1,
             }),
         )
-        self.assertEqual(len({row["acceptance_unit_id"] for row in rows}), 39)
+        self.assertEqual(len({row["acceptance_unit_id"] for row in rows}), 71)
 
     def test_npu_backend_never_inherits_reference_backend(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
@@ -68,7 +79,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 33
         )
         self.assertEqual(
-            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 6
+            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 38
         )
         self.assertEqual(
             sum(row["current_phase"] == "awaiting-npu" for row in rows), 0
@@ -150,6 +161,36 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
         self.assertEqual(
             legacy["community_alignment_source"], "legacy-missing-explicit"
         )
+
+    def test_t101_t113_preparation_alignment_is_visible_without_fake_result(self):
+        rows = matrix.build_rows("2026-09-10T22:55:21+08:00")
+        pattern_1 = next(
+            row
+            for row in rows
+            if row["acceptance_unit_id"] == "AU-fuse-attention-sfdp-pattern-1"
+        )
+        pattern_16 = next(
+            row
+            for row in rows
+            if row["acceptance_unit_id"] == "AU-fuse-attention-sfdp-pattern-16"
+        )
+        self.assertEqual(
+            pattern_1["community_alignment_status"], "pending-device-comparison"
+        )
+        self.assertEqual(
+            pattern_16["community_alignment_status"],
+            "backend-specific-partial-alignment",
+        )
+        for row in (pattern_1, pattern_16):
+            self.assertEqual(
+                row["community_alignment_source"],
+                "manifest-preparation-contract",
+            )
+            self.assertFalse(row["comparison_result_path"])
+            self.assertIn(
+                "设备行为尚未形成结论",
+                row["community_alignment_disposition"],
+            )
 
     def test_t081_t083_results_bind_backend_and_learning_evidence(self):
         rows = matrix.build_rows("2026-09-08T03:17:00+08:00")

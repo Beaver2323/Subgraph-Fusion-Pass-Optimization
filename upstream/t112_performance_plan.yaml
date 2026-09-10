@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-112",
+  "generated_at": "2026-09-10T22:55:21+08:00",
+  "status": "prepared-awaiting-gpu-and-npu-functional-gates",
+  "implementation": {
+    "status": "implemented-awaiting-runtime-validation",
+    "entrypoint": "runners/t112_dedup_reduce_scatter_worker.py",
+    "launcher": "scripts/run_t112_dedup_reduce_scatter.py"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "新进程内导入torch/torch_npu之前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable则记录并免测；generic guard遗漏才进入单独最小适配审核"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU原生reference有效后，NPU先验证OFF/ON数值、精确改写、零graph break/CPU fallback，再人工签gate",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw samples"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "三OFF/三ON分别聚合；分布式要求全部rank有效"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 1,
+    "performance_minimum_devices": 2,
+    "performance_world_size": 2,
+    "actual_device_execution_required": true,
+    "fake_tensor_allowed_as_performance_oracle": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/"
+    ],
+    "terms": [
+      "_get_dedup_rs_pass",
+      "dedup_fsdp_reduce_scatter"
+    ],
+    "result": "attention现有社区benchmark从已融合SDPA起步；FSDP只找到单rank功能例；其余空批次无合法设备合同。",
+    "source_priority": "社区目标级benchmark优先；没有时保留功能图/shape/dtype/阶段派生并明确非社区benchmark、非模型端到端"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-fsdp-get-dedup-rs",
+      "worker_unit": "dedup-reduce-scatter-two-rank",
+      "performance_status": "prepared-awaiting-gpu-and-two-rank-npu-functional-gates",
+      "verdict": "planned",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_dedup_reduce_scatter"
+        ],
+        "reason": "社区只有world_size=1功能例且没有目标benchmark；性能worker保持RS(a)+RS(b)代数，扩成2-rank真实NCCL/HCCL和大hidden代表负载。"
+      },
+      "functional_gate": "GPU原生world_size=1结构证据有效；NPU triton_experimental 2-rank HCCL两侧数值一致，OFF代码2个RS、ON代码1个RS，无break/fallback。",
+      "workloads": [
+        {
+          "workload_id": "dedup-reduce-scatter-two-rank-fp32",
+          "role": "distributed-derived",
+          "shape_contract": "world_size=2；每rank两个[256,4096] fp32输入，各RS输出[128,4096]",
+          "measurement_scope": "真实2-rank collective微图；不是FSDP模型端到端"
+        }
+      ],
+      "off_on_control": "只切dedup_reduce_scatters false/true，reorder_for_compute_comm_overlap固定false；每臂由torchrun新进程启动2 rank。",
+      "artifacts": [
+        "GPU world_size=1原生结构证据",
+        "NPU 2-rank每rank生成代码和结果",
+        "HCCL backend/2→1计数",
+        "host/Event样本、显存、编译耗时",
+        "worker sha256"
+      ],
+      "negative_cases": [
+        "单rank结果不得宣称通信收益",
+        "任一rank失败、ON非1个RS、OFF非2个RS、fallback或数值错误均拒绝计时"
+      ]
+    }
+  ]
+}

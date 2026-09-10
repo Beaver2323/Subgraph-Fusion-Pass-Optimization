@@ -1,0 +1,242 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-105",
+  "generated_at": "2026-09-10T22:55:21+08:00",
+  "status": "prepared-awaiting-gpu-and-npu-functional-gates",
+  "implementation": {
+    "status": "implemented-awaiting-runtime-validation",
+    "entrypoint": "runners/t102_t107_attention_performance_worker.py",
+    "launcher": "scripts/run_t102_t107_attention_performance.py"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "新进程内导入torch/torch_npu之前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable则记录并免测；generic guard遗漏才进入单独最小适配审核"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU原生reference有效后，NPU先验证OFF/ON数值、精确改写、零graph break/CPU fallback，再人工签gate",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw samples"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "三OFF/三ON分别聚合；分布式要求全部rank有效"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 1,
+    "performance_minimum_devices": 1,
+    "performance_world_size": 1,
+    "actual_device_execution_required": true,
+    "fake_tensor_allowed_as_performance_oracle": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/"
+    ],
+    "terms": [
+      "_sfdp_pattern_16",
+      "_sfdp_pattern_17",
+      "_sfdp_pattern_18",
+      "_sfdp_pattern_19",
+      "_sfdp_pattern_20"
+    ],
+    "result": "attention现有社区benchmark从已融合SDPA起步；FSDP只找到单rank功能例；其余空批次无合法设备合同。",
+    "source_priority": "社区目标级benchmark优先；没有时保留功能图/shape/dtype/阶段派生并明确非社区benchmark、非模型端到端"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-16",
+      "worker_unit": "pattern-16",
+      "performance_status": "prepared-awaiting-functional-gate",
+      "verdict": "planned",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_16_inference_gpu"
+        ],
+        "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
+      },
+      "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_16 counter>=1；数值正确且无break/fallback。",
+      "workloads": [
+        {
+          "workload_id": "sfdp-pattern-16-registered-half-inference",
+          "role": "target-level-derived",
+          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half inference首个非bs1候选并把完整shape/stride/dtype写入结果",
+          "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
+        }
+      ],
+      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "artifacts": [
+        "GPU原生FX/计数",
+        "NPU OFF/ON功能原件",
+        "精确pattern counter与实际input_spec",
+        "host/Event原始样本、显存、编译耗时",
+        "worker/source sha256"
+      ],
+      "negative_cases": [
+        "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
+        "不得把其他joint pass变化归因给本pattern"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-17",
+      "worker_unit": "pattern-17",
+      "performance_status": "prepared-awaiting-functional-gate",
+      "verdict": "planned",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_17_gpu"
+        ],
+        "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
+      },
+      "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_17 counter>=1；数值正确且无break/fallback。",
+      "workloads": [
+        {
+          "workload_id": "sfdp-pattern-17-registered-half-inference",
+          "role": "target-level-derived",
+          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half inference首个非bs1候选并把完整shape/stride/dtype写入结果",
+          "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
+        }
+      ],
+      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "artifacts": [
+        "GPU原生FX/计数",
+        "NPU OFF/ON功能原件",
+        "精确pattern counter与实际input_spec",
+        "host/Event原始样本、显存、编译耗时",
+        "worker/source sha256"
+      ],
+      "negative_cases": [
+        "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
+        "不得把其他joint pass变化归因给本pattern"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-18",
+      "worker_unit": "pattern-18",
+      "performance_status": "prepared-awaiting-functional-gate",
+      "verdict": "planned",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_18_gpu"
+        ],
+        "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
+      },
+      "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_18 counter>=1；数值正确且无break/fallback。",
+      "workloads": [
+        {
+          "workload_id": "sfdp-pattern-18-registered-half-inference",
+          "role": "target-level-derived",
+          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half inference首个非bs1候选并把完整shape/stride/dtype写入结果",
+          "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
+        }
+      ],
+      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "artifacts": [
+        "GPU原生FX/计数",
+        "NPU OFF/ON功能原件",
+        "精确pattern counter与实际input_spec",
+        "host/Event原始样本、显存、编译耗时",
+        "worker/source sha256"
+      ],
+      "negative_cases": [
+        "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
+        "不得把其他joint pass变化归因给本pattern"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-19",
+      "worker_unit": "pattern-19",
+      "performance_status": "prepared-awaiting-functional-gate",
+      "verdict": "planned",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_19_gpu"
+        ],
+        "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
+      },
+      "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_19 counter>=1；数值正确且无break/fallback。",
+      "workloads": [
+        {
+          "workload_id": "sfdp-pattern-19-registered-half-inference",
+          "role": "target-level-derived",
+          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half inference首个非bs1候选并把完整shape/stride/dtype写入结果",
+          "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
+        }
+      ],
+      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "artifacts": [
+        "GPU原生FX/计数",
+        "NPU OFF/ON功能原件",
+        "精确pattern counter与实际input_spec",
+        "host/Event原始样本、显存、编译耗时",
+        "worker/source sha256"
+      ],
+      "negative_cases": [
+        "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
+        "不得把其他joint pass变化归因给本pattern"
+      ]
+    },
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-20",
+      "worker_unit": "pattern-20",
+      "performance_status": "prepared-awaiting-functional-gate",
+      "verdict": "planned",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_20_gpu"
+        ],
+        "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
+      },
+      "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_20 counter>=1；数值正确且无break/fallback。",
+      "workloads": [
+        {
+          "workload_id": "sfdp-pattern-20-registered-half-inference",
+          "role": "target-level-derived",
+          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half inference首个非bs1候选并把完整shape/stride/dtype写入结果",
+          "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
+        }
+      ],
+      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "artifacts": [
+        "GPU原生FX/计数",
+        "NPU OFF/ON功能原件",
+        "精确pattern counter与实际input_spec",
+        "host/Event原始样本、显存、编译耗时",
+        "worker/source sha256"
+      ],
+      "negative_cases": [
+        "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
+        "不得把其他joint pass变化归因给本pattern"
+      ]
+    }
+  ]
+}

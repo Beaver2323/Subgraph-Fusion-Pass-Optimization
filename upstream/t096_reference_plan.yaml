@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-096",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "gpu-ready-awaiting-native-execution",
+  "performance_plan": {
+    "path": "upstream/t096_performance_plan.yaml",
+    "status": "not-implemented-blocked-or-not-applicable"
+  },
+  "case_guide": {
+    "path": "docs/T096_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t096_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG与FX before/after",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600,
+    "minimum_gpus": 1,
+    "distributed_world_size": null
+  },
+  "cases": [
+    {
+      "case_id": "REF-e8m0-log2-pattern-native",
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "source_test": "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_pattern_fires_and_is_correct",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "ordinary-positive"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "A100 pre-SM100原生CUDA执行且零skip",
+        "边界uint8编码逐元素精确相等",
+        "FX after确认log2+ceil链被位运算替换"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "blocked-npu-capability-pending"
+    },
+    {
+      "case_id": "REF-e8m0-log2-one-ulp-native",
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "source_test": "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_correct_for_values_one_ulp_above_power_of_two",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "one-ulp-boundary-positive"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "A100 pre-SM100原生CUDA执行且零skip",
+        "边界uint8编码逐元素精确相等",
+        "FX after确认log2+ceil链被位运算替换"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "blocked-npu-capability-pending"
+    },
+    {
+      "case_id": "REF-e8m0-log2-gh178045-native",
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "source_test": "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "gh178045-regression"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "A100 pre-SM100原生CUDA执行且零skip",
+        "边界uint8编码逐元素精确相等",
+        "FX after确认log2+ceil链被位运算替换"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "blocked-npu-capability-pending"
+    }
+  ],
+  "non_executed_variants": []
+}

@@ -1,8 +1,8 @@
 # Upstream Contract 与 Acceptance Unit 数据
 
-> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
+> 更新时间：2026-09-10 22:55:21 CST（UTC+08:00）
 > 状态：T-076～T-086共33 units已冻结并完成NPU/性能处置；T-078新增1个低精度variant已在
-> NPU修复、等待GPU邻接reference；T-087～T-090已准备6个GPU-ready units等待设备运行。
+> NPU修复、等待GPU邻接reference；T-087～T-113共准备38个GPU-ready units等待设备运行。
 
 本目录保存 tracker 的活动数据入口：
 
@@ -24,16 +24,21 @@
   5个GPU-ready单元、8 cases、11 variants和性能worker，另10个候选明确延期；
 - `t087_manifest.yaml`～`t090_manifest.yaml`及对应reference/performance plan：从19个候选审核出
   6个GPU-ready单元、8 cases、8 variants，另13个候选延期；5项有合法OFF/ON，1项性能免测；
+- `t091_manifest.yaml`～`t100_manifest.yaml`及对应reference/performance plan：从37个候选审核出
+  4个GPU-ready合同、6 cases、9 variants，另33项延期；6批零ready只允许静态审核；
+- `t101_manifest.yaml`～`t113_manifest.yaml`及对应reference/performance plan：从52个候选审核出
+  28个GPU-ready合同/28 cases/28 variants（27个SDPA pattern和1个FSDP RS去重），另24项
+  合并或延期；T-101、T-108～T-111、T-113为零ready审核批次；
 - `performance_plan.schema.json`：新批次性能准备合同的公共结构；
 - `t076_performance_plan.yaml`、`t077_performance_plan.yaml`：同 backend 性能实测、显式关闭免测、
   capability 评估与候选拒绝依据；
 - `t078_performance_plan.yaml`：第三批目标级 OFF/ON 实测、性能处置和最终产品门禁合同；
 - `t079_performance_plan.yaml`、`t080_performance_plan.yaml`：逐单元功能门禁、社区/派生 benchmark
   来源、目标级 OFF/ON、交错三轮、计时/内存与负例免测计划；
-- `../scripts/validate_prepared_tasks.py`：T-078～T-090 reference/performance/中文 guide 的零设备一致性检查；
+- `../scripts/validate_prepared_tasks.py`：T-078～T-113 reference/performance/中文 guide 的零设备一致性检查；
 - `../scripts/validate_tracker_data.py`：零第三方依赖的一致性检查。
 - `../scripts/generate_current_acceptance_matrix.py`：从本目录 manifest、`results/current/` 和性能
-  数据生成/校验当前39单元矩阵；同时拒绝非`triton_experimental`的NPU动态结果。
+  数据生成/校验当前71单元矩阵；同时拒绝非`triton_experimental`的NPU动态结果。
 - `../schemas/npu_result.schema.json`、`../schemas/comparison_result.schema.json`：统一
   NPU 执行与 GPU/NPU comparison 合同；
 - `../scripts/validate_comparison_data.py`：统一结果与 manifest/hash 的零 torch 导入检查；
@@ -47,8 +52,8 @@ Python 标准库 `json` 解析，避免 GPU 机器额外安装 PyYAML。
 ## 计数边界
 
 - T-074 v1 的 207 行 candidate CSV 继续作为 inventory 输入；
-- 本目录已有33个冻结单元；另有6个T-087～T-090单元处于GPU-ready待跑态；
-- 33个冻结单元均已形成正式NPU/comparison与性能处置；准备态6项不得计作完成；
+- 本目录已有33个冻结单元；另有38个T-087～T-113单元处于GPU-ready待跑态；
+- 33个冻结单元均已形成正式NPU/comparison与性能处置；准备态38项不得计作完成；
 - T-076 已为 20 个 variants 中 14 个建立原生动态 case 映射；3 个 registration-only 和 3 个
   NPU-only gate 已显式列为 reference 非动态项；
 - 当前 GPU adapter/extracted case 数为 0；13 个 direct 均 valid，不再设计 GPU adapter；
@@ -64,8 +69,10 @@ Python 标准库 `json` 解析，避免 GPU 机器额外安装 PyYAML。
   默认关闭；prepare-softmax 产品 lowering 显式 fallback 免测；constructor mover 性能中性。
 - T-081～T-083已完成11/11原生GPU cases与24/24 variants；其中6个case具有社区数值断言，5个仅有
   结构/codegen断言。NPU另补7/7数值/改图；T-083使用真实HCCL双rank，不沿用GPU world_size=1证据。
-- T-084～T-086的8个GPU cases、5项NPU功能与性能处置已完成；T-087～T-090的8个GPU cases
-  尚未运行，不能计入冻结分母或声称性能收益。
+- T-084～T-086的8个GPU cases、5项NPU功能与性能处置已完成；T-087～T-090的8个GPU cases，
+  以及T-091/T-096/T-098/T-100的6个GPU cases尚未运行，不能计入冻结分母或声称性能收益。
+- T-102～T-107的27个SDPA cases和T-112的1个RS去重case同样只处于准备态；SDPA 25～27
+  显式CUDA关闭，T-112原生GPU仅world_size=1，均按各自证据边界记录。
 - 性能处置不改变 denominator：T-076 为 2 measured + 3 exempt-explicitly-disabled；T-077 为
   4 measured + 1 capability-assessed-no-effective-template，pending=0。device guard 未包含 NPU
   没有被直接当成显式 disable，而是完成最小适配与收益评估；

@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T22:55:21+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-112全部1个provisional候选逐项复核源码、社区测例、设备入口、目标归属和合法OFF/ON",
+    "selected_acceptance_units": [
+      "AU-fsdp-get-dedup-rs"
+    ],
+    "corrections": [
+      "模板私有方法改为实际可执行GPU类nodeid。",
+      "CPU/Fake/间接/错配测试不冻结GPU分母。",
+      "显式CUDA关闭、重复实现和结构容器均不制造ON路径。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": 1,
+    "scope": "原生CUDA编译、数值/梯度、目标编号或生成代码改写",
+    "suite_status": "pending-gpu-reference"
+  },
+  "counting_policy": {
+    "current_manifest_units": 1,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-fsdp-get-dedup-rs",
+      "contract_name": "线性reduce-scatter相加去重",
+      "stage": "post_grad",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/fsdp.py",
+          "line": 101,
+          "symbol": "_get_dedup_rs_pass",
+          "role": "lazy-pattern-pass-builder"
+        },
+        {
+          "path": "torch/_inductor/fx_passes/fsdp.py",
+          "line": 167,
+          "symbol": "dedup_fsdp_reduce_scatter",
+          "role": "fixpoint-pass-entry"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_dedup_reduce_scatter",
+          "role": "native-gpu-structural-positive",
+          "evidence_scope": "真实CUDA compile与生成代码计数；默认world_size=1，只证明2个RS改成1个及数值，不证明多rank通信"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "two-to-one-linear-rs-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "RS(a)+RS(b)改写为RS(a+b)，生成代码reduce_scatter从2个降为1个",
+          "expected_counter": "generated code exact reduce_scatter count=1",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-two-rank-derived-extension",
+        "allowed_local_deviation": [
+          "NPU补2-rank HCCL合同弥补原生CUDA用例world_size=1边界，代数与shape保持一致"
+        ],
+        "forbidden_local_deviation": [
+          "把world_size=1外推成多卡收益",
+          "使用FakeTensor/CPU证明设备通信",
+          "复用非triton_experimental历史结果"
+        ]
+      },
+      "npu_control": {
+        "config": "dedup_reduce_scatters",
+        "off": false,
+        "on": true,
+        "status": "prepared-two-rank-required",
+        "next_action": "GPU原生结构reference通过后，NPU用2-rank HCCL确认2→1改写、数值和通信，再签性能gate"
+      }
+    }
+  ],
+  "deferred_candidates": []
+}

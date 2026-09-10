@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-112",
+  "generated_at": "2026-09-10T22:55:21+08:00",
+  "status": "gpu-ready-awaiting-native-execution",
+  "performance_plan": {
+    "path": "upstream/t112_performance_plan.yaml",
+    "status": "implemented-awaiting-runtime-validation"
+  },
+  "case_guide": {
+    "path": "docs/T112_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t112_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG与FX before/after",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600,
+    "minimum_gpus": 1,
+    "distributed_world_size": 1
+  },
+  "cases": [
+    {
+      "case_id": "REF-dedup-reduce-scatter-native",
+      "acceptance_unit_id": "AU-fsdp-get-dedup-rs",
+      "source_test": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_dedup_reduce_scatter",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "two-to-one-linear-rs-positive"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "真实CUDA torch.compile且零skip",
+        "生成代码reduce_scatter exact count=1",
+        "数值与未融合函数一致；只宣称world_size=1结构证据"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference"
+    }
+  ],
+  "non_executed_variants": []
+}

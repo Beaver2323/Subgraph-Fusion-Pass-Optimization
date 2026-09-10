@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-096全部5个provisional候选逐项复核源码、社区测例、设备执行、目标归属与合法OFF/ON",
+    "selected_acceptance_units": [
+      "AU-misc-patterns-e8m0-rceil-log2"
+    ],
+    "corrections": [
+      "CPU/Fake/间接或错配测例不冻结GPU分母。",
+      "同一社区测试覆盖多个handler时按一个行为合同计数，旧ID保留延期映射。",
+      "社区索引遗漏但冻结源码存在的真实GPU目标测例允许经人工复核补入。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": null,
+    "scope": "原生CUDA编译、数值、目标命中/改写与必要梯度合同",
+    "suite_status": "pending-gpu-reference"
+  },
+  "counting_policy": {
+    "current_manifest_units": 1,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "原生GPU suite有效、零skip并完成人工FX复核后冻结"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "contract_name": "pre-SM100 E8M0 log2-ceil精确位运算替换",
+      "stage": "post_grad",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/misc_patterns.py",
+          "line": 170,
+          "symbol": "e8m0_rceil_log2_pattern",
+          "role": "cuda-registered-replacement"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_pattern_fires_and_is_correct",
+          "role": "primary-positive",
+          "evidence_scope": "普通正数输入命中并与eager相等"
+        },
+        {
+          "nodeid": "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_correct_for_values_one_ulp_above_power_of_two",
+          "role": "boundary-positive",
+          "evidence_scope": "2^e上方1 ULP必须向上编码"
+        },
+        {
+          "nodeid": "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness",
+          "role": "regression-positive",
+          "evidence_scope": "gh-178045边界编码回归"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "ordinary-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "A100使用位域提取替代log2+ceil且输出等价",
+          "expected_counter": "FX after不再保留software log2+ceil链",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "one-ulp-boundary-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "2^e上方1 ULP编码为bias+e+1",
+          "expected_counter": "uint8逐元素精确相等",
+          "reference_status": "not-run",
+          "npu_status": "capability-pending"
+        },
+        {
+          "variant_id": "gh178045-regression",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "避免software log2边界舍入少1",
+          "expected_counter": "回归断言通过",
+          "reference_status": "not-run",
+          "npu_status": "capability-pending"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-capability-pending",
+        "allowed_local_deviation": [
+          "先记录NPU原生未注册阻断；GPU冻结后才评审将generic CUDA device guard最小推广到NPU"
+        ],
+        "forbidden_local_deviation": [
+          "绕过guard制造ON收益",
+          "把SM100 PTX分支用于A100或NPU"
+        ]
+      },
+      "npu_control": {
+        "config": "none-registration-is-device-guarded",
+        "off": "native-no-npu-registration",
+        "on": "pending-reviewed-minimal-adaptation",
+        "status": "capability-pending-not-explicit-product-disable",
+        "next_action": "先冻结A100原生reference，再在NPU triton_experimental确认阻断并单独评审最小适配；适配前不计性能"
+      }
+    }
+  ],
+  "deferred_candidates": [
+    {
+      "provisional_unit_id": "AU-misc-patterns-e8m0-rceil",
+      "status": "deferred-hardware-inapplicable-on-a100",
+      "reason": "该分支只在NVIDIA SM100+注册并依赖Blackwell PTX；当前A100 reference会按产品硬件条件跳过。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-misc-patterns-randperm-index",
+      "status": "deferred-no-direct-community-test",
+      "reason": "冻结revision未找到直接社区测例。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-misc-patterns-randperm-index-add",
+      "status": "deferred-no-direct-community-test",
+      "reason": "冻结revision未找到直接社区测例。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-misc-patterns-randperm-index-full",
+      "status": "deferred-no-direct-community-test",
+      "reason": "冻结revision未找到直接社区测例。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    }
+  ]
+}

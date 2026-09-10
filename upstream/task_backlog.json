@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-10T23:14:54+08:00",
+  "generated_at": "2026-09-10T23:48:08+08:00",
   "scope": "T-074 FX inventory 的剩余 provisional 单元；不是全 Inductor 分母",
   "source_inventory": {
     "path": "report/upstream_pass_test_index_20260829/acceptance_units.csv",
@@ -13,15 +13,46 @@
   "planning_manifest_units": [
     "AU-apply-gumbel-max-trick",
     "AU-b2b-gemm",
+    "AU-binary-folding-folded-op",
     "AU-decompose-mem-bound-mm-decompose-addmm",
     "AU-decompose-mem-bound-mm-decompose-bmm",
     "AU-decompose-mem-bound-mm-decompose-mm",
+    "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined",
+    "AU-fsdp-get-dedup-rs",
+    "AU-fuse-attention-sfdp-pattern-1",
+    "AU-fuse-attention-sfdp-pattern-10",
+    "AU-fuse-attention-sfdp-pattern-11",
+    "AU-fuse-attention-sfdp-pattern-12",
+    "AU-fuse-attention-sfdp-pattern-13",
+    "AU-fuse-attention-sfdp-pattern-14",
+    "AU-fuse-attention-sfdp-pattern-15",
+    "AU-fuse-attention-sfdp-pattern-16",
+    "AU-fuse-attention-sfdp-pattern-17",
+    "AU-fuse-attention-sfdp-pattern-18",
+    "AU-fuse-attention-sfdp-pattern-19",
+    "AU-fuse-attention-sfdp-pattern-2",
+    "AU-fuse-attention-sfdp-pattern-20",
+    "AU-fuse-attention-sfdp-pattern-21",
+    "AU-fuse-attention-sfdp-pattern-22",
+    "AU-fuse-attention-sfdp-pattern-23",
+    "AU-fuse-attention-sfdp-pattern-24",
+    "AU-fuse-attention-sfdp-pattern-28",
+    "AU-fuse-attention-sfdp-pattern-29",
+    "AU-fuse-attention-sfdp-pattern-3",
+    "AU-fuse-attention-sfdp-pattern-30",
+    "AU-fuse-attention-sfdp-pattern-4",
+    "AU-fuse-attention-sfdp-pattern-5",
+    "AU-fuse-attention-sfdp-pattern-6",
+    "AU-fuse-attention-sfdp-pattern-7",
+    "AU-fuse-attention-sfdp-pattern-8",
+    "AU-fuse-attention-sfdp-pattern-9",
     "AU-joint-graph-bmm-to-mm",
     "AU-joint-graph-constant-fold-uniform-value",
     "AU-joint-graph-pointless-convert",
     "AU-joint-graph-pointless-permute-pair",
     "AU-joint-graph-pointless-view-pair",
     "AU-joint-graph-scatter-upon-const-tensor",
+    "AU-misc-patterns-e8m0-rceil-log2",
     "AU-pad-mm-addmm",
     "AU-pad-mm-bmm",
     "AU-pad-mm-mm",
@@ -49,7 +80,8 @@
     "AU-split-cat-merge-select-cat-aten",
     "AU-split-cat-merge-split-cat-aten",
     "AU-split-cat-move-view-after-cat",
-    "AU-split-cat-normalize-cat-default-aten"
+    "AU-split-cat-normalize-cat-default-aten",
+    "AU-split-cat-normalize-stack-default"
   ],
   "planning_seed_units": [
     "AU-apply-gumbel-max-trick",
@@ -76,13 +108,14 @@
   ],
   "counts": {
     "inventory_units": 188,
-    "selected_manifest_units": 39,
-    "remaining_provisional_units": 119,
+    "selected_manifest_units": 71,
+    "remaining_provisional_units": 87,
     "non_counting_review_records": 30,
-    "draft_batches": 23,
-    "prepared_batches": 10,
+    "draft_batches": 0,
+    "reviewed_zero_batches": 12,
+    "prepared_batches": 21,
     "scheduled_batches": 33,
-    "deferred_review_units": 30
+    "deferred_review_units": 87
   },
   "batch_acceptance": [
     "逐单元审核 contract、正负例和真实测试入口；允许合并/拆分，但保留旧 ID 映射",
@@ -1047,9 +1080,9 @@
     {
       "task_id": "T-091",
       "family": "split_cat",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-split-cat-normalize-split-default",
@@ -1060,7 +1093,8 @@
             "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAtenNormalizationPasses.test_split_aten_normalization",
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_normalization"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-normalize-split-default-aten",
@@ -1071,7 +1105,8 @@
             "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAtenNormalizationPasses.test_split_aten_normalization",
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_normalization"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-normalize-split-with-size-default-aten",
@@ -1082,7 +1117,8 @@
             "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAtenNormalizationPasses.test_split_aten_normalization",
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_normalization"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-normalize-squeeze-default",
@@ -1090,7 +1126,8 @@
             "torch/_inductor/fx_passes/split_cat.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-normalize-stack-default",
@@ -1100,16 +1137,57 @@
           "community_test_candidates": [
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_stack_normalization_axis_kwarg"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-split-cat-normalize-stack-default"
+      ],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-split-default",
+          "status": "deferred-cpu-only-community-test",
+          "reason": "两个映射测例都在CPU张量上运行，不能冻结原生GPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-split-default-aten",
+          "status": "deferred-cpu-only-community-test",
+          "reason": "Aten normalization测例使用CPU输入，且一个总计数不能独立归属三个split handler。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-split-with-size-default-aten",
+          "status": "deferred-cpu-only-community-test",
+          "reason": "共享CPU测例没有逐handler断言，不能重复计为独立GPU单元。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-squeeze-default",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        }
+      ],
+      "manifest": "upstream/t091_manifest.yaml"
     },
     {
       "task_id": "T-092",
       "family": "split_cat",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-split-cat-normalize-unbind-default",
@@ -1117,7 +1195,8 @@
             "torch/_inductor/fx_passes/split_cat.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-remove-split-with-size-one",
@@ -1125,7 +1204,8 @@
             "torch/_inductor/fx_passes/split_cat.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-replace-einsum-to-pointwise",
@@ -1133,7 +1213,8 @@
             "torch/_inductor/fx_passes/split_cat.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-simplify-split-cat",
@@ -1146,7 +1227,8 @@
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge",
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge_mutation"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-split-cat-to-slices",
@@ -1156,16 +1238,63 @@
           "community_test_candidates": [
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_new_patterns"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-split-cat-normalize-unbind-default",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-remove-split-with-size-one",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-replace-einsum-to-pointwise",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-simplify-split-cat",
+          "status": "deferred-mismapped-or-cpu-only-tests",
+          "reason": "列出的Aten测例实际归属post-grad merge_split_cat_aten；其余pre-grad测例为CPU，不能证明本handler的GPU入口。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-split-cat-to-slices",
+          "status": "deferred-cpu-multi-pattern-test",
+          "reason": "test_split_cat_new_patterns使用CPU并同时覆盖多个handler，缺少独立GPU归属。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        }
+      ],
+      "manifest": "upstream/t092_manifest.yaml"
     },
     {
       "task_id": "T-093",
       "family": "split_cat",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-split-cat-split-stack-to-cats",
@@ -1178,7 +1307,8 @@
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge",
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_merge_mutation"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-unbind-cat-to-view",
@@ -1188,7 +1318,8 @@
           "community_test_candidates": [
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_new_patterns"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-split-cat-unbind-stack-to-slices",
@@ -1198,16 +1329,47 @@
           "community_test_candidates": [
             "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_split_cat_new_patterns"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-split-cat-split-stack-to-cats",
+          "status": "deferred-mismapped-or-cpu-only-tests",
+          "reason": "Aten测例实际归属另一个post-grad handler，pre-grad测例使用CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-unbind-cat-to-view",
+          "status": "deferred-cpu-multi-pattern-test",
+          "reason": "共享test_split_cat_new_patterns仅为CPU且没有逐handler计数。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-split-cat-unbind-stack-to-slices",
+          "status": "deferred-cpu-multi-pattern-test",
+          "reason": "共享test_split_cat_new_patterns仅为CPU且没有逐handler计数。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        }
+      ],
+      "manifest": "upstream/t093_manifest.yaml"
     },
     {
       "task_id": "T-094",
       "family": "pre_grad",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-pre-grad-efficient-conv-bn-eval",
@@ -1217,7 +1379,8 @@
           "community_test_candidates": [
             "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-pre-grad-fuse-conv-bn",
@@ -1227,7 +1390,8 @@
           "community_test_candidates": [
             "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
           ],
-          "coverage_hint": "indirect-regression-test"
+          "coverage_hint": "indirect-regression-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-pre-grad-linear-permute-fusion",
@@ -1237,7 +1401,8 @@
           "community_test_candidates": [
             "test/inductor/test_fx_fusion.py::TestFxFusion.test_linear_permute_fusion"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-pre-grad-permute-linear-fusion",
@@ -1247,7 +1412,8 @@
           "community_test_candidates": [
             "test/inductor/test_fx_fusion.py::TestFxFusion.test_permute_linear_fusion"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-pre-grad-permute-matmul-fusion",
@@ -1257,16 +1423,63 @@
           "community_test_candidates": [
             "test/inductor/test_fx_fusion.py::TestFxFusion.test_permute_bmm_fusion"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-pre-grad-efficient-conv-bn-eval",
+          "status": "deferred-structural-dispatcher-merged-into-t098",
+          "reason": "这是pre_grad对efficient_conv_bn_eval_pass的调度入口；动态合同在T-098按实际handler计一次，避免重复分母。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-pre-grad-fuse-conv-bn",
+          "status": "deferred-mismapped-community-test",
+          "reason": "旧索引指向test_basic内部函数，实际测的是efficient_conv_bn_eval handlers，不是该legacy helper。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-pre-grad-linear-permute-fusion",
+          "status": "deferred-pure-cpu-fx-helper-test",
+          "reason": "test_fx_fusion直接对CPU symbolic_trace图调用helper，没有真实GPU torch.compile入口。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-pre-grad-permute-linear-fusion",
+          "status": "deferred-pure-cpu-fx-helper-test",
+          "reason": "test_fx_fusion直接对CPU symbolic_trace图调用helper，没有真实GPU torch.compile入口。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-pre-grad-permute-matmul-fusion",
+          "status": "deferred-pure-cpu-fx-helper-test",
+          "reason": "test_fx_fusion直接对CPU symbolic_trace图调用helper，没有真实GPU torch.compile入口。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        }
+      ],
+      "manifest": "upstream/t094_manifest.yaml"
     },
     {
       "task_id": "T-095",
       "family": "pre_grad",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-pre-grad-remove-identity",
@@ -1274,16 +1487,31 @@
             "torch/_inductor/fx_passes/pre_grad.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-pre-grad-remove-identity",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例或可归属的性能合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        }
+      ],
+      "manifest": "upstream/t095_manifest.yaml"
     },
     {
       "task_id": "T-096",
       "family": "misc_patterns",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "plan-only-capability-pending",
       "units": [
         {
           "provisional_unit_id": "AU-misc-patterns-e8m0-rceil",
@@ -1291,7 +1519,8 @@
             "torch/_inductor/fx_passes/misc_patterns.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
@@ -1301,7 +1530,8 @@
           "community_test_candidates": [
             "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-misc-patterns-randperm-index",
@@ -1309,7 +1539,8 @@
             "torch/_inductor/fx_passes/misc_patterns.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-misc-patterns-randperm-index-add",
@@ -1317,7 +1548,8 @@
             "torch/_inductor/fx_passes/misc_patterns.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-misc-patterns-randperm-index-full",
@@ -1325,16 +1557,57 @@
             "torch/_inductor/fx_passes/misc_patterns.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-misc-patterns-e8m0-rceil-log2"
+      ],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-misc-patterns-e8m0-rceil",
+          "status": "deferred-hardware-inapplicable-on-a100",
+          "reason": "该分支只在NVIDIA SM100+注册并依赖Blackwell PTX；当前A100 reference会按产品硬件条件跳过。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-misc-patterns-randperm-index",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-misc-patterns-randperm-index-add",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-misc-patterns-randperm-index-full",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        }
+      ],
+      "manifest": "upstream/t096_manifest.yaml"
     },
     {
       "task_id": "T-097",
       "family": "replace_random",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-replace-random-fuse-offset-creation",
@@ -1342,7 +1615,8 @@
             "torch/_inductor/fx_passes/replace_random.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-replace-random-fuse-seed-creation",
@@ -1350,7 +1624,8 @@
             "torch/_inductor/fx_passes/replace_random.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-replace-random-replace-randint",
@@ -1358,7 +1633,8 @@
             "torch/_inductor/fx_passes/replace_random.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-replace-random-replace-random",
@@ -1368,16 +1644,55 @@
           "community_test_candidates": [
             "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_replace_random_pass_preserves_stack_trace_on_rng_prims"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-replace-random-fuse-offset-creation",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-replace-random-fuse-seed-creation",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-replace-random-replace-randint",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-replace-random-replace-random",
+          "status": "deferred-fake-cpu-structural-test",
+          "reason": "现有测例使用make_fx tracing_mode=fake和CPU样例，只验证stack metadata，不是设备执行或随机语义合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        }
+      ],
+      "manifest": "upstream/t097_manifest.yaml"
     },
     {
       "task_id": "T-098",
       "family": "efficient_conv_bn_eval",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform",
@@ -1387,7 +1702,8 @@
           "community_test_candidates": [
             "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-decomposed",
@@ -1397,7 +1713,8 @@
           "community_test_candidates": [
             "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined",
@@ -1407,16 +1724,41 @@
           "community_test_candidates": [
             "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalTemplate.test_basic.test_conv_bn_eval"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined"
+      ],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform",
+          "status": "deferred-no-direct-call-module-attribution",
+          "reason": "社区test_basic在Dynamo/ATen图上覆盖inlined/decomposed路径，未独立证明CallModule handler。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-decomposed",
+          "status": "merged-into-inlined-contract",
+          "reason": "同一个test_basic_cuda循环以decompose_nn_module false/true覆盖两条路径，合并到一个Conv-BN合同，禁止重复执行和重复计分母。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        }
+      ],
+      "manifest": "upstream/t098_manifest.yaml"
     },
     {
       "task_id": "T-099",
       "family": "freezing_patterns",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-freezing-patterns-addmm-fuse-pattern-second",
@@ -1427,7 +1769,8 @@
             "test/inductor/test_inductor_freezing.py::OptimizeForInferenceTemplate.test_unequal_bias_horizontal_addmm_fusion",
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_reproduce_121253_issue_addmm_fusion_check"
           ],
-          "coverage_hint": "indirect-regression-test"
+          "coverage_hint": "indirect-regression-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-freezing-patterns-int8-woq-fusion",
@@ -1437,7 +1780,8 @@
           "community_test_candidates": [
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcherGeneric.test_woq_int8"
           ],
-          "coverage_hint": "indirect-regression-test"
+          "coverage_hint": "indirect-regression-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-freezing-patterns-matmul-fuse",
@@ -1445,7 +1789,8 @@
             "torch/_inductor/fx_passes/freezing_patterns.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-freezing-patterns-matmul-fuse-pattern-two",
@@ -1453,7 +1798,8 @@
             "torch/_inductor/fx_passes/freezing_patterns.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-freezing-patterns-unnecessary-dtype-convert",
@@ -1461,16 +1807,63 @@
             "torch/_inductor/fx_passes/freezing_patterns.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-freezing-patterns-addmm-fuse-pattern-second",
+          "status": "deferred-negative-or-cpu-unrelated-evidence",
+          "reason": "CUDA freezing测例只保护unequal bias不误融合；另一测例是MKLDNN CPU，缺少GPU正例命中合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-freezing-patterns-int8-woq-fusion",
+          "status": "deferred-mkldnn-cpu-only",
+          "reason": "test_woq_int8是MKLDNN/CPU路径，不能转用为NPU或CUDA冻结合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-freezing-patterns-matmul-fuse",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-freezing-patterns-matmul-fuse-pattern-two",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        },
+        {
+          "provisional_unit_id": "AU-freezing-patterns-unnecessary-dtype-convert",
+          "status": "deferred-no-direct-community-test",
+          "reason": "冻结revision未找到直接社区测例。",
+          "denominator_eligible": false,
+          "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+          "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+        }
+      ],
+      "manifest": "upstream/t099_manifest.yaml"
     },
     {
       "task_id": "T-100",
       "family": "binary_folding",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-binary-folding-folded-op",
@@ -1478,16 +1871,24 @@
             "torch/_inductor/fx_passes/binary_folding.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "prepared-awaiting-gpu"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-binary-folding-folded-op"
+      ],
+      "deferred_candidates": [],
+      "manifest": "upstream/t100_manifest.yaml"
     },
     {
       "task_id": "T-101",
       "family": "reduced_atomic_contention",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-reduced-atomic-contention-replacement",
@@ -1500,16 +1901,31 @@
             "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_pure_replacement_skips_mutation_region_refresh",
             "test/inductor/test_pattern_matcher.py::TestPatternMatcher.test_register_replacement_with_get_attr_tensor_constant"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-reduced-atomic-contention-replacement",
+          "status": "merged-existing-coverage-t085-stale-symbol-mapping",
+          "reason": "当前源码的replacement属于partitioned scatter优化，已由T-085完成原生GPU、NPU功能和性能闭环；旧索引四条pattern-matcher基础设施测试不执行该优化。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        }
+      ],
+      "manifest": "upstream/t101_manifest.yaml"
     },
     {
       "task_id": "T-102",
       "family": "fuse_attention",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-1",
@@ -1519,7 +1935,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_1"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-2",
@@ -1529,7 +1946,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_2"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-3",
@@ -1539,7 +1957,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_3"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-4",
@@ -1549,7 +1968,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_4"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-5",
@@ -1559,16 +1979,28 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_5"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-fuse-attention-sfdp-pattern-1",
+        "AU-fuse-attention-sfdp-pattern-2",
+        "AU-fuse-attention-sfdp-pattern-3",
+        "AU-fuse-attention-sfdp-pattern-4",
+        "AU-fuse-attention-sfdp-pattern-5"
+      ],
+      "deferred_candidates": [],
+      "manifest": "upstream/t102_manifest.yaml"
     },
     {
       "task_id": "T-103",
       "family": "fuse_attention",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-6",
@@ -1578,7 +2010,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_6"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-7",
@@ -1588,7 +2021,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_7"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-8",
@@ -1598,7 +2032,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_8"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-9",
@@ -1608,7 +2043,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_9"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-10",
@@ -1618,16 +2054,28 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_10"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-fuse-attention-sfdp-pattern-10",
+        "AU-fuse-attention-sfdp-pattern-6",
+        "AU-fuse-attention-sfdp-pattern-7",
+        "AU-fuse-attention-sfdp-pattern-8",
+        "AU-fuse-attention-sfdp-pattern-9"
+      ],
+      "deferred_candidates": [],
+      "manifest": "upstream/t103_manifest.yaml"
     },
     {
       "task_id": "T-104",
       "family": "fuse_attention",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-11",
@@ -1637,7 +2085,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_11"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-12",
@@ -1647,7 +2096,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_12"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-13",
@@ -1657,7 +2107,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_13"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-14",
@@ -1667,7 +2118,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_14"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-15",
@@ -1677,16 +2129,28 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_15"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-fuse-attention-sfdp-pattern-11",
+        "AU-fuse-attention-sfdp-pattern-12",
+        "AU-fuse-attention-sfdp-pattern-13",
+        "AU-fuse-attention-sfdp-pattern-14",
+        "AU-fuse-attention-sfdp-pattern-15"
+      ],
+      "deferred_candidates": [],
+      "manifest": "upstream/t104_manifest.yaml"
     },
     {
       "task_id": "T-105",
       "family": "fuse_attention",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-16",
@@ -1696,7 +2160,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_16"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-17",
@@ -1706,7 +2171,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_17"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-18",
@@ -1716,7 +2182,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_18"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-19",
@@ -1726,7 +2193,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_19"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-20",
@@ -1736,16 +2204,28 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_20"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-fuse-attention-sfdp-pattern-16",
+        "AU-fuse-attention-sfdp-pattern-17",
+        "AU-fuse-attention-sfdp-pattern-18",
+        "AU-fuse-attention-sfdp-pattern-19",
+        "AU-fuse-attention-sfdp-pattern-20"
+      ],
+      "deferred_candidates": [],
+      "manifest": "upstream/t105_manifest.yaml"
     },
     {
       "task_id": "T-106",
       "family": "fuse_attention",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-21",
@@ -1755,7 +2235,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_21"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-22",
@@ -1765,7 +2246,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_22"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-23",
@@ -1775,7 +2257,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_23"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-24",
@@ -1785,7 +2268,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_24"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-25",
@@ -1795,16 +2279,36 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_25"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-fuse-attention-sfdp-pattern-21",
+        "AU-fuse-attention-sfdp-pattern-22",
+        "AU-fuse-attention-sfdp-pattern-23",
+        "AU-fuse-attention-sfdp-pattern-24"
+      ],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-25",
+          "status": "deferred-explicit-cuda-disabled-xpu-only",
+          "reason": "注册extra_check明确disable_cuda，GPU类也只在HAS_XPU_AND_TRITON时暴露该编号；禁止绕过CUDA关闭制造reference。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        }
+      ],
+      "manifest": "upstream/t106_manifest.yaml"
     },
     {
       "task_id": "T-107",
       "family": "fuse_attention",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-26",
@@ -1814,7 +2318,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_26"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-27",
@@ -1824,7 +2329,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_27"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-28",
@@ -1834,7 +2340,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_28"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-29",
@@ -1844,7 +2351,8 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_29"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-30",
@@ -1854,16 +2362,43 @@
           "community_test_candidates": [
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_30"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "prepared-awaiting-gpu"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-fuse-attention-sfdp-pattern-28",
+        "AU-fuse-attention-sfdp-pattern-29",
+        "AU-fuse-attention-sfdp-pattern-30"
+      ],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-26",
+          "status": "deferred-explicit-cuda-disabled-xpu-only",
+          "reason": "注册extra_check明确disable_cuda，GPU类也只在HAS_XPU_AND_TRITON时暴露该编号；禁止绕过CUDA关闭制造reference。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-27",
+          "status": "deferred-explicit-cuda-disabled-xpu-only",
+          "reason": "注册extra_check明确disable_cuda，GPU类也只在HAS_XPU_AND_TRITON时暴露该编号；禁止绕过CUDA关闭制造reference。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        }
+      ],
+      "manifest": "upstream/t107_manifest.yaml"
     },
     {
       "task_id": "T-108",
       "family": "quantization",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-quantization-qcat",
@@ -1871,7 +2406,8 @@
             "torch/_inductor/fx_passes/quantization.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-quantization-qconv",
@@ -1879,7 +2415,8 @@
             "torch/_inductor/fx_passes/quantization.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-quantization-qconv-binary",
@@ -1887,7 +2424,8 @@
             "torch/_inductor/fx_passes/quantization.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-quantization-qlinear",
@@ -1898,7 +2436,8 @@
             "test/inductor/test_aot_inductor.py::AOTInductorTestsTemplate.test_buffer_mutation_and_force_mmap_weights",
             "test/inductor/test_cpu_select_algorithm.py::TestSelectAlgorithm.test_quantized_linear_with_pointwise_binary"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-quantization-qlinear-binary",
@@ -1906,16 +2445,63 @@
             "torch/_inductor/fx_passes/quantization.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-quantization-qcat",
+          "status": "deferred-cpu-mkldnn-quantization-only",
+          "reason": "该入口生成quantized_decomposed/MKLDNN CPU lowering；映射测例为空或只走CPU/MKLDNN，不能证明CUDA/NPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qconv",
+          "status": "deferred-cpu-mkldnn-quantization-only",
+          "reason": "该入口生成quantized_decomposed/MKLDNN CPU lowering；映射测例为空或只走CPU/MKLDNN，不能证明CUDA/NPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qconv-binary",
+          "status": "deferred-cpu-mkldnn-quantization-only",
+          "reason": "该入口生成quantized_decomposed/MKLDNN CPU lowering；映射测例为空或只走CPU/MKLDNN，不能证明CUDA/NPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qlinear",
+          "status": "deferred-cpu-mkldnn-quantization-only",
+          "reason": "该入口生成quantized_decomposed/MKLDNN CPU lowering；映射测例为空或只走CPU/MKLDNN，不能证明CUDA/NPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qlinear-binary",
+          "status": "deferred-cpu-mkldnn-quantization-only",
+          "reason": "该入口生成quantized_decomposed/MKLDNN CPU lowering；映射测例为空或只走CPU/MKLDNN，不能证明CUDA/NPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        }
+      ],
+      "manifest": "upstream/t108_manifest.yaml"
     },
     {
       "task_id": "T-109",
       "family": "quantization",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-quantization-qmaxpool2d",
@@ -1923,7 +2509,8 @@
             "torch/_inductor/fx_passes/quantization.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-quantization-qreshape",
@@ -1931,7 +2518,8 @@
             "torch/_inductor/fx_passes/quantization.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-quantization-woq-int8-variant-line-1208",
@@ -1941,7 +2529,8 @@
           "community_test_candidates": [
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcherGeneric.test_woq_int8"
           ],
-          "coverage_hint": "indirect-regression-test"
+          "coverage_hint": "indirect-regression-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-quantization-woq-int8-variant-line-1273",
@@ -1951,16 +2540,55 @@
           "community_test_candidates": [
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcherGeneric.test_woq_int8"
           ],
-          "coverage_hint": "indirect-regression-test"
+          "coverage_hint": "indirect-regression-test",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-quantization-qmaxpool2d",
+          "status": "deferred-cpu-mkldnn-quantization-only",
+          "reason": "该入口生成quantized_decomposed/MKLDNN CPU lowering；映射测例为空或只走CPU/MKLDNN，不能证明CUDA/NPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-qreshape",
+          "status": "deferred-cpu-mkldnn-quantization-only",
+          "reason": "该入口生成quantized_decomposed/MKLDNN CPU lowering；映射测例为空或只走CPU/MKLDNN，不能证明CUDA/NPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-woq-int8-variant-line-1208",
+          "status": "deferred-cpu-mkldnn-quantization-only",
+          "reason": "该入口生成quantized_decomposed/MKLDNN CPU lowering；映射测例为空或只走CPU/MKLDNN，不能证明CUDA/NPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-quantization-woq-int8-variant-line-1273",
+          "status": "deferred-cpu-mkldnn-quantization-only",
+          "reason": "该入口生成quantized_decomposed/MKLDNN CPU lowering；映射测例为空或只走CPU/MKLDNN，不能证明CUDA/NPU合同。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        }
+      ],
+      "manifest": "upstream/t109_manifest.yaml"
     },
     {
       "task_id": "T-110",
       "family": "mkldnn_fusion",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-mkldnn-fusion-convolution",
@@ -1973,7 +2601,8 @@
             "test/inductor/test_select_algorithm.py::TestSelectAlgorithm.test_convolution_as_mm_triton_only",
             "test/inductor/test_select_algorithm.py::TestSelectAlgorithm.test_non_1x1_convolution_caps_template_warps"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-mkldnn-fusion-linear",
@@ -1986,7 +2615,8 @@
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_linear_unary",
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcherGeneric.test_conv2d_linear_add_broadcast_shapes"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-mkldnn-fusion-linear-bias",
@@ -1996,7 +2626,8 @@
           "community_test_candidates": [
             "test/inductor/test_binary_folding.py::BinaryFoldingTemplate.test_linear_binary_folding"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-mkldnn-fusion-mkldnn-rnn-layer",
@@ -2006,7 +2637,8 @@
           "community_test_candidates": [
             "test/inductor/test_cpu_repro.py::CPUReproTests._test_lstm_packed"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-mkldnn-fusion-register-binary-unary-fusion-lowering",
@@ -2018,16 +2650,63 @@
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_inplace_fusion_failed_cpu",
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_inplace_fusion_pass_cpu"
           ],
-          "coverage_hint": "indirect-regression-test"
+          "coverage_hint": "indirect-regression-test",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-convolution",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-linear",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-linear-bias",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-mkldnn-rnn-layer",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-binary-unary-fusion-lowering",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        }
+      ],
+      "manifest": "upstream/t110_manifest.yaml"
     },
     {
       "task_id": "T-111",
       "family": "mkldnn_fusion",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-mkldnn-fusion-register-binary-unary-maybe-inplace-fusion-lowering",
@@ -2039,7 +2718,8 @@
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_inplace_fusion_failed_cpu",
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_conv2d_binary_inplace_fusion_pass_cpu"
           ],
-          "coverage_hint": "indirect-regression-test"
+          "coverage_hint": "indirect-regression-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-mkldnn-fusion-register-hardtanh-fusion-lowering",
@@ -2047,7 +2727,8 @@
             "torch/_inductor/fx_passes/mkldnn_fusion.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-mkldnn-fusion-register-leaky-relu-fusion-lowering",
@@ -2057,7 +2738,8 @@
           "community_test_candidates": [
             "test/inductor/test_mkldnn_pattern_matcher.py::TestPatternMatcher.test_leaky_relu_pattern_fallback"
           ],
-          "coverage_hint": "indirect-regression-test"
+          "coverage_hint": "indirect-regression-test",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-mkldnn-fusion-register-unary-fusion-lowering",
@@ -2065,7 +2747,8 @@
             "torch/_inductor/fx_passes/mkldnn_fusion.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         },
         {
           "provisional_unit_id": "AU-mkldnn-fusion-reshape-linear-reshape",
@@ -2073,16 +2756,63 @@
             "torch/_inductor/fx_passes/mkldnn_fusion.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-binary-unary-maybe-inplace-fusion-lowering",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-hardtanh-fusion-lowering",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-leaky-relu-fusion-lowering",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-register-unary-fusion-lowering",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        },
+        {
+          "provisional_unit_id": "AU-mkldnn-fusion-reshape-linear-reshape",
+          "status": "deferred-mkldnn-cpu-only-or-mismapped",
+          "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        }
+      ],
+      "manifest": "upstream/t111_manifest.yaml"
     },
     {
       "task_id": "T-112",
       "family": "fsdp",
-      "status": "draft-awaiting-contract-review",
-      "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "status": "prepared-with-explicit-deferred-candidates",
+      "reference_ready": true,
+      "performance_readiness": "worker-static-only-awaiting-functional-gates",
       "units": [
         {
           "provisional_unit_id": "AU-fsdp-get-dedup-rs",
@@ -2090,16 +2820,24 @@
             "torch/_inductor/fx_passes/fsdp.py"
           ],
           "community_test_candidates": [],
-          "coverage_hint": "no-test-found"
+          "coverage_hint": "no-test-found",
+          "review_disposition": "prepared-awaiting-gpu"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [
+        "AU-fsdp-get-dedup-rs"
+      ],
+      "deferred_candidates": [],
+      "manifest": "upstream/t112_manifest.yaml"
     },
     {
       "task_id": "T-113",
       "family": "group_batch_fusion",
-      "status": "draft-awaiting-contract-review",
+      "status": "reviewed-no-gpu-ready-units",
       "reference_ready": false,
-      "performance_readiness": "needs-community-benchmark-search-and-worker",
+      "performance_readiness": "not-applicable-no-gpu-ready-unit",
       "units": [
         {
           "provisional_unit_id": "AU-group-batch-fusion",
@@ -2113,9 +2851,24 @@
             "test/inductor/test_group_batch_fusion.py::TestGroupBatchFusion.test_as_strided_storage_offset_after_mm_fusion",
             "test/inductor/test_group_batch_fusion.py::TestGroupBatchFusion.test_batch_linear_lhs_skips_tensor_subclass_weights"
           ],
-          "coverage_hint": "direct-trigger-test"
+          "coverage_hint": "direct-trigger-test",
+          "review_disposition": "deferred-not-counting"
         }
-      ]
+      ],
+      "reference_frozen": false,
+      "formally_closed": false,
+      "ready_acceptance_units": [],
+      "deferred_candidates": [
+        {
+          "provisional_unit_id": "AU-group-batch-fusion",
+          "status": "deferred-structural-dispatcher-concrete-fusions-counted-separately",
+          "reason": "group_batch_fusion_passes只按配置实例化并调度具体fusion；映射测例分别属于batch-linear、cat-linear或纯subset helper，容器不独立计功能/性能分母。",
+          "denominator_eligible": false,
+          "performance_readiness": "not-applicable-until-independent-gpu-contract",
+          "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+        }
+      ],
+      "manifest": "upstream/t113_manifest.yaml"
     }
   ],
   "non_counting_review": [

@@ -125,6 +125,53 @@ def python_qualnames(path: Path) -> set[str]:
 
     Visitor().visit(tree)
 
+    # A few upstream suites expose reviewed template methods by assigning them
+    # directly on a concrete GPU class instead of spelling another ``def``.
+    # Resolve only the two static forms used by PyTorch tests; do not evaluate
+    # arbitrary class-body expressions or import torch during validation.
+    def class_assignments(statements: list[ast.stmt]):
+        for statement in statements:
+            if isinstance(statement, ast.Assign):
+                yield statement
+            elif isinstance(statement, ast.If):
+                yield from class_assignments(statement.body)
+                yield from class_assignments(statement.orelse)
+            elif isinstance(statement, (ast.Try, ast.TryStar)):
+                yield from class_assignments(statement.body)
+                yield from class_assignments(statement.orelse)
+                yield from class_assignments(statement.finalbody)
+                for handler in statement.handlers:
+                    yield from class_assignments(handler.body)
+
+    for class_node in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
+        for assignment in class_assignments(class_node.body):
+            if len(assignment.targets) != 1 or not isinstance(
+                assignment.targets[0], ast.Name
+            ):
+                continue
+            target = assignment.targets[0].id
+            if not target.startswith("test_"):
+                continue
+            value = assignment.value
+            source: ast.expr | None = value
+            if (
+                isinstance(value, ast.Call)
+                and isinstance(value.func, ast.Attribute)
+                and isinstance(value.func.value, ast.Name)
+                and value.func.value.id == "functools"
+                and value.func.attr == "partialmethod"
+                and value.args
+            ):
+                source = value.args[0]
+            if not (
+                isinstance(source, ast.Attribute)
+                and isinstance(source.value, ast.Name)
+            ):
+                continue
+            source_qualname = f"{source.value.id}.{source.attr}"
+            if source_qualname in result:
+                result.add(f"{class_node.name}.{target}")
+
     # Some PyTorch community suites define reusable tests on a template class and
     # materialize the runnable GPU class with instantiate_device_type_tests or
     # copy_tests. Resolve the CUDA name statically so validation avoids importing
@@ -1208,6 +1255,10 @@ def main() -> int:
     if args.validate_only:
         print("torch_imported=0 gpu_executed=0")
         return 0
+    if not plan["cases"]:
+        raise ValueError(
+            "该批次已审核但没有GPU-ready case；禁止创建空run或把零执行记为PASS"
+        )
     if args.output_root is None:
         raise ValueError("执行 GPU suite 时必须提供 --output-root")
     if args.timeout_seconds is not None and args.timeout_seconds <= 0:

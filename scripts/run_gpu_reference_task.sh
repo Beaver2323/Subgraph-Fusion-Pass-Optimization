@@ -32,7 +32,7 @@ usage() {
   bash scripts/run_gpu_reference_task.sh --task T-078 --validate-only
 
 参数：
-  --task T-076|...|T-090   必填
+  --task T-076|...|T-113   必填；零GPU-ready批次仅允许--validate-only
   T-083 原生功能例使用 world_size=1，只需1卡；不证明跨rank通信收益。
   T-085 完整原生 suite 含真实2-rank NCCL，必须用 --gpus 指定两张卡。
   --gpu ID             实际运行时使用的物理 GPU 编号；也可预先设置 CUDA_VISIBLE_DEVICES
@@ -121,37 +121,43 @@ case "${task_id}" in
     T-076|T076)
         task_id="T-076"
         task_runner="${tracker_root}/scripts/run_reference_all.sh"
+        task_plan="${tracker_root}/upstream/reference_plan.yaml"
         result_root="${data_root}/tmp/t076-reference-results"
         ;;
     T-077|T077)
         task_id="T-077"
         task_runner="${tracker_root}/scripts/run_t077_reference_all.sh"
+        task_plan="${tracker_root}/upstream/t077_reference_plan.yaml"
         result_root="${data_root}/tmp/t077-reference-results"
         ;;
     T-078|T078)
         task_id="T-078"
         task_runner="${tracker_root}/scripts/run_t078_reference_all.sh"
+        task_plan="${tracker_root}/upstream/t078_reference_plan.yaml"
         result_root="${data_root}/tmp/t078-reference-results"
         ;;
     T-079|T079)
         task_id="T-079"
         task_runner="${tracker_root}/scripts/run_t079_reference_all.sh"
+        task_plan="${tracker_root}/upstream/t079_reference_plan.yaml"
         result_root="${data_root}/tmp/t079-reference-results"
         ;;
     T-080|T080)
         task_id="T-080"
         task_runner="${tracker_root}/scripts/run_t080_reference_all.sh"
+        task_plan="${tracker_root}/upstream/t080_reference_plan.yaml"
         result_root="${data_root}/tmp/t080-reference-results"
         ;;
-    T-081|T081|T-082|T082|T-083|T083|T-084|T084|T-085|T085|T-086|T086|T-087|T087|T-088|T088|T-089|T089|T-090|T090)
+    T-081|T081|T-082|T082|T-083|T083|T-084|T084|T-085|T085|T-086|T086|T-087|T087|T-088|T088|T-089|T089|T-090|T090|T-091|T091|T-092|T092|T-093|T093|T-094|T094|T-095|T095|T-096|T096|T-097|T097|T-098|T098|T-099|T099|T-100|T100|T-101|T101|T-102|T102|T-103|T103|T-104|T104|T-105|T105|T-106|T106|T-107|T107|T-108|T108|T-109|T109|T-110|T110|T-111|T111|T-112|T112|T-113|T113)
         task_id="T-${task_id//[!0-9]/}"
         task_suffix="${task_id,,}"
         task_suffix="${task_suffix//-/}"
         task_runner="${tracker_root}/scripts/run_${task_suffix}_reference_all.sh"
+        task_plan="${tracker_root}/upstream/${task_suffix}_reference_plan.yaml"
         result_root="${data_root}/tmp/${task_suffix}-reference-results"
         ;;
     *)
-        echo "错误：--task 必须是 T-076～T-090。" >&2
+        echo "错误：--task 必须是 T-076～T-113。" >&2
         usage >&2
         exit 2
         ;;
@@ -266,6 +272,12 @@ bash "${task_runner}" "${validate_args[@]}"
 if ((validate_only)); then
     echo "gpu_task_validation=OK task=${task_id}"
     exit 0
+fi
+
+task_number="${task_id#T-}"
+if ((10#${task_number} >= 91)); then
+    "${PYTHON}" "${tracker_root}/scripts/check_gpu_task_runnable.py" \
+        --plan "${task_plan}"
 fi
 
 if [[ -z "${gpu_id}" ]]; then

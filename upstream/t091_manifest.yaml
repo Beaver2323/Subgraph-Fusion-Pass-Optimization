@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-091全部5个provisional候选逐项复核源码、社区测例、设备执行、目标归属与合法OFF/ON",
+    "selected_acceptance_units": [
+      "AU-split-cat-normalize-stack-default"
+    ],
+    "corrections": [
+      "CPU/Fake/间接或错配测例不冻结GPU分母。",
+      "同一社区测试覆盖多个handler时按一个行为合同计数，旧ID保留延期映射。",
+      "社区索引遗漏但冻结源码存在的真实GPU目标测例允许经人工复核补入。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": null,
+    "scope": "原生CUDA编译、数值、目标命中/改写与必要梯度合同",
+    "suite_status": "pending-gpu-reference"
+  },
+  "counting_policy": {
+    "current_manifest_units": 1,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "原生GPU suite有效、零skip并完成人工FX复核后冻结"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-split-cat-normalize-stack-default",
+      "contract_name": "stack axis关键字规范化为dim",
+      "stage": "pre_grad",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/split_cat.py",
+          "line": 383,
+          "symbol": "normalize_stack_default",
+          "role": "normalization-pass-handler"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_stack_normalization_axis_kwarg",
+          "role": "primary-positive",
+          "evidence_scope": "真实GPU输入与torch.compile；axis=1规范化且数值等价"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "axis-kwarg-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "torch.stack(axis=1)改写为规范dim关键字且输出不变",
+          "expected_counter": "人工FX复核确认目标节点变化",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-derived-from-community-functional-case",
+        "allowed_local_deviation": [
+          "NPU只替换设备并显式选择triton_experimental，保持shape和axis合同"
+        ],
+        "forbidden_local_deviation": [
+          "把CPU normalization计数转为GPU证据",
+          "复用其他backend结果"
+        ]
+      },
+      "npu_control": {
+        "config": "pre_grad_fusion_options.normalization_pass",
+        "off": {},
+        "on": {
+          "normalization_pass": {}
+        },
+        "status": "prepared",
+        "next_action": "GPU FX确认后在NPU真机验证精确handler、图改写和数值，再签性能门禁"
+      }
+    }
+  ],
+  "deferred_candidates": [
+    {
+      "provisional_unit_id": "AU-split-cat-normalize-split-default",
+      "status": "deferred-cpu-only-community-test",
+      "reason": "两个映射测例都在CPU张量上运行，不能冻结原生GPU合同。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-split-cat-normalize-split-default-aten",
+      "status": "deferred-cpu-only-community-test",
+      "reason": "Aten normalization测例使用CPU输入，且一个总计数不能独立归属三个split handler。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-split-cat-normalize-split-with-size-default-aten",
+      "status": "deferred-cpu-only-community-test",
+      "reason": "共享CPU测例没有逐handler断言，不能重复计为独立GPU单元。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    },
+    {
+      "provisional_unit_id": "AU-split-cat-normalize-squeeze-default",
+      "status": "deferred-no-direct-community-test",
+      "reason": "冻结revision未找到直接社区测例。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-gpu-functional-contract",
+      "next_action": "补齐可独立归属的原生GPU命中、正确性和合法OFF/ON合同后重开；当前不执行不计数"
+    }
+  ]
+}

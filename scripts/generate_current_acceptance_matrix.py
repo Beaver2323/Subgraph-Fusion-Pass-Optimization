@@ -85,7 +85,55 @@ TASK_FILES = {
         "manifest": "upstream/t090_manifest.yaml",
         "performance_plan": "upstream/t090_performance_plan.yaml",
     },
+    "T-091": {
+        "manifest": "upstream/t091_manifest.yaml",
+        "performance_plan": "upstream/t091_performance_plan.yaml",
+    },
+    "T-092": {
+        "manifest": "upstream/t092_manifest.yaml",
+        "performance_plan": "upstream/t092_performance_plan.yaml",
+    },
+    "T-093": {
+        "manifest": "upstream/t093_manifest.yaml",
+        "performance_plan": "upstream/t093_performance_plan.yaml",
+    },
+    "T-094": {
+        "manifest": "upstream/t094_manifest.yaml",
+        "performance_plan": "upstream/t094_performance_plan.yaml",
+    },
+    "T-095": {
+        "manifest": "upstream/t095_manifest.yaml",
+        "performance_plan": "upstream/t095_performance_plan.yaml",
+    },
+    "T-096": {
+        "manifest": "upstream/t096_manifest.yaml",
+        "performance_plan": "upstream/t096_performance_plan.yaml",
+    },
+    "T-097": {
+        "manifest": "upstream/t097_manifest.yaml",
+        "performance_plan": "upstream/t097_performance_plan.yaml",
+    },
+    "T-098": {
+        "manifest": "upstream/t098_manifest.yaml",
+        "performance_plan": "upstream/t098_performance_plan.yaml",
+    },
+    "T-099": {
+        "manifest": "upstream/t099_manifest.yaml",
+        "performance_plan": "upstream/t099_performance_plan.yaml",
+    },
+    "T-100": {
+        "manifest": "upstream/t100_manifest.yaml",
+        "performance_plan": "upstream/t100_performance_plan.yaml",
+    },
 }
+
+for task_number in range(101, 114):
+    task_id = f"T-{task_number:03d}"
+    suffix = task_id.lower().replace("-", "")
+    TASK_FILES[task_id] = {
+        "manifest": f"upstream/{suffix}_manifest.yaml",
+        "performance_plan": f"upstream/{suffix}_performance_plan.yaml",
+    }
 
 FIELDNAMES = [
     "matrix_generated_at",
@@ -190,8 +238,11 @@ def phase(row: dict) -> str:
     return "awaiting-npu"
 
 
-def community_alignment(comparison: dict | None) -> dict[str, str]:
-    """读取显式社区对齐结论；旧结果只标记待复核，不反推完全对齐。"""
+def community_alignment(
+    comparison: dict | None,
+    preparation: dict | None = None,
+) -> dict[str, str]:
+    """读取实测对齐结论；无实测时只显示 manifest 中的准备态边界。"""
     default = {
         "community_alignment_status": "PENDING_REVIEW",
         "community_alignment_source": "legacy-missing-explicit",
@@ -200,6 +251,29 @@ def community_alignment(comparison: dict | None) -> dict[str, str]:
         "community_open_scope": "历史结果缺少显式社区对齐范围，需在后续再认证时补录",
         "community_alignment_disposition": "保留原功能/性能结论，但不得据此外推为完全社区对齐",
     }
+    if comparison is None and isinstance(preparation, dict):
+        gpu_scope = str(preparation.get("gpu_scope") or "")
+        npu_scope = str(preparation.get("npu_scope") or "")
+        return {
+            "community_alignment_status": str(
+                preparation.get("status") or "PENDING_REVIEW"
+            ),
+            "community_alignment_source": "manifest-preparation-contract",
+            "community_aligned_scope": "",
+            "community_divergent_scope": "",
+            "community_open_scope": "；".join(
+                value
+                for value in (
+                    f"GPU预期：{gpu_scope}" if gpu_scope else "",
+                    f"NPU待验证：{npu_scope}" if npu_scope else "",
+                )
+                if value
+            ),
+            "community_alignment_disposition": (
+                "源码边界已审核、设备行为尚未形成结论；GPU reference 与 NPU "
+                "triton_experimental 实测后更新"
+            ),
+        }
     if not comparison:
         return default
     alignment = comparison.get("community_alignment")
@@ -356,7 +430,10 @@ def build_rows(generated_at: str) -> list[dict]:
                         f"社区对齐 sidecar 功能原件哈希失效：{alignment_sidecar_path}"
                     )
                 alignment_payload = alignment_sidecar
-            alignment = community_alignment(alignment_payload)
+            alignment = community_alignment(
+                alignment_payload,
+                unit.get("community_alignment"),
+            )
 
             plan_item = plan_items[unit_id]
             performance_status = str(plan_item.get("performance_status") or "unknown")

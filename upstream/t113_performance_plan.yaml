@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-113",
+  "generated_at": "2026-09-10T22:55:21+08:00",
+  "status": "not-applicable-no-gpu-ready-unit",
+  "implementation": {
+    "status": "not-implemented",
+    "entrypoint": null,
+    "reason": "本批没有合法GPU-ready单元，不派生性能worker"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "新进程内导入torch/torch_npu之前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable则记录并免测；generic guard遗漏才进入单独最小适配审核"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU原生reference有效后，NPU先验证OFF/ON数值、精确改写、零graph break/CPU fallback，再人工签gate",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw samples"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "三OFF/三ON分别聚合；分布式要求全部rank有效"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 0,
+    "performance_minimum_devices": 0,
+    "performance_world_size": 0,
+    "actual_device_execution_required": false,
+    "fake_tensor_allowed_as_performance_oracle": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/"
+    ],
+    "terms": [
+      "T-113"
+    ],
+    "result": "attention现有社区benchmark从已融合SDPA起步；FSDP只找到单rank功能例；其余空批次无合法设备合同。",
+    "source_priority": "社区目标级benchmark优先；没有时保留功能图/shape/dtype/阶段派生并明确非社区benchmark、非模型端到端"
+  },
+  "acceptance_units": []
+}

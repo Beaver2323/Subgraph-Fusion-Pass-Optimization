@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-107",
+  "generated_at": "2026-09-10T22:55:21+08:00",
+  "status": "gpu-ready-awaiting-native-execution",
+  "performance_plan": {
+    "path": "upstream/t107_performance_plan.yaml",
+    "status": "implemented-awaiting-runtime-validation"
+  },
+  "case_guide": {
+    "path": "docs/T107_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t107_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG与FX before/after",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 7200,
+    "minimum_gpus": 1,
+    "distributed_world_size": null
+  },
+  "cases": [
+    {
+      "case_id": "REF-sfdp-pattern-28-native",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-28",
+      "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_28_gpu",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "pattern-28-community-product"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "真实CUDA torch.compile且零skip",
+        "人工FX/per-pattern counter确认编号28命中",
+        "输出及社区要求的梯度与eager一致"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-sfdp-pattern-29-native",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-29",
+      "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_29_gpu",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "pattern-29-community-product"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "真实CUDA torch.compile且零skip",
+        "人工FX/per-pattern counter确认编号29命中",
+        "输出及社区要求的梯度与eager一致"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-sfdp-pattern-30-native",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-30",
+      "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_30_gpu",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "pattern-30-community-product"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "真实CUDA torch.compile且零skip",
+        "人工FX/per-pattern counter确认编号30命中",
+        "输出及社区要求的梯度与eager一致"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "not-configured-functional-reference"
+    }
+  ],
+  "non_executed_variants": []
+}

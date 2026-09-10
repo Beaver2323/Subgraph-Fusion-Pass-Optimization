@@ -1,0 +1,335 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T22:55:21+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-104全部5个provisional候选逐项复核源码、社区测例、设备入口、目标归属和合法OFF/ON",
+    "selected_acceptance_units": [
+      "AU-fuse-attention-sfdp-pattern-11",
+      "AU-fuse-attention-sfdp-pattern-12",
+      "AU-fuse-attention-sfdp-pattern-13",
+      "AU-fuse-attention-sfdp-pattern-14",
+      "AU-fuse-attention-sfdp-pattern-15"
+    ],
+    "corrections": [
+      "模板私有方法改为实际可执行GPU类nodeid。",
+      "CPU/Fake/间接/错配测试不冻结GPU分母。",
+      "显式CUDA关闭、重复实现和结构容器均不制造ON路径。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": null,
+    "scope": "原生CUDA编译、数值/梯度、目标编号或生成代码改写",
+    "suite_status": "pending-gpu-reference"
+  },
+  "counting_policy": {
+    "current_manifest_units": 5,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-11",
+      "contract_name": "SDPA pattern 11：HuggingFace式QKV permute attention",
+      "stage": "joint_graph",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/fuse_attention.py",
+          "line": 297,
+          "symbol": "_sfdp_pattern_11",
+          "role": "joint-graph-register-replacement-search-function"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_11_gpu",
+          "role": "primary-native-gpu-product",
+          "evidence_scope": "真实CUDA torch.compile；数值、必要梯度、fuse_attention计数和生成代码；精确编号仍需FX/per-pattern counter复核"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "pattern-11-community-product",
+          "kind": "positive-product",
+          "expected_reference_match": true,
+          "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；将显式转置后的链改为SDPA",
+          "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_11前缀>=1",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-derived-from-community-functional-case",
+        "allowed_local_deviation": [
+          "NPU使用注册器实际生成的同编号half inference输入，设备替换为NPU并保持pattern合同"
+        ],
+        "forbidden_local_deviation": [
+          "用通用fuse_attention总计数冒充精确编号",
+          "复用default/DVM/MLIR结果",
+          "把SDPA kernel benchmark冒充rewrite benchmark"
+        ]
+      },
+      "community_alignment": {
+        "status": "pending-device-comparison",
+        "gpu_scope": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现",
+        "npu_scope": "必须在triton_experimental真机确认精确编号、数值和无fallback后才能定论"
+      },
+      "npu_control": {
+        "config": "use_joint_graph_passes on/off on an isolated target-only workload",
+        "off": false,
+        "on": true,
+        "status": "prepared",
+        "next_action": "GPU原生reference人工复核后，在NPU运行独立fresh-process OFF/ON功能臂；功能通过才签性能gate"
+      }
+    },
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-12",
+      "contract_name": "SDPA pattern 12：HuggingFace式permute并带dropout",
+      "stage": "joint_graph",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/fuse_attention.py",
+          "line": 318,
+          "symbol": "_sfdp_pattern_12",
+          "role": "joint-graph-register-replacement-search-function"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_12_gpu",
+          "role": "primary-native-gpu-product",
+          "evidence_scope": "真实CUDA torch.compile；数值、必要梯度、fuse_attention计数和生成代码；精确编号仍需FX/per-pattern counter复核"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "pattern-12-community-product",
+          "kind": "positive-product",
+          "expected_reference_match": true,
+          "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；训练态保留dropout概率",
+          "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_12前缀>=1",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-derived-from-community-functional-case",
+        "allowed_local_deviation": [
+          "NPU使用注册器实际生成的同编号half inference输入，设备替换为NPU并保持pattern合同"
+        ],
+        "forbidden_local_deviation": [
+          "用通用fuse_attention总计数冒充精确编号",
+          "复用default/DVM/MLIR结果",
+          "把SDPA kernel benchmark冒充rewrite benchmark"
+        ]
+      },
+      "community_alignment": {
+        "status": "pending-device-comparison",
+        "gpu_scope": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现",
+        "npu_scope": "必须在triton_experimental真机确认精确编号、数值和无fallback后才能定论"
+      },
+      "npu_control": {
+        "config": "use_joint_graph_passes on/off on an isolated target-only workload",
+        "off": false,
+        "on": true,
+        "status": "prepared",
+        "next_action": "GPU原生reference人工复核后，在NPU运行独立fresh-process OFF/ON功能臂；功能通过才签性能gate"
+      }
+    },
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-13",
+      "contract_name": "SDPA pattern 13：三维bmm attention",
+      "stage": "joint_graph",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/fuse_attention.py",
+          "line": 341,
+          "symbol": "_sfdp_pattern_13",
+          "role": "joint-graph-register-replacement-search-function"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_13_gpu",
+          "role": "primary-native-gpu-product",
+          "evidence_scope": "真实CUDA torch.compile；数值、必要梯度、fuse_attention计数和生成代码；精确编号仍需FX/per-pattern counter复核"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "pattern-13-community-product",
+          "kind": "positive-product",
+          "expected_reference_match": true,
+          "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；用unsqueeze/squeeze映射到四维SDPA，且检查permute维",
+          "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_13前缀>=1",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-derived-from-community-functional-case",
+        "allowed_local_deviation": [
+          "NPU使用注册器实际生成的同编号half inference输入，设备替换为NPU并保持pattern合同"
+        ],
+        "forbidden_local_deviation": [
+          "用通用fuse_attention总计数冒充精确编号",
+          "复用default/DVM/MLIR结果",
+          "把SDPA kernel benchmark冒充rewrite benchmark"
+        ]
+      },
+      "community_alignment": {
+        "status": "pending-device-comparison",
+        "gpu_scope": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现",
+        "npu_scope": "必须在triton_experimental真机确认精确编号、数值和无fallback后才能定论"
+      },
+      "npu_control": {
+        "config": "use_joint_graph_passes on/off on an isolated target-only workload",
+        "off": false,
+        "on": true,
+        "status": "prepared",
+        "next_action": "GPU原生reference人工复核后，在NPU运行独立fresh-process OFF/ON功能臂；功能通过才签性能gate"
+      }
+    },
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-14",
+      "contract_name": "SDPA pattern 14：BERT Large布局、加法mask",
+      "stage": "joint_graph",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/fuse_attention.py",
+          "line": 358,
+          "symbol": "_sfdp_pattern_14",
+          "role": "joint-graph-register-replacement-search-function"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_14_gpu",
+          "role": "primary-native-gpu-product",
+          "evidence_scope": "真实CUDA torch.compile；数值、必要梯度、fuse_attention计数和生成代码；精确编号仍需FX/per-pattern counter复核"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "pattern-14-community-product",
+          "kind": "positive-product",
+          "expected_reference_match": true,
+          "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；转置QKV并传递同dtype/bool mask",
+          "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_14前缀>=1",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-derived-from-community-functional-case",
+        "allowed_local_deviation": [
+          "NPU使用注册器实际生成的同编号half inference输入，设备替换为NPU并保持pattern合同"
+        ],
+        "forbidden_local_deviation": [
+          "用通用fuse_attention总计数冒充精确编号",
+          "复用default/DVM/MLIR结果",
+          "把SDPA kernel benchmark冒充rewrite benchmark"
+        ]
+      },
+      "community_alignment": {
+        "status": "pending-device-comparison",
+        "gpu_scope": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现",
+        "npu_scope": "必须在triton_experimental真机确认精确编号、数值和无fallback后才能定论"
+      },
+      "npu_control": {
+        "config": "use_joint_graph_passes on/off on an isolated target-only workload",
+        "off": false,
+        "on": true,
+        "status": "prepared",
+        "next_action": "GPU原生reference人工复核后，在NPU运行独立fresh-process OFF/ON功能臂；功能通过才签性能gate"
+      }
+    },
+    {
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-15",
+      "contract_name": "SDPA pattern 15：DistilBERT masked_fill布尔mask",
+      "stage": "joint_graph",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/fuse_attention.py",
+          "line": 384,
+          "symbol": "_sfdp_pattern_15",
+          "role": "joint-graph-register-replacement-search-function"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_15_gpu",
+          "role": "primary-native-gpu-product",
+          "evidence_scope": "真实CUDA torch.compile；数值、必要梯度、fuse_attention计数和生成代码；精确编号仍需FX/per-pattern counter复核"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "pattern-15-community-product",
+          "kind": "positive-product",
+          "expected_reference_match": true,
+          "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；把0/1 mask规范为SDPA布尔mask",
+          "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_15前缀>=1",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-derived-from-community-functional-case",
+        "allowed_local_deviation": [
+          "NPU使用注册器实际生成的同编号half inference输入，设备替换为NPU并保持pattern合同"
+        ],
+        "forbidden_local_deviation": [
+          "用通用fuse_attention总计数冒充精确编号",
+          "复用default/DVM/MLIR结果",
+          "把SDPA kernel benchmark冒充rewrite benchmark"
+        ]
+      },
+      "community_alignment": {
+        "status": "pending-device-comparison",
+        "gpu_scope": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现",
+        "npu_scope": "必须在triton_experimental真机确认精确编号、数值和无fallback后才能定论"
+      },
+      "npu_control": {
+        "config": "use_joint_graph_passes on/off on an isolated target-only workload",
+        "off": false,
+        "on": true,
+        "status": "prepared",
+        "next_action": "GPU原生reference人工复核后，在NPU运行独立fresh-process OFF/ON功能臂；功能通过才签性能gate"
+      }
+    }
+  ],
+  "deferred_candidates": []
+}

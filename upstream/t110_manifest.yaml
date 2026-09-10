@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T22:55:21+08:00",
+  "status": "reviewed-no-gpu-ready-units",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-110全部5个provisional候选逐项复核源码、社区测例、设备入口、目标归属和合法OFF/ON",
+    "selected_acceptance_units": [],
+    "corrections": [
+      "模板私有方法改为实际可执行GPU类nodeid。",
+      "CPU/Fake/间接/错配测试不冻结GPU分母。",
+      "显式CUDA关闭、重复实现和结构容器均不制造ON路径。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 0,
+    "distributed_world_size": null,
+    "scope": "本批无合法GPU合同，只保留静态审核和延期原因",
+    "suite_status": "reviewed-no-gpu-ready-units"
+  },
+  "counting_policy": {
+    "current_manifest_units": 0,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结"
+  },
+  "acceptance_units": [],
+  "deferred_candidates": [
+    {
+      "provisional_unit_id": "AU-mkldnn-fusion-convolution",
+      "status": "deferred-mkldnn-cpu-only-or-mismapped",
+      "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+      "denominator_eligible": false,
+      "performance_readiness": "not-applicable-until-independent-gpu-contract",
+      "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+    },
+    {
+      "provisional_unit_id": "AU-mkldnn-fusion-linear",
+      "status": "deferred-mkldnn-cpu-only-or-mismapped",
+      "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+      "denominator_eligible": false,
+      "performance_readiness": "not-applicable-until-independent-gpu-contract",
+      "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+    },
+    {
+      "provisional_unit_id": "AU-mkldnn-fusion-linear-bias",
+      "status": "deferred-mkldnn-cpu-only-or-mismapped",
+      "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+      "denominator_eligible": false,
+      "performance_readiness": "not-applicable-until-independent-gpu-contract",
+      "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+    },
+    {
+      "provisional_unit_id": "AU-mkldnn-fusion-mkldnn-rnn-layer",
+      "status": "deferred-mkldnn-cpu-only-or-mismapped",
+      "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+      "denominator_eligible": false,
+      "performance_readiness": "not-applicable-until-independent-gpu-contract",
+      "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+    },
+    {
+      "provisional_unit_id": "AU-mkldnn-fusion-register-binary-unary-fusion-lowering",
+      "status": "deferred-mkldnn-cpu-only-or-mismapped",
+      "reason": "源码受MKLDNN可用性与CPU/XPU packed op约束；列出的CUDA卷积测试走通用select_algorithm，不执行MKLDNN fusion，其他测例为CPU。",
+      "denominator_eligible": false,
+      "performance_readiness": "not-applicable-until-independent-gpu-contract",
+      "next_action": "仅当冻结源码出现可独立归属的原生GPU合同且不违反显式关闭时重新审核；当前不执行、不计数"
+    }
+  ]
+}

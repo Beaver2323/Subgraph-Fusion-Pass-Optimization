@@ -1,12 +1,13 @@
 # GPU handoff 接收目录
 
-> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
+> 更新时间：2026-09-10 22:55:21 CST（UTC+08:00）
 
 此目录用于接收 GPU 回传文本，尚不是已验收的正式结果。T-076～T-080 均已有有效文件，目录由
 Git中的实际handoff保留。T-081～T-083回传已于2026-09-08完成复核：11/11 cases、24/24
 variants有效；机器复核记录见`results/current/T-081`～`T-083/gpu_reference_review.json`。
-T-084～T-086已完成复核；T-087～T-090接收目录已建立但尚无设备结果，其中README仅是
-任务合同和上传说明，不是PASS。
+T-084～T-086已完成复核；T-087～T-113接收目录已建立但尚无设备结果，其中README仅是
+任务合同和上传说明，不是PASS。T-092/093/094/095/097/099没有GPU-ready单元，其目录只保留
+审核入口；T-101/108/109/110/111/113同样是审核后的零GPU-ready批次，不应上传空执行结果。
 
 将 GPU 的 `latest-text-handoff.json` 完整内容复制到控制节点对应路径：
 
@@ -20,7 +21,18 @@ results/incoming/
 ├── T-087/README.md
 ├── T-088/README.md
 ├── T-089/README.md
-└── T-090/README.md
+├── T-090/README.md
+├── T-091/README.md
+├── T-096/README.md
+├── T-098/README.md
+├── T-100/README.md
+├── T-102/README.md
+├── T-103/README.md
+├── T-104/README.md
+├── T-105/README.md
+├── T-106/README.md
+├── T-107/README.md
+└── T-112/README.md
 ```
 
 统一 runner 默认生成单行 JSON；超过 96 KiB 时自动生成并推荐上传分片。T-076、T-077、T-079、

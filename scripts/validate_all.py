@@ -41,6 +41,10 @@ def commands(root, pytorch_root):
     for task in (
         "", "t077_", "t078_", "t079_", "t080_", "t081_", "t082_", "t083_",
         "t084_", "t085_", "t086_", "t087_", "t088_", "t089_", "t090_",
+        "t091_", "t092_", "t093_", "t094_", "t095_", "t096_", "t097_",
+        "t098_", "t099_", "t100_",
+        "t101_", "t102_", "t103_", "t104_", "t105_", "t106_", "t107_",
+        "t108_", "t109_", "t110_", "t111_", "t112_", "t113_",
     ):
         yield f"{task}reference_plan", ["bash", str(root / f"scripts/run_{task}reference_all.sh"), "--pytorch-root", str(pytorch_root), "--validate-only"]
     yield "whitespace", ["git", "-C", str(root), "diff", "--check"]

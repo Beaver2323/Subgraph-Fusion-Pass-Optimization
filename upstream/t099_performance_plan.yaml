@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-099",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "not-applicable-no-gpu-ready-unit",
+  "implementation": {
+    "status": "not-implemented",
+    "entrypoint": null,
+    "reason": "没有可执行GPU单元"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "新进程内导入torch/torch_npu之前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable则记录并免测；generic device guard遗漏归为capability-pending，禁止未经审核绕过"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU原生reference有效后，NPU先验证OFF/ON数值、梯度（若适用）、精确目标改写、零graph break/CPU fallback，再人工签gate",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw samples"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "三OFF/三ON分别取各臂p50/p99后再取中位数"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 0,
+    "performance_minimum_devices": 0,
+    "performance_world_size": 0,
+    "actual_device_execution_required": false,
+    "fake_tensor_allowed_as_performance_oracle": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/"
+    ],
+    "terms": [
+      "T-099"
+    ],
+    "result": "未发现可直接控制目标pass的社区性能benchmark；有功能合同的单元按社区模型/shape派生，空批次不派生。",
+    "source_priority": "社区benchmark优先；否则保留社区功能图、shape、dtype和执行阶段，不称为社区原生benchmark或模型端到端"
+  },
+  "acceptance_units": []
+}

@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "prepared-awaiting-gpu-reference",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-100全部1个provisional候选逐项复核源码、社区测例、设备执行、目标归属与合法OFF/ON",
+    "selected_acceptance_units": [
+      "AU-binary-folding-folded-op"
+    ],
+    "corrections": [
+      "CPU/Fake/间接或错配测例不冻结GPU分母。",
+      "同一社区测试覆盖多个handler时按一个行为合同计数，旧ID保留延期映射。",
+      "社区索引遗漏但冻结源码存在的真实GPU目标测例允许经人工复核补入。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": null,
+    "scope": "原生CUDA编译、数值、目标命中/改写与必要梯度合同",
+    "suite_status": "pending-gpu-reference"
+  },
+  "counting_policy": {
+    "current_manifest_units": 1,
+    "current_frozen_denominator_units": 0,
+    "current_formally_closed_units": 0,
+    "denominator_rule": "原生GPU suite有效、零skip并完成人工FX复核后冻结"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-binary-folding-folded-op",
+      "contract_name": "冻结期Linear后常量二元运算折入权重/偏置",
+      "stage": "freezing",
+      "review_status": "prepared-awaiting-gpu-reference",
+      "denominator_eligible": "yes-provisional",
+      "coverage_phase": "awaiting-gpu-reference",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/binary_folding.py",
+          "line": 479,
+          "symbol": "folded_op",
+          "role": "freezing-binary-folding-handler"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_binary_folding.py::FreezingGpuTests.test_linear_binary_folding_cuda",
+          "role": "primary-positive-negative-product",
+          "evidence_scope": "真实CUDA复制类；2D/3D Linear、add/sub/mul/div、scalar/tensor广播正例与bad-shape负例，逐项counter"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "linear-fold-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "合法常量binary折入Linear参数且counter=1",
+          "expected_counter": "binary_folding=1",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        },
+        {
+          "variant_id": "broadcast-shape-negative",
+          "kind": "negative",
+          "expected_reference_match": false,
+          "expected_behavior": "输出相关不合法广播shape保持未融合",
+          "expected_counter": "binary_folding=0",
+          "reference_status": "not-run",
+          "npu_status": "not-run"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-derived-from-community-functional-case",
+        "allowed_local_deviation": [
+          "NPU代表性能图复用Linear(3,32)、[4,3]和[32]常量"
+        ],
+        "forbidden_local_deviation": [
+          "用被CUDNN skip的Conv测例充当GPU通过",
+          "关闭freezing制造非等价基线"
+        ]
+      },
+      "npu_control": {
+        "config": "freezing=true and enable_linear_binary_folding",
+        "off": false,
+        "on": true,
+        "status": "prepared",
+        "next_action": "GPU原生线性乘积通过后，在NPU确认冻结、counter、数值和无fallback，再签性能门禁"
+      }
+    }
+  ],
+  "deferred_candidates": []
+}

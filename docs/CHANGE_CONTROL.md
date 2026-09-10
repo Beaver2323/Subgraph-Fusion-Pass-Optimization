@@ -1,6 +1,6 @@
 # Pass NPU 项目变更控制记录
 
-> 日志校准时间：2026-09-10 06:55:00 CST（UTC+08:00）
+> 日志校准时间：2026-09-10 23:48:08 CST（UTC+08:00）
 > 当前活动流程以根目录 `WORKFLOW.md` 为准；本文件保留完整历史变更记录。
 
 ## 当前冻结状态
@@ -3947,3 +3947,50 @@ Triton；torch_npu 的已登记累积修改和大量构建 codegen 产物继续�
   OFF，明确`PERF_EXEMPT`而不制造失败基线。
 - 活动矩阵由33行扩为39行：原33行冻结结论不变，新6行均为`awaiting-gpu-reference`，不得提前
   声称NPU功能或性能完成。
+
+### E-245：T-091～T-100 合同审计与执行准备（2026-09-10）
+
+- 登记时间：2026-09-10 21:38:54 CST（UTC+08:00）。逐项复核37个旧inventory候选，形成4个
+  GPU-ready行为合同、6个原生cases和9个variants；33个候选保留原T编号延期，不以CPU、Fake、
+  间接或错配证据冻结GPU分母。
+- T-091保留真实GPU stack axis规范化；T-096保留A100 pre-SM100 E8M0三条边界回归；T-098把
+  同一`test_basic_cuda`覆盖的inlined/decomposed合为一个Conv-BN合同；T-100补回旧索引漏记的
+  `FreezingGpuTests.test_linear_binary_folding_cuda`，并排除会被CUDNN skip的Conv测试。
+- T-092/093/094/095/097/099明确为“已审核、零GPU-ready”；静态校验合法，实际一键入口在占卡前
+  退出4，reference runner也拒绝创建空run，杜绝`0 tests`伪PASS。
+- T-091/T-098/T-100已准备目标级OFF/ON功能与六臂性能worker，导入torch前选择
+  `triton_experimental`。T-096源码仅在CUDA注册且extra-check要求CUDA，按generic guard缺口记为
+  capability-pending；先取NPU原生阻断、再评审最小适配，适配前不制造ON或计性能。
+- 活动矩阵由39行扩为43行：原33行动态结论不变，新4行均等待GPU；backlog下一批保持T-101，
+  T-101～T-113不重编号。
+
+### E-246：T-101～T-113 全部合同与执行准备（2026-09-10）
+
+- 登记时间：2026-09-10 22:55:21 CST（UTC+08:00）。逐项复核最后52个草案候选，形成28个
+  GPU-ready合同/28 cases/28 variants并延期或合并24项；T-081～T-113的33个批次至此全部完成
+  准备审核，`draft_batches=0`，但这不等于GPU/NPU已执行。
+- T-102～T-107采用实际`SDPAPatternRewriterGpuTests`入口，覆盖SDPA pattern 1～24、28～30；
+  runner新增受限静态解析，只接受模板方法直接赋值和`functools.partialmethod`，不执行任意类体代码、
+  不导入torch。pattern 25～27的`disable_cuda=True`与XPU-only入口作为显式关闭证据，禁止绕过。
+- attention性能未冒用`benchmarks/transformer/sdpa.py`：该benchmark从已融合SDPA起步，不能隔离
+  rewrite。本轮worker从冻结注册器取得同编号half-inference输入，保留shape/stride/dtype/scalar
+  workaround，逐编号校验counter；明确标为tracker派生微图、非社区benchmark、非模型端到端。
+- T-112补回冻结源码的原生CUDA去重测试。GPU用例`world_size=1`只证明生成代码2个RS变1个；
+  另准备2-rank NCCL/HCCL worker，NPU必须以`triton_experimental`验证全rank数值、2→1改写后才
+  能签发六臂性能gate，单rank证据不得外推通信收益。
+- T-101与已闭环T-085的partitioned scatter实现合并；T-108～T-111为CPU量化/MKLDNN路径；
+  T-113是具体group-batch fusion调度容器。六个批次合法零GPU-ready，不派生worker、不空跑。
+- 活动矩阵由43行扩为71行：原33行正式结论不变，新增28行均为等待GPU。统一GPU入口、准备校验、
+  backlog、incoming目录、中文逐pattern讲解和总门禁同步扩至T-113。
+- 矩阵对尚无实测结果的新单元读取manifest准备态对齐边界，不再误用“历史结果缺字段”文案；
+  T-105 pattern 16明确显示为源码确认的CUDA/NPU部分行为边界，且仍标注设备待测，不能伪造成
+  已有comparison结论。
+
+### E-247：T-074 coverage hint 旧口径收束（2026-09-10）
+
+- 登记时间：2026-09-10 23:48:08 CST（UTC+08:00）。纠正 README、TODO 和当前状态中
+  “45个no-test-found、26个indirect仍待审核”的阶段性旧描述。
+- T-074 原始48个`no-test-found`和29个indirect标签均已进入T-078～T-113逐批审核；当前71个
+  单元进入活动manifest，87个未接入候选具有明确延期理由，30条结构记录按非计数原因单列。
+- 本次只修正审核状态，不把延期项改成支持、不改写T-074原始inventory，也不改变任何GPU/NPU、
+  correctness或performance结论。lowering/template独立inventory仍是项目后续范围。

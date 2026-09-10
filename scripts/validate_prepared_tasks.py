@@ -13,10 +13,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-TASKS = (
-    "T-078", "T-079", "T-080", "T-081", "T-082", "T-083",
-    "T-084", "T-085", "T-086", "T-087", "T-088", "T-089", "T-090",
-)
+TASKS = tuple(f"T-{number:03d}" for number in range(78, 114))
 
 
 def load_json(path: Path) -> dict:
@@ -120,8 +117,23 @@ def validate_task(repo_root: Path, task_id: str) -> tuple[int, int, int]:
         if type(value) is not int or value <= 0:
             raise ValueError(f"{task_id}.measurement_contract.{key} 必须为正整数")
 
-    manifest_by_id = unique_records(manifest.get("acceptance_units"), "acceptance_unit_id", f"{task_id}.manifest")
-    performance_by_id = unique_records(performance.get("acceptance_units"), "acceptance_unit_id", f"{task_id}.performance")
+    manifest_records = manifest.get("acceptance_units")
+    performance_records = performance.get("acceptance_units")
+    if manifest.get("status") == "reviewed-no-gpu-ready-units":
+        if manifest_records != [] or performance_records != [] or reference.get("cases") != []:
+            raise ValueError(f"{task_id}：零GPU-ready审核状态不得包含可执行单元/case")
+        if reference.get("status") != "reviewed-no-gpu-ready-units":
+            raise ValueError(f"{task_id}：reference未声明零GPU-ready审核状态")
+        if performance.get("status") != "not-applicable-no-gpu-ready-unit":
+            raise ValueError(f"{task_id}：空批次性能必须明确not-applicable")
+        if performance.get("implementation", {}).get("status") != "not-implemented":
+            raise ValueError(f"{task_id}：空批次不得伪造性能worker")
+        if manifest.get("counting_policy", {}).get("current_manifest_units") != 0:
+            raise ValueError(f"{task_id}：空批次当前manifest计数必须为0")
+        return 0, 0, 0
+
+    manifest_by_id = unique_records(manifest_records, "acceptance_unit_id", f"{task_id}.manifest")
+    performance_by_id = unique_records(performance_records, "acceptance_unit_id", f"{task_id}.performance")
     manifest_units = set(manifest_by_id)
     performance_units = set(performance_by_id)
     if manifest_units != performance_units:

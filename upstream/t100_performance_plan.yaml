@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-100",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "prepared-awaiting-gpu-and-npu-functional-gates",
+  "implementation": {
+    "status": "implemented-awaiting-runtime-validation",
+    "entrypoint": "runners/t091_t100_performance_worker.py",
+    "launcher": "scripts/run_t091_t100_performance.py"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "新进程内导入torch/torch_npu之前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable则记录并免测；generic device guard遗漏归为capability-pending，禁止未经审核绕过"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU原生reference有效后，NPU先验证OFF/ON数值、梯度（若适用）、精确目标改写、零graph break/CPU fallback，再人工签gate",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw samples"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "三OFF/三ON分别取各臂p50/p99后再取中位数"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 1,
+    "performance_minimum_devices": 1,
+    "performance_world_size": 1,
+    "actual_device_execution_required": true,
+    "fake_tensor_allowed_as_performance_oracle": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/"
+    ],
+    "terms": [
+      "folded_op"
+    ],
+    "result": "未发现可直接控制目标pass的社区性能benchmark；有功能合同的单元按社区模型/shape派生，空批次不派生。",
+    "source_priority": "社区benchmark优先；否则保留社区功能图、shape、dtype和执行阶段，不称为社区原生benchmark或模型端到端"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-binary-folding-folded-op",
+      "worker_unit": "linear-binary-folding",
+      "performance_status": "prepared-awaiting-functional-gate",
+      "verdict": "planned",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_binary_folding.py::FreezingGpuTests.test_linear_binary_folding_cuda"
+        ],
+        "reason": "社区无独立benchmark；复用Linear(3,32)、[4,3]、[32]常量add代表图"
+      },
+      "functional_gate": "freezing保持true；OFF counter=0；ON counter=1且数值正确，无break/fallback。",
+      "workloads": [
+        {
+          "workload_id": "linear-binary-folding-community-shape",
+          "role": "primary",
+          "shape_contract": "Linear(3,32,bias=true)+[32]常量add，x=[4,3] fp32",
+          "measurement_scope": "冻结推理单次compiled forward；不含数据加载或完整模型"
+        }
+      ],
+      "off_on_control": "只切换enable_linear_binary_folding false/true，freezing固定true；每臂新进程。",
+      "artifacts": [
+        "GPU/NPU功能原件",
+        "binary_folding counter和FX",
+        "数值",
+        "host/Event样本、显存、编译耗时",
+        "source sha256"
+      ],
+      "negative_cases": [
+        "非法广播误融合、OFF仍命中、ON无改写、fallback或产品disable均拒绝计时"
+      ]
+    }
+  ]
+}

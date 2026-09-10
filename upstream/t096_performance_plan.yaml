@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-096",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "blocked-capability-pending-reviewed-adaptation",
+  "implementation": {
+    "status": "not-implemented",
+    "entrypoint": null,
+    "reason": "NPU原生注册缺失；等待真机阻断和最小适配评审"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "新进程内导入torch/torch_npu之前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable则记录并免测；generic device guard遗漏归为capability-pending，禁止未经审核绕过"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU原生reference有效后，NPU先验证OFF/ON数值、梯度（若适用）、精确目标改写、零graph break/CPU fallback，再人工签gate",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw samples"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "三OFF/三ON分别取各臂p50/p99后再取中位数"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 1,
+    "performance_minimum_devices": 0,
+    "performance_world_size": 0,
+    "actual_device_execution_required": true,
+    "fake_tensor_allowed_as_performance_oracle": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/"
+    ],
+    "terms": [
+      "e8m0_rceil_log2_pattern"
+    ],
+    "result": "未发现可直接控制目标pass的社区性能benchmark；有功能合同的单元按社区模型/shape派生，空批次不派生。",
+    "source_priority": "社区benchmark优先；否则保留社区功能图、shape、dtype和执行阶段，不称为社区原生benchmark或模型端到端"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "worker_unit": "none",
+      "performance_status": "blocked-capability-pending-npu-registration",
+      "verdict": "planned-after-reviewed-adaptation",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_pattern_fires_and_is_correct",
+          "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_correct_for_values_one_ulp_above_power_of_two",
+          "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness"
+        ],
+        "reason": "社区无性能benchmark；边界向量可派生但NPU原生没有目标注册，适配评审前禁止制造ON"
+      },
+      "functional_gate": "先证明A100原生路径；NPU triton_experimental原生阻断必须留证，再单独审核generic guard最小适配。",
+      "workloads": [
+        {
+          "workload_id": "e8m0-log2-boundary-vector",
+          "role": "planned-after-adaptation",
+          "shape_contract": "float32正数与2^e上方1 ULP向量，uint8精确输出",
+          "measurement_scope": "仅目标编码子图；不是模型端到端"
+        }
+      ],
+      "off_on_control": "当前无NPU ON；不得绕过device guard。批准适配后再定义等价OFF/ON。",
+      "artifacts": [
+        "GPU reference FX",
+        "NPU原生阻断",
+        "device guard源码",
+        "未来适配diff与功能证据"
+      ],
+      "negative_cases": [
+        "SM100 PTX路径不适用于A100/NPU",
+        "适配前不计性能"
+      ]
+    }
+  ]
+}

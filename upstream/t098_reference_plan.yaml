@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-098",
+  "generated_at": "2026-09-10T21:38:54+08:00",
+  "status": "gpu-ready-awaiting-native-execution",
+  "performance_plan": {
+    "path": "upstream/t098_performance_plan.yaml",
+    "status": "implemented-awaiting-runtime-validation"
+  },
+  "case_guide": {
+    "path": "docs/T098_FUNCTION_PERFORMANCE_GUIDE.md",
+    "language": "zh-CN"
+  },
+  "manifest": {
+    "path": "upstream/t098_manifest.yaml",
+    "schema_version": "1.0",
+    "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "execution_policy": {
+    "order": "native-community-test-first-then-minimal-adapter-if-required",
+    "case_isolation": "fresh-process",
+    "failure_behavior": "continue-and-record",
+    "artifact_capture": "原生TORCH_COMPILE_DEBUG与FX before/after",
+    "benchmark_gate": "functional-reference-valid-first",
+    "default_timeout_seconds": 3600,
+    "minimum_gpus": 1,
+    "distributed_world_size": null
+  },
+  "cases": [
+    {
+      "case_id": "REF-efficient-conv-bn-eval-product-native",
+      "acceptance_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined",
+      "source_test": "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalGpuTests.test_basic_cuda",
+      "tracking_mode": "direct",
+      "variant_ids": [
+        "inlined-positive",
+        "decomposed-positive",
+        "multi-user-protection"
+      ],
+      "expected_match": true,
+      "expected_assertions": [
+        "真实CUDA完整参数乘积执行且零skip",
+        "单/多用户目标counter分别为1/3",
+        "前向、梯度及SGD后再次前向与eager一致"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "tracker-derived-after-functional-gate",
+      "timeout_seconds": 7200
+    }
+  ],
+  "non_executed_variants": []
+}
