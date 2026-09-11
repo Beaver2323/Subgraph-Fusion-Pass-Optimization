@@ -1,0 +1,36 @@
+{
+  "split_format_version": "1.0",
+  "generated_at": "2026-09-11T09:58:55+08:00",
+  "source_name": "text-handoff.json",
+  "source_bytes": 125437,
+  "source_sha256": "1342be4a5808057fa878ae311f83e89955546fdde8712fdd275659e761026526",
+  "payload_sha256": "15fa18b703ddd2482055aba549e0cbf8223e2e701a2e65be512cb2fe90ece702",
+  "part_payload_bytes": 49152,
+  "part_count": 3,
+  "parts": [
+    {
+      "path": "part-0001.json",
+      "index": 1,
+      "source_offset": 0,
+      "payload_bytes": 49152,
+      "payload_sha256": "f84414cd05d7c8a7e1d7bd010723002b5ab285e653e6b66a113a155ab610493a",
+      "transport_file_bytes": 66380
+    },
+    {
+      "path": "part-0002.json",
+      "index": 2,
+      "source_offset": 49152,
+      "payload_bytes": 49152,
+      "payload_sha256": "1d9a47e5be73fdb8fa298777241b96a7564f81d1c8018047450eb36997d4e592",
+      "transport_file_bytes": 66384
+    },
+    {
+      "path": "part-0003.json",
+      "index": 3,
+      "source_offset": 98304,
+      "payload_bytes": 27133,
+      "payload_sha256": "0cd0f63f883629a4da630a63544e5d8ed9ce57282bea67401f5590af3bd0491a",
+      "transport_file_bytes": 36804
+    }
+  ]
+}
