@@ -1,9 +1,11 @@
 """原文文本回传的零设备测试；不执行回传的 Python/内核代码。"""
 
 import copy
+import base64
 import hashlib
 import importlib.util
 import json
+import lzma
 from pathlib import Path
 import subprocess
 import sys
@@ -150,6 +152,124 @@ class RawTextTests(unittest.TestCase):
         self.assertTrue((restored / "cases/case/fx_before.txt").is_file())
         self.assertTrue((restored / "cases/case/stderr.log").is_file())
         self.assertTrue((restored / "cases/case/cache/output_code.py").is_file())
+
+    def test_bundle_round_trip_deduplicates_and_preserves_every_file(self):
+        for profile in ("review", "archive"):
+            with self.subTest(profile=profile):
+                old = self.payload(compress=True, profile=profile)
+                expected_id, expected = importer.validate_payload(old)
+                payload = copy.deepcopy(old)
+                exporter.bundle_raw_text(payload)
+                self.assertEqual(payload["handoff_format_version"], "1.4")
+                run_id, data = importer.validate_payload(payload)
+                self.assertEqual((run_id, data), (expected_id, expected))
+                self.assertEqual(payload["evidence_files"], old["evidence_files"])
+                self.assertLess(payload["raw_text_bundle"]["bytes"], old["raw_text_transfer"]["embedded_bytes"])
+                restored = importer.restore(payload, self.root / profile)
+                for path, content in expected.items():
+                    self.assertEqual((restored / path).read_bytes(), content)
+                parts = self.root / (profile + "-parts")
+                exporter.write_split_payload(
+                    json.dumps(payload).encode(), parts,
+                    payload_sha256=payload["payload_sha256"], part_bytes=16384,
+                )
+                self.assertEqual(importer.validate_payload(importer.load_input(parts / "manifest.json")), (run_id, data))
+
+    def test_bundle_rejects_corruption_and_invalid_ranges(self):
+        original = self.payload(compress=True, profile="review")
+        exporter.bundle_raw_text(original)
+        for mode in ("base64", "truncated", "trailing", "size", "limit", "hash", "offset", "file-hash", "statistics"):
+            with self.subTest(mode=mode):
+                payload = copy.deepcopy(original)
+                bundle = payload["raw_text_bundle"]
+                if mode == "base64":
+                    bundle["data"] = "!" + bundle["data"][1:]
+                elif mode in {"truncated", "trailing"}:
+                    compressed = base64.b64decode(bundle["data"])
+                    compressed = compressed[:-1] if mode == "truncated" else compressed + lzma.compress(b"extra")
+                    bundle.update(data=base64.b64encode(compressed).decode(), compressed_bytes=len(compressed))
+                elif mode == "size":
+                    bundle["bytes"] -= 1
+                elif mode == "limit":
+                    bundle["bytes"] = exporter.MAX_TEXT_BYTES + 1
+                elif mode == "hash":
+                    bundle["sha256"] = "0" * 64
+                elif mode == "offset":
+                    payload["raw_text_files"][0]["offset"] = 1
+                elif mode == "file-hash":
+                    payload["raw_text_files"][0]["sha256"] = "0" * 64
+                else:
+                    payload["raw_text_transfer"]["unique_bytes"] += 1
+                exporter.seal_payload(payload)
+                with self.assertRaises(ValueError):
+                    importer.validate_payload(payload)
+
+    def test_bundle_cli_validates_without_gpu(self):
+        output = self.root / "bundle.json"
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/export_reference_text.py"),
+             "--run-dir", str(self.run), "--profile", "review", "--bundle-raw-text",
+             "--compact", "--output", str(output)],
+            cwd=WORK, capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = importer.load_input(output)
+        self.assertEqual(payload["handoff_format_version"], "1.4")
+        importer.validate_payload(payload)
+
+    def test_reexport_task_preserves_source_and_uses_latest(self):
+        (self.root / "latest").symlink_to(self.run.name)
+        before = {str(p): p.read_bytes() for p in self.run.rglob("*") if p.is_file()}
+        command = [sys.executable, str(ROOT / "scripts/reexport_reference_text.py"),
+                   "--task", "T-098", "--result-root", str(self.root)]
+        outputs = []
+        for _ in range(2):
+            result = subprocess.run(command, cwd=WORK, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            outputs.append(next(line.split("=", 1)[1] for line in result.stdout.splitlines()
+                                if line.startswith("handoff_upload_input=")))
+            importer.validate_payload(importer.load_input(Path(outputs[-1])))
+        self.assertNotEqual(*outputs)
+        self.assertEqual(before, {str(p): p.read_bytes() for p in self.run.rglob("*") if p.is_file()})
+        self.assertEqual((self.root / "latest").resolve(), self.run)
+
+    def test_legacy_split_still_imports(self):
+        payload = self.payload(compress=True, profile="review")
+        parts = self.root / "legacy-parts"
+        manifest = exporter.write_split_payload(
+            json.dumps(payload).encode(), parts, payload_sha256=payload["payload_sha256"],
+            part_bytes=16384, compress_transport=False,
+        )
+        self.assertEqual(manifest["split_format_version"], "1.0")
+        self.assertEqual(importer.validate_payload(importer.load_input(parts / "manifest.json")),
+                         importer.validate_payload(payload))
+
+    def test_compressed_split_rejects_invalid_stream_even_with_resealed_transport(self):
+        payload = self.payload(compress=True, profile="review")
+        content = json.dumps(payload).encode()
+        for mode in ("truncated", "trailing", "size", "limit"):
+            with self.subTest(mode=mode):
+                parts = self.root / mode
+                manifest = exporter.write_split_payload(content, parts,
+                    payload_sha256=payload["payload_sha256"], part_bytes=49152)
+                self.assertEqual(manifest["part_count"], 1)
+                part_path = parts / "part-0001.json"
+                part = json.loads(part_path.read_text())
+                raw = base64.b64decode("".join(part["data"]))
+                if mode in {"truncated", "trailing"}:
+                    raw = raw[:-1] if mode == "truncated" else raw + lzma.compress(b"extra")
+                    digest = hashlib.sha256(raw).hexdigest()
+                    part.update(data=[base64.b64encode(raw).decode()], payload_bytes=len(raw), payload_sha256=digest)
+                    manifest["parts"][0].update(payload_bytes=len(raw), payload_sha256=digest)
+                    manifest.update(transport_bytes=len(raw), transport_sha256=digest)
+                elif mode == "size":
+                    manifest["source_bytes"] -= 1
+                else:
+                    manifest["source_bytes"] = importer.MAX_HANDOFF_TRANSPORT_BYTES + 1
+                part_path.write_text(json.dumps(part))
+                (parts / "manifest.json").write_text(json.dumps(manifest))
+                with self.assertRaises(ValueError):
+                    importer.load_input(parts / "manifest.json")
 
     def test_review_profile_includes_failure_logs(self):
         result_path = self.run / "cases/case/reference_result.json"

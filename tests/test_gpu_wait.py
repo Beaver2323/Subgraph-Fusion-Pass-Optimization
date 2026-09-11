@@ -260,7 +260,7 @@ print('artifacts=' + str(root))
         self.assertEqual(env["PASS_GPU_COMPUTE_MODE"], "DEFAULT")
         self.assertEqual(env["CUDA_VISIBLE_DEVICES"], "2")
         self.assertEqual(payload["environment"]["cwd"], str(WORK))
-        self.assertEqual(payload["handoff_format_version"], "1.3")
+        self.assertEqual(payload["handoff_format_version"], "1.4")
         self.assertEqual(payload["handoff_profile"], "review")
         self.assertEqual(len(payload["raw_text_files"]), 2)
         self.assertEqual(

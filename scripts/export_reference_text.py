@@ -8,6 +8,7 @@ import base64
 from datetime import datetime
 import hashlib
 import json
+import lzma
 import sys
 import zlib
 from pathlib import Path, PurePosixPath
@@ -18,7 +19,9 @@ FORMAT_VERSION = "1.0"
 RAW_TEXT_FORMAT_VERSION = "1.1"
 COMPRESSED_RAW_TEXT_FORMAT_VERSION = "1.2"
 REVIEW_FORMAT_VERSION = "1.3"
+BUNDLE_FORMAT_VERSION = "1.4"
 SPLIT_FORMAT_VERSION = "1.0"
+COMPRESSED_SPLIT_FORMAT_VERSION = "1.1"
 DEFAULT_SPLIT_PART_BYTES = 48 * 1024
 DEFAULT_AUTO_SPLIT_THRESHOLD_BYTES = 96 * 1024
 MIN_SPLIT_PART_BYTES = 16 * 1024
@@ -168,6 +171,7 @@ def write_split_payload(
     *,
     payload_sha256: str,
     part_bytes: int,
+    compress_transport: bool = True,
 ) -> dict[str, Any]:
     """将完整 handoff 序列化文本拆为多个可单独粘贴的 JSON 分片。"""
     if not MIN_SPLIT_PART_BYTES <= part_bytes <= MAX_SPLIT_PART_BYTES:
@@ -180,9 +184,11 @@ def write_split_payload(
     output_dir.parent.mkdir(parents=True, exist_ok=True)
     output_dir.mkdir()
     source_sha256 = hashlib.sha256(content).hexdigest()
+    transport = lzma.compress(content, preset=6) if compress_transport else content
+    version = COMPRESSED_SPLIT_FORMAT_VERSION if compress_transport else SPLIT_FORMAT_VERSION
     chunks = [
-        content[offset : offset + part_bytes]
-        for offset in range(0, len(content), part_bytes)
+        transport[offset : offset + part_bytes]
+        for offset in range(0, len(transport), part_bytes)
     ]
     if not chunks:
         chunks = [b""]
@@ -191,7 +197,7 @@ def write_split_payload(
         name = f"part-{index:04d}.json"
         encoded = base64.b64encode(raw).decode("ascii")
         part = {
-            "split_format_version": SPLIT_FORMAT_VERSION,
+            "split_format_version": version,
             "source_sha256": source_sha256,
             "index": index,
             "part_count": len(chunks),
@@ -218,7 +224,7 @@ def write_split_payload(
             }
         )
     manifest = {
-        "split_format_version": SPLIT_FORMAT_VERSION,
+        "split_format_version": version,
         "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
         "source_name": "text-handoff.json",
         "source_bytes": len(content),
@@ -228,6 +234,12 @@ def write_split_payload(
         "part_count": len(records),
         "parts": records,
     }
+    if compress_transport:
+        manifest.update(
+            transport_encoding="xz",
+            transport_bytes=len(transport),
+            transport_sha256=hashlib.sha256(transport).hexdigest(),
+        )
     with (output_dir / "manifest.json").open("x", encoding="utf-8") as handle:
         handle.write(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
     return manifest
@@ -381,6 +393,38 @@ def include_raw_text(
     seal_payload(payload)
 
 
+def bundle_raw_text(payload: dict[str, Any]) -> None:
+    """跨文件压缩并复用相同字节；保留每个原路径、长度和哈希。"""
+    chunks = []
+    locations = {}
+    offset = 0
+    for item in payload["raw_text_files"]:
+        raw = zlib.decompress(base64.b64decode(item.pop("data")))
+        item.pop("compressed_bytes")
+        key = (item["sha256"], item["bytes"])
+        if key not in locations:
+            locations[key] = offset
+            chunks.append(raw)
+            offset += len(raw)
+        item.update(encoding="bundle-utf8", offset=locations[key])
+    raw_bundle = b"".join(chunks)
+    compressed = lzma.compress(raw_bundle, preset=6)
+    payload["raw_text_bundle"] = {
+        "encoding": "xz+base64",
+        "bytes": len(raw_bundle),
+        "sha256": hashlib.sha256(raw_bundle).hexdigest(),
+        "compressed_bytes": len(compressed),
+        "data": base64.b64encode(compressed).decode("ascii"),
+    }
+    payload["handoff_format_version"] = BUNDLE_FORMAT_VERSION
+    payload["raw_text_transfer"].update(
+        transport_encoding="xz+base64-bundle",
+        compressed_bytes=len(compressed),
+        unique_bytes=len(raw_bundle),
+    )
+    seal_payload(payload)
+
+
 def case_audit(
     run_dir: Path, item: dict[str, Any]
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
@@ -516,6 +560,11 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--bundle-raw-text",
+        action="store_true",
+        help="1.4 跨文件压缩与相同正文去重；须与 --profile review/archive 同用",
+    )
+    parser.add_argument(
         "--allow-derived-output",
         action="store_true",
         help="仅允许在 run 内新建保留文件 text-handoff.json；不覆盖原证据",
@@ -529,7 +578,7 @@ def parse_args() -> argparse.Namespace:
         "--split-part-bytes",
         type=int,
         default=DEFAULT_SPLIT_PART_BYTES,
-        help=f"每个分片承载的原始 JSON 字节数，默认 {DEFAULT_SPLIT_PART_BYTES}",
+        help=f"每个分片承载的整包压缩字节数，默认 {DEFAULT_SPLIT_PART_BYTES}",
     )
     parser.add_argument(
         "--auto-split-over-bytes",
@@ -574,6 +623,8 @@ def main() -> int:
                 raise ValueError("--auto-split-over-bytes 需要 --split-output-dir")
             if args.auto_split_over_bytes <= 0:
                 raise ValueError("--auto-split-over-bytes 必须是正整数")
+        if args.bundle_raw_text and args.profile not in {"review", "archive"}:
+            raise ValueError("--bundle-raw-text 需要 --profile review/archive")
         payload = build_payload(run_dir)
         if args.profile is not None and (
             args.include_raw_text or args.compress_raw_text
@@ -593,6 +644,8 @@ def main() -> int:
             seal_payload(payload)
         elif args.include_raw_text:
             include_raw_text(payload, run_dir, compress=args.compress_raw_text)
+        if args.bundle_raw_text:
+            bundle_raw_text(payload)
         indent = None if args.compact else 2
         content = json.dumps(
             payload, ensure_ascii=False, sort_keys=True, indent=indent
@@ -618,6 +671,7 @@ def main() -> int:
             print(f"split_manifest={(args.split_output_dir / 'manifest.json').resolve()}")
             print(f"parts={manifest['part_count']}")
             print(f"source_bytes={manifest['source_bytes']}")
+            print(f"transport_bytes={manifest['transport_bytes']}")
             print(f"source_sha256={manifest['source_sha256']}")
             wrote_output = True
         elif args.split_output_dir is not None:

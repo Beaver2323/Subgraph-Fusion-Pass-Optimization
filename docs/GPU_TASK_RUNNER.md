@@ -1,6 +1,6 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-10 22:55:21 CST（UTC+08:00）
+> 更新时间：2026-09-11 11:14 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
 > 当前任务：`T-076`～`T-113`（T-081～T-086已完成；其余只运行manifest中GPU-ready任务，延期候选不执行）
 
@@ -32,7 +32,7 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 5. 按共享/独占策略检查指定物理 GPU；指定 `--wait-gpu` 时等待条件满足；
 6. 执行任务对应的原生 community suite；
 7. 自动取得本轮 `reference-<timestamp>` 目录；
-8. 自动生成 1.3 review handoff：包含摘要、FX、case 结果、benchmark、日志，以及已登记的原始
+8. 自动生成 1.4 review handoff：相同正文去重并跨文件压缩，包含摘要、FX、case 结果、benchmark、日志，以及已登记的原始
    FX、前后 IR 和 `output_code.py`；大体积 structured trace 只保留哈希，同时建立不含时间戳的
    `latest` 入口和备用网页分片。
 
@@ -110,7 +110,7 @@ sha256sum "${RESULT_ROOT}/latest-text-handoff.json"
 
 - `latest` 指向本轮实际 `reference-<timestamp>` 目录；
 - `latest-text-handoff.json` 固定指向 `latest/text-handoff.json`；正常为本轮可恢复关键评审正文的
-  1.3 review 单行文件；超过 96 KiB 时自动生成分片，并通过 `handoff_upload_input` 指向 manifest；
+  1.4 review 单行文件；超过 96 KiB 时先整包压缩再自动分片，通过 `handoff_upload_input` 指向 manifest；
 - 控制台仍打印真实 `run_dir=` 和 `text_handoff=`，便于审计；
 - 新一轮执行会原子更新软链接，不删除旧的带时间戳结果。
 
@@ -178,7 +178,7 @@ clone/pull后可见T-076～T-113接收目录：已有handoff由实际文件保�
 mkdir -p /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/incoming/T-078
 ```
 
-保存后应在控制节点运行 1.1/1.2/1.3 完整性校验，而不只检查 JSON 语法：
+保存后应在控制节点运行 1.1/1.2/1.3/1.4 完整性校验，而不只检查 JSON 语法：
 
 ```bash
 cd /home/z50063656/tmp
@@ -194,11 +194,23 @@ run ID 的文件。保存后告知 Agent 任务号、路径和 commit，由 Agen
 不要用它覆盖 `results/current/` 的正式结果，
 也不要把 GPU 回传文件放进 `results/audits/`（该目录存放控制节点生成的复核记录）。
 
-当前一键入口默认生成 1.3 review handoff，可恢复摘要、FX、case 元数据、结果、benchmark、日志、
+当前一键入口默认生成 1.4 review handoff，可恢复摘要、FX、case 元数据、结果、benchmark、日志、
 生成代码与 Inductor 前后 IR；structured trace、其他缓存与二进制只登记哈希。需要完整文本时用 `--profile archive` 另行导出
 1.2；1.1 未压缩包继续兼容，旧版 1.0 只有摘要与哈希，不能恢复 FX 正文。
 导出、复制、接收端校验、安全恢复和 FX 查看命令见
 [GPU 原文 handoff 指南](GPU_TEXT_HANDOFF.md)。
+
+已完成的 T-098 等任务若旧 handoff 分片过多，pull 后无需重跑测试，执行：
+
+```bash
+cd /data/z50063656/tmp
+/data/z50063656/envs/PassGPURef/bin/python \
+  "${TRACKER_ROOT}/scripts/reexport_reference_text.py" \
+  --task T-098
+```
+
+脚本自动使用该任务 `latest`，另建输出并打印经校验的 `handoff_upload_input`。保留旧 run 和旧包；
+只回传新 manifest 及同目录全部分片即可。其他任务替换 `--task`。
 
 ## 3. 任务选择
 

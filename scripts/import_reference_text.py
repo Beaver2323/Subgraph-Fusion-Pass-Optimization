@@ -8,12 +8,15 @@ import base64
 import binascii
 import hashlib
 import json
+import lzma
 import tempfile
 import zlib
 from pathlib import Path
 from typing import Any
 
 from export_reference_text import (
+    BUNDLE_FORMAT_VERSION,
+    COMPRESSED_SPLIT_FORMAT_VERSION,
     MAX_TEXT_BYTES,
     REVIEW_CASE_FILES,
     REVIEW_FORMAT_VERSION,
@@ -57,7 +60,8 @@ def validate_record(value: Any, label: str) -> dict[str, Any]:
 
 def load_split_payload(manifest_path: Path, manifest: dict[str, Any]) -> dict[str, Any]:
     """读取网页文本分片并重建原 handoff；只解析数据，不执行任何内容。"""
-    if manifest.get("split_format_version") != SPLIT_FORMAT_VERSION:
+    version = manifest.get("split_format_version")
+    if version not in {SPLIT_FORMAT_VERSION, COMPRESSED_SPLIT_FORMAT_VERSION}:
         raise ValueError("未知的文本分片格式")
     parts = require_list(manifest.get("parts"), "split.parts")
     part_count = manifest.get("part_count")
@@ -93,7 +97,7 @@ def load_split_payload(manifest_path: Path, manifest: dict[str, Any]) -> dict[st
         )
         index = part.get("index")
         if (
-            part.get("split_format_version") != SPLIT_FORMAT_VERSION
+            part.get("split_format_version") != version
             or part.get("source_sha256") != source_sha256
             or index != expected_index
             or index in seen_indices
@@ -123,6 +127,15 @@ def load_split_payload(manifest_path: Path, manifest: dict[str, Any]) -> dict[st
         if len(assembled) > MAX_HANDOFF_TRANSPORT_BYTES:
             raise ValueError("文本分片重建结果超过上限")
     content = bytes(assembled)
+    if version == COMPRESSED_SPLIT_FORMAT_VERSION:
+        if (
+            manifest.get("transport_encoding") != "xz"
+            or type(manifest.get("transport_bytes")) is not int
+            or len(content) != manifest["transport_bytes"]
+            or hashlib.sha256(content).hexdigest() != manifest.get("transport_sha256")
+        ):
+            raise ValueError("压缩分片整包长度或哈希不一致")
+        content = decompress_xz(content, source_bytes)
     if (
         len(content) != source_bytes
         or hashlib.sha256(content).hexdigest() != source_sha256
@@ -144,6 +157,46 @@ def load_input(path: Path) -> dict[str, Any]:
     return outer
 
 
+def decompress_xz(compressed: bytes, size: int) -> bytes:
+    decoder = lzma.LZMADecompressor(format=lzma.FORMAT_XZ, memlimit=64 * 1024 * 1024)
+    try:
+        raw = decoder.decompress(compressed, max_length=size + 1)
+    except lzma.LZMAError as error:
+        raise ValueError("XZ 数据流解压失败") from error
+    if len(raw) != size or not decoder.eof or decoder.unused_data:
+        raise ValueError("XZ 解压长度或数据流不合法")
+    return raw
+
+
+def decode_text_bundle(payload: dict[str, Any]) -> bytes:
+    """有限内存/输出解压；拒绝截断、尾随流和超限声明。"""
+    bundle = require_mapping(payload.get("raw_text_bundle"), "raw_text_bundle")
+    size = bundle.get("bytes")
+    compressed_size = bundle.get("compressed_bytes")
+    if (
+        bundle.get("encoding") != "xz+base64"
+        or type(size) is not int
+        or not 0 <= size <= MAX_TEXT_BYTES
+        or type(compressed_size) is not int
+        or not 0 <= compressed_size <= MAX_HANDOFF_TRANSPORT_BYTES
+        or not isinstance(bundle.get("data"), str)
+        or len(bundle["data"]) != 4 * ((compressed_size + 2) // 3)
+    ):
+        raise ValueError("1.4 原文包编码或长度非法")
+    try:
+        compressed = base64.b64decode(bundle["data"], validate=True)
+        raw = decompress_xz(compressed, size)
+    except (ValueError, binascii.Error, lzma.LZMAError) as error:
+        raise ValueError("1.4 原文包解码失败") from error
+    if (
+        len(compressed) != compressed_size
+        or len(raw) != size
+        or hashlib.sha256(raw).hexdigest() != bundle.get("sha256")
+    ):
+        raise ValueError("1.4 原文包大小、数据流或哈希不一致")
+    return raw
+
+
 def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
     payload = require_mapping(payload, "handoff")
     expected = payload.get("payload_sha256")
@@ -152,14 +205,17 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
     if expected != copied["payload_sha256"]:
         raise ValueError("handoff 整包 SHA256 不一致，可能复制不完整或被修改")
     format_version = payload.get("handoff_format_version")
-    if format_version not in {"1.1", "1.2", REVIEW_FORMAT_VERSION}:
+    if format_version not in {"1.1", "1.2", REVIEW_FORMAT_VERSION, BUNDLE_FORMAT_VERSION}:
         raise ValueError(
-            "不是带原文的 1.1/1.2/1.3 handoff；摘要 1.0 不能恢复 FX 正文"
+            "不是带原文的 1.1/1.2/1.3/1.4 handoff；摘要 1.0 不能恢复 FX 正文"
         )
     profile = payload.get("handoff_profile", "archive")
     if (
         profile not in {"archive", "review"}
-        or (format_version == REVIEW_FORMAT_VERSION) != (profile == "review")
+        or (
+            format_version != BUNDLE_FORMAT_VERSION
+            and (format_version == REVIEW_FORMAT_VERSION) != (profile == "review")
+        )
     ):
         raise ValueError("handoff 格式版本与 profile 不一致")
     raw_text_files = require_list(payload.get("raw_text_files"), "raw_text_files")
@@ -167,13 +223,37 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
     run_id = summary.get("run_id")
     if len(safe_relative_path(run_id).parts) != 1:
         raise ValueError("run_id 必须是单个目录名")
+    bundle = decode_text_bundle(payload) if format_version == BUNDLE_FORMAT_VERSION else b""
+    bundle_end = 0
+    bundle_ranges = set()
     data, total = {}, 0
     for index, value in enumerate(raw_text_files):
         item = validate_record(value, f"raw_text_files[{index}]")
         relative = item["path"]
         if relative in data:
             raise ValueError("原文存在重复路径")
-        if format_version == "1.1":
+        if format_version == BUNDLE_FORMAT_VERSION:
+            offset = item.get("offset")
+            if (
+                item.get("encoding") != "bundle-utf8"
+                or type(offset) is not int
+                or offset < 0
+                or offset + item["bytes"] > len(bundle)
+                or any(key in item for key in ("text", "data", "compressed_bytes"))
+            ):
+                raise ValueError("1.4 原文偏移或编码非法")
+            span = (offset, item["bytes"], item["sha256"])
+            if span not in bundle_ranges:
+                if offset != bundle_end:
+                    raise ValueError("1.4 原文包存在空洞或重叠")
+                bundle_end += item["bytes"]
+                bundle_ranges.add(span)
+            content = bundle[offset : offset + item["bytes"]]
+            try:
+                content.decode("utf-8")
+            except UnicodeDecodeError as error:
+                raise ValueError("1.4 原文不是 UTF-8") from error
+        elif format_version == "1.1":
             if item.get("encoding") != "utf-8" or not isinstance(
                 item.get("text"), str
             ):
@@ -223,6 +303,8 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
         ):
             raise ValueError(f"原文大小/哈希不一致：{relative}")
         data[relative] = content
+    if format_version == BUNDLE_FORMAT_VERSION and bundle_end != len(bundle):
+        raise ValueError("1.4 原文包存在未引用字节")
     for relative in data:
         if any(
             str(parent) in data
@@ -258,7 +340,14 @@ def validate_payload(payload: dict[str, Any]) -> tuple[str, dict[str, bytes]]:
             raise ValueError(f"缺失或不一致的必需原文：{record['path']}")
     if transfer["embedded_files"] != len(data) or transfer["embedded_bytes"] != total:
         raise ValueError("原文数量/字节统计不一致")
-    if format_version in {"1.2", REVIEW_FORMAT_VERSION}:
+    if format_version == BUNDLE_FORMAT_VERSION:
+        if (
+            transfer.get("transport_encoding") != "xz+base64-bundle"
+            or transfer.get("compressed_bytes") != payload["raw_text_bundle"]["compressed_bytes"]
+            or transfer.get("unique_bytes") != len(bundle)
+        ):
+            raise ValueError("1.4 原文传输统计不一致")
+    elif format_version in {"1.2", REVIEW_FORMAT_VERSION}:
         if transfer.get("transport_encoding") != "zlib+base64-per-file":
             raise ValueError("原文传输编码声明不一致")
         compressed_total = sum(item["compressed_bytes"] for item in raw_text_files)

@@ -1,6 +1,6 @@
 # T-098 功能与性能测例讲解
 
-> 更新时间：2026-09-10 21:38:54 CST（UTC+08:00）
+> 更新时间：2026-09-11 11:14 CST（UTC+08:00）
 > 状态：1 个GPU-ready单元，2 个候选明确延期。
 
 NPU 功能、修复验证和性能统一使用 `triton_experimental`，并在导入 `torch`/`torch_npu` 前选后端；OFF/ON 每臂使用新进程。
@@ -18,6 +18,19 @@ bash \
 ```
 
 先运行冻结 PyTorch revision 的原生社区测例；只有真实设备/backend/采集阻断才进入最小适配审核。
+
+该社区方法包含112组参数，TF32双臂可达到224组，因此生成的FX/IR/代码较多。若已经运行完成，
+旧handoff出现上百片，pull更新后执行以下命令重新压缩回传，不重新运行GPU：
+
+```bash
+cd /data/z50063656/tmp
+/data/z50063656/envs/PassGPURef/bin/python \
+  /data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/reexport_reference_text.py \
+  --task T-098
+```
+
+复制输出 `handoff_upload_input` 指向的 manifest 及同目录全部分片。原run和旧包不覆盖，
+1.4格式仍可恢复完整评审范围FX/IR/output_code原文，详见[传输指南](GPU_TEXT_HANDOFF.md)。
 
 ## AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined
 

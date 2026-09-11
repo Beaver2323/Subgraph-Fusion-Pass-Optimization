@@ -1,6 +1,6 @@
 # GPU 原文 handoff 导出、复制与恢复指南
 
-> 更新时间：2026-09-07 08:25 CST（UTC+08:00）
+> 更新时间：2026-09-11 11:14 CST（UTC+08:00）
 > 适用任务：T-076～T-080 及后续复用统一 GPU reference runner 的任务
 > 目标：在 GPU 服务器不能直接推 Git、不能传二进制时，默认用短评审包回传可校验的摘要与 FX；完整文本归档按需导出
 
@@ -12,7 +12,7 @@
 bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 ```
 
-会在功能 reference 完成后自动生成 **1.3 压缩评审 handoff**：
+会在功能 reference 完成后自动生成 **1.4 跨文件压缩评审 handoff**：
 
 ```text
 /data/z50063656/tmp/t078-reference-results/latest-text-handoff.json
@@ -30,12 +30,43 @@ bash "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" --task T-078 --gpu 2
 | 格式/profile | 产生方式 | 内容 | 用途 |
 | --- | --- | --- | --- |
 | `1.0 summary` | `--profile summary` | 环境、summary、逐 case 状态、文件大小和 SHA256 | 只看结论，不能查看 FX 正文 |
-| `1.3 review` | 一键入口默认；`--profile review` | 1.0 加 FX 前后、case 元数据、结果、benchmark、inventory；若 artifacts 已登记，则同时带日志、原始 FX、前后 IR 与 `output_code.py` | GPU/NPU 功能、修复与性能评审，推荐网页回传 |
+| `1.4 review/archive` | 一键入口默认 review；`--profile review --bundle-raw-text` | 与对应旧 profile 相同的文件范围；相同正文按哈希复用，跨文件 XZ 压缩，逐路径可恢复 | 大参数乘积测试和常规网页回传 |
+| `1.3 review` | 兼容入口 `--profile review` | 1.0 加 FX 前后、case 元数据、结果、benchmark、inventory；若 artifacts 已登记，则同时带日志、原始 FX、前后 IR 与 `output_code.py` | 兼容旧版逐文件压缩 |
 | `1.2 archive` | `--profile archive` | 嵌入全部已登记 UTF-8 日志、生成代码和 IR | 深度排障/审计，通常较大 |
 | `1.1 archive` | 旧参数 `--include-raw-text` | 1.2 的未压缩兼容格式 | 仅兼容旧流程 |
 
 旧的 1.0 紧凑包仍可用于摘要复核，但不能据此查看 GPU 实际 FX 图、生成代码或完整日志；导入器会
 明确拒绝把 1.0 冒充可恢复证据。
+
+### 已完成任务重新导出（T-098 上百片场景）
+
+T-098 一个社区方法遍历 112 组参数，TF32 双臂可达到 224 组，每组还包含前向、反向和 SGD
+更新后验证。旧逐文件压缩同时传输汇总 FX 和独立 FX，跨图重复较多。新版保留完整评审文件范围，
+采用相同正文去重、跨文件 XZ 压缩，以及分片前整包 XZ 压缩；原文件恢复后的字节和 SHA256 不变。
+
+GPU 服务器先 `git pull --ff-only origin main` 更新 tracker，再执行（无需重新运行 GPU）：
+
+```bash
+cd /data/z50063656/tmp
+
+/data/z50063656/envs/PassGPURef/bin/python \
+  /data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/reexport_reference_text.py \
+  --task T-098
+```
+
+脚本自动读取 `/data/z50063656/tmp/t098-reference-results/latest`，在该结果根目录下新建
+`handoff-reexport-*` 输出目录并完成导出→分片→导入往返校验。重复执行会新建输出；原 run、旧
+handoff 和 `latest` 均不覆盖。非默认结果位置可加 `--result-root /实际任务结果根目录`。
+如果 `latest` 不存在或指向错误目录，脚本报错，不猜测其他历史运行。
+
+看到 `handoff_validation=OK` 后，按 `handoff_upload_input` 找到新 manifest，将同目录的
+`manifest.json` 和全部 `part-*.json` 复制到 `results/incoming/T-098/text-handoff-parts/`。
+不要混用两次导出的分片；接收端也必须先更新到支持 1.4 的版本。新旧包 payload 哈希不同属正常，
+原始证据哈希保持一致；传输格式升级不改变测试 verdict。
+
+2026-09-11 对仓库现有 T-080/T-085/T-077 旧包的离线对照：各从旧格式 5 片降为新格式 1 片，
+整包压缩载荷分别为 35,140 / 38,304 / 40,152 bytes，80 / 122 / 68 个文件逐字节恢复一致。
+这些是三份既有证据的传输实验；T-098 实际片数须以 GPU 重新导出结果为准。
 
 ## 2. GPU 侧执行与校验
 
@@ -135,7 +166,7 @@ python "${TRACKER_ROOT}/scripts/export_reference_text.py" \
 
 ### 2.2 超限自动分片
 
-一键入口会自动比较单行 handoff 与 96 KiB 阈值；超过时把同一 handoff 拆为一个 manifest 和多个
+一键入口会自动比较单行 handoff 与 96 KiB 阈值；超过时先对整个 JSON 做 XZ 压缩，再拆为一个 manifest 和多个
 小 JSON，每个分片内部再将 Base64 按短行保存，无需先尝试上传大文件。运行结束只看：
 
 ```text
@@ -161,7 +192,9 @@ python "${TRACKER_ROOT}/scripts/import_reference_text.py" \
 find "${PARTS_DIR}" -maxdepth 1 -type f -printf '%f %s bytes\n' | sort
 ```
 
-默认每片承载 48 KiB 原始 JSON；经 Base64 和 JSON 包装后通常约 66 KiB。这个默认值来自
+新版分片协议为 `split_format_version=1.1`，默认每片承载 48 KiB **整包压缩数据**；经 Base64 和 JSON 包装后通常约 66 KiB。
+旧 `split_format_version=1.0` 仍可导入。即使整包压缩后仅剩一片，也需回传 manifest 和该片。
+这个单片大小来自
 T-079 的实际回传：约 260 KiB 的首版分片仍被当前 GitHub 网页通道拒绝，因此进一步缩小。
 将 `manifest.json` 和全部 `part-*.json` 原样创建到例如：
 
