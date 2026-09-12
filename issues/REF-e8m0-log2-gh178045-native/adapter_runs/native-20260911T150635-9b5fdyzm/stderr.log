@@ -1,0 +1,29 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_regression_gh178045_encoding_correctness (builtins.TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness)
+Regression for gh-178045: encoding must be correct for inputs near power-of-2. ... [W911 15:06:46.831442270 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0911 15:07:13.174000 1636816 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t096-native-vyi9jbaq/adapter/debug/torch_compile_debug/run_2026_09_11_15_06_46_390048-pid_1636816/torchinductor/model__0_inference_0.0
+FAIL
+
+======================================================================
+FAIL: test_regression_gh178045_encoding_correctness (builtins.TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness)
+Regression for gh-178045: encoding must be correct for inputs near power-of-2.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/z50063656/Pass/src/pytorch/test/inductor/test_fp8.py", line 2243, in test_regression_gh178045_encoding_correctness
+    self.assertEqual(
+  File "/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py", line 4879, in assertEqual
+    raise error_metas.pop()[0].to_error(  # type: ignore[index]
+AssertionError: Tensor-likes are not equal!
+
+Mismatched elements: 4 / 7 (57.1%)
+Greatest absolute difference: 1 at index (3,)
+Greatest relative difference: 0.007633587811142206 at index (3,)
+Bit-manipulation replacement must return the correct e8m0 ceiling for values 1 ULP above a power of 2 (gh-178045 regression).
+
+----------------------------------------------------------------------
+Ran 1 test in 27.234s
+
+FAILED (failures=1)

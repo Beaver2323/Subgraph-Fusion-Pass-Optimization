@@ -231,6 +231,9 @@ def case_data(task: str) -> list[dict]:
 
 def reference_plan(task: str, timestamp: str, units: list[dict]) -> dict:
     cases = case_data(task)
+    if task == "T-091":
+        for case in cases:
+            case["native_contract_observer"] = True
     implemented = task in {"T-091", "T-098", "T-100"}
     status = "gpu-ready-awaiting-native-execution" if units else "reviewed-no-gpu-ready-units"
     return {

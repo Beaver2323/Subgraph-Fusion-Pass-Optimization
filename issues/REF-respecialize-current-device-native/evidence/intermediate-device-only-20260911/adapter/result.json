@@ -1,0 +1,48 @@
+{
+  "task_id": "T-087",
+  "case_id": "REF-respecialize-current-device-native",
+  "acceptance_unit_id": "AU-post-grad-respecialize-current-device",
+  "generated_at": "2026-09-11T15:04:30.313883+08:00",
+  "pid": 1524878,
+  "status": "failed-contract",
+  "tests_ran": 1,
+  "tests_skipped": 0,
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "torch_npu_version": "2.14.0a0+git83cc452",
+  "torch_npu_file": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/__init__.py",
+  "physical_npu": "5",
+  "state": {
+    "handler_calls": 1,
+    "graphs": [
+      {
+        "changed": true
+      }
+    ],
+    "numeric_compared": true,
+    "codes": [
+      "output_code_0.py"
+    ]
+  },
+  "product_candidate": {
+    "path": "/home/z50063656/Pass/worktrees/torch_npu_t087_current_device/torch_npu/_inductor/triton_experimental/device.py",
+    "sha256": "2f3ea97ea780d01a505cf788555c01c2aebb9721c15d76613e65ca5728730835",
+    "scope": "process-local-source-candidate",
+    "installed_environment_modified": false
+  },
+  "source_sha256": "45622cbc1d6b4c026f4b32fabfe27ed3600d517df96f7ede4e9c945e1bdbf996",
+  "adapter_sha256": "1a84486e62f91c848b26e4c8ea953b57f849c5c6d1c975f6f884f869733161e6",
+  "product_gate_bypassed": false,
+  "numerical_execution": true,
+  "adapter_deviation": [
+    "只抽取当前case及两个原helper，设备API/字面量/正则cuda转npu",
+    "补同输入eager数值检查",
+    "只读目标前后图及生成代码采集"
+  ],
+  "preserved_contract": [
+    "原factory/reduction函数与[2,8]输入",
+    "compile_on_one_rank=True、fullgraph=True",
+    "输出设备/current_device及三种无固化index断言"
+  ],
+  "performance_status": "exempt-no-legal-off-path"
+}

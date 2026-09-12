@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-081",
+  "acceptance_unit_id": "AU-joint-graph-pointless-convert",
+  "unit": "convert",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "convert-community-shape",
+  "world_size": 1,
+  "process_group_backend": null,
+  "input_spec": [
+    {
+      "shape": [
+        8
+      ],
+      "dtype": "torch.float16"
+    }
+  ],
+  "worker_sha256": "5713c56a39f84cce82978da02deb8cf1511f2ec3e01be9135577648513abbbdd",
+  "source_files": {
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/joint_graph.py": "05277f947f72cdd072097961f7300a15e9ce19d6ee7a5198e01a4f3b599fa9c7",
+    "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/config.py": "68ae6164377297481de5dcd3329dc4701f6005dfddb60c46aaac92850c9f763b"
+  },
+  "off_observation": [
+    {
+      "handler_calls": 0,
+      "graph_changes": 0,
+      "collective_counts": [],
+      "post_grad_counts": []
+    }
+  ],
+  "on_observation": [
+    {
+      "handler_calls": 2,
+      "graph_changes": 2,
+      "collective_counts": [],
+      "post_grad_counts": []
+    }
+  ],
+  "target_graph_after": "graph():\n    %x_1 : [num_users=1] = placeholder[target=x_1]\n    %convert_element_type_default : [num_users=1] = call_function[target=torch.ops.prims.convert_element_type.default](args = (%x_1, torch.float16), kwargs = {})\n    return convert_element_type_default\n\ngraph():\n    %arg0_1 : [num_users=1] = placeholder[target=arg0_1]\n    %convert_element_type_default : [num_users=1] = call_function[target=torch.ops.prims.convert_element_type.default](args = (%arg0_1, torch.float16), kwargs = {})\n    return (convert_element_type_default,)",
+  "source_run_dir": "/home/z50063656/tmp/t081-npu-functional-results/functional-20260908T011814+0800",
+  "source_off_summary": {
+    "path": "/home/z50063656/tmp/t081-npu-functional-results/functional-20260908T011814+0800/convert/off/functional_summary.json",
+    "sha256": "93998787e7dbbc2ad857288e68818d3e111ddae87aea4a1aa1f6540408509a7a"
+  },
+  "source_on_summary": {
+    "path": "/home/z50063656/tmp/t081-npu-functional-results/functional-20260908T011814+0800/convert/on/functional_summary.json",
+    "sha256": "b63e8c140b1993a19bc9e9df9aa0542220955729d59526a2a79ea0c96e7c7a5e"
+  },
+  "reviewed_at": "2026-09-08T01:33:28.148491+08:00",
+  "reviewer": "tracker-control-node"
+}

@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-09-11T18:30:33.785844+08:00",
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t096_installed_worker.py",
+    "--case",
+    "ordinary",
+    "--mode",
+    "off",
+    "--phase",
+    "functional",
+    "--artifact-dir",
+    "/home/z50063656/tmp/t096-npu-results/functional-20260911T182951-swod5y_r/off/artifacts"
+  ],
+  "pid": 1785479,
+  "return_code": 0,
+  "timed_out": false,
+  "physical_npu": 5
+}

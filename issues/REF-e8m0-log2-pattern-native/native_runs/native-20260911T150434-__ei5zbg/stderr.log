@@ -1,0 +1,9 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_pattern_fires_and_is_correct (__main__.TestE8M0Log2PatternBitManip.test_pattern_fires_and_is_correct)
+The log2+ceil pattern should be matched and produce correct uint8. ... skipped 'Requires CUDA + Triton'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK (skipped=1)

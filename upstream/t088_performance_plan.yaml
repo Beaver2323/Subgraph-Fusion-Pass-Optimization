@@ -1,28 +1,137 @@
 {
-  "schema_version": "1.0", "task_id": "T-088", "generated_at": "2026-09-10T23:14:54+08:00", "status": "prepared-awaiting-gpu-and-npu-functional-gates",
-  "implementation": {"status": "implemented-awaiting-runtime-validation", "entrypoint": "runners/t087_t090_performance_worker.py", "launcher": "scripts/run_t087_t090_performance.py"},
-  "backend_contract": {"npu_backend": "triton_experimental", "selection_timing": "导入torch/torch_npu前选择后端", "process_isolation": "fresh-process-per-arm", "off_on_order": ["OFF1", "ON1", "ON2", "OFF2", "OFF3", "ON3"], "explicit_disable_policy": "产品明确disable则免测且不绕过"},
-  "measurement_contract": {"correctness_gate": "GPU reference有效后，NPU OFF/ON先确认精确handler、实际图变化、正负例与eager一致、零graph break/CPU fallback", "warmup": 10, "runs": 100, "timing": ["host synchronized p50/p99", "device Event p50/p99", "compile latency", "raw samples"], "memory": ["peak allocated", "peak reserved"], "verdict_thresholds": {"improved_percent": 5, "regressed_percent": -5, "otherwise": "PERF_NEUTRAL"}, "rounds": 3, "aggregation": "OFF/ON三臂中位数"},
-  "hardware_contract": {"gpu_reference_minimum_devices": 1, "performance_minimum_devices": 1, "performance_world_size": 1, "actual_device_execution_required": true, "fake_tensor_allowed_as_performance_oracle": false},
-  "benchmark_search": {"revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "paths": ["benchmarks/", "test/inductor/"], "terms": ["split_cat_aten_pass", "select_cat_aten_pass", "benchmark"], "result": "没有精确目标OFF/ON社区benchmark；按社区功能图和shape派生目标级测量。", "source_priority": "保持社区函数、shape、dtype、阈值；不外推为模型端到端"},
+  "schema_version": "1.0",
+  "task_id": "T-088",
+  "generated_at": "2026-09-11T15:25:08.180422+08:00",
+  "status": "performance-disposition-complete",
+  "implementation": {
+    "status": "implemented-runtime-validated",
+    "entrypoint": "runners/t087_t090_performance_worker.py",
+    "launcher": "scripts/run_t087_t090_performance.py"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "导入torch/torch_npu前选择后端",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable则免测且不绕过"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU reference有效后，NPU OFF/ON先确认精确handler、实际图变化、正负例与eager一致、零graph break/CPU fallback",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized p50/p99",
+      "device Event p50/p99",
+      "compile latency",
+      "raw samples"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "OFF/ON三臂中位数"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 1,
+    "performance_minimum_devices": 1,
+    "performance_world_size": 1,
+    "actual_device_execution_required": true,
+    "fake_tensor_allowed_as_performance_oracle": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/"
+    ],
+    "terms": [
+      "split_cat_aten_pass",
+      "select_cat_aten_pass",
+      "benchmark"
+    ],
+    "result": "没有精确目标OFF/ON社区benchmark；按社区功能图和shape派生目标级测量。",
+    "source_priority": "保持社区函数、shape、dtype、阈值；不外推为模型端到端"
+  },
   "acceptance_units": [
     {
-      "acceptance_unit_id": "AU-split-cat-merge-select-cat-aten", "worker_unit": "select-cat-aten", "performance_status": "prepared-awaiting-functional-gate", "verdict": "planned",
-      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_select_cat_post_grad"], "reason": "复用社区_TestSelectCat与两个[1024,6,128] fp32输入"},
+      "acceptance_unit_id": "AU-split-cat-merge-select-cat-aten",
+      "worker_unit": "select-cat-aten",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_select_cat_post_grad"
+        ],
+        "reason": "复用社区_TestSelectCat与两个[1024,6,128] fp32输入"
+      },
       "functional_gate": "ON精确merge_select_cat_aten调用并改图；OFF不调用；四输出与eager一致且零graph break/fallback。",
-      "workloads": [{"workload_id": "select-cat-aten-community-shape", "role": "primary", "shape_contract": "两个[1024,6,128] fp32输入，社区完整/不完整select+cat组合", "measurement_scope": "完整社区目标函数compiled调用；不是模型端到端"}],
+      "workloads": [
+        {
+          "workload_id": "select-cat-aten-community-shape",
+          "role": "primary",
+          "shape_contract": "两个[1024,6,128] fp32输入，社区完整/不完整select+cat组合",
+          "measurement_scope": "完整社区目标函数compiled调用；不是模型端到端"
+        }
+      ],
       "off_on_control": "normalization_aten_pass固定ON，只省略/加入select_cat_aten_pass；每臂新进程。",
-      "artifacts": ["功能原件与sha256", "精确handler前后FX", "output_code.py/IR", "host/Event/显存/编译耗时原样本"],
-      "negative_cases": ["不完整/非连续select分支不得误合并", "ON未改图、OFF误调用、错误/fallback/disable均拒绝"]
+      "artifacts": [
+        "功能原件与sha256",
+        "精确handler前后FX",
+        "output_code.py/IR",
+        "host/Event/显存/编译耗时原样本"
+      ],
+      "negative_cases": [
+        "不完整/非连续select分支不得误合并",
+        "ON未改图、OFF误调用、错误/fallback/disable均拒绝"
+      ]
     },
     {
-      "acceptance_unit_id": "AU-split-cat-merge-split-cat-aten", "worker_unit": "split-cat-aten", "performance_status": "prepared-awaiting-functional-gate", "verdict": "planned",
-      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad", "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad_singular"], "reason": "正例测性能，singular社区负例只作计时前功能门禁"},
+      "acceptance_unit_id": "AU-split-cat-merge-split-cat-aten",
+      "worker_unit": "split-cat-aten",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad",
+          "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad_singular"
+        ],
+        "reason": "正例测性能，singular社区负例只作计时前功能门禁"
+      },
       "functional_gate": "正例ON精确handler且改图、OFF不调用；singular负例ON也不得命中；全部与eager一致且零fallback。",
-      "workloads": [{"workload_id": "split-cat-aten-community-shape", "role": "primary", "shape_contract": "x/y=[1024,128]、z=[1024,32] fp32，threshold_to_cat=5", "measurement_scope": "社区_TestSplitCat完整目标函数，负例不计时"}],
+      "workloads": [
+        {
+          "workload_id": "split-cat-aten-community-shape",
+          "role": "primary",
+          "shape_contract": "x/y=[1024,128]、z=[1024,32] fp32，threshold_to_cat=5",
+          "measurement_scope": "社区_TestSplitCat完整目标函数，负例不计时"
+        }
+      ],
       "off_on_control": "normalization_aten_pass固定ON，只省略/加入split_cat_aten_pass threshold=5；新进程六臂。",
-      "artifacts": ["GPU/NPU功能原件", "目标FX/counter", "output_code.py/IR", "host/Event/显存/编译耗时原样本"],
-      "negative_cases": ["singular-below-threshold必须保持0命中", "改错图、fallback、产品disable拒绝计时"]
+      "artifacts": [
+        "GPU/NPU功能原件",
+        "目标FX/counter",
+        "output_code.py/IR",
+        "host/Event/显存/编译耗时原样本"
+      ],
+      "negative_cases": [
+        "singular-below-threshold必须保持0命中",
+        "改错图、fallback、产品disable拒绝计时"
+      ]
     }
   ]
 }

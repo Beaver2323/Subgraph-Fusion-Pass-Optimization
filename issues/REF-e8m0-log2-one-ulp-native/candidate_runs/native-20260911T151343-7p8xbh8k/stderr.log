@@ -1,0 +1,14 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+[W911 15:13:54.423450550 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+test_correct_for_values_one_ulp_above_power_of_two (builtins.TestE8M0Log2PatternBitManip.test_correct_for_values_one_ulp_above_power_of_two)
+Values 1 ULP above a power of 2 must produce the correct (higher) exponent. ... /home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0911 15:14:17.413000 2297962 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t096-native-0vd202k_/adapter/debug/torch_compile_debug/run_2026_09_11_15_13_55_190394-pid_2297962/torchinductor/model__0_inference_0.0
+[W911 15:14:17.979604390 TensorFactories.cpp:406] Warning: Cannot create tensor with internal format while allow_internal_format=False, tensor will be created with base format. (function operator())
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 22.383s
+
+OK

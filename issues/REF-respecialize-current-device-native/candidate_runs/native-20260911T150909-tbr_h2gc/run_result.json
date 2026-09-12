@@ -1,0 +1,30 @@
+{
+  "task_id": "T-087",
+  "case_id": "REF-respecialize-current-device-native",
+  "generated_at": "2026-09-11T15:09:09.136144+08:00",
+  "status": "adapted-test-passed-awaiting-contract-review",
+  "tests_ran": 1,
+  "tests_skipped": 0,
+  "return_code": 0,
+  "mode": "adapter",
+  "product_candidate": "/home/z50063656/Pass/worktrees/torch_npu_t087_current_device/torch_npu/_inductor/triton_experimental/device.py",
+  "e8m0_candidate": false,
+  "test_body_execution_proven": true,
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-respecialize-current-device-native/npu_adapter.py",
+    "--artifact-dir",
+    "/home/z50063656/tmp/t087-native-a9_ytt5s/adapter",
+    "--candidate-device",
+    "/home/z50063656/Pass/worktrees/torch_npu_t087_current_device/torch_npu/_inductor/triton_experimental/device.py"
+  ],
+  "working_directory": "/home/z50063656/tmp",
+  "physical_npu": 5,
+  "backend_requested": "triton_experimental",
+  "backend_verified": false,
+  "contract_review_required": true,
+  "source_sha256": "45622cbc1d6b4c026f4b32fabfe27ed3600d517df96f7ede4e9c945e1bdbf996",
+  "raw_artifact_dir": "/home/z50063656/tmp/t087-native-a9_ytt5s",
+  "product_gate_bypassed": false,
+  "body_or_assertions_modified": false
+}

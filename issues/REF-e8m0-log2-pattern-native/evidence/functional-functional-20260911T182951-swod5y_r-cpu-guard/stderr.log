@@ -1,0 +1,5 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0911 18:33:05.545000 1815667 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t096-npu-results/functional-20260911T182951-swod5y_r/cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0

@@ -1,0 +1,62 @@
+op0: ExternKernelSchedulerNode(FallbackKernel)
+op0.writes = [StarDep(name='buf0', mode=None)]
+op0.unmet_dependencies = []
+op0.met_dependencies = [StarDep(name='arg0_1', mode=None)]
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: FallbackKernel
+    buf0.layout = FixedLayout('npu:0', torch.float32, size=[1024, 768], stride=[768, 1])
+    buf0.aliases = ['arg0_1']
+    buf0.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op0'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op1'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op2'), can_inplace=False, is_weak=False),
+        NodeUser(node=OUTPUT, can_inplace=False, is_weak=False),
+    ]
+]
+op0.node.kernel = torch.ops.aten.view.default
+
+
+op1: ExternKernelSchedulerNode(FallbackKernel)
+op1.writes = [StarDep(name='buf1', mode=None)]
+op1.unmet_dependencies = []
+op1.met_dependencies = [StarDep(name='arg0_1', mode=None)]
+op1.min_input_distance = 0
+op1.max_input_distance = 0
+op1.outputs = [
+    buf1: FallbackKernel
+    buf1.layout = FixedLayout('npu:0', torch.float32, size=[1024, 640], stride=[640, 1])
+    buf1.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op1.node.kernel = torch.ops.aten.cat.default
+
+
+op2: ExternKernelSchedulerNode(FallbackKernel)
+op2.writes = [StarDep(name='buf2', mode=None)]
+op2.unmet_dependencies = []
+op2.met_dependencies = [StarDep(name='arg0_1', mode=None)]
+op2.min_input_distance = 0
+op2.max_input_distance = 0
+op2.outputs = [
+    buf2: FallbackKernel
+    buf2.layout = FixedLayout('npu:0', torch.float32, size=[1024, 384], stride=[384, 1])
+    buf2.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op2.node.kernel = torch.ops.aten.cat.default
+
+
+op3: ExternKernelSchedulerNode(FallbackKernel)
+op3.writes = [StarDep(name='buf3', mode=None)]
+op3.unmet_dependencies = []
+op3.met_dependencies = [StarDep(name='arg1_1', mode=None)]
+op3.min_input_distance = 0
+op3.max_input_distance = 0
+op3.outputs = [
+    buf3: FallbackKernel
+    buf3.layout = FixedLayout('npu:0', torch.float32, size=[1024, 640], stride=[640, 1])
+    buf3.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op3.node.kernel = torch.ops.aten.cat.default
+
+

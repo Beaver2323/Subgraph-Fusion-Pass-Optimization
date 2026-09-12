@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-09-11T15:13:04.858762+08:00",
+  "source_run": "/home/z50063656/tmp/t096-native-vyi9jbaq",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/baseline-20260911/adapter/adapted_test.py",
+      "sha256": "e5f276fa402db9a4f4512fd6558857868ca1175d42df1a415440a771b0c98ecf",
+      "bytes": 1743
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_06_46_390048-pid_1636816/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "e81f0204b0a0740b08fdf49b7aa843ecc008460592b44c1831ff8febaa318656",
+      "bytes": 1336
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_06_46_390048-pid_1636816/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "e81f0204b0a0740b08fdf49b7aa843ecc008460592b44c1831ff8febaa318656",
+      "bytes": 1336
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_06_46_390048-pid_1636816/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "cf778e3b8a24f6647f269da1b8d443f39aab5842cb40432e53d8577c56df7444",
+      "bytes": 2846
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_06_46_390048-pid_1636816/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "87eae6858ac6a40c0fdb2f9fcc043a1bd49f8163762aeae75d35e199dec99825",
+      "bytes": 2844
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_06_46_390048-pid_1636816/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "2bb30e90be9c5b38f51a70720077cc65a370ee0d6f032f908ff53034b7c9b785",
+      "bytes": 12632
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/baseline-20260911/adapter/result.json",
+      "sha256": "97418abbc7946dbbb564f9ddba8ed7c5849ab62ed9790994d9f7f88bb7ec1a08",
+      "bytes": 1718
+    }
+  ],
+  "generated_output_code_present": true
+}

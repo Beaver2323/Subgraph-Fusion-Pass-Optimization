@@ -94,13 +94,30 @@ def percentile(values: list[float], q: float) -> float:
 def source_hashes() -> dict[str, str]:
     result = {}
     for name, module in list(sys.modules.items()):
-        path = Path(getattr(module, "__file__", ""))
-        if name.startswith(("torch._inductor", "torch_npu._inductor", "triton")) and path.is_file():
+        if not name.startswith(("torch._inductor", "torch_npu._inductor", "triton")):
+            continue
+        source = getattr(module, "__file__", None)
+        if not source:
+            continue
+        path = Path(source)
+        if path.is_file():
             result[str(path.resolve())] = sha256(path)
     return result
 
 
-def install_exact_handler_observer(split_cat, pass_name: str, symbol: str, state: dict) -> None:
+def capture_graph(output, state, graph, call):
+    index = state["handler_calls"]
+    before = graph.python_code("self").src
+    (output / f"target-{index}-before.txt").write_text(before)
+    result = call()
+    after = graph.python_code("self").src
+    (output / f"target-{index}-after.txt").write_text(after)
+    state["handler_calls"] += 1
+    state["graph_changes"] += int(before != after)
+    return result
+
+
+def install_exact_handler_observer(split_cat, pass_name: str, symbol: str, state: dict, output: Path) -> None:
     registry = split_cat.POST_GRAD_PATTERNS[pass_name]
     seen = 0
     for entries in registry.patterns.values():
@@ -112,12 +129,8 @@ def install_exact_handler_observer(split_cat, pass_name: str, symbol: str, state
 
             @functools.wraps(handler)
             def observed(*args, __handler=handler, **kwargs):
-                state["handler_calls"] += 1
                 graph = args[0].graph
-                before = str(graph)
-                result = __handler(*args, **kwargs)
-                state["graph_changes"] += int(before != str(graph))
-                return result
+                return capture_graph(output, state, graph, lambda: __handler(*args, **kwargs))
 
             entry.handler = observed
     if seen != 1:
@@ -153,14 +166,14 @@ def split_cat_model(torch, unit: str):
     return fn
 
 
-def assert_close(torch, actual, expected) -> None:
+def assert_close(torch, actual, expected, *, atol=1e-8, rtol=1e-8) -> None:
     if isinstance(actual, (tuple, list)):
         if len(actual) != len(expected):
             raise RuntimeError("输出数量不一致")
         for left, right in zip(actual, expected):
-            torch.testing.assert_close(left, right, rtol=1e-5, atol=1e-5)
+            torch.testing.assert_close(left, right, rtol=rtol, atol=atol)
     else:
-        torch.testing.assert_close(actual, expected, rtol=1e-5, atol=1e-5)
+        torch.testing.assert_close(actual, expected, rtol=rtol, atol=atol)
 
 
 def main() -> None:
@@ -194,6 +207,8 @@ def main() -> None:
     os.environ["TORCHINDUCTOR_COMPILE_THREADS"] = "1"
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
+    if (output / "result.json").exists() or (output / "debug").exists():
+        raise RuntimeError("拒绝覆盖既有运行")
     os.environ["TORCH_COMPILE_DEBUG"] = "1"
     os.environ["TORCH_COMPILE_DEBUG_DIR"] = str(output / "debug")
     os.environ["TORCH_TRACE"] = str(output / "trace")
@@ -201,7 +216,7 @@ def main() -> None:
     os.environ["TRITON_CACHE_DIR"] = str(output / "triton-cache")
 
     import torch
-    import torch._dynamo.config as dynamo_config
+    import torch.compiler.config as compiler_config
     from torch._dynamo.utils import counters
     from torch._inductor import config
     from torch._inductor.fx_passes import post_grad, split_cat
@@ -232,11 +247,7 @@ def main() -> None:
 
         @functools.wraps(original)
         def observed(graph):
-            state["handler_calls"] += 1
-            before = [node.name for node in graph.nodes]
-            result = original(graph)
-            state["graph_changes"] += int(before != [node.name for node in graph.nodes])
-            return result
+            return capture_graph(output, state, graph, lambda: original(graph))
 
         post_grad.reorder_for_locality = observed
         settings.update(
@@ -298,7 +309,7 @@ def main() -> None:
             "move-view-after-cat": "move_view_after_cat_aten_pass",
             "normalize-cat-aten": "normalization_aten_pass",
         }[args.unit]
-        install_exact_handler_observer(split_cat, pass_name, symbol, state)
+        install_exact_handler_observer(split_cat, pass_name, symbol, state, output)
         normalization = {"normalization_aten_pass": {}}
         target_option = {
             "split-cat-aten": {"split_cat_aten_pass": {"threshold_to_cat": 5}},
@@ -320,7 +331,7 @@ def main() -> None:
     counters.clear()
     options = {"npu_backend": "triton_experimental"} if args.device == "npu" else None
     compiler_patch = (
-        dynamo_config.patch(compile_on_one_rank=True)
+        compiler_config.patch(compile_on_one_rank=True)
         if args.unit == "respecialize-current-device"
         else contextlib.nullcontext()
     )
@@ -330,7 +341,8 @@ def main() -> None:
         actual = invoke(compiled)
         runtime.synchronize()
         compile_ms = (time.perf_counter() - started) * 1000
-        assert_close(torch, actual, expected)
+        tolerance = {"atol": 1e-5, "rtol": 1e-5} if args.unit == "reorder-locality" else {}
+        assert_close(torch, actual, expected, **tolerance)
         if args.unit == "reorder-locality":
             for left, right in zip(model.parameters(), eager_model.parameters()):
                 torch.testing.assert_close(left.grad, right.grad)
@@ -368,12 +380,17 @@ def main() -> None:
     record = {
         "schema_version": "1.0", "generated_at": datetime.now().astimezone().isoformat(),
         "task_id": task, "acceptance_unit_id": acceptance, "unit": args.unit,
-        "mode": args.mode, "phase": args.phase,
+        "mode": args.mode, "phase": args.phase, "pid": os.getpid(),
+        "physical_device": os.environ.get("ASCEND_RT_VISIBLE_DEVICES" if args.device == "npu" else "CUDA_VISIBLE_DEVICES"),
+        "device_name": runtime.get_device_name(0), "python_executable": sys.executable,
         "backend": "triton_experimental" if args.device == "npu" else "inductor-default",
         "backend_selected_before_import": True, "pytorch_commit": torch.version.git_version,
         "pytorch_worktree_status": worktree, "correctness": "passed", "numerical_execution": True,
         "target_rewrite": "confirmed" if args.mode == "on" else "disabled-control",
-        "graph_breaks": 0, "fallbacks": 0, "product_disabled": False,
+        "graph_breaks": sum(counters["graph_break"].values()),
+        "fallbacks": None, "fallback_review": "manual-review-required",
+        "product_disabled": False,
+        "counters": {key: dict(value) for key, value in counters.items()},
         "measurement_workload": args.unit + "-community-shape", "input_spec": INPUT_SPECS[args.unit],
         "state": state, "compile_ms": compile_ms, "samples": samples, "memory": memory,
         "timing": ({key: {"p50": percentile(value, .5), "p99": percentile(value, .99)} for key, value in samples.items()} if samples else None),

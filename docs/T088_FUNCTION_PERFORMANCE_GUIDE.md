@@ -1,7 +1,11 @@
 # T-088 功能与性能测例讲解
 
-> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
-> 状态：2 个单元已准备，等待原生 GPU reference；3 个 CPU-only 候选延期。
+> 更新时间：2026-09-11 15:17 CST（UTC+08:00）
+> 状态：GPU/NPU功能、正式比较与六臂性能2/2完成，两个单元均PERF_IMPROVED；3个CPU-only候选延期。
+
+最新 [select-cat讲解](../results/current/T-088/select-cat-aten_讲解.md) / [split-cat讲解](../results/current/T-088/split-cat-aten_讲解.md)。
+
+真实 NPU 结果及 singular 负例收集判据修正见 [阶段报告](../report/t087_t090_npu_progress_20260911.md)，不是产品缺陷修复。
 
 GPU 使用 `inductor-default` 原生社区入口，NPU 动态验证和性能只允许 `triton_experimental`。
 

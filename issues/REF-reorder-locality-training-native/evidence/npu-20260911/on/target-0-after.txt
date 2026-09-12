@@ -1,0 +1,15 @@
+graph():
+    %primals_1 : [num_users=2] = placeholder[target=primals_1]
+    %primals_2 : [num_users=3] = placeholder[target=primals_2]
+    %primals_3 : [num_users=2] = placeholder[target=primals_3]
+    %mm : [num_users=2] = call_function[target=torch.ops.aten.mm.default](args = (%primals_2, %primals_1), kwargs = {})
+    %tanh : [num_users=2] = call_function[target=torch.ops.aten.tanh.default](args = (%mm,), kwargs = {})
+    %mm_1 : [num_users=2] = call_function[target=torch.ops.aten.mm.default](args = (%primals_2, %primals_3), kwargs = {})
+    %sigmoid : [num_users=2] = call_function[target=torch.ops.aten.sigmoid.default](args = (%mm_1,), kwargs = {})
+    %mul : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%tanh, %sigmoid), kwargs = {})
+    %sin : [num_users=1] = call_function[target=torch.ops.aten.sin.default](args = (%tanh,), kwargs = {})
+    %cos : [num_users=1] = call_function[target=torch.ops.aten.cos.default](args = (%sigmoid,), kwargs = {})
+    %mul_1 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%sin, %cos), kwargs = {})
+    %add : [num_users=1] = call_function[target=torch.ops.aten.add.Tensor](args = (%mul, %mul_1), kwargs = {})
+    %sum_1 : [num_users=1] = call_function[target=torch.ops.aten.sum.dim_IntList](args = (%add, [1]), kwargs = {})
+    return (sum_1, primals_1, primals_2, primals_3, mm, mm_1)

@@ -1,0 +1,33 @@
+{
+  "task_id": "T-089",
+  "acceptance_unit_id": "AU-split-cat-move-view-after-cat",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "move-view-after-cat-community-shape",
+  "input_spec": [
+    {
+      "shape": [
+        7,
+        8,
+        96
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "1c0a95e6c6a74777be3f8660aefbc8c49d4ce6330fea4453324db8183111765d",
+  "reviewed_at": "2026-09-11T14:39:18.004307+08:00",
+  "reviewer": "Codex：冻结社区合同与实际生成代码复核",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "044d21b660796f659b3943d7a76e44a5781e991fae3f37e825a5d4b249ef48cb"
+  },
+  "target_functional": {
+    "path": "../functional/move-view-after-cat.json",
+    "sha256": "d2bf164e77032bf01ae591ea99ace3fbe88eb531ceb41dd2065c9a02711522a5"
+  }
+}

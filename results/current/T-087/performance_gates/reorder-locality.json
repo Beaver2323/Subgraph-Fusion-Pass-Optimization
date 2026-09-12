@@ -1,0 +1,32 @@
+{
+  "task_id": "T-087",
+  "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "reorder-locality-community-shape",
+  "input_spec": [
+    {
+      "shape": [
+        8,
+        16
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "1c0a95e6c6a74777be3f8660aefbc8c49d4ce6330fea4453324db8183111765d",
+  "reviewed_at": "2026-09-11T14:42:23.580120+08:00",
+  "reviewer": "Codex：冻结社区合同与实际生成代码复核",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "e1805acc346576277fa282039f8193fa8dccd9d6a010ec4fdb6efc6eeeced619"
+  },
+  "target_functional": {
+    "path": "../functional/reorder-locality.json",
+    "sha256": "3491ce77eda664736e5035de008b81ad4b0f1ee335b02522b0d9b9648e0a6208"
+  }
+}

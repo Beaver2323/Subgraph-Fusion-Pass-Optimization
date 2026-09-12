@@ -1,0 +1,34 @@
+{
+  "task_id": "T-082",
+  "acceptance_unit_id": "AU-joint-graph-pointless-view-pair",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "view-community-shape",
+  "world_size": 1,
+  "input_spec": [
+    {
+      "shape": [
+        15,
+        7
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "5713c56a39f84cce82978da02deb8cf1511f2ec3e01be9135577648513abbbdd",
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-08T01:33:28.778398+08:00",
+  "reviewer": "tracker-control-node",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "00a8052b920d56084f903ea8960415aa9f3949e7f56b5d8d9449c61ad71f80bf"
+  },
+  "target_functional": {
+    "path": "../functional/view-on.json",
+    "sha256": "2dba8945cf65699954ba5aad6bc458a4cbc37c9dfa062707a24c20c16a89d216"
+  }
+}

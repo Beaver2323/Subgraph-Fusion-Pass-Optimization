@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-09-11T15:13:04.743765+08:00",
+  "source_run": "/home/z50063656/tmp/t096-native-gscg_w0l",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/baseline-20260911/adapter/adapted_test.py",
+      "sha256": "cb9342960a0087fdd40dbbb2dd87b26a9e11701e6784e989c14bcb47c4b30f82",
+      "bytes": 729
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_04_56_494867-pid_1542931/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1f6e17e13e09d39bb6ecf8b074fe098d7af745983af36845aaff36103b0c5d65",
+      "bytes": 1301
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_04_56_494867-pid_1542931/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "1f6e17e13e09d39bb6ecf8b074fe098d7af745983af36845aaff36103b0c5d65",
+      "bytes": 1301
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_04_56_494867-pid_1542931/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "cf778e3b8a24f6647f269da1b8d443f39aab5842cb40432e53d8577c56df7444",
+      "bytes": 2846
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_04_56_494867-pid_1542931/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "87eae6858ac6a40c0fdb2f9fcc043a1bd49f8163762aeae75d35e199dec99825",
+      "bytes": 2844
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/baseline-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_04_56_494867-pid_1542931/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "922ac7d211f0fbde7f155fc1437beb61d9fe0d9e92389a48794f8246bf5ec12b",
+      "bytes": 12632
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/baseline-20260911/adapter/result.json",
+      "sha256": "fc947bb04423796e602d3774e3c791e2a6a0022b911b35b1d114eb0757c0edfb",
+      "bytes": 1616
+    }
+  ],
+  "generated_output_code_present": true
+}

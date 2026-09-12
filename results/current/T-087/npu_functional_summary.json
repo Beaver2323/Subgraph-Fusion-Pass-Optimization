@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-087",
+  "generated_at": "2026-09-11T18:20:16.690981+08:00",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "reorder-locality",
+      "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-087/functional/reorder-locality.json",
+      "gate": "results/current/T-087/performance_gates/reorder-locality.json",
+      "artifacts": 32
+    },
+    {
+      "unit": "respecialize-current-device",
+      "acceptance_unit_id": "AU-post-grad-respecialize-current-device",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-087/functional/respecialize-current-device.json",
+      "gate": "results/current/T-087/performance_gates/respecialize-current-device.json",
+      "performance_exempt": true
+    }
+  ],
+  "scope": "训练单元及设备解析单元均完成；设备解析为已签免测，不计算性能收益"
+}

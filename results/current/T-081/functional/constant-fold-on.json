@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-081",
+  "acceptance_unit_id": "AU-joint-graph-constant-fold-uniform-value",
+  "unit": "constant-fold",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "constant-fold-community-shape",
+  "world_size": 1,
+  "process_group_backend": null,
+  "input_spec": [
+    {
+      "shape": [
+        2,
+        4
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "5713c56a39f84cce82978da02deb8cf1511f2ec3e01be9135577648513abbbdd",
+  "source_files": {
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/joint_graph.py": "05277f947f72cdd072097961f7300a15e9ce19d6ee7a5198e01a4f3b599fa9c7",
+    "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/config.py": "68ae6164377297481de5dcd3329dc4701f6005dfddb60c46aaac92850c9f763b"
+  },
+  "off_observation": [
+    {
+      "handler_calls": 0,
+      "graph_changes": 0,
+      "collective_counts": [],
+      "post_grad_counts": []
+    }
+  ],
+  "on_observation": [
+    {
+      "handler_calls": 1,
+      "graph_changes": 1,
+      "collective_counts": [],
+      "post_grad_counts": []
+    }
+  ],
+  "target_graph_after": "graph():\n    %arg0_1 : [num_users=2] = placeholder[target=arg0_1]\n    %arg1_1 : [num_users=2] = placeholder[target=arg1_1]\n    %arg2_1 : [num_users=1] = placeholder[target=arg2_1]\n    %full : [num_users=0] = call_function[target=torch.ops.aten.full.default](args = ([%arg0_1, %arg1_1], 1), kwargs = {dtype: torch.float32, device: npu:0, pin_memory: False})\n    %full_default : [num_users=0] = call_function[target=torch.ops.aten.full.default](args = ([%arg0_1, %arg1_1], 0.0), kwargs = {dtype: torch.float32, layout: torch.strided, device: npu:0, pin_memory: False})\n    return (arg2_1,)",
+  "source_run_dir": "/home/z50063656/tmp/t081-npu-functional-results/functional-20260908T011814+0800",
+  "source_off_summary": {
+    "path": "/home/z50063656/tmp/t081-npu-functional-results/functional-20260908T011814+0800/constant-fold/off/functional_summary.json",
+    "sha256": "983ef9df62e243087590bb14355b3f9d19606ff8c0b831c337d095e47262bf93"
+  },
+  "source_on_summary": {
+    "path": "/home/z50063656/tmp/t081-npu-functional-results/functional-20260908T011814+0800/constant-fold/on/functional_summary.json",
+    "sha256": "2330bb2e6e1d9aa367d386354e249829bb25685621178be3e57c9f1df29f202f"
+  },
+  "reviewed_at": "2026-09-08T01:33:28.148491+08:00",
+  "reviewer": "tracker-control-node"
+}

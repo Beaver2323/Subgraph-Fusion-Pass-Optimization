@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-09-11T18:35:11.938208+08:00",
+  "source_run": "/home/z50063656/tmp/t096-npu-results/functional-20260911T182951-swod5y_r/exponent-sweep",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "ae89729f3bb44203b87cb6309b62598e93f69f1de8e394d3846ef3527fd96e0e",
+      "bytes": 873
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "97e38505b777c838fe547c1438b3e8284fed2fbe17e3d6b63c92b94edc0c1ffd",
+      "bytes": 2988
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "ea84a459a263d0c408573da484d7f276acc038a33b9fdb598863b94733e6a23e",
+      "bytes": 4956
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "7b335aeee4f053d1f91d7112c6711fa58fecc7b94bac562df5b557cd53e254e7",
+      "bytes": 4955
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "69cd0e1ce8ec855385cf60803b90eb81d10e9220cce281fdcaa18d8230cbcf5d",
+      "bytes": 12989
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/result.json",
+      "sha256": "e7aef76d62aa4c98aa66734a915fc56ae6ae751767a700d3188b2c7c945f032e",
+      "bytes": 67046
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/target-0-after.txt",
+      "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+      "bytes": 2345
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/execution.json",
+      "sha256": "1f618031ace0c105aa1e3996565d6a10a647e05e9b17c93ece5b2379c00fa5db",
+      "bytes": 516
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/stderr.log",
+      "sha256": "15fd4f7433f9addd90e883ed11c94e2b2159cc61df9d72686028390a47c6af9b",
+      "bytes": 1103
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/stdout.log",
+      "sha256": "3e9e105fcd17cd57cc89d00cd716876ca46cfccda9927e2107622aa8f5ca2f97",
+      "bytes": 74
+    }
+  ],
+  "generated_output_code_present": true
+}

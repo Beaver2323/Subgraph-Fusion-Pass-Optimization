@@ -1,0 +1,117 @@
+{
+  "generated_at": "2026-09-11T18:20:16.676216+08:00",
+  "source_run": "/home/z50063656/tmp/t087-two-device-code-identical-91qub8ou/artifacts",
+  "files": [
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/adapted_test.py",
+      "sha256": "d526567d9e01e131c282e9c2b78c00639850f0329af8545362a76eacd6fa52f8",
+      "bytes": 1767
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "52efa45c5aec4d8d8019bcc9c06205f7dcaee317942dcdeb4d4f52caa8336677",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "be64693060225abb940f6f65ae45225761c1edc1d9d16a8dda7c6169d8ee902b",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "cea155a7628747896d8a0c24b3b439a23c25dd9255f81dd3f8ee8d8d93bc72b7",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "377363199b790ec5c5be44f99463845fdc8e471e612402f5177f5e9e55033b09",
+      "bytes": 14325
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+      "sha256": "d9d3d90394ad7a7a642f31eb27fe1804ddae0300b0cb7782976f14d7e7de0d7c",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+      "sha256": "e7f2b0f5e758f630fe9d6063504839b28207d143393dd5c675d644d28304fa39",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+      "sha256": "6e3d20771f6cf7fdaa5715b449d6c19efe02b298f6883247cfef5a3588a1f9f3",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/output_code.py",
+      "sha256": "aa72038eabdd032060c97b7466ca2740a9cf6191373796f5c07f21e057f3dfc6",
+      "bytes": 14325
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/fx_graph_transformed.py",
+      "sha256": "52efa45c5aec4d8d8019bcc9c06205f7dcaee317942dcdeb4d4f52caa8336677",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/ir_post_fusion.txt",
+      "sha256": "be64693060225abb940f6f65ae45225761c1edc1d9d16a8dda7c6169d8ee902b",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/ir_pre_fusion.txt",
+      "sha256": "cea155a7628747896d8a0c24b3b439a23c25dd9255f81dd3f8ee8d8d93bc72b7",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/output_code.py",
+      "sha256": "db9cf87673a49ab3f9ac99f874873763837ce5a426d763ac0b6abe89957a0cbf",
+      "bytes": 21594
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/fx_graph_transformed.py",
+      "sha256": "d9d3d90394ad7a7a642f31eb27fe1804ddae0300b0cb7782976f14d7e7de0d7c",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/ir_post_fusion.txt",
+      "sha256": "e7f2b0f5e758f630fe9d6063504839b28207d143393dd5c675d644d28304fa39",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/ir_pre_fusion.txt",
+      "sha256": "6e3d20771f6cf7fdaa5715b449d6c19efe02b298f6883247cfef5a3588a1f9f3",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/output_code.py",
+      "sha256": "9549691c8e05f6d045329f49c8d3e95d200b561520991b7b3630938c683db4d9",
+      "bytes": 21594
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/result.json",
+      "sha256": "ab20f3fa62d670a5e14562ddbb3436429ccc9ff582237dda34a81a37f66ca6de",
+      "bytes": 1078
+    }
+  ],
+  "generated_output_code_present": true
+}

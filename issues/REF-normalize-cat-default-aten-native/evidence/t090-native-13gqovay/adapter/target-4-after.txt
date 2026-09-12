@@ -1,0 +1,27 @@
+
+
+
+def forward(self, arg0_1, arg1_1, arg2_1, arg3_1):
+    split_with_sizes = torch.ops.aten.split_with_sizes.default(arg0_1, [96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96], 1);  arg0_1 = None
+    getitem = split_with_sizes[0]
+    getitem_1 = split_with_sizes[1]
+    getitem_2 = split_with_sizes[2]
+    getitem_3 = split_with_sizes[3]
+    getitem_4 = split_with_sizes[4]
+    getitem_5 = split_with_sizes[5]
+    getitem_10 = split_with_sizes[10]
+    getitem_11 = split_with_sizes[11]
+    getitem_12 = split_with_sizes[12]
+    getitem_13 = split_with_sizes[13]
+    getitem_14 = split_with_sizes[14]
+    getitem_15 = split_with_sizes[15]
+    getitem_16 = split_with_sizes[16]
+    getitem_17 = split_with_sizes[17];  split_with_sizes = None
+    split_with_sizes_1 = torch.ops.aten.split_with_sizes.default(arg1_1, [96, 96, 96, 96], 1);  arg1_1 = None
+    getitem_21 = split_with_sizes_1[0]
+    getitem_22 = split_with_sizes_1[1]
+    getitem_23 = split_with_sizes_1[2]
+    getitem_24 = split_with_sizes_1[3];  split_with_sizes_1 = None
+    cat_default = torch.ops.aten.cat.default([arg3_1, getitem, getitem_1, getitem_2, getitem_3, getitem_4, getitem_5, getitem_15, getitem_16, getitem_17, arg2_1, getitem_10, getitem_11, getitem_12, getitem_13, getitem_14, arg2_1, getitem_21, getitem_22, getitem_23, getitem_24, arg3_1], dim = 1);  arg3_1 = getitem = getitem_1 = getitem_2 = getitem_3 = getitem_4 = getitem_5 = getitem_15 = getitem_16 = getitem_17 = arg2_1 = getitem_10 = getitem_11 = getitem_12 = getitem_13 = getitem_14 = getitem_21 = getitem_22 = getitem_23 = getitem_24 = None
+    return (cat_default,)
+    

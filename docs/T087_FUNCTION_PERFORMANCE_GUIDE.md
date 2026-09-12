@@ -1,7 +1,13 @@
 # T-087 功能与性能测例讲解
 
-> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
-> 状态：2 个单元已准备，等待原生 GPU reference；另 2 个候选延期。
+> 更新时间：2026-09-11 18:44 CST（UTC+08:00）
+> 状态：GPU 3/3、NPU 2/2正式闭环。训练为PERF_MIXED；设备解析已部署Pass，原例1/1及四项近邻通过，无合法OFF故性能免测。另2个候选延期。
+
+最新 [训练功能/性能讲解](../results/current/T-087/reorder-locality_讲解.md) 与 [设备解析修复报告](../issues/REF-respecialize-current-device-native/根因分析.md)。
+
+[安装态回归步骤和原始日志](../issues/REF-respecialize-current-device-native/修复验证报告.md)含普通FP32/FP16、两类非法wrapper及两设备代码一致性；不外推多rank通信支持。
+
+本轮实际步骤、代码、调用链与证据见 [NPU 阶段报告](../report/t087_t090_npu_progress_20260911.md)。
 
 NPU 的功能、修复验证和性能统一使用 `triton_experimental`，必须在导入 `torch`/`torch_npu`
 前选择后端，OFF/ON 每臂使用新进程。GPU 先运行冻结 revision
@@ -75,8 +81,9 @@ device-valued node。原生功能测例在真实 CUDA 上编译 `[2,8]` 输入�
 
 ## NPU 功能与性能入口
 
-GPU 分母通过后运行功能预检：reorder执行OFF/ON两臂；无合法OFF的
-respecialize-current-device只执行ON功能臂，仍会保存真机数值、FX和generated-code证据：
+GPU 分母通过后，reorder 执行 OFF/ON 两臂预检。设备解析原合同使用
+`scripts/run_prepared_npu_case.py --task T-087 --case REF-respecialize-current-device-native --npu 5 --adapter`；
+没有合法 OFF，不混进性能测量：
 
 ```bash
 cd /home/z50063656/tmp
@@ -84,8 +91,11 @@ cd /home/z50063656/tmp
 python \
   /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/run_t087_t090_performance.py \
   --task T-087 \
+  --unit reorder-locality \
   --phase functional \
-  --device npu
+  --device npu \
+  --npu 5
 ```
 
-功能原件人工复核并签 gate 后，改为 `--phase benchmark --gate-root <目录>` 执行固定六臂。
+功能原件人工复核并签 gate 后，改为 `--phase benchmark --gate-root /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current` 执行固定六臂。
+设备号选择空闲卡；门禁绑定源码/worker/原件哈希，源码变动须先重做功能门禁，不能直接沿用旧 gate。

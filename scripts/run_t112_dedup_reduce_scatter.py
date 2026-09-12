@@ -38,6 +38,8 @@ def main() -> int:
         print("prepared_performance_validation=OK task=T-112 world_size=2")
         return 0
 
+    parser.error("T-112 已确认为 T-084 同合同别名；保留旧 worker/证据，不重复启动功能或性能。请使用 T-084 流程。")
+
     timestamp = datetime.now().astimezone().strftime("%Y%m%dT%H%M%S%z")
     root = (args.output_root or work / "t112-npu-results").resolve()
     run = root / f"{args.phase}-{timestamp}"

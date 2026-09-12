@@ -30,8 +30,11 @@ def history_exit(status, strict):
 def commands(root, pytorch_root):
     python = sys.executable
     yield "unit_tests", [python, "-m", "unittest", "discover", "-s", str(root / "tests")]
-    for script in ("validate_tracker_data.py", "validate_comparison_data.py", "validate_prepared_tasks.py"):
+    for script in ("validate_tracker_data.py", "validate_comparison_data.py", "validate_prepared_tasks.py", "review_uploaded_gpu_tasks.py"):
         yield script, [python, str(root / "scripts" / script)]
+    yield "t087_t090_archives", [python, str(root / "scripts/review_t087_t090_completion.py"), "--check"]
+    yield "pending_candidate_archives", [python, str(root / "scripts/review_pending_npu_candidates.py"), "--check"]
+    yield "installed_repair_archives", [python, str(root / "scripts/validate_installed_repairs.py")]
     yield "current_acceptance_matrix", [
         python,
         str(root / "scripts/generate_current_acceptance_matrix.py"),

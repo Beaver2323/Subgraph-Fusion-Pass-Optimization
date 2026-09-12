@@ -1,0 +1,146 @@
+{
+  "task_id": "T-090",
+  "units": {
+    "AU-split-cat-normalize-cat-default-aten": {
+      "cases": {
+        "REF-normalize-cat-default-aten-native": {
+          "result_path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/result.json",
+          "sha256": "ef7cc908a4f242f8b128621f1be3bc0aa3e20fa918f93e67e517beb2d3b8fd2f",
+          "artifacts": [
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+              "sha256": "abf414727a321d366b3e344a9ab0786aadc753ab849b151c8746ea41c7a33e6a"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+              "sha256": "e3ba9e7c848d683d365c33c816edf2b99d72649fac4b4fe318de12738283d14b"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+              "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+              "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__0_inference_0.0/output_code.py",
+              "sha256": "e256368a5ed7d1ac3441bd0bedcc98668268d92b686fa5e418e7b11245d2b7b4"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+              "sha256": "90b5a774687b294978b69a05d562dc7c24291f4ad00e571bdef47b5eb330716e"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+              "sha256": "01c4e4ee9019dfcff2159df6a56a9e1383d1f3fd47384e379002a2a1d3d8419f"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+              "sha256": "fe38e6281e4378a376bbd802c04355905213942745be3bf22a1f739a933f4a4a"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+              "sha256": "fe38e6281e4378a376bbd802c04355905213942745be3bf22a1f739a933f4a4a"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/debug/torch_compile_debug/run_2026_09_11_12_16_56_831301-pid_2599423/torchinductor/model__1_inference_1.1/output_code.py",
+              "sha256": "01c71e63a54b2d617698b2421ec02eebf2e7f8cf07cc3aa2c3905cd0b646c83e"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp1t6dicu7/oy/coy64zfzggv2p4eoniqgir3qso3w6zu5qy6unf6y7awsa2zs6nsh.debug/fx_graph_readable.py",
+              "sha256": "90b5a774687b294978b69a05d562dc7c24291f4ad00e571bdef47b5eb330716e"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp1t6dicu7/oy/coy64zfzggv2p4eoniqgir3qso3w6zu5qy6unf6y7awsa2zs6nsh.debug/fx_graph_transformed.py",
+              "sha256": "01c4e4ee9019dfcff2159df6a56a9e1383d1f3fd47384e379002a2a1d3d8419f"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp1t6dicu7/oy/coy64zfzggv2p4eoniqgir3qso3w6zu5qy6unf6y7awsa2zs6nsh.debug/ir_post_fusion.txt",
+              "sha256": "fe38e6281e4378a376bbd802c04355905213942745be3bf22a1f739a933f4a4a"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp1t6dicu7/oy/coy64zfzggv2p4eoniqgir3qso3w6zu5qy6unf6y7awsa2zs6nsh.debug/ir_pre_fusion.txt",
+              "sha256": "fe38e6281e4378a376bbd802c04355905213942745be3bf22a1f739a933f4a4a"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp1t6dicu7/oy/coy64zfzggv2p4eoniqgir3qso3w6zu5qy6unf6y7awsa2zs6nsh.debug/output_code.py",
+              "sha256": "01c71e63a54b2d617698b2421ec02eebf2e7f8cf07cc3aa2c3905cd0b646c83e"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp7mfm0pzv/2e/c2ewu5vfhag66w6kv6j7fwz4m7agk3fjuq46h674g2ykaygbq72f.debug/fx_graph_readable.py",
+              "sha256": "abf414727a321d366b3e344a9ab0786aadc753ab849b151c8746ea41c7a33e6a"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp7mfm0pzv/2e/c2ewu5vfhag66w6kv6j7fwz4m7agk3fjuq46h674g2ykaygbq72f.debug/fx_graph_transformed.py",
+              "sha256": "e3ba9e7c848d683d365c33c816edf2b99d72649fac4b4fe318de12738283d14b"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp7mfm0pzv/2e/c2ewu5vfhag66w6kv6j7fwz4m7agk3fjuq46h674g2ykaygbq72f.debug/ir_post_fusion.txt",
+              "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp7mfm0pzv/2e/c2ewu5vfhag66w6kv6j7fwz4m7agk3fjuq46h674g2ykaygbq72f.debug/ir_pre_fusion.txt",
+              "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/inductor-cache/tmp7mfm0pzv/2e/c2ewu5vfhag66w6kv6j7fwz4m7agk3fjuq46h674g2ykaygbq72f.debug/output_code.py",
+              "sha256": "e256368a5ed7d1ac3441bd0bedcc98668268d92b686fa5e418e7b11245d2b7b4"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/result.json",
+              "sha256": "ef7cc908a4f242f8b128621f1be3bc0aa3e20fa918f93e67e517beb2d3b8fd2f"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-0-after.txt",
+              "sha256": "273e32ea4e047d7d1a54b2faba33a934a79a9f60c58040d2e2ffeab02c1f71ee"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-0-before.txt",
+              "sha256": "b55b91bc018904a579ad9e56e4398db529d119b4dab46b444c87e8ce1a208f7a"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-1-after.txt",
+              "sha256": "7f4a9de5c33a65a0e69011944a44cea0c5a62cc259f6f730bed88922a4e3b75c"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-1-before.txt",
+              "sha256": "273e32ea4e047d7d1a54b2faba33a934a79a9f60c58040d2e2ffeab02c1f71ee"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-2-after.txt",
+              "sha256": "5f0bc7f3ea00ac58ab26d15b732f5ddcd27338dc3c79ebdd44d3325be4d1e08d"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-2-before.txt",
+              "sha256": "7f4a9de5c33a65a0e69011944a44cea0c5a62cc259f6f730bed88922a4e3b75c"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-3-after.txt",
+              "sha256": "8111c1a302a32aaafabda0f881003e2622cac1bda2a0ab64f5e8d5ca2f39f4e8"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-3-before.txt",
+              "sha256": "8d81feb4ead7b7aadfd7e3fe43297966043887f3b6e54b83e96d33ba399b067f"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-4-after.txt",
+              "sha256": "0cb9a10cb4b3cc2140eac915ea9a5e6f280f6538314a82546dc3210d06aa1c6f"
+            },
+            {
+              "path": "issues/REF-normalize-cat-default-aten-native/evidence/t090-native-13gqovay/adapter/target-4-before.txt",
+              "sha256": "8216cfc79521b22165ec40b17f5756de6e353bd57d13eea0de7a29b5d8ae57a4"
+            }
+          ]
+        }
+      },
+      "backend": "triton_experimental",
+      "correctness": "passed-for-recorded-cases",
+      "contract_complete": true,
+      "pending_cases": [],
+      "fallback_review": "manual-review-pending",
+      "performance_gate_issued": false
+    }
+  },
+  "updated_at": "2026-09-11T12:24:12.822764+08:00"
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-089",
+  "reviewed_at": "2026-09-11T12:24:13.289276+08:00",
+  "run_id": "reference-20260911T095943+0800-cfyi4avn",
+  "status": "gpu-contract-reviewed-awaiting-npu",
+  "reference_backend": "inductor-default",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "input": "results/incoming/T-089/text-handoff.json",
+  "input_sha256": "c3aaa89ac51cb625b09ee70a71bbfb02e0cc9b730a07d07ae0d2f69055309d4d",
+  "payload_sha256": "c122d052a59e144e49fac6f43e1a999be896fae76fb82f38fc9d26ed0a313f69",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "native_cases_passed": 1,
+  "tests_skipped": 0,
+  "restored_text_files": 15,
+  "acceptance_units": [
+    "AU-split-cat-move-view-after-cat"
+  ],
+  "cases": [
+    {
+      "case_id": "REF-move-view-after-cat-aten-native",
+      "acceptance_unit_id": "AU-split-cat-move-view-after-cat",
+      "source_test": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_move_view_after_cat_aten",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_split_cat_fx_aten_passes.py",
+        "-v",
+        "TestSplitCatAten.test_move_view_after_cat_aten"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "ca12a50f14637b2692d45af4b631c3e0548e6c2d8323cb3399f4ba869c450c0a"
+    }
+  ],
+  "review_boundary": "GPU 合同通过，不代表 NPU 功能、产品合入或性能通过。",
+  "npu_execution_in_this_review": false,
+  "denominator_frozen_by_this_review": false,
+  "independent_unit_contribution": 1,
+  "report": "report/gpu_incoming_review_20260911.md"
+}

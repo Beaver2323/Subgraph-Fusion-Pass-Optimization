@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-088",
+  "reviewed_at": "2026-09-11T12:24:13.289276+08:00",
+  "run_id": "reference-20260911T095856+0800-d6xhv7v1",
+  "status": "gpu-contract-reviewed-awaiting-npu",
+  "reference_backend": "inductor-default",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "input": "results/incoming/T-088/text-handoff.json",
+  "input_sha256": "41ebff913ce54d025a1a8cb6fc9d30bf907b6ffaf2289a39c8fd640b232d3449",
+  "payload_sha256": "2eb51221012c2595b0062a572f86becbbd45ad648d0a8efaad4795840d11ee06",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "native_cases_passed": 3,
+  "tests_skipped": 0,
+  "restored_text_files": 46,
+  "acceptance_units": [
+    "AU-split-cat-merge-select-cat-aten",
+    "AU-split-cat-merge-split-cat-aten"
+  ],
+  "cases": [
+    {
+      "case_id": "REF-select-cat-aten-native",
+      "acceptance_unit_id": "AU-split-cat-merge-select-cat-aten",
+      "source_test": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_select_cat_post_grad",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_split_cat_fx_aten_passes.py",
+        "-v",
+        "TestSplitCatAten.test_select_cat_post_grad"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "f4939d5805ee93df8c297ca3225f8c4b6546e8ac7d50a3fbcb1090568eca582f"
+    },
+    {
+      "case_id": "REF-split-cat-aten-native",
+      "acceptance_unit_id": "AU-split-cat-merge-split-cat-aten",
+      "source_test": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_split_cat_fx_aten_passes.py",
+        "-v",
+        "TestSplitCatAten.test_split_cat_post_grad"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "6ea9844e517f7f3f1c07cd000d1cbd2253f9974ef919a151bd7a497ff8964386"
+    },
+    {
+      "case_id": "REF-split-cat-aten-singular-native",
+      "acceptance_unit_id": "AU-split-cat-merge-split-cat-aten",
+      "source_test": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad_singular",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_split_cat_fx_aten_passes.py",
+        "-v",
+        "TestSplitCatAten.test_split_cat_post_grad_singular"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "094e29518836b10c0deb9b25e415fc0761d49e3ce5916fc97029790994802b09"
+    }
+  ],
+  "review_boundary": "GPU 合同通过，不代表 NPU 功能、产品合入或性能通过。",
+  "npu_execution_in_this_review": false,
+  "denominator_frozen_by_this_review": false,
+  "independent_unit_contribution": 2,
+  "report": "report/gpu_incoming_review_20260911.md"
+}

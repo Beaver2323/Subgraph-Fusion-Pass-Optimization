@@ -1,0 +1,12 @@
+
+
+
+def forward(self, arg0_1):
+    log2 = torch.ops.aten.log2.default(arg0_1);  arg0_1 = None
+    ceil = torch.ops.aten.ceil.default(log2);  log2 = None
+    clamp_min = torch.ops.aten.clamp_min.default(ceil, -127);  ceil = None
+    clamp_max = torch.ops.aten.clamp_max.default(clamp_min, 127);  clamp_min = None
+    add = torch.ops.aten.add.Tensor(clamp_max, 127);  clamp_max = None
+    convert_element_type = torch.ops.prims.convert_element_type.default(add, torch.uint8);  add = None
+    return (convert_element_type,)
+    

@@ -142,14 +142,17 @@ def fsdp_unit() -> dict:
         "acceptance_unit_id": "AU-fsdp-get-dedup-rs",
         "contract_name": "线性reduce-scatter相加去重",
         "stage": "post_grad",
-        "review_status": "prepared-awaiting-gpu-reference",
-        "denominator_eligible": "yes-provisional",
-        "coverage_phase": "awaiting-gpu-reference",
+        "review_status": "duplicate-contract-evidence-retained",
+        "denominator_eligible": "no-duplicate-contract",
+        "canonical_acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
+        "canonical_task_id": "T-084",
+        "independent_unit_contribution": 0,
+        "coverage_phase": "duplicate-evidence-retained-not-counting",
         "upstream_sources": [{"path": "torch/_inductor/fx_passes/fsdp.py", "line": 101, "symbol": "_get_dedup_rs_pass", "role": "lazy-pattern-pass-builder"}, {"path": "torch/_inductor/fx_passes/fsdp.py", "line": 167, "symbol": "dedup_fsdp_reduce_scatter", "role": "fixpoint-pass-entry"}],
         "community_tests": [{"nodeid": nodeid, "role": "native-gpu-structural-positive", "evidence_scope": "真实CUDA compile与生成代码计数；默认world_size=1，只证明2个RS改成1个及数值，不证明多rank通信"}],
         "variants": [{"variant_id": "two-to-one-linear-rs-positive", "kind": "positive", "expected_reference_match": True, "expected_behavior": "RS(a)+RS(b)改写为RS(a+b)，生成代码reduce_scatter从2个降为1个", "expected_counter": "generated code exact reduce_scatter count=1", "reference_status": "not-run", "npu_status": "not-run"}],
         "tracking": {"reference_mode": "direct", "npu_mode": "triton-experimental-two-rank-derived-extension", "allowed_local_deviation": ["NPU补2-rank HCCL合同弥补原生CUDA用例world_size=1边界，代数与shape保持一致"], "forbidden_local_deviation": ["把world_size=1外推成多卡收益", "使用FakeTensor/CPU证明设备通信", "复用非triton_experimental历史结果"]},
-        "npu_control": {"config": "dedup_reduce_scatters", "off": False, "on": True, "status": "prepared-two-rank-required", "next_action": "GPU原生结构reference通过后，NPU用2-rank HCCL确认2→1改写、数值和通信，再签性能gate"},
+        "npu_control": {"config": "dedup_reduce_scatters", "off": False, "on": True, "status": "duplicate-contract-do-not-run-independently", "next_action": "本ID为T-084别名；保留GPU补证，不重复执行NPU或性能，新增测量归属canonical合同"},
     }
 
 
@@ -194,7 +197,7 @@ def manifest(task: str, timestamp: str, original: dict) -> dict:
     return {
         "schema_version": "1.0",
         "generated_at": timestamp,
-        "status": "prepared-awaiting-gpu-reference" if ready else "reviewed-no-gpu-ready-units",
+        "status": "duplicate-contract-evidence-retained" if task == "T-112" else "prepared-awaiting-gpu-reference" if ready else "reviewed-no-gpu-ready-units",
         "source_baselines": {"pytorch": {"commit": COMMIT, "branch": "release/2.14", "relevant_tracked_files_state": "clean"}},
         "mapping_review": {
             "input_scope": f"{task}全部{len(original[task]['units'])}个provisional候选逐项复核源码、社区测例、设备入口、目标归属和合法OFF/ON",
@@ -210,7 +213,7 @@ def manifest(task: str, timestamp: str, original: dict) -> dict:
             "scope": "原生CUDA编译、数值/梯度、目标编号或生成代码改写" if ready else "本批无合法GPU合同，只保留静态审核和延期原因",
             "suite_status": "pending-gpu-reference" if ready else "reviewed-no-gpu-ready-units",
         },
-        "counting_policy": {"current_manifest_units": len(units), "current_frozen_denominator_units": 0, "current_formally_closed_units": 0, "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结"},
+        "counting_policy": {"current_manifest_units": len(units), "independent_unit_contribution": sum(u.get("independent_unit_contribution", 1) for u in units), **({"canonical_task": "T-084"} if task == "T-112" else {}), "current_frozen_denominator_units": 0, "current_formally_closed_units": 0, "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结；重复合同只保留别名、不再次冻结"},
         "acceptance_units": units,
         "deferred_candidates": deferred,
     }
@@ -231,6 +234,7 @@ def reference_plan(task: str, timestamp: str, units: list[dict]) -> dict:
             "acceptance_unit_id": unit["acceptance_unit_id"],
             "source_test": unit["community_tests"][0]["nodeid"],
             "tracking_mode": "direct",
+            **({"native_contract_observer": True} if pattern.isdigit() else {}),
             "variant_ids": [variant["variant_id"] for variant in unit["variants"]],
             "expected_match": True,
             "expected_assertions": assertions,
@@ -328,7 +332,7 @@ def guide(task: str, timestamp: str, data: dict) -> str:
     elif task in {"T-110", "T-111"}:
         lines += ["```python", "# torch/_inductor/fx_passes/mkldnn_fusion.py:41", "if torch._C._has_mkldnn:", "    mkldnn = torch.ops.mkldnn", "# packed convolution/linear/rnn与unary/binary lowerings", "```", "", "MKLDNN fusion面向CPU（部分XPU）packed算子。旧索引中的CUDA convolution测例走通用卷积/select_algorithm，不会调用这里的MKLDNN fusion，故不能作为GPU reference。", ""]
     elif task == "T-112":
-        lines += ["### AU-fsdp-get-dedup-rs", "", "```python", "# torch/_inductor/fx_passes/fsdp.py:101,167", "# before: wait(RS(a)) + wait(RS(b))", "combined = aten.add.Tensor(input_a, input_b)", "rs = c10d.reduce_scatter_tensor.default(combined, reduce_op, group_size, group_name)", "return c10d.wait_tensor.default(rs)", "```", "", "该pass利用sum/avg reduce-scatter的线性性质，把两个通信归并为一个。社区CUDA测试是真实compile并检查生成代码只有1个RS，但默认`world_size=1`，只能冻结结构改写，不能证明跨rank通信收益。NPU功能扩展固定2-rank HCCL：OFF必须2个RS、ON必须1个RS，全部rank数值一致。", "", "```bash", "cd /data/z50063656/tmp", "", "bash \\", "  /data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/run_gpu_reference_task.sh \\", "  --task T-112 \\", "  --gpu 2 \\", "  --wait-gpu", "```", "", "## 性能测例", "", "社区没有目标性能benchmark。派生worker保持同一代数，扩为2-rank、每rank两个`[256,4096]` fp32输入，通过NCCL/HCCL执行；它是collective微图，不是FSDP模型端到端。", "", "```bash", "cd /home/z50063656/tmp", "", "python \\", "  /home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/scripts/run_t112_dedup_reduce_scatter.py \\", "  --device npu \\", "  --phase functional", "```", "", "功能与生成代码人工签gate后才运行六臂性能；任一rank失败都会使整组无效。", ""]
+        lines += ["### AU-fsdp-get-dedup-rs","","```python","# torch/_inductor/fx_passes/fsdp.py:101,167","# before: wait(RS(a)) + wait(RS(b))","combined = aten.add.Tensor(input_a, input_b)","rs = c10d.reduce_scatter_tensor.default(combined, reduce_op, group_size, group_name)","return c10d.wait_tensor.default(rs)","```","","该pass利用sum/avg reduce-scatter的线性性质，把两个通信归并为一个。社区CUDA原生测例默认world_size=1，生成代码2→1及数值通过不证明跨rank通信收益。","","此内部builder与T-084同一开关、调用链、原生方法及代数合同：canonical为AU-post-grad-dedup-reduce-scatters。本ID只保留原件补证，independent_unit_contribution=0，不重复冻结或运行NPU/性能。","","## 性能测例","","原准备worker是2-rank、每rank两个[256,4096] FP32输入的collective微图，不是FSDP模型端到端。历史准备件保留，scripts/run_t112_dedup_reduce_scatter.py仅允许--validate-only，执行入口拒绝重复运行并指向T-084。新增测量必须归属canonical合同，独立核对后端、revision、输入和门禁，不冒充历史再认证。",""]
     else:
         lines += ["```python", "# torch/_inductor/fx_passes/group_batch_fusion.py:1679", "def group_batch_fusion_passes(graph, pre_grad=True, fusion_options=None):", "    fusions = generate_fusion_from_config(...)  # 调度具体fusion", "    for rule in fusions:", "        rule.apply(graph)", "```", "", "这是调度容器，不是一个独立数学改写。映射测试实际归属于batch-linear、cat-linear或纯subset选择helper；具体fusion应各自形成合同，容器不能再计一个功能/性能分母。", ""]
     if task != "T-112":

@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-09-11T18:20:16.572767+08:00",
+  "source_run": "/home/z50063656/tmp/t087-fx-wrapper-rejected-j0cn6ga8/artifacts",
+  "files": [
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-fx-wrapper-rejected-20260911/adapted_test.py",
+      "sha256": "0e34d1a3bb2e3ee416b7b2b8a079bfca4b438b5b017a60701d7e3204f73a0891",
+      "bytes": 1265
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-fx-wrapper-rejected-20260911/result.json",
+      "sha256": "9f26a67fe86f80570764039227ceb41c87846b68a091539ef1fad9f8801fb2ff",
+      "bytes": 1062
+    }
+  ],
+  "generated_output_code_present": false
+}

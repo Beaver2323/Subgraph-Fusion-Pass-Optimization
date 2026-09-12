@@ -1,0 +1,76 @@
+op0: ExternKernelSchedulerNode(FallbackKernel)
+op0.writes = [StarDep(name='buf0', mode=None)]
+op0.unmet_dependencies = []
+op0.met_dependencies = [StarDep(name='arg0_1', mode=None)]
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: FallbackKernel
+    buf0.layout = FixedLayout('npu:0', torch.int32, size=[8], stride=[1])
+    buf0.aliases = ['arg0_1']
+    buf0.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op0'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op1'), can_inplace=False, is_weak=False),
+        NodeUser(node=SchedulerNode(name='op2'), can_inplace=True, is_weak=False),
+    ]
+]
+op0.node.kernel = torch.ops.aten.view.dtype
+
+
+op1: ExternKernelSchedulerNode(FallbackKernel)
+op1.writes = [StarDep(name='buf1', mode=None)]
+op1.unmet_dependencies = [StarDep(name='buf0', mode=None)]
+op1.met_dependencies = []
+op1.min_input_distance = 1
+op1.max_input_distance = 1
+op1.outputs = [
+    buf1: FallbackKernel
+    buf1.layout = FixedLayout('npu:0', torch.int32, size=[8], stride=[1])
+    buf1.users = [NodeUser(node=SchedulerNode(name='op2'), can_inplace=True, is_weak=False)]
+]
+op1.node.kernel = torch.ops.aten.__rshift__.Scalar
+
+
+op2: SchedulerNode(ComputedBuffer)
+op2.writes = [MemoryDep('buf2', d0, {d0: 8})]
+op2.unmet_dependencies = [MemoryDep('buf0', d0, {d0: 8}), MemoryDep('buf1', d0, {d0: 8})]
+op2.met_dependencies = []
+op2.min_input_distance = 1
+op2.max_input_distance = 2
+op2.outputs = [
+    buf2: ComputedBuffer
+    buf2.layout = FixedLayout('npu:0', torch.uint8, size=[8], stride=[1])
+    buf2.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op2.group.device = npu:0
+op2.group.iteration = (8, 1)
+op2.sizes = ([8], [])
+buf1_layout = FixedLayout('npu:0', torch.int32, size=[8], stride=[1])
+buf0_layout = FixedLayout('npu:0', torch.int32, size=[8], stride=[1])
+buf2_layout = FixedLayout('npu:0', torch.uint8, size=[8], stride=[1])
+class op2_loop_body:
+    var_ranges = {p0: 8}
+    index0 = p0
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('buf1', get_index)
+        constant = ops.constant(255, torch.int32)
+        bitwise_and = ops.bitwise_and(load, constant)
+        get_index_1 = self.get_index('index0')
+        load_1 = ops.load('buf0', get_index_1)
+        constant_1 = ops.constant(8388607, torch.int32)
+        bitwise_and_1 = ops.bitwise_and(load_1, constant_1)
+        constant_2 = ops.constant(0, torch.int32)
+        ne = ops.ne(bitwise_and_1, constant_2)
+        to_dtype = ops.to_dtype(ne, torch.int32, src_dtype = torch.bool, use_compute_types = True)
+        add = ops.add(bitwise_and, to_dtype)
+        constant_3 = ops.constant(0, torch.int32)
+        maximum = ops.maximum(add, constant_3)
+        constant_4 = ops.constant(254, torch.int32)
+        minimum = ops.minimum(maximum, constant_4)
+        to_dtype_1 = ops.to_dtype(minimum, torch.uint8, src_dtype = torch.int32, use_compute_types = True)
+        get_index_2 = self.get_index('index0')
+        store = ops.store('buf2', get_index_2, to_dtype_1, None)
+        return store
+
+

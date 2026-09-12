@@ -1,0 +1,16 @@
+
+
+
+def forward(self, primals_1, primals_2, primals_3):
+    mm = torch.ops.aten.mm.default(primals_2, primals_1)
+    tanh = torch.ops.aten.tanh.default(mm)
+    mm_1 = torch.ops.aten.mm.default(primals_2, primals_3)
+    sigmoid = torch.ops.aten.sigmoid.default(mm_1)
+    mul = torch.ops.aten.mul.Tensor(tanh, sigmoid)
+    sin = torch.ops.aten.sin.default(tanh);  tanh = None
+    cos = torch.ops.aten.cos.default(sigmoid);  sigmoid = None
+    mul_1 = torch.ops.aten.mul.Tensor(sin, cos);  sin = cos = None
+    add = torch.ops.aten.add.Tensor(mul, mul_1);  mul = mul_1 = None
+    sum_1 = torch.ops.aten.sum.dim_IntList(add, [1]);  add = None
+    return (sum_1, primals_1, primals_2, primals_3, mm, mm_1)
+    

@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-09-11T18:20:16.481737+08:00",
+  "source_run": "/home/z50063656/tmp/t087-cpp-wrapper-rejected-v7w671mu/artifacts",
+  "files": [
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-cpp-wrapper-rejected-20260911/adapted_test.py",
+      "sha256": "e3236dfecc50bb0f01240f6a021e7ff50227e53dc8fd2955aeafef7f4e0eaf40",
+      "bytes": 1278
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-cpp-wrapper-rejected-20260911/result.json",
+      "sha256": "caed4735c5a2f9f1873d538eec13e880c8ee536b6c3470839914e47036d83c48",
+      "bytes": 1064
+    }
+  ],
+  "generated_output_code_present": false
+}

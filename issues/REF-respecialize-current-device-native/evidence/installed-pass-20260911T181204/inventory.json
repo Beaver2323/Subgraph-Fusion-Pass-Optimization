@@ -1,0 +1,57 @@
+{
+  "generated_at": "2026-09-11T18:15:09.715328+08:00",
+  "source_run": "/home/z50063656/tmp/t087-native-50j898l4",
+  "files": [
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/adapted_test.py",
+      "sha256": "3766e50096cf62cf95353dbb1fff2575a5b817251196f014597614df6a3dfef7",
+      "bytes": 1094
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "52efa45c5aec4d8d8019bcc9c06205f7dcaee317942dcdeb4d4f52caa8336677",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "be64693060225abb940f6f65ae45225761c1edc1d9d16a8dda7c6169d8ee902b",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "cea155a7628747896d8a0c24b3b439a23c25dd9255f81dd3f8ee8d8d93bc72b7",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "725fe486fb5adc4e6ea16dc4cf8b3bdeceedfbadbd09d7253d2acaa56ba9c599",
+      "bytes": 11882
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/output_code_0.py",
+      "sha256": "725fe486fb5adc4e6ea16dc4cf8b3bdeceedfbadbd09d7253d2acaa56ba9c599",
+      "bytes": 11882
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/result.json",
+      "sha256": "b1c0623c6db000ea3c3a2eacdd8acf3933222c3140224c3abb542983b5b6d6d0",
+      "bytes": 1463
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/target-0-after.txt",
+      "sha256": "1d78813e445a58d2a19c44b254270a7250309bb7c72604537deb8a99c323ed3e",
+      "bytes": 341
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/target-0-before.txt",
+      "sha256": "3af23e22b357b6777623f53f6fed51fad6fa8337ee281f389fbdeddba4a54d4d",
+      "bytes": 437
+    }
+  ],
+  "generated_output_code_present": true
+}

@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-10 06:55:00 CST（UTC+08:00）
+> 索引更新时间：2026-09-11 18:44 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -8,7 +8,11 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
-| [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 从活动 manifest、current results 与性能数据生成的逐 acceptance-unit 状态入口 | 33行均有GPU、NPU与性能处置；T-078另有1个扩展variant待GPU；NPU backend固定为`triton_experimental` |
+| [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 当前逐 acceptance-unit 状态入口 | 71个ID/70独立单元，40个reference冻结、40个NPU/comparison、40项性能处置 |
+| [非补证阻塞工作完成报告](t087_t096_unblocked_completion_20260911.md) | 七个单元闭环、逐pattern讲解；T-087/T-096安装态修复与原失败/候选分列 | 3改善、1中性、1混合、1免测、1回退；E8M0默认开启是正确性修复，额外NPU边界部分对齐 |
+| [T-087安装态修复验证](../issues/REF-respecialize-current-device-native/修复验证报告.md) / [T-096安装态修复验证](../issues/REF-e8m0-log2-pattern-native/修复验证报告.md) | 原例、必要调用栈、源码patch、备份、近邻和前后FX/IR/output_code | 原例1/1+近邻4/4；原例3/3+功能对照7/7+域检查+六臂性能，均部署Pass未社区合入 |
+| [本轮 GPU 包复核](gpu_incoming_review_20260911.md) | 13批40 cases、T-102完整收件、目标归因/数值边界和T-112去重 | 1226份正文可恢复；28个合同目标归因仍待补 |
+| [T-087～T-090 NPU推进与适配讲解](t087_t090_npu_progress_20260911.md) | 原生阻断、最小适配、真实代码框/调用链、负例判据修正、FX/IR/output_code入口 | 保留12:37阶段记录；后续正式完成与产品问题见上行报告 |
 | [T-084～T-086 NPU功能/性能/修复闭环](t084_t086_npu_function_performance_and_fix_20260910.md) | 五个pattern的源码意图、GPU/NPU对照、调用栈、最小适配、FX/IR/codegen及六臂性能 | 1/3/1单元闭环；1改善、2回退、2混合；pointless-cumsum已产品gate |
 | [T-085 cumsum产品门禁](../issues/REF-pointless-cumsum-native/性能回退与产品门禁报告.md) / [overlap适配](../issues/REF-overlap-device-put-sync-native/NPU最小适配报告.md) / [partitioned-scatter适配](../issues/REF-partitioned-scatter-positive-native/NPU最小适配与性能报告.md) | 对应issue内的真实问题、调用链、最小改动及修复前后FX/IR/output_code入口 | cumsum保存前后原件；两个能力适配链接canonical证据，避免重复大文件 |
 | [t076_t077_history_reaudit_20260907.md](t076_t077_history_reaudit_20260907.md) | 当前逐项核验、源码 oracle 边界、历史性能复算与轻量日志补证命令 | 24 GPU 关键正文/19 NPU 原件/4 性能汇总已核验；严格总门禁仍 pending，原始 verdict 不改写 |

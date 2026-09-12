@@ -1,0 +1,29 @@
+{
+  "task_id": "T-096",
+  "case_id": "REF-e8m0-log2-pattern-native",
+  "generated_at": "2026-09-11T15:13:06.207660+08:00",
+  "status": "adapted-test-passed-awaiting-contract-review",
+  "tests_ran": 1,
+  "tests_skipped": 0,
+  "return_code": 0,
+  "mode": "adapter",
+  "product_candidate": null,
+  "e8m0_candidate": true,
+  "test_body_execution_proven": true,
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-e8m0-log2-pattern-native/npu_adapter.py",
+    "--artifact-dir",
+    "/home/z50063656/tmp/t096-native-oxqa3yd8/adapter",
+    "--e8m0-candidate"
+  ],
+  "working_directory": "/home/z50063656/tmp",
+  "physical_npu": 5,
+  "backend_requested": "triton_experimental",
+  "backend_verified": false,
+  "contract_review_required": true,
+  "source_sha256": "4dddd7011fd0b60d585f8aff03b6bd5393381e6d9ccd2f0a092d60e202cc7333",
+  "raw_artifact_dir": "/home/z50063656/tmp/t096-native-oxqa3yd8",
+  "product_gate_bypassed": false,
+  "body_or_assertions_modified": false
+}

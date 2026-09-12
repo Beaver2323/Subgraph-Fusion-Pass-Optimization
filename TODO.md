@@ -1,6 +1,6 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-10 23:48:08 CST（UTC+08:00）
+> 更新时间：2026-09-11 18:44 CST（UTC+08:00）
 > 状态：T-076～T-086 原冻结范围共33个acceptance units有效；T-078 addcdiv 的 FP16
 > `value=1` 普通 div+add 精度回归已修复并通过 NPU 真机验证，当前等待 GPU
 > dtype/value 邻接 reference；新上传包实际为已存在的CUDA FMA codegen合同，未关闭该缺口。
@@ -8,7 +8,9 @@
 > T-087～T-090已准备6个GPU-ready单元、8 cases和8 variants，13个候选显式延期；
 > T-091～T-100已准备4个GPU-ready合同、6 cases和9 variants，33个候选显式延期。
 > T-101～T-113已完成全部准备：52个候选中28个GPU-ready合同/28 cases/28 variants，
-> 24个合并或延期；没有剩余草案批次。产品改动仍待独立产品仓评审/合入。
+> 24个合并或延期；2026-09-11确认T-112与T-084同合同，28个ID实际贡献27个独立单元。
+> 本轮13批40个GPU cases已复核，7个新单元功能/正式comparison/性能处置完成；T-087设备解析、T-096精度修复已部署Pass回归，候选原件与安装态原件分列。
+> 没有剩余草案批次。产品改动仍待独立产品仓评审/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
 
 ## 任务计数规则
@@ -18,8 +20,8 @@
 - acceptance unit 是跟踪、比较和 verdict 的基本单位；
 - 一个 registration 可以展开多个 pattern/variant，也可能与其他 registration 共同服务一个 contract；
 - 只有人工审核并冻结的 acceptance unit 才能进入完成率分母；
-- T-074 当前 188/158 均为 provisional；T-076～T-086 冻结单元共33个，正式 NPU/comparison
-  与性能处置均为 33 份；产品改动合入状态单列。
+- T-074 当前 188/158 均为 provisional；原33个冻结单元保留历史结论，本轮新增7个GPU冻结reference，
+  新增7个NPU/comparison及7项性能处置，当前分别为40、40、40；产品改动合入及严格再认证单列。
 
 ## 当前门禁补强与历史复核
 
@@ -264,7 +266,7 @@ T-077 GPU 准备：
 - [x] 完成T-087～T-100的人工映射、GPU reference合同与性能准备；
 - [x] 完成T-101～T-113全部52个候选审核，准备27个SDPA pattern和1个FSDP RS去重合同；
 - [x] 为T-102～T-107准备逐编号原生CUDA入口、中文代码讲解、注册输入派生性能worker和一键GPU入口；
-- [x] 为T-112准备单rank社区GPU结构reference，以及独立2-rank NCCL/HCCL功能/六臂性能worker；
+- [x] T-112保留单rankGPU补证；确认与T-084重复后停止其独立NPU/性能入口，不重复计数；
 - [x] 明确T-101与T-085重复，SDPA 25～27显式CUDA关闭，量化/MKLDNN与容器入口不制造GPU/NPU性能路径；
 - [ ] 建立 upstream source/test/mapping drift 检测；
 - [x] 支持一条命令运行 T-079/T-080 NPU suite；
@@ -288,11 +290,25 @@ T-077 GPU 准备：
 - [x] T-087～T-090逐候选审核：19项中6项建立原生GPU合同，13项按CPU/Fake/间接证据、阶段或直接目标合同缺口延期；
 - [x] T-087～T-090准备8个原生cases/8个variants、中文讲解、incoming目录和一键GPU入口；
 - [x] 为5个合法OFF/ON单元准备`triton_experimental`两臂功能及六臂性能worker；`respecialize_current_device`按无合法OFF免测；
-- [ ] GPU依次执行T-087～T-090并回传handoff；复核后再进入NPU功能、必要最小适配/修复和性能；
+- [x] T-087～T-090已回传8/8 GPU cases并复核；
+- [x] T-087训练重排、T-088两个单元、T-089/T-090各一个单元完成原生阻断留证、最小设备适配及NPU社区功能合同；
+- [x] 上述5个单元完成生成代码/fallback/graph-break复核、独立OFF/ON门禁和六臂计时；3改善、1中性、1混合，正式闭环；
+- [x] 执行T-087设备解析原合同，保存真实wrapper失败及第一版候选的固化index失败；性能按无合法OFF免测；
+- [x] T-087两文件隔离源码候选原合同1/1通过，保存两级真实问题及修复前后FX/IR/output_code；
+- [x] T-087获授权后部署Pass；安装态原例1/1与四项近邻通过（含两设备代码一致性），性能仍按无合法OFF免测；多rank通信不外推；
 - [x] T-091～T-100逐项审核37个候选，选定4个合同并延期33个；T-100补回旧索引漏记的CUDA直接测例；
 - [x] 为T-091/T-098/T-100准备目标级OFF/ON worker；T-096按CUDA-only注册归为能力待评审，禁止提前制造NPU ON；
-- [ ] GPU依次执行T-091、T-096、T-098、T-100并回传handoff；T-092/093/094/095/097/099禁止空跑；
-- [ ] GPU依次执行T-102～T-107和T-112并回传handoff；零ready的T-101/108～111/113禁止空跑；
+- [x] T-091/T-096已有原生GPU回传；T-091目标pre-grad归因仍需补证；
+- [x] T-096完成三个原生SKIP与三个设备适配实测，确认普通输入不改图及两个边界精度错误；位运算候选单独评审；
+- [x] T-096隔离候选3/3原合同、精确改图及生成代码通过，记录NPU extern lowering和eager数学差异；
+- [x] T-096产品数值域/注册入口评审、Pass安装态原3例及7功能对照通过；22值域检查与1016正规值覆盖，额外NPU域标为PARTIAL_ALIGNED；
+- [x] T-096原七元素正确向量六臂性能已测，PERF_REGRESSED；不用错误边界OFF计算收益，不因回退撤掉数学正确性修复；
+- [x] 两项安装态修复增加离线证据链校验，绑定部署/启动/原件/功能门禁/性能哈希；原候选记录不覆盖；
+- [ ] 两项独立源码修复分支社区评审/合入（本地提交6cff38b16、6408f950c；本轮未推送）；
+- [ ] 接收T-098/T-100首次GPU回传；
+- [x] T-102～T-107和T-112均已回传完整GPU包，T-102全部11片已校验；
+- [x] 为T-091/T-102～T-107接入只读精确handler/replacement边界图观察，不修改原方法体、device或断言；
+- [ ] GPU用更新后的原命令补精确归因，逐编号核验实际命中和数值断言范围；旧原生PASS保留；
 - [ ] T-101～T-113的GPU结果复核后，再按单元进入NPU `triton_experimental`功能、必要修复和性能；
 - [ ] 独立lowering/template清单另补后与当前FX合同去重；不得把T-081～T-113完成准备误写为全项目完成；
 - [ ] MM 产品修复经独立评审后推送/合入（本轮未操作产品仓库）。

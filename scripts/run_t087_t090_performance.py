@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
+import json
 from datetime import datetime
 import os
 from pathlib import Path
 import subprocess
 import sys
+import signal
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +39,8 @@ def main() -> int:
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--warmup", type=int, default=10)
     parser.add_argument("--runs", type=int, default=100)
+    parser.add_argument("--timeout", type=int, default=900)
+    parser.add_argument("--npu", type=int, default=2)
     parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
     work = Path(os.environ.get("PASS_TRACKER_WORK_DIR", "/home/z50063656/tmp")).resolve()
@@ -52,11 +57,19 @@ def main() -> int:
         compile(WORKER.read_text(encoding="utf-8"), str(WORKER), "exec")
         print(f"prepared_performance_validation=OK task={args.task} units={len(units)}")
         return 0
+    if args.timeout < 1 or args.warmup < 1 or args.runs < 1 or args.npu < 0:
+        parser.error("timeout/warmup/runs必须为正数，npu必须非负")
+    lock = None
+    if args.phase == "benchmark" and args.device == "npu":
+        lock = (work / "pass-tracker-npu-performance.lock").open("a")
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     timestamp = datetime.now().astimezone().strftime("%Y%m%dT%H%M%S%z")
     root = (args.output_root or work / f"{args.task.lower().replace('-', '')}-npu-results").resolve()
     run = root / f"{args.phase}-{timestamp}"
     run.mkdir(parents=True, exist_ok=False)
     env = dict(os.environ, PASS_TRACKER_WORK_DIR=str(work), TORCHINDUCTOR_NPU_BACKEND="triton_experimental")
+    if args.device == "npu":
+        env.update(ASCEND_RT_VISIBLE_DEVICES=str(args.npu), SET_NPU_DEVICE="0")
     arms = ORDER if args.phase == "benchmark" else (("off", 0), ("on", 0))
     for unit in units:
         unit_arms = (("on", 0),) if unit == "respecialize-current-device" else arms
@@ -69,9 +82,32 @@ def main() -> int:
                 "--runs", str(args.runs),
             ]
             if args.phase == "benchmark":
-                command.extend(["--gate", str(args.gate_root / args.task / f"{unit}.json")])
+                command.extend(["--gate", str(args.gate_root / args.task / "performance_gates" / f"{unit}.json")])
             print(f"START task={args.task} unit={unit} arm={name}", flush=True)
-            subprocess.run(command, cwd=work, env=env, check=True)
+            arm = run / unit / name
+            arm.mkdir(parents=True, exist_ok=False)
+            with (arm / "stdout.log").open("w") as stdout, (arm / "stderr.log").open("w") as stderr:
+                proc = subprocess.Popen(command, cwd=work, env=env, stdout=stdout, stderr=stderr, start_new_session=True)
+                timed_out = False
+                try:
+                    return_code = proc.wait(timeout=args.timeout)
+                except subprocess.TimeoutExpired:
+                    timed_out = True
+                    os.killpg(proc.pid, signal.SIGTERM)
+                    try:
+                        return_code = proc.wait(timeout=10)
+                    except subprocess.TimeoutExpired:
+                        os.killpg(proc.pid, signal.SIGKILL)
+                        return_code = proc.wait()
+            (arm / "execution.json").write_text(json.dumps({
+                "command": command, "pid": proc.pid, "return_code": return_code,
+                "timed_out": timed_out, "working_directory": str(work),
+                "physical_npu": args.npu, "generated_at": datetime.now().astimezone().isoformat(),
+            }, ensure_ascii=False, indent=2) + "\n")
+            print(f"END task={args.task} unit={unit} arm={name} return_code={return_code}", flush=True)
+            if return_code or timed_out:
+                print(f"task_run=failed artifacts={run}")
+                return 1
     print(f"task_run=passed artifacts={run}")
     return 0
 

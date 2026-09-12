@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-11T18:35:09.730660+08:00",
+  "source_run": "/home/z50063656/tmp/t096-native-pxf3g41o",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/adapted_test.py",
+      "sha256": "cb9342960a0087fdd40dbbb2dd87b26a9e11701e6784e989c14bcb47c4b30f82",
+      "bytes": 729
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1f6e17e13e09d39bb6ecf8b074fe098d7af745983af36845aaff36103b0c5d65",
+      "bytes": 1301
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "7766e841bd50902bdcfe3be6815dffdfa4a93a3c6cd2791b79becb70cf1f4f3c",
+      "bytes": 2847
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "53e7ccc5d6cd1220d8fc801f414297276ceadebd9fe7e418a90b209fe687ce04",
+      "bytes": 4920
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "a91464c714edabd75866f8bfead1dceaf589366173188ade7f94900556db073f",
+      "bytes": 4919
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "f75c5e4c5e864c8add7e7548528527519df4b5db40baae3ed39c010a3cf1d591",
+      "bytes": 12831
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/result.json",
+      "sha256": "1b3987e8cfb66da04bd034823cc52e09939218ca2eb7c6c16e66b8427ea27f88",
+      "bytes": 1745
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/target-0-after.txt",
+      "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+      "bytes": 2345
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    }
+  ],
+  "generated_output_code_present": true
+}

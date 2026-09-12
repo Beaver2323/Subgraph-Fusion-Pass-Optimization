@@ -1,0 +1,34 @@
+{
+  "task_id": "T-081",
+  "acceptance_unit_id": "AU-joint-graph-constant-fold-uniform-value",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "constant-fold-community-shape",
+  "world_size": 1,
+  "input_spec": [
+    {
+      "shape": [
+        2,
+        4
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "5713c56a39f84cce82978da02deb8cf1511f2ec3e01be9135577648513abbbdd",
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-08T01:33:28.148491+08:00",
+  "reviewer": "tracker-control-node",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "f8a2bbabcafb7a9ffcf2ea4acfc476dfe5132efba2282f1ed81bc7d3696b1629"
+  },
+  "target_functional": {
+    "path": "../functional/constant-fold-on.json",
+    "sha256": "75fef1709423d5a5adf0d6d620fe162192f8ceeadadeb4484dcc6334d1a37876"
+  }
+}

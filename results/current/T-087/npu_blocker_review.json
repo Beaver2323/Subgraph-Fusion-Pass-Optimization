@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-09-11T15:17:03.242071+08:00",
+  "task_id": "T-087",
+  "acceptance_unit_id": "AU-post-grad-respecialize-current-device",
+  "backend": "triton_experimental",
+  "result": {
+    "path": "issues/REF-respecialize-current-device-native/evidence/before-current-device-fix-20260911/adapter/result.json",
+    "sha256": "c338dad7a7a13d89bdc9896881e42ec0010853f629c525915bdf43c852dabd70"
+  },
+  "correctness": "not-executed-wrapper-compilation-failed",
+  "current_phase": "npu-compile-failed-awaiting-product-fix",
+  "repair_status": "isolated-source-candidate-passed-not-deployed",
+  "reason": "目标设备节点再特化已改图，但 NPU 缺少 current_device_idx_expr，wrapper 生成抛错；不是 GPU 补证问题。",
+  "next_action": "两文件隔离候选通过原单设备合同；待安装态同步授权及部署回归，不外推多rank复用。",
+  "report": "issues/REF-respecialize-current-device-native/根因分析.md",
+  "candidate": {
+    "path": "issues/REF-respecialize-current-device-native/evidence/candidate-device-codegen-pass-20260911/adapter/result.json",
+    "sha256": "1928c8cb9470d9e636f8b741aa3c8df6694dddfbc4e46d9bcf5f103fe4cfc82f",
+    "launch": {
+      "path": "issues/REF-respecialize-current-device-native/candidate_runs/native-20260911T150909-tbr_h2gc/run_result.json",
+      "sha256": "cf751f4b6a5a6f6f8e05544cbf13be3483d8fcefd7e3f1c004b1e856759fdaa2"
+    },
+    "status": "original-contract-passed-in-isolated-source-candidate",
+    "installed_environment_modified": false,
+    "product_merged": false,
+    "functional_closure": false,
+    "product_candidate": {
+      "path": "/home/z50063656/Pass/worktrees/torch_npu_t087_current_device/torch_npu/_inductor/triton_experimental/device.py",
+      "sha256": "2f3ea97ea780d01a505cf788555c01c2aebb9721c15d76613e65ca5728730835",
+      "scope": "process-local-source-candidate",
+      "installed_environment_modified": false,
+      "codegen": {
+        "path": "/home/z50063656/Pass/worktrees/torch_npu_t087_current_device/torch_npu/_inductor/triton_experimental/codegen/triton.py",
+        "sha256": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381"
+      }
+    }
+  },
+  "installed_resolution": {
+    "generated_at": "2026-09-11T18:20:16.690981+08:00",
+    "functional": {
+      "path": "results/current/T-087/functional/respecialize-current-device.json",
+      "sha256": "1f0eef8f161f10a5ce2ad74f48ec7f058871689ae5816ea26c54986b7f561f07"
+    },
+    "status": "resolved-by-installed-fix",
+    "note": "历史失败及隔离候选字段原样保留，由当前安装态结果接替结论"
+  }
+}

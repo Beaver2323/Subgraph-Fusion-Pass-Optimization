@@ -1,0 +1,24 @@
+{
+  "task_id": "T-087",
+  "case_id": "REF-reorder-locality-master-off-native",
+  "generated_at": "2026-09-11T12:03:43.161355+08:00",
+  "status": "failed",
+  "tests_ran": 1,
+  "tests_skipped": 0,
+  "return_code": 1,
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/src/pytorch/test/inductor/test_reorder_for_locality_in_training.py",
+    "-v",
+    "TestReorderForLocalityInTrainingCUDA.test_training_flag_noop_when_reorder_off_cuda"
+  ],
+  "working_directory": "/home/z50063656/tmp",
+  "physical_npu": 2,
+  "backend_requested": "triton_experimental",
+  "backend_verified": false,
+  "contract_review_required": true,
+  "source_sha256": "dc72679b557a75b8bfb55c66d62ac8d8c0f791240ae1ce00485be7293a2199da",
+  "raw_artifact_dir": "/home/z50063656/tmp/t087-native-9boan7dh",
+  "product_gate_bypassed": false,
+  "body_or_assertions_modified": false
+}

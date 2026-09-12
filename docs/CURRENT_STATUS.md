@@ -1,15 +1,24 @@
 # 当前状态与 2026-08-31 工作线校准结论
 
-> 更新时间：2026-09-10 23:48:08 CST（UTC+08:00）
+> 更新时间：2026-09-11 18:44 CST（UTC+08:00）
 > 校准输入：`831需求变更.md`、`831TODO_triton_experimental_pass_tracker.md`、
 > `831WORKFLOW_triton_experimental_pass_tracker.md`。
 > 当前阶段：T-076～T-086 原冻结范围共33个acceptance units有效；T-078 新增低精度
 > regression 已在 NPU 修复，等待正确的 FP16 value=1 GPU 邻接 reference；T-084～T-086 的
 > 5个单元已完成GPU、NPU功能与性能处置。T-076/T-077严格再认证单列。
-> T-087～T-113另有38个已审核单元进入GPU-ready，尚未冻结、尚未执行NPU或性能；
+> T-087～T-113保留38个跟踪ID，T-112去重后为37个独立单元；其中7个新reference已冻结，30个尚未冻结。
+> 13批40个GPU cases已复核；7个新单元完成NPU功能、正式comparison和性能处置；
 > T-081～T-113已无草案批次，所有未选候选均保留明确的合并/延期原因。
 
 ## 1. 总结
+
+2026-09-11 已拉取 T-102 全部 11 片并复核；新包共 13 批、40 cases、36 个计划 ID、1226 份可恢复正文。
+T-087 训练重排、T-088 两个单元、T-089/T-090 各一个单元已完成真实 NPU experimental 原合同、代码审查、性能图门禁和六臂计时：3改善、1中性、1混合。
+T-087设备解析与T-096精度修复已获授权部署Pass，分别原例1/1+近邻4/4、原例3/3+功能对照7/7通过。前者无合法OFF免测；后者原七元素六臂性能PERF_REGRESSED，额外NPU数值域PARTIAL_ALIGNED。产品社区合入未执行。
+当前40个GPU reference冻结、40个NPU/comparison、40项性能处置；[本轮完成/缺口/学习入口](../report/t087_t096_unblocked_completion_20260911.md)。
+T-091 与 27 个 attention 合同需补精确目标归因；只读观察器已接入原生 GPU 入口，尚待 GPU 执行。
+T-112 与 T-084 同合同，原文件保留，不重复计数。详见 [GPU复核](../report/gpu_incoming_review_20260911.md)、
+[NPU步骤和学习报告](../report/t087_t090_npu_progress_20260911.md)。
 
 2026-09-07 严格核验：24 个 GPU case 的关键正文已验哈希，19 个 case 的源码断言覆盖在声明
 范围内通过；另有 2 项数值辅助 oracle 与 3 项输入梯度 oracle 缺口。24 份空 stdout 无须重传，
@@ -241,22 +250,22 @@ T-081～T-083已完成2/2/3个社区合同的GPU运行：11/11 cases、24/24 var
 随后在`triton_experimental`完成7/7数值、命中和实际改图。T-083没有沿用world_size=1结论，另用真实
 双rank HCCL验证3→1/2→1 collective。7个单元均完成全局互斥下的六臂性能处置。
 CPU-only/fake-PG/间接覆盖或缺少直接测例的剩余候选按原批次保留 deferred。
-活动矩阵共71行：T-076～T-086的33个冻结单元均已有GPU、NPU/comparison与性能处置；
-T-087～T-113的38行等待GPU reference，不能计入冻结完成率。T-078另有1个FP16 value=1扩展
+活动矩阵共71个跟踪ID、70个独立单元：T-076～T-086的33个冻结单元均已有GPU、NPU/comparison与性能处置；
+新单元中7个已功能/性能处置闭环（含两项Pass已部署修复）、28个待GPU精确归因、2个待GPU收件；T-112另保留为别名行，
+不计新增分母。T-078另有1个FP16 value=1扩展
 variant仍等待正确GPU邻接reference。
 
 T-091～T-100本轮审计37个候选，只将4个可独立归属且有真实CUDA入口的合同放入活动矩阵：
 stack axis规范化、A100 E8M0 log2-ceil边界替换、Conv-BN eval重参数化和Linear binary folding。
 T-100属于旧inventory漏测例后的纠偏；T-098把同一个社区乘积中的inlined/decomposed合并计一次。
-T-096的NPU路径是generic CUDA guard遗漏导致的capability-pending，不是产品明确disable；必须先留存
-`triton_experimental`原生阻断，再评审最小适配。六个零ready批次只保留延期审计，不创建空run。
+T-096的NPU路径原是generic CUDA guard遗漏导致的capability-pending，不是产品明确disable；已经先留存原生阻断，完成最小适配、NPU注册/数学修复评审和安装态回归。六个零ready批次只保留延期审计，不创建空run。
 
 T-101～T-113完成52个候选的最终准备审核。T-102～T-107按编号保留27个真实CUDA SDPA
 pattern合同；25～27的`disable_cuda=True`和XPU-only测试入口作为显式关闭证据，不绕过。
-T-112补回冻结源码中新出现的原生CUDA `test_dedup_reduce_scatter`，但其`world_size=1`只证明
-生成代码2个RS降为1个；NPU执行准备了独立2-rank HCCL功能和六臂性能worker。
+T-112原生CUDA `test_dedup_reduce_scatter` 已通过，但其`world_size=1`只证明
+生成代码2个RS降为1个；与T-084同合同，独立NPU/性能入口停止重复执行，已有worker仅保留历史。
 T-101与已闭环T-085合并；T-108～T-111为CPU量化/MKLDNN；T-113为具体fusion调度容器。
-本轮新增28个ready、24个合并/延期，零草案，不包含任何设备运行或收益结论。
+准备时保留28个ready ID、24个合并/延期，零草案；现按27个独立SDPA合同和1个别名补证计数。
 
 T-084～T-086分别闭环1/3/1个单元。T-084真实2-rank HCCL为`PERF_IMPROVED`；T-085的
 pointless-cumsum与partitioned-scatter回退，overlap因轮间高波动为`PERF_MIXED`；T-086
@@ -269,7 +278,7 @@ T-078新上传的`BF16-value=1-text-handoff`实际只包含
 `REF-addcdiv-fma-fp16-value1-derived`。因此误命名包作为有效codegen邻接补证保留，FP16 value=1
 GPU dtype/value缺口不关闭。
 T-084～T-086 的功能和性能讲解、worker及实际设备结果均已进入当前71行矩阵；T-087～T-113
-的38个ready合同仅以准备态进入矩阵；上述T-078
+按本节的功能阶段/归因待补/待收件/重复合同分别展示；上述T-078
 扩展variant仍独立等待GPU，不借用其他codegen邻接证据关闭。
 
 T-076/T-077 的历史结论保留；严格再认证不能直接免除补证或同合同重验。新 1.3 review

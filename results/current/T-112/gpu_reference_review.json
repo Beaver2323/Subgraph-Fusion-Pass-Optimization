@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-112",
+  "reviewed_at": "2026-09-11T12:24:13.289276+08:00",
+  "run_id": "reference-20260911T102303+0800-phogqa4m",
+  "status": "gpu-validated-duplicate-contract",
+  "reference_backend": "inductor-default",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "input": "results/incoming/T-112/text-handoff.json",
+  "input_sha256": "f0bdcffa81fc0b9c120b69417b5f60c8d6ff009fa1b03d2bf25383f747864061",
+  "payload_sha256": "0dcb2dd73833654e18dc23040fe2c4b943214ce125b7cd679fd0f3bdb53907a2",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "native_cases_passed": 1,
+  "tests_skipped": 0,
+  "restored_text_files": 15,
+  "acceptance_units": [
+    "AU-fsdp-get-dedup-rs"
+  ],
+  "cases": [
+    {
+      "case_id": "REF-dedup-reduce-scatter-native",
+      "acceptance_unit_id": "AU-fsdp-get-dedup-rs",
+      "source_test": "test/distributed/test_inductor_collectives.py::TestCollectivesInductor.test_dedup_reduce_scatter",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/distributed/test_inductor_collectives.py",
+        "-v",
+        "TestCollectivesInductor.test_dedup_reduce_scatter"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "684f6132c8b881b0b654637f6ce95c0562f4be5d79c7cb373e854977069a1155"
+    }
+  ],
+  "review_boundary": "与 T-084 同一开关、调用链、社区测例及线性 RS 合同；保留收件，不增加独立能力分母。仅 world_size=1。",
+  "npu_execution_in_this_review": false,
+  "denominator_frozen_by_this_review": false,
+  "independent_unit_contribution": 0,
+  "report": "report/gpu_incoming_review_20260911.md"
+}

@@ -139,6 +139,10 @@ FIELDNAMES = [
     "matrix_generated_at",
     "task_id",
     "acceptance_unit_id",
+    "canonical_acceptance_unit_id",
+    "independent_unit_contribution",
+    "gpu_review_path",
+    "npu_progress_path",
     "contract_name",
     "stage",
     "manifest_status",
@@ -222,6 +226,86 @@ def reference_status(unit: dict, reference_contract: dict) -> str:
             return status + "-with-pending-extension"
         return status
     return eligible or "unknown"
+
+
+def verified_file(relative: str, digest: str) -> Path:
+    path = (ROOT / relative).resolve()
+    if (not path.is_relative_to(ROOT.resolve()) or not path.is_file()
+            or sha256(path) != digest):
+        raise ValueError(f"NPU 阶段证据路径或哈希不符：{relative}")
+    return path
+
+
+def verify_progress_artifacts(items: list[dict]) -> None:
+    for item in items:
+        verified_file(item["path"], item["sha256"])
+    if not any(Path(item["path"]).name == "output_code.py" for item in items):
+        raise ValueError("NPU 阶段证据缺少生成代码")
+
+
+def npu_contract_progress(task_id: str, unit_id: str) -> tuple[Path, dict] | None:
+    """只消费带原件哈希的功能阶段记录，绝不自动生成正式 comparison/gate。"""
+    commit = "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+    if unit_id == "AU-post-grad-reorder-for-locality":
+        path = ROOT / "results/current/T-087/npu_training_review.json"
+        if not path.is_file():
+            return None
+        data = read_json(path)
+        arms = data.get("arms", {})
+        if (data.get("task_id") != task_id or data.get("acceptance_unit_id") != unit_id
+                or data.get("correctness") != "passed"
+                or data.get("backend") != REQUIRED_NPU_BACKEND
+                or set(arms) != {"off", "on", "master-off"}
+                or data.get("performance_gate_issued") is not False
+                or data.get("product_gate_bypassed") is not False):
+            raise ValueError("训练阶段记录合同不完整")
+        for mode, arm in arms.items():
+            if (arm.get("backend") != REQUIRED_NPU_BACKEND or arm.get("torch_commit") != commit
+                    or arm.get("numerical_execution") is not True
+                    or arm.get("product_gate_bypassed") is not False):
+                raise ValueError(f"训练三臂来源/设备不符：{mode}")
+        if (arms["off"]["handler_calls"] != 0 or arms["master-off"]["handler_calls"] != 0
+                or arms["on"]["handler_calls"] < 1 or not arms["on"]["graph_changed"]):
+            raise ValueError("训练三臂目标改写不符")
+        errors = data.get("cross_process_max_abs_errors", {})
+        if len(errors) != 8 or any(error != 0 for error in errors.values()):
+            raise ValueError("本次训练核验的数值证据不符")
+        verify_progress_artifacts(data["artifacts"])
+        return path, {"contract_complete": True, "updated_at": data["generated_at"]}
+    path = ROOT / "results/current" / task_id / "npu_contract_progress.json"
+    if not path.is_file():
+        return None
+    progress = read_json(path)
+    if progress.get("task_id") != task_id:
+        raise ValueError("NPU 阶段进度任务归属不符")
+    data = progress.get("units", {}).get(unit_id)
+    if data is None:
+        return None
+    if data.get("backend") != REQUIRED_NPU_BACKEND or data.get("performance_gate_issued") is not False:
+        raise ValueError("NPU 阶段进度不得混后端或签发性能门禁")
+    plan = read_json(ROOT / "upstream" / f"{task_id.lower().replace('-', '')}_reference_plan.yaml")
+    expected = {c["case_id"]: c for c in plan["cases"] if c["acceptance_unit_id"] == unit_id}
+    cases = data.get("cases", {})
+    if not cases or not set(cases) <= set(expected):
+        raise ValueError("NPU 阶段进度 case 集合不符")
+    for case_id, item in cases.items():
+        record = read_json(verified_file(item["result_path"], item["sha256"]))
+        if (record.get("backend") != REQUIRED_NPU_BACKEND or record.get("pytorch_commit") != commit
+                or record.get("task_id") != task_id or record.get("acceptance_unit_id") != unit_id
+                or record.get("case_id") != case_id or record.get("status") != "community-contract-passed"
+                or record.get("tests_ran") != 1 or record.get("tests_skipped") != 0
+                or record.get("numerical_execution") is not True
+                or record.get("body_or_assertions_modified") is not False
+                or record.get("product_gate_bypassed") is not False
+                or record.get("source_test") != expected[case_id]["source_test"]):
+            raise ValueError(f"NPU 功能合同不符：{case_id}")
+        if any(r["changed"] for r in record["handler_records"]) != expected[case_id]["expected_match"]:
+            raise ValueError(f"NPU 目标正负判据不符：{case_id}")
+        verify_progress_artifacts(item["artifacts"])
+    complete = set(cases) == set(expected)
+    if data.get("contract_complete") is not complete:
+        raise ValueError("NPU 阶段完成度与 case 集合不一致")
+    return path, {"contract_complete": complete, "updated_at": progress["updated_at"]}
 
 
 def phase(row: dict) -> str:
@@ -405,8 +489,8 @@ def build_rows(generated_at: str) -> list[dict]:
                 repair_status = str(comparison.get("repair_status") or "unknown")
             elif compact_functional:
                 correctness = str(npu.get("correctness") or "unknown")
-                comparison_verdict = "BEHAVIOR_UNCHANGED"
-                repair_status = "not-needed"
+                comparison_verdict = str(npu.get("comparison_verdict") or "BEHAVIOR_UNCHANGED")
+                repair_status = str(npu.get("repair_status") or "not-needed")
 
             alignment_payload = comparison if not compact_functional else npu
             alignment_sidecar_path, alignment_sidecar = alignment_sidecars.get(
@@ -474,6 +558,10 @@ def build_rows(generated_at: str) -> list[dict]:
                 "matrix_generated_at": generated_at,
                 "task_id": task_id,
                 "acceptance_unit_id": unit_id,
+                "canonical_acceptance_unit_id": unit.get("canonical_acceptance_unit_id", unit_id),
+                "independent_unit_contribution": unit.get("independent_unit_contribution", 1),
+                "gpu_review_path": "",
+                "npu_progress_path": "",
                 "contract_name": str(unit.get("contract_name") or ""),
                 "stage": str(unit.get("stage") or ""),
                 "manifest_status": str(manifest.get("status") or ""),
@@ -525,8 +613,68 @@ def build_rows(generated_at: str) -> list[dict]:
                 "performance_evidence_path": performance_path.relative_to(ROOT).as_posix(),
             }
             row["current_phase"] = str(unit.get("coverage_phase") or phase(row))
+            if row["independent_unit_contribution"] == 0:
+                row["performance_status"] = "duplicate-contract-no-new-measurement"
+                row["performance_verdict"] = "see-canonical-task-not-recertified-here"
+            review_path = ROOT / "results/current" / task_id / "gpu_reference_review.json"
+            if task_id >= "T-087" and review_path.is_file():
+                review = read_json(review_path)
+                source = (ROOT / review["input"]).resolve()
+                if (not source.is_relative_to(ROOT.resolve()) or not source.is_file()
+                        or sha256(source) != review["input_sha256"]
+                        or review.get("reference_backend") != "inductor-default"
+                        or unit_id not in review.get("acceptance_units", [])):
+                    raise ValueError(f"GPU复核与原件不一致：{review_path}")
+                row["gpu_review_path"] = review_path.relative_to(ROOT).as_posix()
+                row["reference_status"] = (
+                    "valid-reference-frozen" if row["denominator_eligible"] == "yes-frozen"
+                    and review["status"] == "gpu-contract-reviewed-awaiting-npu" else review["status"]
+                )
+                if not npu and row["independent_unit_contribution"]:
+                    row["current_phase"] = (
+                        "gpu-target-attribution-pending"
+                        if review["status"] == "native-passed-target-attribution-pending"
+                        else "awaiting-npu"
+                    )
+            progress = npu_contract_progress(task_id, unit_id) if not npu else None
+            if progress and row["independent_unit_contribution"]:
+                progress_path, progress_data = progress
+                row["npu_progress_path"] = progress_path.relative_to(ROOT).as_posix()
+                row["observed_npu_backend"] = REQUIRED_NPU_BACKEND
+                row["npu_execution_status"] = "community-contract-passed-not-final"
+                row["npu_correctness_status"] = "passed-for-recorded-cases"
+                row["current_phase"] = (
+                    "npu-contract-passed-awaiting-performance-gate"
+                    if progress_data["contract_complete"] else "npu-contract-partial"
+                )
+                row["community_alignment_disposition"] = "本轮社区功能合同通过；fallback/graph-break及性能图门禁待复核，未签发正式比较结论"
+                row["updated_at"] = max(row["updated_at"], progress_data["updated_at"])
+            blocker_path = ROOT / "results/current" / task_id / "npu_blocker_review.json"
+            if not npu and blocker_path.is_file():
+                blocked = read_json(blocker_path)
+                if blocked.get("acceptance_unit_id") == unit_id:
+                    evidence = blocked["result"]
+                    raw = read_json(verified_file(evidence["path"], evidence["sha256"]))
+                    if (blocked.get("backend") != REQUIRED_NPU_BACKEND or raw.get("backend") != REQUIRED_NPU_BACKEND
+                            or raw.get("pytorch_commit") != "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+                            or raw.get("status") != "failed-contract"):
+                        raise ValueError("NPU 失败记录的实际后端/来源/状态不符")
+                    row.update(npu_progress_path=str(blocker_path.relative_to(ROOT)),
+                        observed_npu_backend=REQUIRED_NPU_BACKEND, npu_execution_status="failed",
+                        npu_correctness_status=blocked["correctness"], current_phase=blocked["current_phase"],
+                        repair_status=blocked["repair_status"], community_alignment_status="PARTIALLY_ALIGNED",
+                        community_alignment_source="explicit", community_divergent_scope=blocked["reason"],
+                        community_alignment_disposition=blocked["next_action"],
+                        updated_at=max(row["updated_at"], blocked["generated_at"]))
             rows.append(row)
 
+    for row in rows:
+        canonical = row["canonical_acceptance_unit_id"]
+        contribution = row["independent_unit_contribution"]
+        if type(contribution) is not int or contribution not in (0, 1):
+            raise ValueError("独立单元贡献必须为0/1")
+        if canonical not in unit_ids or (contribution == 0) != (canonical != row["acceptance_unit_id"]):
+            raise ValueError("别名必须指向实际不同的canonical单元，且贡献为0")
     unknown_npu = set(npu_results) - unit_ids
     unknown_comparisons = set(comparisons) - unit_ids
     unknown_performance = set(performance) - unit_ids
@@ -555,6 +703,7 @@ def md(value: object) -> str:
 
 
 def render_markdown(rows: list[dict], generated_at: str) -> str:
+    independent = sum(row["independent_unit_contribution"] for row in rows)
     frozen = sum(row["denominator_eligible"] == "yes-frozen" for row in rows)
     pending = sum(bool(row["pending_variant_count"]) for row in rows)
     compared = sum(bool(row["comparison_result_path"]) for row in rows)
@@ -574,12 +723,15 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
         "",
         "## 状态摘要",
         "",
-        f"- 活动 acceptance units：**{len(rows)}**；已冻结 reference：**{frozen}**；存在覆盖扩展未闭环：**{pending}**。",
+        f"- 跟踪记录：**{len(rows)}**；去重后独立 acceptance units：**{independent}**；已冻结 reference：**{frozen}**；存在覆盖扩展未闭环：**{pending}**。",
+        "- T-112 是 T-084 的同合同补证，独立分母贡献为 0，保留记录但不重复计数。",
         f"- 已形成 NPU/comparison：**{compared}**；已有正式性能处置：**{measured_or_disposed}**；其余为性能计划态。",
         "- `comparison`/性能处置数量只说明已登记 variants；存在 pending extension 的单元必须以“覆盖”和“当前阶段”列为准，不能外推为全域闭环。",
         f"- 当前 NPU 结果实际观测 backend：`{', '.join(observed) if observed else '无'}`。",
         "- 本表汇总已登记结论，不代表严格历史再认证通过；T-076/T-077 的独立补证状态见 [最新审计](../results/audits/latest.json)。",
         "- `npu_execution_status=failed` 不自动表示数值错误；例如产品 gate 关闭时，目标命中失败可与原图 correctness 通过同时成立，应结合 comparison verdict 阅读。",
+        "- `npu_progress_path` 是带原件哈希的社区功能阶段进度，不是正式 comparison 或性能 gate；负例要求不改写，不能强制所有 case 改图。",
+        "- `native-passed-target-attribution-pending` 表示原生测试通过但精确目标仍待归因；计划 expected_assertions 不能代替真实断言。别名行保留历史、独立贡献为 0。",
         "- 社区对齐列必须区分完全对齐、部分对齐、预期后端差异、需修复和待复核；旧结果缺少显式字段时一律显示待复核，不从既有 PASS 自动外推。",
         "",
         "## 单元矩阵",

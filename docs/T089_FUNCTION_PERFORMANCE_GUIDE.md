@@ -1,7 +1,11 @@
 # T-089 功能与性能测例讲解
 
-> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
-> 状态：1 个单元已准备，等待原生 GPU reference；4 个候选延期。
+> 更新时间：2026-09-11 15:17 CST（UTC+08:00）
+> 状态：GPU/NPU功能、正式比较与六臂性能全部完成，PERF_IMPROVED；4个候选延期。
+
+最新 [逐pattern代码、实际NPU kernel及性能讲解](../results/current/T-089/move-view-after-cat_讲解.md)。
+
+本轮实际改图、数值结果和 FX/IR/生成代码入口见 [阶段报告](../report/t087_t090_npu_progress_20260911.md)。
 
 ## GPU 一键运行
 

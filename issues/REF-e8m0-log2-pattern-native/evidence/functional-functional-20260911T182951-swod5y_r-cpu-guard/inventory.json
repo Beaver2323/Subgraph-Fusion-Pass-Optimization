@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-11T18:35:11.411051+08:00",
+  "source_run": "/home/z50063656/tmp/t096-npu-results/functional-20260911T182951-swod5y_r/cpu-guard",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "49082c1e702c5aff3ffa06b728ea5a1382224da2bd67b7c7955272abc3460f09",
+      "bytes": 2834
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "49082c1e702c5aff3ffa06b728ea5a1382224da2bd67b7c7955272abc3460f09",
+      "bytes": 2834
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "dbc00d6302370c6d0a9b0323e7e15740a0675c73a62a9ad3b3cadc1a834515b3",
+      "bytes": 5293
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/result.json",
+      "sha256": "4c75eb681610d5a08bf0ddd17fff06f927a8d703c7d21793a9e3f8eaf0aee40e",
+      "bytes": 65970
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/execution.json",
+      "sha256": "d6b548acedb8b1e24de2d404fef965f24f80948e420b4a12bf1e6083f64e5b5c",
+      "bytes": 506
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/stderr.log",
+      "sha256": "b2383c728e6a1c04eea4082b4522c1e0d283b227c4f23c7db11a4fe3533a0755",
+      "bytes": 716
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/stdout.log",
+      "sha256": "93a54df5e2b2dc7bd20642cae30047e261d174a0dc098f3dbf1717dce96aa85f",
+      "bytes": 69
+    }
+  ],
+  "generated_output_code_present": true
+}

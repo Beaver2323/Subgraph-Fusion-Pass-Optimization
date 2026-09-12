@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-11T15:17:03.293324+08:00",
+  "source_run": "/home/z50063656/tmp/t096-native-oxqa3yd8",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/adapted_test.py",
+      "sha256": "cb9342960a0087fdd40dbbb2dd87b26a9e11701e6784e989c14bcb47c4b30f82",
+      "bytes": 729
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_13_17_835473-pid_2286856/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1f6e17e13e09d39bb6ecf8b074fe098d7af745983af36845aaff36103b0c5d65",
+      "bytes": 1301
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_13_17_835473-pid_2286856/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "21b89a87f9fdaf3b2e8f0f79b69a0ee93eb85997ad575cf4ad1856aa2d193c58",
+      "bytes": 1512
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_13_17_835473-pid_2286856/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "79d70db9c200d7a605dd43c1591e559fbcc3fca435dd0edbea3b9d1464fabfed",
+      "bytes": 3126
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_13_17_835473-pid_2286856/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "7b771be244340d16095275c947df84e61eb600353a249ddbecf99a811558a32f",
+      "bytes": 3125
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/debug/torch_compile_debug/run_2026_09_11_15_13_17_835473-pid_2286856/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "47f2c6bd007577ae12c15789c48b0a4cce049d8ed89de013d8f37ad8a86c79cc",
+      "bytes": 10090
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/result.json",
+      "sha256": "a8e0825b2f7e2e8ce8475d24bdf024f1c0b2453ad0475f8905e4c272fe259172",
+      "bytes": 2047
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/target-0-after.txt",
+      "sha256": "2448ad5ec6001881da56b203c2ef271743b60405db8c237afaeb83f8fa14c5c8",
+      "bytes": 1156
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    }
+  ],
+  "generated_output_code_present": true
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-087",
+  "reviewed_at": "2026-09-11T12:24:13.289276+08:00",
+  "run_id": "reference-20260911T095808+0800-p259vzg2",
+  "status": "gpu-contract-reviewed-awaiting-npu",
+  "reference_backend": "inductor-default",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "input": "results/incoming/T-087/manifest.json",
+  "input_sha256": "42cf6b1018bc473649c08cadc88d10760957e84b9ab26508e790a18d751241d2",
+  "payload_sha256": "15fa18b703ddd2482055aba549e0cbf8223e2e701a2e65be512cb2fe90ece702",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "native_cases_passed": 3,
+  "tests_skipped": 0,
+  "restored_text_files": 61,
+  "acceptance_units": [
+    "AU-post-grad-reorder-for-locality",
+    "AU-post-grad-respecialize-current-device"
+  ],
+  "cases": [
+    {
+      "case_id": "REF-reorder-locality-training-native",
+      "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+      "source_test": "test/inductor/test_reorder_for_locality_in_training.py::TestReorderForLocalityInTrainingCUDA.test_training_flag_reorders_and_preserves_semantics_cuda",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_reorder_for_locality_in_training.py",
+        "-v",
+        "TestReorderForLocalityInTrainingCUDA.test_training_flag_reorders_and_preserves_semantics_cuda"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "844df67668e4b3c8978967f046d2e9f303c810f3420c2a9cf9de822d88395c9a"
+    },
+    {
+      "case_id": "REF-reorder-locality-master-off-native",
+      "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+      "source_test": "test/inductor/test_reorder_for_locality_in_training.py::TestReorderForLocalityInTrainingCUDA.test_training_flag_noop_when_reorder_off_cuda",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_reorder_for_locality_in_training.py",
+        "-v",
+        "TestReorderForLocalityInTrainingCUDA.test_training_flag_noop_when_reorder_off_cuda"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "2107340f2987a8f6d413149e0935089d1f65789d04fdb8dbdbb4ea10f3799580"
+    },
+    {
+      "case_id": "REF-respecialize-current-device-native",
+      "acceptance_unit_id": "AU-post-grad-respecialize-current-device",
+      "source_test": "test/distributed/tensor/test_compile_on_one_rank.py::TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/distributed/tensor/test_compile_on_one_rank.py",
+        "-v",
+        "TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "cdaee994cff763a2a48b0600f19837d219193edcaf744b4643167ea3ca69b96c"
+    }
+  ],
+  "review_boundary": "设备解析例只验证单设备运行时代码，不证明跨卡复用/数值对照。",
+  "npu_execution_in_this_review": false,
+  "denominator_frozen_by_this_review": false,
+  "independent_unit_contribution": 2,
+  "report": "report/gpu_incoming_review_20260911.md"
+}

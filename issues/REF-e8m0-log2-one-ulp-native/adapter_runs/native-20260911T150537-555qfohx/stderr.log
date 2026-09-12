@@ -1,0 +1,28 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_correct_for_values_one_ulp_above_power_of_two (builtins.TestE8M0Log2PatternBitManip.test_correct_for_values_one_ulp_above_power_of_two)
+Values 1 ULP above a power of 2 must produce the correct (higher) exponent. ... [W911 15:05:48.772626200 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0911 15:06:15.765000 1557905 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t096-native-hn8ii8wm/adapter/debug/torch_compile_debug/run_2026_09_11_15_05_48_332129-pid_1557905/torchinductor/model__0_inference_0.0
+FAIL
+
+======================================================================
+FAIL: test_correct_for_values_one_ulp_above_power_of_two (builtins.TestE8M0Log2PatternBitManip.test_correct_for_values_one_ulp_above_power_of_two)
+Values 1 ULP above a power of 2 must produce the correct (higher) exponent.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/z50063656/Pass/src/pytorch/test/inductor/test_fp8.py", line 2198, in test_correct_for_values_one_ulp_above_power_of_two
+    self.assertEqual(compiled_result, expected)
+  File "/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py", line 4879, in assertEqual
+    raise error_metas.pop()[0].to_error(  # type: ignore[index]
+AssertionError: Tensor-likes are not equal!
+
+Mismatched elements: 5 / 8 (62.5%)
+Greatest absolute difference: 1 at index (3,)
+Greatest relative difference: 0.007633587811142206 at index (3,)
+
+----------------------------------------------------------------------
+Ran 1 test in 28.127s
+
+FAILED (failures=1)

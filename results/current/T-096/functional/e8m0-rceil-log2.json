@@ -1,0 +1,768 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-11T18:35:09.651094+08:00",
+  "task_id": "T-096",
+  "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "comparison_verdict": "NEWLY_SUPPORTED",
+  "repair_status": "installed-fix-verified-not-upstream-merged",
+  "gate": {
+    "path": "results/current/T-096/performance_gates/e8m0-rceil-log2.json",
+    "sha256": "dac296f1c0dbec1ccce25b98c7e110ae495fbf431b5c7df63e6ce9868ffbb322"
+  },
+  "evidence": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/result.json",
+      "sha256": "1b3987e8cfb66da04bd034823cc52e09939218ca2eb7c6c16e66b8427ea27f88"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/adapter_runs/native-20260911T182313-ikrxm8pj/run_result.json",
+      "sha256": "4ac1824cec24565d3984389a5ff8abede83b68b31d6589c3f9ba0eb95bfb4fe2"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/result.json",
+      "sha256": "37d3254089aaa3be5e98e10ef25f6d44fd4bb378f44d33d29dd90f8d6bf6ced7"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/adapter_runs/native-20260911T182711-88va5yhh/run_result.json",
+      "sha256": "16a2709ffe4236e8a8b95e8e0c8c80f433c6022b0526e0f5a4008e56dc910b5b"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/result.json",
+      "sha256": "2266bc89d7af692e04155bcb5cb7b64152f5c6b8b0cdbae7e29299ef64748fca"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/adapter_runs/native-20260911T182746-xtr_nicj/run_result.json",
+      "sha256": "4a5d468646f68632bd384b512d61f90659148de9f2f413b8becdb6152e38cac5"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/result.json",
+      "sha256": "d7a036c15ba1416c2ae3424d042fdee4249921e65cd76384ae0b3d600597f43a"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/result.json",
+      "sha256": "a8ebbc9fe782bfeadeb04227910fed16c3fd06a5abe97ccbc61b2fd9ed806f44"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/result.json",
+      "sha256": "af1094da9ef1676876f1c8beee069bc9a7b7308f0c7082e81ab217e17fceb48e"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/execution.json",
+      "sha256": "cff4e4f1a0ec3d0e04ebbe7c03e75cca8290b9928200064421b9d4e6e13d760a"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/artifacts/result.json",
+      "sha256": "64b11bfd394b48d842db6408628b3b1dd86bf4f22474097e13920a92c6b7933e"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/execution.json",
+      "sha256": "cb2949c9ed4bd6c4dcf4f076801f0dfefe9a17bdeb071fd02cf4403d0703c4a2"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/result.json",
+      "sha256": "4d925088517123f9691110d5a239aac9eefed45426b8792e8e55f9dbbf4f498e"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/execution.json",
+      "sha256": "13c36fadeb88b3a3a91e6c0c294227b6777cc0d5d53f9cbbb5f01b9e1a81621a"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/result.json",
+      "sha256": "a342e51c5809948d198596b898d1c83702e8eb70d05c6cbb55c68b1e8f32f6f4"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/execution.json",
+      "sha256": "ef5d6869a7d4ab7424f2a41c14a51fd3dcbc3cd5eb1d5cf6c49731ee4252856d"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/result.json",
+      "sha256": "4c75eb681610d5a08bf0ddd17fff06f927a8d703c7d21793a9e3f8eaf0aee40e"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/execution.json",
+      "sha256": "d6b548acedb8b1e24de2d404fef965f24f80948e420b4a12bf1e6083f64e5b5c"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/artifacts/result.json",
+      "sha256": "d86e8661ec48f9844c9421aedfb50ee9281a5b32dd0eaea0ddd1757e5c5f184d"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/execution.json",
+      "sha256": "0b0e5bdf2d4c8cf07a81bba6e1ed801cb43222431c7b234c122bd8470548b3f3"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/result.json",
+      "sha256": "e7aef76d62aa4c98aa66734a915fc56ae6ae751767a700d3188b2c7c945f032e"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/execution.json",
+      "sha256": "1f618031ace0c105aa1e3996565d6a10a647e05e9b17c93ece5b2379c00fa5db"
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/installed_deployment_20260911.json",
+      "sha256": "a2c7b581fbdc644807a68cb9cef79c9845102dfb9790b6032cfe650d30e785fd"
+    },
+    {
+      "path": "results/current/T-096/gpu_reference_review.json",
+      "sha256": "3b89b93c7c9e5a63c99684b4095dc2af67ef14ba1b5d94f994e827e66c156669"
+    }
+  ],
+  "artifact_inventory": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/adapted_test.py",
+      "sha256": "cb9342960a0087fdd40dbbb2dd87b26a9e11701e6784e989c14bcb47c4b30f82",
+      "bytes": 729
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1f6e17e13e09d39bb6ecf8b074fe098d7af745983af36845aaff36103b0c5d65",
+      "bytes": 1301
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "7766e841bd50902bdcfe3be6815dffdfa4a93a3c6cd2791b79becb70cf1f4f3c",
+      "bytes": 2847
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "53e7ccc5d6cd1220d8fc801f414297276ceadebd9fe7e418a90b209fe687ce04",
+      "bytes": 4920
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "a91464c714edabd75866f8bfead1dceaf589366173188ade7f94900556db073f",
+      "bytes": 4919
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/debug/torch_compile_debug/run_2026_09_11_18_23_35_724631-pid_1710578/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "f75c5e4c5e864c8add7e7548528527519df4b5db40baae3ed39c010a3cf1d591",
+      "bytes": 12831
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/result.json",
+      "sha256": "1b3987e8cfb66da04bd034823cc52e09939218ca2eb7c6c16e66b8427ea27f88",
+      "bytes": 1745
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/target-0-after.txt",
+      "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+      "bytes": 2345
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/installed-pass-native-20260911T182313-ikrxm8pj/adapter/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/adapted_test.py",
+      "sha256": "cfe17214754f56d5d5eb1742d3f9385efa601f35bc6baa61164976b77322b6ac",
+      "bytes": 1200
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_22_182561-pid_1756180/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "333cd3d3c04d918c605788292a3cccf5e1df648bbc34063e5dc02dcfcb46bacd",
+      "bytes": 1301
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_22_182561-pid_1756180/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "e9ea44771992b68ba89222a5b65dc7e51abb8c3aa18e31d5d2811793628bab99",
+      "bytes": 2847
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_22_182561-pid_1756180/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c099988a362d5fceb196edf3d2ddff080fe54097161f3a0e5f53a9b0a2be0317",
+      "bytes": 4920
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_22_182561-pid_1756180/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "fdce2cf4354c8c6044ed510ecdd6add2d12cb5295683de87f7cbdaac71b8462a",
+      "bytes": 4919
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_22_182561-pid_1756180/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "db50df9fbf488fbdae678de96579e36ddb06e76a30c4211f3dfd41fa83fcafe4",
+      "bytes": 12850
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/result.json",
+      "sha256": "37d3254089aaa3be5e98e10ef25f6d44fd4bb378f44d33d29dd90f8d6bf6ced7",
+      "bytes": 1906
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/target-0-after.txt",
+      "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+      "bytes": 2345
+    },
+    {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/installed-pass-native-20260911T182711-88va5yhh/adapter/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/adapted_test.py",
+      "sha256": "e5f276fa402db9a4f4512fd6558857868ca1175d42df1a415440a771b0c98ecf",
+      "bytes": 1743
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_56_786052-pid_1762738/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "e81f0204b0a0740b08fdf49b7aa843ecc008460592b44c1831ff8febaa318656",
+      "bytes": 1336
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_56_786052-pid_1762738/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "f9ab84fe8e0c51f65c42a75aedc3b2553dc894cc34523626d839339649a1a61d",
+      "bytes": 2854
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_56_786052-pid_1762738/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "53e7ccc5d6cd1220d8fc801f414297276ceadebd9fe7e418a90b209fe687ce04",
+      "bytes": 4920
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_56_786052-pid_1762738/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "a91464c714edabd75866f8bfead1dceaf589366173188ade7f94900556db073f",
+      "bytes": 4919
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/debug/torch_compile_debug/run_2026_09_11_18_27_56_786052-pid_1762738/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "f35fa6f1d5252cea23b7104ac51573ba9c7de36cb3394d4cdce7dc2e9c520b28",
+      "bytes": 12831
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/result.json",
+      "sha256": "2266bc89d7af692e04155bcb5cb7b64152f5c6b8b0cdbae7e29299ef64748fca",
+      "bytes": 1847
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/target-0-after.txt",
+      "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+      "bytes": 2345
+    },
+    {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/installed-pass-native-20260911T182746-xtr_nicj/adapter/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "80908501ffa9902264e82da6e837fa29e2aa4fb247ec18065d2616b30ad2db1b",
+      "bytes": 855
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "80908501ffa9902264e82da6e837fa29e2aa4fb247ec18065d2616b30ad2db1b",
+      "bytes": 855
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "732a4c4a9daf25b5e589578f8c6d7ba0d360817ec50b155190071eb5fa7100b5",
+      "bytes": 2863
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "f2df094cce5035613fe53e9f3283a647bd2571602992393a2277295df4fbb345",
+      "bytes": 2861
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "b1469f8e886f369c6cbc01370762ef91e59da70694e12cd3980399053f3f055d",
+      "bytes": 12679
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/result.json",
+      "sha256": "d7a036c15ba1416c2ae3424d042fdee4249921e65cd76384ae0b3d600597f43a",
+      "bytes": 3701
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/stdout.log",
+      "sha256": "26c1a635cd12139a8e8660940095fda9b8527a11ab24d80366f2a40b5a3308e7",
+      "bytes": 4565
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "80908501ffa9902264e82da6e837fa29e2aa4fb247ec18065d2616b30ad2db1b",
+      "bytes": 855
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "f1e7833b196a4cbead7f73005734f8ea5a53c7a6341c7545ef35ed4e90a4aedb",
+      "bytes": 2942
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "f9386a2fb5ae8b1d85cd0da403b087852879e976d1e275dc36a2e187c0f897c0",
+      "bytes": 4932
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "127f12425819b5db8afa8d24f25cbe3f2f095da804f5b60f8664de365120f7bd",
+      "bytes": 4931
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "78e2dd8cdfef74cf34eb8fb5ebe39d922a2e15517ad7f3890d51d5b292df950e",
+      "bytes": 12890
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/result.json",
+      "sha256": "a8ebbc9fe782bfeadeb04227910fed16c3fd06a5abe97ccbc61b2fd9ed806f44",
+      "bytes": 3700
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/stdout.log",
+      "sha256": "5f8a5b9a749d4f266e68799d66805e24dab6850c64bdc82b9c38298b6ad658a8",
+      "bytes": 4764
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "cf778e3b8a24f6647f269da1b8d443f39aab5842cb40432e53d8577c56df7444",
+      "bytes": 2846
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "87eae6858ac6a40c0fdb2f9fcc043a1bd49f8163762aeae75d35e199dec99825",
+      "bytes": 2844
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "6693cae9b222bc4311c23a151392dafc41db47b3a1804d653b4f159c24032114",
+      "bytes": 12673
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/result.json",
+      "sha256": "af1094da9ef1676876f1c8beee069bc9a7b7308f0c7082e81ab217e17fceb48e",
+      "bytes": 67268
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/execution.json",
+      "sha256": "cff4e4f1a0ec3d0e04ebbe7c03e75cca8290b9928200064421b9d4e6e13d760a",
+      "bytes": 500
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/stderr.log",
+      "sha256": "dbaa7ff0814ef03ae703eadb88e6da225b5eb481107516640254b184c5f7d25e",
+      "bytes": 893
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/stdout.log",
+      "sha256": "fa8e768e2ba9a590d4362fa58dce3cc4c6ed10405fbca871502bb80ddbb2105c",
+      "bytes": 69
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_42_476564-pid_1793281/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_42_476564-pid_1793281/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "9ba6a4dfff9c31841e67aab9264278c4fe9ff69f02ff65846823a0c46327f91c",
+      "bytes": 2925
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_42_476564-pid_1793281/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "53e7ccc5d6cd1220d8fc801f414297276ceadebd9fe7e418a90b209fe687ce04",
+      "bytes": 4920
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_42_476564-pid_1793281/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "a91464c714edabd75866f8bfead1dceaf589366173188ade7f94900556db073f",
+      "bytes": 4919
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_42_476564-pid_1793281/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "6efa6ab4a6265fd3b49d331827d7395129da92a68022eeb27f2c266ab8bd7f39",
+      "bytes": 12868
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/artifacts/result.json",
+      "sha256": "64b11bfd394b48d842db6408628b3b1dd86bf4f22474097e13920a92c6b7933e",
+      "bytes": 67012
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/artifacts/target-0-after.txt",
+      "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+      "bytes": 2345
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/artifacts/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/execution.json",
+      "sha256": "cb2949c9ed4bd6c4dcf4f076801f0dfefe9a17bdeb071fd02cf4403d0703c4a2",
+      "bytes": 498
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/stderr.log",
+      "sha256": "faf9c301af3984ef78bbaa7aae514ce2682b8a9dbae6f4e01392cbc279dbddd0",
+      "bytes": 1091
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-on/stdout.log",
+      "sha256": "f44aaf03519648deec2c4a0b7960c6e17c303dcf99cedb88b9af869dd448fb5a",
+      "bytes": 68
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "7a1bd0d273eea7ea4a2f16bba223c4f53bff5a01d730e9df5ccdbeee5c79d6a7",
+      "bytes": 1168
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "7a1bd0d273eea7ea4a2f16bba223c4f53bff5a01d730e9df5ccdbeee5c79d6a7",
+      "bytes": 1168
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "04afe0da44fc6856072069d291b854559fe225959435f02bbc406c2695962017",
+      "bytes": 3074
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "3b1754c923bd82074bd7b2ceccdd183d8f8af8dec6515579cdc39f9f0f7b010a",
+      "bytes": 3072
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "32eb42a745cdda2e104e82c62f77eec995f772d64837bf77f33a4cec8c8dac51",
+      "bytes": 13231
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/result.json",
+      "sha256": "4d925088517123f9691110d5a239aac9eefed45426b8792e8e55f9dbbf4f498e",
+      "bytes": 67291
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/execution.json",
+      "sha256": "13c36fadeb88b3a3a91e6c0c294227b6777cc0d5d53f9cbbb5f01b9e1a81621a",
+      "bytes": 508
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/stderr.log",
+      "sha256": "29ea7f64cba301782450dfa4faca24166d0c1f3a854a873d00058d3116c2426c",
+      "bytes": 900
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/stdout.log",
+      "sha256": "87c278224c54de96429ddb1c4d9350a80c872036b3fdfa382922c24f0c41646c",
+      "bytes": 70
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "f42e766ffb2040a7aa1b3e43b458235d02258cd8ae2095cd654cb56dba5f22e9",
+      "bytes": 1174
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "f42e766ffb2040a7aa1b3e43b458235d02258cd8ae2095cd654cb56dba5f22e9",
+      "bytes": 1174
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "fcfdb33aceb80d12e053e6638be0c3598a8a353fcc156ae95bf657986fcc596e",
+      "bytes": 3083
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "680bfd8117afc4b7a9eedc296e8793ef6e9d7229c7e99f0a9463625ed75cefeb",
+      "bytes": 3081
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "6774ef70ae8bf3498b480c2f598853075c3df45b3f34653c384dc2fb2813436c",
+      "bytes": 13239
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/result.json",
+      "sha256": "a342e51c5809948d198596b898d1c83702e8eb70d05c6cbb55c68b1e8f32f6f4",
+      "bytes": 67292
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/execution.json",
+      "sha256": "ef5d6869a7d4ab7424f2a41c14a51fd3dcbc3cd5eb1d5cf6c49731ee4252856d",
+      "bytes": 508
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/stderr.log",
+      "sha256": "84457bdffd3cc50319d10e05ee46477aaa337de44a814b801421f83685b26851",
+      "bytes": 900
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/stdout.log",
+      "sha256": "32860800def3b6acdc6a0c284d4c720a235146002d2ed254f1000482671a4e0b",
+      "bytes": 70
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "49082c1e702c5aff3ffa06b728ea5a1382224da2bd67b7c7955272abc3460f09",
+      "bytes": 2834
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "49082c1e702c5aff3ffa06b728ea5a1382224da2bd67b7c7955272abc3460f09",
+      "bytes": 2834
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_32_37_108390-pid_1815667/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "dbc00d6302370c6d0a9b0323e7e15740a0675c73a62a9ad3b3cadc1a834515b3",
+      "bytes": 5293
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/artifacts/result.json",
+      "sha256": "4c75eb681610d5a08bf0ddd17fff06f927a8d703c7d21793a9e3f8eaf0aee40e",
+      "bytes": 65970
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/execution.json",
+      "sha256": "d6b548acedb8b1e24de2d404fef965f24f80948e420b4a12bf1e6083f64e5b5c",
+      "bytes": 506
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/stderr.log",
+      "sha256": "b2383c728e6a1c04eea4082b4522c1e0d283b227c4f23c7db11a4fe3533a0755",
+      "bytes": 716
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-cpu-guard/stdout.log",
+      "sha256": "93a54df5e2b2dc7bd20642cae30047e261d174a0dc098f3dbf1717dce96aa85f",
+      "bytes": 69
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_21_339524-pid_1825327/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_21_339524-pid_1825327/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "9ba6a4dfff9c31841e67aab9264278c4fe9ff69f02ff65846823a0c46327f91c",
+      "bytes": 2925
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_21_339524-pid_1825327/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c6381337f45a4c2a436bbdc21bb39bed054d2233803838428897952dbe58358d",
+      "bytes": 4941
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_21_339524-pid_1825327/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "9055e287659c6eba319b2b00547c4493e9a6a3d59346b40266e5c932d87108da",
+      "bytes": 4940
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_21_339524-pid_1825327/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "c08560dcb04e7111bdc54a66a4c7763a47c15425606cdebe02f334ef722801b7",
+      "bytes": 13121
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/artifacts/result.json",
+      "sha256": "d86e8661ec48f9844c9421aedfb50ee9281a5b32dd0eaea0ddd1757e5c5f184d",
+      "bytes": 67021
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/artifacts/target-0-after.txt",
+      "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+      "bytes": 2345
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/artifacts/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/execution.json",
+      "sha256": "0b0e5bdf2d4c8cf07a81bba6e1ed801cb43222431c7b234c122bd8470548b3f3",
+      "bytes": 502
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/stderr.log",
+      "sha256": "3bff7512b28c2633308497248c8b6978794402c3755363da883f5f1bd9190636",
+      "bytes": 1096
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-strided/stdout.log",
+      "sha256": "77ce5c091af0eb14739d10af9277e60e814cf9f24b32afe5cadc7fc7b9ffbbe3",
+      "bytes": 67
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "ae89729f3bb44203b87cb6309b62598e93f69f1de8e394d3846ef3527fd96e0e",
+      "bytes": 873
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "97e38505b777c838fe547c1438b3e8284fed2fbe17e3d6b63c92b94edc0c1ffd",
+      "bytes": 2988
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "ea84a459a263d0c408573da484d7f276acc038a33b9fdb598863b94733e6a23e",
+      "bytes": 4956
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "7b335aeee4f053d1f91d7112c6711fa58fecc7b94bac562df5b557cd53e254e7",
+      "bytes": 4955
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/debug/torch_compile_debug/run_2026_09_11_18_33_58_201042-pid_1832583/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "69cd0e1ce8ec855385cf60803b90eb81d10e9220cce281fdcaa18d8230cbcf5d",
+      "bytes": 12989
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/result.json",
+      "sha256": "e7aef76d62aa4c98aa66734a915fc56ae6ae751767a700d3188b2c7c945f032e",
+      "bytes": 67046
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/target-0-after.txt",
+      "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+      "bytes": 2345
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/artifacts/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/execution.json",
+      "sha256": "1f618031ace0c105aa1e3996565d6a10a647e05e9b17c93ece5b2379c00fa5db",
+      "bytes": 516
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/stderr.log",
+      "sha256": "15fd4f7433f9addd90e883ed11c94e2b2159cc61df9d72686028390a47c6af9b",
+      "bytes": 1103
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-exponent-sweep/stdout.log",
+      "sha256": "3e9e105fcd17cd57cc89d00cd716876ca46cfccda9927e2107622aa8f5ca2f97",
+      "bytes": 74
+    }
+  ],
+  "codegen_review": {
+    "REF-e8m0-log2-pattern-native": {
+      "graphs": 1,
+      "npu_graph_internal_extern": [
+        "aten.__rshift__.Scalar",
+        "aten.view.dtype"
+      ],
+      "cpu_or_graph_external_fallbacks": 0,
+      "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+    },
+    "REF-e8m0-log2-one-ulp-native": {
+      "graphs": 1,
+      "npu_graph_internal_extern": [
+        "aten.__rshift__.Scalar",
+        "aten.view.dtype"
+      ],
+      "cpu_or_graph_external_fallbacks": 0,
+      "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+    },
+    "REF-e8m0-log2-gh178045-native": {
+      "graphs": 1,
+      "npu_graph_internal_extern": [
+        "aten.__rshift__.Scalar",
+        "aten.view.dtype"
+      ],
+      "cpu_or_graph_external_fallbacks": 0,
+      "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+    },
+    "off": {
+      "graphs": 1,
+      "npu_graph_internal_extern": [
+        "aten.ceil.default"
+      ],
+      "cpu_or_graph_external_fallbacks": 0,
+      "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+    },
+    "on": {
+      "graphs": 1,
+      "npu_graph_internal_extern": [
+        "aten.__rshift__.Scalar",
+        "aten.view.dtype"
+      ],
+      "cpu_or_graph_external_fallbacks": 0,
+      "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+    },
+    "fp16-guard": {
+      "graphs": 1,
+      "npu_graph_internal_extern": [
+        "aten.ceil.default"
+      ],
+      "cpu_or_graph_external_fallbacks": 0,
+      "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+    },
+    "bf16-guard": {
+      "graphs": 1,
+      "npu_graph_internal_extern": [
+        "aten.ceil.default"
+      ],
+      "cpu_or_graph_external_fallbacks": 0,
+      "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+    },
+    "cpu-guard": {
+      "scope": "CPU负例，精确目标零调用；不计NPU性能"
+    },
+    "strided": {
+      "graphs": 1,
+      "npu_graph_internal_extern": [
+        "aten.__rshift__.Scalar",
+        "aten.view.dtype"
+      ],
+      "cpu_or_graph_external_fallbacks": 0,
+      "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+    },
+    "exponent-sweep": {
+      "graphs": 1,
+      "npu_graph_internal_extern": [
+        "aten.__rshift__.Scalar",
+        "aten.view.dtype"
+      ],
+      "cpu_or_graph_external_fallbacks": 0,
+      "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+    }
+  },
+  "community_alignment": {
+    "status": "PARTIAL_ALIGNED",
+    "aligned_scope": [
+      "A100 reference对应三个原社区FP32合同全部通过",
+      "正正规数的指数/尾数算法与社区pre-SM100对齐"
+    ],
+    "divergent_scope": [
+      "NPU增加subnormal/负值/NaN边界保护，未声称对应CUDA已实测",
+      "dtype-view与右移保留图内NPU extern，不同于CUDA融合kernel"
+    ],
+    "open_scope": [
+      "新增边界的GPU邻接对照尚无；不增加冻结分母",
+      "FP16/BF16保持原不命中保护，不代表这两种dtype全范围精度支持"
+    ],
+    "disposition": "保留数学oracle和已测NPU特殊值行为；原三例已修复，额外边界明确标为NPU派生扩展"
+  }
+}

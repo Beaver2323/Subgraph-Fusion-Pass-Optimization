@@ -1,0 +1,33 @@
+
+
+
+def forward(self, primals_1, primals_2, primals_3, mm, mm_1, tangents_1):
+    unsqueeze = torch.ops.aten.unsqueeze.default(tangents_1, 1);  tangents_1 = None
+    expand = torch.ops.aten.expand.default(unsqueeze, [8, 16]);  unsqueeze = None
+    tanh = torch.ops.aten.tanh.default(mm);  mm = None
+    sin = torch.ops.aten.sin.default(tanh)
+    mul_2 = torch.ops.aten.mul.Tensor(expand, sin);  sin = None
+    sigmoid = torch.ops.aten.sigmoid.default(mm_1);  mm_1 = None
+    sin_1 = torch.ops.aten.sin.default(sigmoid)
+    neg = torch.ops.aten.neg.default(sin_1);  sin_1 = None
+    mul_4 = torch.ops.aten.mul.Tensor(mul_2, neg);  mul_2 = neg = None
+    mul_6 = torch.ops.aten.mul.Tensor(expand, tanh)
+    add_2 = torch.ops.aten.add.Tensor(mul_4, mul_6);  mul_4 = mul_6 = None
+    sub = torch.ops.aten.sub.Tensor(1, sigmoid)
+    mul_8 = torch.ops.aten.mul.Tensor(sigmoid, sub);  sub = None
+    mul_9 = torch.ops.aten.mul.Tensor(add_2, mul_8);  add_2 = mul_8 = None
+    matmul_backward = torch.ops.aten.matmul_backward.default(mul_9, primals_2, primals_3, [False, True]);  mul_9 = primals_3 = None
+    getitem_1 = matmul_backward[1];  matmul_backward = None
+    cos = torch.ops.aten.cos.default(sigmoid)
+    mul_3 = torch.ops.aten.mul.Tensor(expand, cos);  cos = None
+    cos_1 = torch.ops.aten.cos.default(tanh)
+    mul_5 = torch.ops.aten.mul.Tensor(mul_3, cos_1);  mul_3 = cos_1 = None
+    mul_7 = torch.ops.aten.mul.Tensor(expand, sigmoid);  expand = sigmoid = None
+    add_1 = torch.ops.aten.add.Tensor(mul_5, mul_7);  mul_5 = mul_7 = None
+    mul_10 = torch.ops.aten.mul.Tensor(tanh, tanh);  tanh = None
+    sub_1 = torch.ops.aten.sub.Tensor(1, mul_10);  mul_10 = None
+    mul_11 = torch.ops.aten.mul.Tensor(add_1, sub_1);  add_1 = sub_1 = None
+    matmul_backward_1 = torch.ops.aten.matmul_backward.default(mul_11, primals_2, primals_1, [False, True]);  mul_11 = primals_2 = primals_1 = None
+    getitem_3 = matmul_backward_1[1];  matmul_backward_1 = None
+    return (getitem_3, None, getitem_1)
+    

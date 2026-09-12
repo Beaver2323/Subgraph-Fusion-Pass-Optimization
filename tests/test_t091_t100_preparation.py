@@ -116,8 +116,10 @@ class T091T100PreparationTests(unittest.TestCase):
             ),
         )
         t096 = json.loads((ROOT / "upstream/t096_performance_plan.yaml").read_text())
-        self.assertEqual(t096["implementation"]["status"], "not-implemented")
-        self.assertIn("capability-pending", t096["status"])
+        self.assertEqual(t096["implementation"]["status"], "implemented-runtime-validated")
+        self.assertEqual(t096["status"], "performance-disposition-complete")
+        self.assertEqual(t096["acceptance_units"][0]["performance_status"], "measured")
+        self.assertEqual(t096["acceptance_units"][0]["verdict"], "PERF_REGRESSED")
 
     def test_backend_and_tmp_guards_precede_torch_import(self):
         source = (ROOT / "runners/t091_t100_performance_worker.py").read_text()

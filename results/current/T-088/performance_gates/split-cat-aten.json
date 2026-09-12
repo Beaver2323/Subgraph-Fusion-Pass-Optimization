@@ -1,0 +1,46 @@
+{
+  "task_id": "T-088",
+  "acceptance_unit_id": "AU-split-cat-merge-split-cat-aten",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "split-cat-aten-community-shape",
+  "input_spec": [
+    {
+      "shape": [
+        1024,
+        128
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        1024,
+        128
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        1024,
+        32
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "1c0a95e6c6a74777be3f8660aefbc8c49d4ce6330fea4453324db8183111765d",
+  "reviewed_at": "2026-09-11T14:37:58.812983+08:00",
+  "reviewer": "Codex：冻结社区合同与实际生成代码复核",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "2d5d28b7f51cd1e452c8fdfcfa0949ef1c9b0690d803dd65197023b7b2af97bf"
+  },
+  "target_functional": {
+    "path": "../functional/split-cat-aten.json",
+    "sha256": "41e9b5be29e205b066b7ecc6ca81e28404bd28256901a36324e6607817ff5a95"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-11T18:35:10.887078+08:00",
+  "source_run": "/home/z50063656/tmp/t096-npu-results/functional-20260911T182951-swod5y_r/fp16-guard",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "7a1bd0d273eea7ea4a2f16bba223c4f53bff5a01d730e9df5ccdbeee5c79d6a7",
+      "bytes": 1168
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "7a1bd0d273eea7ea4a2f16bba223c4f53bff5a01d730e9df5ccdbeee5c79d6a7",
+      "bytes": 1168
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "04afe0da44fc6856072069d291b854559fe225959435f02bbc406c2695962017",
+      "bytes": 3074
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "3b1754c923bd82074bd7b2ceccdd183d8f8af8dec6515579cdc39f9f0f7b010a",
+      "bytes": 3072
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_17_006467-pid_1799807/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "32eb42a745cdda2e104e82c62f77eec995f772d64837bf77f33a4cec8c8dac51",
+      "bytes": 13231
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/artifacts/result.json",
+      "sha256": "4d925088517123f9691110d5a239aac9eefed45426b8792e8e55f9dbbf4f498e",
+      "bytes": 67291
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/execution.json",
+      "sha256": "13c36fadeb88b3a3a91e6c0c294227b6777cc0d5d53f9cbbb5f01b9e1a81621a",
+      "bytes": 508
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/stderr.log",
+      "sha256": "29ea7f64cba301782450dfa4faca24166d0c1f3a854a873d00058d3116c2426c",
+      "bytes": 900
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-fp16-guard/stdout.log",
+      "sha256": "87c278224c54de96429ddb1c4d9350a80c872036b3fdfa382922c24f0c41646c",
+      "bytes": 70
+    }
+  ],
+  "generated_output_code_present": true
+}

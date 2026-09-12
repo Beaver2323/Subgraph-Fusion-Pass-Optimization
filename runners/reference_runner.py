@@ -324,6 +324,16 @@ def validate_contract(
             if test_key in seen_tests:
                 raise ValueError(f"community test 被重复执行: {test_key}")
             seen_tests.add(test_key)
+        if "native_contract_observer" in case:
+            observed_source, _ = split_nodeid(case["source_test"])
+            permitted = (
+                plan["task_id"] == "T-091" and observed_source == "test/inductor/test_split_cat_fx_passes.py"
+            ) or (
+                plan["task_id"] in {f"T-{n}" for n in range(102, 108)}
+                and observed_source == "test/inductor/test_fused_attention.py"
+            )
+            if case["native_contract_observer"] is not True or mode != "direct" or not permitted or case.get("native_observer"):
+                raise ValueError(f"{case_id} native_contract_observer 只允许已审核原生入口")
         if "native_observer" in case:
             if case["native_observer"] is not True or mode != "direct":
                 raise ValueError(f"{case_id} native_observer 只允许 direct 且显式 true")
@@ -815,6 +825,9 @@ def case_command(
     if mode == "direct":
         relative, qualname = split_nodeid(case["source_test"])
         direct_args = case.get("direct_args")
+        if case.get("native_contract_observer"):
+            return [sys.executable, str(repo_root / "runners/native_contract_observer.py"),
+                    "--source", str(pytorch_root / relative), "--", *(direct_args or [qualname])]
         if case.get("native_observer"):
             return [
                 sys.executable, str(repo_root / "runners/native_fx_observer.py"),

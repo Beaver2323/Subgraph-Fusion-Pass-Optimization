@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-11T18:58:00+08:00",
+  "status": "passed",
+  "backend": "triton_experimental",
+  "scope": "T087和T096共同安装后，重跑原CooR单设备合同；不新增验收单元或多rank范围",
+  "launch": {
+    "path": "issues/REF-respecialize-current-device-native/adapter_runs/native-20260911T185556-nyi85iua/run_result.json",
+    "sha256": "70407cd7fb8637e3d5ff72e2b031d32f2a81aa4f3134be3951d496fae17dc455"
+  },
+  "result": {
+    "path": "issues/REF-respecialize-current-device-native/evidence/combined-installed-20260911T185556/adapter/result.json",
+    "sha256": "22b9accea3c3573a3386c2343204fe2a61ecabe7acd21c094e02a989ffc86036"
+  },
+  "inventory": {
+    "path": "issues/REF-respecialize-current-device-native/evidence/combined-installed-20260911T185556/inventory.json",
+    "sha256": "b6201ee443a1dd6a183353da09149a98bd461fc0dae4ffe001f5beba622bd8b5"
+  },
+  "t096_deployment": {
+    "path": "issues/REF-e8m0-log2-pattern-native/installed_deployment_20260911.json",
+    "sha256": "a2c7b581fbdc644807a68cb9cef79c9845102dfb9790b6032cfe650d30e785fd"
+  },
+  "codegen_review": "实际output_code_0.py包含runtime current_device、index=None及两个NPU Triton sum/add核；原数值和无固化设备编号断言通过"
+}

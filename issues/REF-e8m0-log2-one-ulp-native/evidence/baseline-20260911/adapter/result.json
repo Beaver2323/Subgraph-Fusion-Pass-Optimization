@@ -1,0 +1,67 @@
+{
+  "task_id": "T-096",
+  "case_id": "REF-e8m0-log2-one-ulp-native",
+  "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+  "generated_at": "2026-09-11T15:06:16.378823+08:00",
+  "pid": 1557905,
+  "status": "failed-contract",
+  "original_test_passed": false,
+  "tests_ran": 1,
+  "tests_skipped": 0,
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "torch_npu_version": "2.14.0a0+git83cc452",
+  "physical_npu": "5",
+  "numerical_execution": true,
+  "target_rewrite": false,
+  "graph_breaks": 0,
+  "state": {
+    "target_records": [],
+    "executions": [
+      {
+        "input": [
+          1.0000001192092896,
+          2.000000238418579,
+          4.000000476837158,
+          8.000000953674316,
+          16.000001907348633,
+          32.000003814697266,
+          64.00000762939453,
+          128.00001525878906
+        ],
+        "compiled": [
+          128,
+          129,
+          130,
+          130,
+          131,
+          132,
+          133,
+          134
+        ],
+        "eager": [
+          128,
+          129,
+          130,
+          130,
+          131,
+          132,
+          133,
+          134
+        ],
+        "device": "npu:0",
+        "eager_equal": true
+      }
+    ]
+  },
+  "source_sha256": "4dddd7011fd0b60d585f8aff03b6bd5393381e6d9ccd2f0a092d60e202cc7333",
+  "adapter_sha256": "7c30931df7842bb7dae8896d97cc5c97deddd2738f74a49c39964c3190d8dc33",
+  "product_gate_bypassed": false,
+  "body_or_assertions_modified": false,
+  "adapter_deviation": [
+    "仅提取原方法，CUDA专用类装饰器改为真实NPU环境检查",
+    "设备字面量cuda转npu",
+    "只读replacement、输入/输出/eager与graph-break观察；不修改产品注册"
+  ],
+  "performance_gate_issued": false
+}

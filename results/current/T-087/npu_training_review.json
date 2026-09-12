@@ -1,0 +1,445 @@
+{
+  "task_id": "T-087",
+  "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+  "generated_at": "2026-09-11T12:07:44.805739+08:00",
+  "backend": "triton_experimental",
+  "status": "community-training-contract-passed-performance-pending",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "source_run": "/home/z50063656/tmp/t087-npu-functional-20260911",
+  "arms": {
+    "off": {
+      "generated_at": "2026-09-11T12:01:07.255036+08:00",
+      "task_id": "T-087",
+      "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+      "mode": "off",
+      "backend": "triton_experimental",
+      "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_version": "2.14.0a0+git83cc452",
+      "torch_npu_file": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/__init__.py",
+      "physical_npu": "2",
+      "numerical_execution": true,
+      "correctness": "awaiting-cross-process-state-comparison",
+      "handler_calls": 0,
+      "graph_changed": false,
+      "graphs": [],
+      "product_gate_bypassed": false,
+      "source_sha256": "dc72679b557a75b8bfb55c66d62ac8d8c0f791240ae1ce00485be7293a2199da",
+      "adapter_deviation": [
+        "设备参数 npu",
+        "原测试内 OFF/ON 拆为独立进程；原 _train_once 完整复用",
+        "只读 Recorder 图采集"
+      ],
+      "preserved_contract": [
+        "模型、[8,16] FP32输入、seed=1234",
+        "SGD lr=0.1",
+        "前向/反向及 optimizer step",
+        "原门禁设置与目标移动条件"
+      ]
+    },
+    "on": {
+      "generated_at": "2026-09-11T12:03:03.471968+08:00",
+      "task_id": "T-087",
+      "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+      "mode": "on",
+      "backend": "triton_experimental",
+      "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_version": "2.14.0a0+git83cc452",
+      "torch_npu_file": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/__init__.py",
+      "physical_npu": "2",
+      "numerical_execution": true,
+      "correctness": "awaiting-cross-process-state-comparison",
+      "handler_calls": 2,
+      "graph_changed": true,
+      "graphs": [
+        {
+          "before": "target-0-before.txt",
+          "after": "target-0-after.txt",
+          "changed": false
+        },
+        {
+          "before": "target-1-before.txt",
+          "after": "target-1-after.txt",
+          "changed": true
+        }
+      ],
+      "product_gate_bypassed": false,
+      "source_sha256": "dc72679b557a75b8bfb55c66d62ac8d8c0f791240ae1ce00485be7293a2199da",
+      "adapter_deviation": [
+        "设备参数 npu",
+        "原测试内 OFF/ON 拆为独立进程；原 _train_once 完整复用",
+        "只读 Recorder 图采集"
+      ],
+      "preserved_contract": [
+        "模型、[8,16] FP32输入、seed=1234",
+        "SGD lr=0.1",
+        "前向/反向及 optimizer step",
+        "原门禁设置与目标移动条件"
+      ]
+    },
+    "master-off": {
+      "generated_at": "2026-09-11T12:05:47.665268+08:00",
+      "task_id": "T-087",
+      "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+      "mode": "master-off",
+      "backend": "triton_experimental",
+      "torch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "torch_npu_version": "2.14.0a0+git83cc452",
+      "torch_npu_file": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/__init__.py",
+      "physical_npu": "2",
+      "numerical_execution": true,
+      "correctness": "awaiting-cross-process-state-comparison",
+      "handler_calls": 0,
+      "graph_changed": false,
+      "graphs": [],
+      "product_gate_bypassed": false,
+      "source_sha256": "dc72679b557a75b8bfb55c66d62ac8d8c0f791240ae1ce00485be7293a2199da",
+      "adapter_deviation": [
+        "设备参数 npu",
+        "原测试内 OFF/ON 拆为独立进程；原 _train_once 完整复用",
+        "只读 Recorder 图采集"
+      ],
+      "preserved_contract": [
+        "模型、[8,16] FP32输入、seed=1234",
+        "SGD lr=0.1",
+        "前向/反向及 optimizer step",
+        "原门禁设置与目标移动条件"
+      ]
+    }
+  },
+  "cross_process_max_abs_errors": {
+    "on/params/w1": 0.0,
+    "on/params/w2": 0.0,
+    "on/grads/w1": 0.0,
+    "on/grads/w2": 0.0,
+    "master-off/params/w1": 0.0,
+    "master-off/params/w2": 0.0,
+    "master-off/grads/w1": 0.0,
+    "master-off/grads/w2": 0.0
+  },
+  "artifacts": [
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchdynamo/debug.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/aot_model___0_debug.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_backward_3.1/fx_graph_readable.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_backward_3.1/fx_graph_transformed.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_backward_3.1/ir_post_fusion.txt",
+      "sha256": "5ae398df0e27b3e8fc61ac49823851cbdb2cf7eed3bcb4f28045a8cd3e785918"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_backward_3.1/ir_pre_fusion.txt",
+      "sha256": "00a24140430faf2c1b71a0730140ba372574d9fb4ac0738d354dc7614843a2e5"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_backward_3.1/output_code.py",
+      "sha256": "db18d89ab9a0709f3c6cf72c3f3afa19700f3433f7ef88c46e582eb23956e3f4"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_forward_1.0/fx_graph_readable.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_forward_1.0/fx_graph_transformed.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_forward_1.0/ir_post_fusion.txt",
+      "sha256": "a76ebb04ec81f855380b27d6a62346a672fec63e026a62a88265230186067011"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_forward_1.0/ir_pre_fusion.txt",
+      "sha256": "e41027d12efbec0c8a9dd758abc0330a93469fd08f267e2793a757c4d80fbd45"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/run_2026_09_11_12_05_09_200767-pid_2384236/torchinductor/model__0_forward_1.0/output_code.py",
+      "sha256": "099f12346a3e19608c2f1607561ee931843cea67a190304494a52041e27db2d5"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/debug/torch_compile_debug/tlparse/dedicated_log_torch_trace_cegkduey.log",
+      "sha256": "6ad8f4c3886e8fc5677c18776446a4e6c4e2ff99ebaad97a4d1def927078e59f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmp8ftgvsgs/eu/ceunyqtkspcxkfwxlmmnwouyrf4pwp4gf3wuviz53vkvzyroua3x.debug/fx_graph_readable.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmp8ftgvsgs/eu/ceunyqtkspcxkfwxlmmnwouyrf4pwp4gf3wuviz53vkvzyroua3x.debug/fx_graph_transformed.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmp8ftgvsgs/eu/ceunyqtkspcxkfwxlmmnwouyrf4pwp4gf3wuviz53vkvzyroua3x.debug/ir_post_fusion.txt",
+      "sha256": "5ae398df0e27b3e8fc61ac49823851cbdb2cf7eed3bcb4f28045a8cd3e785918"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmp8ftgvsgs/eu/ceunyqtkspcxkfwxlmmnwouyrf4pwp4gf3wuviz53vkvzyroua3x.debug/ir_pre_fusion.txt",
+      "sha256": "00a24140430faf2c1b71a0730140ba372574d9fb4ac0738d354dc7614843a2e5"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmp8ftgvsgs/eu/ceunyqtkspcxkfwxlmmnwouyrf4pwp4gf3wuviz53vkvzyroua3x.debug/output_code.py",
+      "sha256": "db18d89ab9a0709f3c6cf72c3f3afa19700f3433f7ef88c46e582eb23956e3f4"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmpqk60s_ow/jg/cjguu4sspzyb4o2ebyljm62b6tnfpmvj22ridsjgo7gsg2il4nau.debug/fx_graph_readable.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmpqk60s_ow/jg/cjguu4sspzyb4o2ebyljm62b6tnfpmvj22ridsjgo7gsg2il4nau.debug/fx_graph_transformed.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmpqk60s_ow/jg/cjguu4sspzyb4o2ebyljm62b6tnfpmvj22ridsjgo7gsg2il4nau.debug/ir_post_fusion.txt",
+      "sha256": "a76ebb04ec81f855380b27d6a62346a672fec63e026a62a88265230186067011"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmpqk60s_ow/jg/cjguu4sspzyb4o2ebyljm62b6tnfpmvj22ridsjgo7gsg2il4nau.debug/ir_pre_fusion.txt",
+      "sha256": "e41027d12efbec0c8a9dd758abc0330a93469fd08f267e2793a757c4d80fbd45"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/inductor-cache/tmpqk60s_ow/jg/cjguu4sspzyb4o2ebyljm62b6tnfpmvj22ridsjgo7gsg2il4nau.debug/output_code.py",
+      "sha256": "099f12346a3e19608c2f1607561ee931843cea67a190304494a52041e27db2d5"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off/result.json",
+      "sha256": "b47e0f9e630c1e3461e3e98f462b33fe42df9575824b6d905742f84058a76a3f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off.stderr.log",
+      "sha256": "ebedc2c39afb0150ff5b6fac4de81261c2873c7115705c6ff176cbbea74c5b72"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/master-off.stdout.log",
+      "sha256": "b307949a6898f669cb37f9e546fce1a1c14778343e8abb3fa4529278b81fe266"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchdynamo/debug.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/aot_model___0_debug.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_backward_3.1/fx_graph_readable.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_backward_3.1/fx_graph_transformed.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_backward_3.1/ir_post_fusion.txt",
+      "sha256": "5ae398df0e27b3e8fc61ac49823851cbdb2cf7eed3bcb4f28045a8cd3e785918"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_backward_3.1/ir_pre_fusion.txt",
+      "sha256": "00a24140430faf2c1b71a0730140ba372574d9fb4ac0738d354dc7614843a2e5"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_backward_3.1/output_code.py",
+      "sha256": "2e68e4c8787a949aafb265c340edaa9c78f77e1488bbbd1ab29a9c9a1973f803"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_forward_1.0/fx_graph_readable.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_forward_1.0/fx_graph_transformed.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_forward_1.0/ir_post_fusion.txt",
+      "sha256": "a76ebb04ec81f855380b27d6a62346a672fec63e026a62a88265230186067011"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_forward_1.0/ir_pre_fusion.txt",
+      "sha256": "e41027d12efbec0c8a9dd758abc0330a93469fd08f267e2793a757c4d80fbd45"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/run_2026_09_11_12_00_28_420199-pid_2314988/torchinductor/model__0_forward_1.0/output_code.py",
+      "sha256": "8c1fb68d8e3f7a5920a5ac26fde7c971da15b3b6c54d2380ba8a190d1748ce47"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/debug/torch_compile_debug/tlparse/dedicated_log_torch_trace_huqdsu97.log",
+      "sha256": "2bcb22d6b7402973ef02492e1ece5bf6d107cc2c1f0b90a7d192c060a69c1c56"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpt5ebgl5h/5v/c5vhbdvw5cjlvbl4oadv7bjrv4t5wwjygs5q4jefnbtw2i6wcehh.debug/fx_graph_readable.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpt5ebgl5h/5v/c5vhbdvw5cjlvbl4oadv7bjrv4t5wwjygs5q4jefnbtw2i6wcehh.debug/fx_graph_transformed.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpt5ebgl5h/5v/c5vhbdvw5cjlvbl4oadv7bjrv4t5wwjygs5q4jefnbtw2i6wcehh.debug/ir_post_fusion.txt",
+      "sha256": "5ae398df0e27b3e8fc61ac49823851cbdb2cf7eed3bcb4f28045a8cd3e785918"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpt5ebgl5h/5v/c5vhbdvw5cjlvbl4oadv7bjrv4t5wwjygs5q4jefnbtw2i6wcehh.debug/ir_pre_fusion.txt",
+      "sha256": "00a24140430faf2c1b71a0730140ba372574d9fb4ac0738d354dc7614843a2e5"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpt5ebgl5h/5v/c5vhbdvw5cjlvbl4oadv7bjrv4t5wwjygs5q4jefnbtw2i6wcehh.debug/output_code.py",
+      "sha256": "2e68e4c8787a949aafb265c340edaa9c78f77e1488bbbd1ab29a9c9a1973f803"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpw8ne3j9s/qn/cqnwd2e7ibgqyjjfjtjik55creubw5daxc65nvrxlhymnjo4wpwz.debug/fx_graph_readable.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpw8ne3j9s/qn/cqnwd2e7ibgqyjjfjtjik55creubw5daxc65nvrxlhymnjo4wpwz.debug/fx_graph_transformed.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpw8ne3j9s/qn/cqnwd2e7ibgqyjjfjtjik55creubw5daxc65nvrxlhymnjo4wpwz.debug/ir_post_fusion.txt",
+      "sha256": "a76ebb04ec81f855380b27d6a62346a672fec63e026a62a88265230186067011"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpw8ne3j9s/qn/cqnwd2e7ibgqyjjfjtjik55creubw5daxc65nvrxlhymnjo4wpwz.debug/ir_pre_fusion.txt",
+      "sha256": "e41027d12efbec0c8a9dd758abc0330a93469fd08f267e2793a757c4d80fbd45"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/inductor-cache/tmpw8ne3j9s/qn/cqnwd2e7ibgqyjjfjtjik55creubw5daxc65nvrxlhymnjo4wpwz.debug/output_code.py",
+      "sha256": "8c1fb68d8e3f7a5920a5ac26fde7c971da15b3b6c54d2380ba8a190d1748ce47"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/off/result.json",
+      "sha256": "2a9c19bc25ecd31fb638a94f43909230052bb5649fb57b96a571468153464ecc"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchdynamo/debug.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/aot_model___0_debug.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_backward_3.1/fx_graph_readable.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_backward_3.1/fx_graph_transformed.py",
+      "sha256": "20c2bbb15c209b6e6add6a1537559fa4098eb0b72aa4c587ed603209b40e846c"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_backward_3.1/ir_post_fusion.txt",
+      "sha256": "5ae398df0e27b3e8fc61ac49823851cbdb2cf7eed3bcb4f28045a8cd3e785918"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_backward_3.1/ir_pre_fusion.txt",
+      "sha256": "00a24140430faf2c1b71a0730140ba372574d9fb4ac0738d354dc7614843a2e5"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_backward_3.1/output_code.py",
+      "sha256": "4bb5700a7a654db53ac1b9bf48938612af9c9d821bfcdabc14ffe66db5540d1e"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_forward_1.0/fx_graph_readable.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_forward_1.0/fx_graph_transformed.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_forward_1.0/ir_post_fusion.txt",
+      "sha256": "a76ebb04ec81f855380b27d6a62346a672fec63e026a62a88265230186067011"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_forward_1.0/ir_pre_fusion.txt",
+      "sha256": "e41027d12efbec0c8a9dd758abc0330a93469fd08f267e2793a757c4d80fbd45"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/run_2026_09_11_12_02_25_382044-pid_2346101/torchinductor/model__0_forward_1.0/output_code.py",
+      "sha256": "426f954c1057cf4436284ec78ca3a15ea4aed98164042ba57c4000feee94ae3f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/debug/torch_compile_debug/tlparse/dedicated_log_torch_trace_qz2x3fvg.log",
+      "sha256": "cb7b4ade728a788ee5a643e9b02953cb1bacea02a840550569804ba641411c18"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmp61wivn1h/yp/cyp7xnkpyt2ijteswjtzofczftojnzvshm5hv7ws4ykmmqig5v3w.debug/fx_graph_readable.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmp61wivn1h/yp/cyp7xnkpyt2ijteswjtzofczftojnzvshm5hv7ws4ykmmqig5v3w.debug/fx_graph_transformed.py",
+      "sha256": "0d65505ce1deacdd10705b09f6357b76b8b25da13955f4e1b691a306775b424f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmp61wivn1h/yp/cyp7xnkpyt2ijteswjtzofczftojnzvshm5hv7ws4ykmmqig5v3w.debug/ir_post_fusion.txt",
+      "sha256": "a76ebb04ec81f855380b27d6a62346a672fec63e026a62a88265230186067011"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmp61wivn1h/yp/cyp7xnkpyt2ijteswjtzofczftojnzvshm5hv7ws4ykmmqig5v3w.debug/ir_pre_fusion.txt",
+      "sha256": "e41027d12efbec0c8a9dd758abc0330a93469fd08f267e2793a757c4d80fbd45"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmp61wivn1h/yp/cyp7xnkpyt2ijteswjtzofczftojnzvshm5hv7ws4ykmmqig5v3w.debug/output_code.py",
+      "sha256": "426f954c1057cf4436284ec78ca3a15ea4aed98164042ba57c4000feee94ae3f"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmppecpbsh5/po/cpo3n5nkmwu6xr75ve5xfc6s2pqxtqdz5vskg6cpv6ef7mukkqu5.debug/fx_graph_readable.py",
+      "sha256": "8cdc91f4d3e50f99dd42994afe62e349ec186e1ac65e8b0fa622dcf117767273"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmppecpbsh5/po/cpo3n5nkmwu6xr75ve5xfc6s2pqxtqdz5vskg6cpv6ef7mukkqu5.debug/fx_graph_transformed.py",
+      "sha256": "20c2bbb15c209b6e6add6a1537559fa4098eb0b72aa4c587ed603209b40e846c"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmppecpbsh5/po/cpo3n5nkmwu6xr75ve5xfc6s2pqxtqdz5vskg6cpv6ef7mukkqu5.debug/ir_post_fusion.txt",
+      "sha256": "5ae398df0e27b3e8fc61ac49823851cbdb2cf7eed3bcb4f28045a8cd3e785918"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmppecpbsh5/po/cpo3n5nkmwu6xr75ve5xfc6s2pqxtqdz5vskg6cpv6ef7mukkqu5.debug/ir_pre_fusion.txt",
+      "sha256": "00a24140430faf2c1b71a0730140ba372574d9fb4ac0738d354dc7614843a2e5"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/inductor-cache/tmppecpbsh5/po/cpo3n5nkmwu6xr75ve5xfc6s2pqxtqdz5vskg6cpv6ef7mukkqu5.debug/output_code.py",
+      "sha256": "4bb5700a7a654db53ac1b9bf48938612af9c9d821bfcdabc14ffe66db5540d1e"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/result.json",
+      "sha256": "9c5a8ccf69737bb49d67fd02d1d5c7546f3bd62fe194197e837e7d2b23b69f22"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/target-0-after.txt",
+      "sha256": "b1314193370b130bd65521f15b233cf64af36cd99f2eb29822cb557586074120"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/target-0-before.txt",
+      "sha256": "b1314193370b130bd65521f15b233cf64af36cd99f2eb29822cb557586074120"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/target-1-after.txt",
+      "sha256": "e23132405dd2d73d758d67bdf038b1f5d7980274cad231de652b5023b23390b3"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on/target-1-before.txt",
+      "sha256": "2c1e4bad9c8f068a2bb819fb757af4b3e38e496342a8980c606c52a430ea8ff0"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on.stderr.log",
+      "sha256": "6078072d8fa6bdf4a99d989ae711f1810fb3f1d74e3881cf16dc81b28ff77ded"
+    },
+    {
+      "path": "issues/REF-reorder-locality-training-native/evidence/npu-20260911/on.stdout.log",
+      "sha256": "05a3163b262123c09e60a4f706ed3ac56e0eed928daac0455b9ffbc8477cca0d"
+    }
+  ],
+  "comparison_scope": "社区 OFF/ON 梯度与 step 后参数，另主开关关闭负例；不是性能结果",
+  "product_gate_bypassed": false,
+  "performance_gate_issued": false
+}

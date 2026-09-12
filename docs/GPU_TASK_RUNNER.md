@@ -1,6 +1,6 @@
 # GPU 指定任务一键执行说明
 
-> 更新时间：2026-09-11 11:14 CST（UTC+08:00）
+> 更新时间：2026-09-11 12:32 CST（UTC+08:00）
 > 适用环境：`/data/z50063656` 下已安装的 PassGPURef、CUDA 12.6 与冻结 PyTorch source
 > 当前任务：`T-076`～`T-113`（T-081～T-086已完成；其余只运行manifest中GPU-ready任务，延期候选不执行）
 
@@ -286,15 +286,22 @@ done
 单case超时合同为7200秒。T-092/093/094/095/097/099可执行`--validate-only`查看审核状态，
 但实际运行会在占卡前退出4；这不是失败、SKIP或PASS。
 
-T-101～T-113 中，T-102～T-107 和 T-112 有GPU-ready case。T-102～T-107覆盖
+T-101～T-113 中，T-102～T-107 和 T-112 有GPU-ready case，2026-09-11 均已收到原生通过包。T-102～T-107覆盖
 SDPA pattern 1～24、28～30，共27个原生CUDA方法；pattern 25～27由社区明确限制为XPU，
-不会绕过关闭条件。T-112的社区测试使用一张CUDA卡和`world_size=1`，只冻结2个RS改为1个的
-结构证据；真实2-rank通信留给后续NPU/HCCL功能与性能worker。
+不会绕过关闭条件。T-112的社区测试使用一张CUDA卡和`world_size=1`，只证明2个RS改为1个的
+结构证据；它与T-084同合同，保留为别名补证，无须重复跑。
+
+### 已上传包的精确目标归因补跑（2026-09-11）
+
+T-091、T-102～T-107 旧包的原生通过记录保留。部分原生方法只有通用 counter，原 FX 采集边界又晚于目标优化，
+不足以逐 handler/attention 编号归因。更新代码后仍运行相同社区方法，只增加只读目标观察，
+不改测试体、设备、输入、guard 或断言。新增 `contract_observation.json`、目标 before/after 自动纳入 review handoff；
+一键导出继续压缩并按超限自动分片。观察器本机仅完成静态验证，需 GPU 实跑后才能声明补证完成。
 
 ```bash
 cd /data/z50063656/tmp
 
-for task in T-102 T-103 T-104 T-105 T-106 T-107 T-112; do
+for task in T-091 T-102 T-103 T-104 T-105 T-106 T-107; do
   bash \
     "${TRACKER_ROOT}/scripts/run_gpu_reference_task.sh" \
     --task "${task}" \
@@ -302,6 +309,9 @@ for task in T-102 T-103 T-104 T-105 T-106 T-107 T-112; do
     --wait-gpu
 done
 ```
+
+运行前在仓库执行 `git pull --ff-only`（代码可拉取时），再从上述 tmp 目录启动。
+上传本次脚本打印的单文件或 manifest/分片入口，保留旧 run，不根据相似旧文件名猜测。
 
 T-101、T-108～T-111、T-113是审核后的零GPU-ready批次，只允许`--validate-only`。
 它们分别对应T-085重复实现、CPU/MKLDNN量化、CPU MKLDNN fusion和结构调度容器；实际运行会

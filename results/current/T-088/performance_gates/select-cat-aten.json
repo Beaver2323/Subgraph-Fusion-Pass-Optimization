@@ -1,0 +1,41 @@
+{
+  "task_id": "T-088",
+  "acceptance_unit_id": "AU-split-cat-merge-select-cat-aten",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "select-cat-aten-community-shape",
+  "input_spec": [
+    {
+      "shape": [
+        1024,
+        6,
+        128
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        1024,
+        6,
+        128
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "1c0a95e6c6a74777be3f8660aefbc8c49d4ce6330fea4453324db8183111765d",
+  "reviewed_at": "2026-09-11T14:37:58.320655+08:00",
+  "reviewer": "Codex：冻结社区合同与实际生成代码复核",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "2d5d28b7f51cd1e452c8fdfcfa0949ef1c9b0690d803dd65197023b7b2af97bf"
+  },
+  "target_functional": {
+    "path": "../functional/select-cat-aten.json",
+    "sha256": "d6b82e00a48a96ffcb3258c70188e4d9429c091a48ecfb9a971ed1cdeda0b135"
+  }
+}

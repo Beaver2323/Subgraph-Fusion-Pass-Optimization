@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-089",
+  "generated_at": "2026-09-11T15:25:08.180422+08:00",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "move-view-after-cat",
+      "acceptance_unit_id": "AU-split-cat-move-view-after-cat",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-089/functional/move-view-after-cat.json",
+      "gate": "results/current/T-089/performance_gates/move-view-after-cat.json",
+      "artifacts": 24
+    }
+  ],
+  "scope": "仅units列出的已通过单元；不包含安装态失败的设备解析候选"
+}

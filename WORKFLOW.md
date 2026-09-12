@@ -1,10 +1,20 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-10 23:48:08 CST（UTC+08:00）
+> 更新时间：2026-09-11 18:44 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
 ## 1. 项目定位
+
+2026-09-11 补充实际执行约束：先完成不依赖 GPU 补证的单元，其他单元不冒用邻接结果。已接受 GPU reference 可冻结，但 NPU 安装态失败必须独立保留；进程局部源码候选即使原合同通过，也不能自动改成已部署/正式闭环。
+
+编译路径复核必须读取实际 NPU output_code：图内 NPU extern（例如 cat、view(dtype)、rshift、matmul_backward）与 CPU / 图外 fallback 分列，不用 CUDA 生成代码的写法作为 NPU 唯一判据。
+性能门禁必须绑定原社区合同、独立 OFF/ON 的实际改图/设备数值、源码和 worker 哈希；六臂保存逐样本、编译时间、峰值显存及生成代码。候选、失败和正式证据各建独立目录，禁止覆盖旧 gate/原件。
+对于数学修复合同（如 E8M0 one-ULP 编码），不得把“compiled=eager”代替原数学 oracle；错误的 OFF 不得用于计算性能收益。测例、后端 lowering 差异、部署状态均须写入中文学习报告。
+
+安装态升级必须先获得环境修改授权，保留逐文件备份与前后SHA256，以窄补丁保护既有修复；原合同使用不加载候选的新进程重跑。公共注册/codegen改变还须回归普通路径、拒绝/guard、dtype/device与适用的多设备边界。启动前后产品哈希、原日志和实际FX/IR/output_code全部归档，不能只保留手写PASS摘要。
+若公式假设正正规值，而metadata只能证明dtype/device，则部署前必须补数值域评审与边界控制。新增NPU域保护未有CUDA实测时，矩阵必须标PARTIAL_ALIGNED及未验范围；数学修复后的局部性能回退也须单独列出，不因正确性通过改为PERF_IMPROVED，亦不因微基准慢自动恢复已知错误路径。
+`validate_installed_repairs.py`接入统一门禁，以可移植的仓库原件验证候选/安装态分离、无skip、部署/功能/性能链与六臂数据；不要求复核机器安装原Pass环境。文档必须同时给适配、根因、修复验证、产品差异和未执行的社区合入状态。
 
 本仓库持续回答两个问题：
 
@@ -560,11 +570,28 @@ handoff 接收目录和中文功能/性能 guide。每个进入 GPU-ready 的 pa
 `triton_experimental` 待验证行为、性能 workload 来源、测量层级及端到端 benchmark 是否缺失。
 批次没有合法设备测例时也保留空计划和审计原因，不能用不相关的通用测试填充。
 
-SDPA 的每个编号必须用精确 per-pattern counter 和 FX 原件归因；通用 `fuse_attention` counter
+SDPA 的每个编号必须用精确 per-pattern counter 或已通过 guard 的具名 replacement 观察，结合目标边界 FX 原件归因；通用 `fuse_attention` counter
 不能单独证明同编号 pattern 命中。pattern 16 在 CUDA 上命中 matcher 后仍可能为数值保真保留数学链，
 必须写成“部分行为对齐”，不能等同于最终 SDPA replacement。T-112 的社区单 rank 测例只作为结构
-reference；跨 rank 正确性和性能必须另用固定 2-rank NCCL/HCCL 合同验证。任何派生 worker 都要标明
+reference；2026-09-11 已确认其与 T-084 同合同，别名保留、独立贡献为 0，不重复执行独立 NPU/性能。
+跨 rank 正确性和性能由 canonical 合同的固定 2-rank NCCL/HCCL 验证。任何派生 worker 都要标明
 它是社区功能图衍生微图还是本地最小图，不得写成社区原生性能测例或模型端到端。
+
+### 18.2 原生通过、目标归因和阶段进度必须分开
+
+`expected_assertions` 是人工验收要求，不意味着原生方法实际执行了其中所有断言。收到 handoff 后须回读冻结源码，
+分别确认 tests/skip、精确目标、数值/输入梯度和阶段边界；源码只断言通用 counter 或数值时不得宣称目标归因完成。
+T-091/T-102～T-107 使用 `native_contract_observer` 只读记录精确 entry 的名称、成功返回和边界图，
+不改原测试体、shape/device、config、guard 或断言。观察记录只证明所观测动作，不额外证明数值；
+dropout、training/inference 及特殊 layout 的断言范围仍必须按社区实际参数单列。观察器异常不能吞掉原异常。
+
+尚未完成正式比较/性能门禁的 NPU 社区功能结果记录在 `results/current/T-xxx/npu_contract_progress.json`
+（训练三臂可用专门 review），绑定原件路径/SHA256、实际后端及正负例，矩阵单列阶段状态。
+不得将此类记录移入正式结果目录以伪造闭环，不能冻结新分母或自动签性能 gate。负例允许 handler 被尝试后不改图，
+正例才要求真正改写；“所有例均应 graph_changed”是错误判据。
+
+遇到同合同的不同入口时保留原 ID/证据，用 `canonical_acceptance_unit_id` 和
+`independent_unit_contribution=0` 标记别名；统计同时显示跟踪 ID 数与独立单元数，历史结果不删、不冒充再认证。
 
 ## 19. 统一提交检查与历史再认证
 

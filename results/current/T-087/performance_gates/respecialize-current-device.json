@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-11T18:20:16.690981+08:00",
+  "acceptance_unit_id": "AU-post-grad-respecialize-current-device",
+  "backend": "triton_experimental",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "performance_exempt": true,
+  "benchmark_allowed": false,
+  "functional": {
+    "path": "results/current/T-087/functional/respecialize-current-device.json",
+    "sha256": "1f0eef8f161f10a5ce2ad74f48ec7f058871689ae5816ea26c54986b7f561f07"
+  },
+  "reason": "lowering前必需设备再特化，无合法可执行OFF；不是性能提升/产品关闭免测"
+}

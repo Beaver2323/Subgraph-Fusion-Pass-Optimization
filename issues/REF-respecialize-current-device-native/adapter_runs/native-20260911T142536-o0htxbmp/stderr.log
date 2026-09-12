@@ -1,0 +1,67 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_inductor_compiles_under_coor (builtins.TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor) ... [W911 14:25:48.528285060 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0911 14:26:01.398000 233390 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t087-native-syitm5yo/adapter/debug/torch_compile_debug/run_2026_09_11_14_25_48_030550-pid_233390/torchinductor/model__0_inference_0.0
+W0911 14:26:01.399000 233390 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/t087-native-syitm5yo/inductor-cache/tmpgvh7e82d
+ERROR
+
+======================================================================
+ERROR: test_inductor_compiles_under_coor (builtins.TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/z50063656/envs/Pass/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/test/distributed/tensor/test_compile_on_one_rank.py", line 503, in test_inductor_compiles_under_coor
+    out, codes = run_and_get_code(compiled, torch.randn(2, 8, device="cuda"))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-respecialize-current-device-native/npu_adapter.py", line 86, in capture
+    result, codes = original_run(compiled, *inputs, **kwargs)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py", line 2743, in run_and_get_code
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_dynamo/eval_frame.py", line 1278, in compile_wrapper
+    raise e.remove_dynamo_frames() from None  # see TORCHDYNAMO_VERBOSE=1
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/compile_fx.py", line 1154, in _compile_fx_inner
+    raise InductorError(e, currentframe()).with_traceback(
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/compile_fx.py", line 1146, in _compile_fx_inner
+    mb_compiled_graph = fx_codegen_and_compile(
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/compile_fx.py", line 2001, in fx_codegen_and_compile
+    return scheme.codegen_and_compile(gm, example_inputs, inputs_to_check, graph_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/compile_fx.py", line 1749, in codegen_and_compile
+    compiled_module = graph.compile_to_module()
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/graph.py", line 3060, in compile_to_module
+    return self._compile_to_module()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/graph.py", line 3066, in _compile_to_module
+    self.codegen_with_cpp_wrapper() if self.cpp_wrapper else self.codegen()
+                                                             ^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/graph.py", line 3009, in codegen
+    result = self.wrapper_code.generate(self.is_inference)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/codegen/wrapper.py", line 2498, in generate
+    return self._generate(is_inference)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/codegen/wrapper.py", line 2561, in _generate
+    line.codegen(self.wrapper_call)
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/codegen/wrapper.py", line 692, in codegen
+    f"{idx} = {V.graph.device_ops.current_device_idx_expr()}"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_inductor/codegen/common.py", line 346, in current_device_idx_expr
+    raise RuntimeError(
+torch._inductor.exc.InductorError: RuntimeError: compile-on-one-rank (device-as-parameter) is not supported on NewNPUDeviceOpOverrides: it has no current_device_idx_expr(), so the generated wrapper would bake the compile-time device index and not be rank-portable.
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"
+
+
+----------------------------------------------------------------------
+Ran 1 test in 13.497s
+
+FAILED (errors=1)

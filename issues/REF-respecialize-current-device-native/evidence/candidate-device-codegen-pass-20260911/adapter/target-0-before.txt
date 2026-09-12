@@ -1,0 +1,10 @@
+
+
+
+def forward(self, arg0_1):
+    current_device_default = torch.ops.coor.current_device.default()
+    full = torch.ops.aten.full.default([4, 8], 0, dtype = torch.float32, layout = torch.strided, device = current_device_default, pin_memory = False);  current_device_default = None
+    sum_1 = torch.ops.aten.sum.default(arg0_1);  arg0_1 = None
+    add = torch.ops.aten.add.Tensor(full, sum_1);  full = sum_1 = None
+    return (add,)
+    

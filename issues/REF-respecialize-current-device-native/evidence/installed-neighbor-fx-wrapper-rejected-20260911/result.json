@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-09-11T18:15:34.478833+08:00",
+  "case": "fx-wrapper-rejected",
+  "community_method": "TestCompileOnOneRankDeviceAsParameter.test_fx_wrapper_under_coor_rejected",
+  "origin": "community-native-device-adapted",
+  "source_sha256": "45622cbc1d6b4c026f4b32fabfe27ed3600d517df96f7ede4e9c945e1bdbf996",
+  "worker_sha256": "73887b1cad68a7836bbb98a9a89081f2bca10b4a98505072ea5964820a628820",
+  "status": "passed",
+  "tests_ran": 1,
+  "tests_skipped": 0,
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "torch_npu_file": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/__init__.py",
+  "pid": 1620419,
+  "visible_devices": "5",
+  "installed_files": {
+    "_inductor/triton_experimental/device.py": "2f3ea97ea780d01a505cf788555c01c2aebb9721c15d76613e65ca5728730835",
+    "_inductor/triton_experimental/codegen/triton.py": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381"
+  },
+  "product_candidate": null,
+  "product_gate_bypassed": false,
+  "ordinary": []
+}

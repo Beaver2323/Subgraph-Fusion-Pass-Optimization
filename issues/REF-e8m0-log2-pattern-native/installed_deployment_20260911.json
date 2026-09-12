@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-09-11",
+  "timezone": "Asia/Shanghai",
+  "authorization": "用户在部署授权问题后回复继续",
+  "scope": "仅 /home/z50063656/envs/Pass；未修改系统环境、其他后端或冻结 PyTorch",
+  "backend": "triton_experimental",
+  "source_worktree": "/home/z50063656/Pass/worktrees/torch_npu_t096_e8m0",
+  "backup_directory": "/home/z50063656/Pass/backups/t096-deploy-20260911-1bG1v4",
+  "files": [
+    {
+      "relative": "_inductor/triton_experimental/config.py",
+      "backup": "config.py",
+      "before_sha256": "68ae6164377297481de5dcd3329dc4701f6005dfddb60c46aaac92850c9f763b",
+      "after_sha256": "fbc285361432ecef6ba2064f7c83f6ef45840e09c382479bb625d4ac229c5bf0"
+    },
+    {
+      "relative": "_inductor/triton_experimental/__init__.py",
+      "backup": "__init__.py",
+      "before_sha256": "4cc36498c39a4a88b1b8133b29e8904cf1272f3cdb9acafccce2d941a3ae1ca8",
+      "after_sha256": "d11e1c9a3da36633e0a8d4d7baecc119140b8b3fff2b11a09b0947056cbc3538"
+    },
+    {
+      "relative": "_inductor/triton_experimental/e8m0.py",
+      "backup": null,
+      "before_sha256": null,
+      "after_sha256": "96a19913e9817b003c5e4aa3a33eefbc4f311ac794a8ec793ceed819d928370d"
+    }
+  ],
+  "deployed": true,
+  "verification_status": "original-3-of-3-domain-and-seven-controls-passed",
+  "rollback": "仅从对应备份恢复两个旧文件；新 e8m0.py 可先保留，恢复 __init__ 后不再自动导入；不要覆盖其他既有修复",
+  "verified_at": "2026-09-11T18:35:09.651094+08:00"
+}

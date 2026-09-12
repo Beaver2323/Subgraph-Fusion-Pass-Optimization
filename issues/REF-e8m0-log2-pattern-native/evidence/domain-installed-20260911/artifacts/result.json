@@ -1,0 +1,169 @@
+{
+  "generated_at": "2026-09-11T18:28:54.749994+08:00",
+  "artifact_dir": "/home/z50063656/tmp/t096-domain-installed-3Rqrwy/artifacts",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "torch_npu_file": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/__init__.py",
+  "pid": 1769328,
+  "worker_sha256": "745269b6ab900720e22ac45050d26b4a02599eda413cbf6e74b0c00122c81dc1",
+  "visible_devices": "5",
+  "rows": [
+    {
+      "bits": "00000000",
+      "value": "0.0",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": null
+    },
+    {
+      "bits": "80000000",
+      "value": "-0.0",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": null
+    },
+    {
+      "bits": "00000001",
+      "value": "1.401298464324817e-45",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": 0
+    },
+    {
+      "bits": "003fffff",
+      "value": "5.877470352812973e-39",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": 0
+    },
+    {
+      "bits": "00400000",
+      "value": "5.877471754111438e-39",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": 0
+    },
+    {
+      "bits": "00400001",
+      "value": "5.877473155409902e-39",
+      "eager": 0,
+      "compiled": 1,
+      "exact_positive": 1
+    },
+    {
+      "bits": "007fffff",
+      "value": "1.1754942106924411e-38",
+      "eager": 1,
+      "compiled": 1,
+      "exact_positive": 1
+    },
+    {
+      "bits": "00800000",
+      "value": "1.1754943508222875e-38",
+      "eager": 1,
+      "compiled": 1,
+      "exact_positive": 1
+    },
+    {
+      "bits": "00800001",
+      "value": "1.175494490952134e-38",
+      "eager": 1,
+      "compiled": 2,
+      "exact_positive": 2
+    },
+    {
+      "bits": "3f000000",
+      "value": "0.5",
+      "eager": 126,
+      "compiled": 126,
+      "exact_positive": 126
+    },
+    {
+      "bits": "3f800000",
+      "value": "1.0",
+      "eager": 127,
+      "compiled": 127,
+      "exact_positive": 127
+    },
+    {
+      "bits": "3f800001",
+      "value": "1.0000001192092896",
+      "eager": 128,
+      "compiled": 128,
+      "exact_positive": 128
+    },
+    {
+      "bits": "41000001",
+      "value": "8.000000953674316",
+      "eager": 130,
+      "compiled": 131,
+      "exact_positive": 131
+    },
+    {
+      "bits": "7f7fffff",
+      "value": "3.4028234663852886e+38",
+      "eager": 254,
+      "compiled": 254,
+      "exact_positive": 254
+    },
+    {
+      "bits": "7f800000",
+      "value": "inf",
+      "eager": 254,
+      "compiled": 254,
+      "exact_positive": null
+    },
+    {
+      "bits": "ff800000",
+      "value": "-inf",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": null
+    },
+    {
+      "bits": "bf800000",
+      "value": "-1.0",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": null
+    },
+    {
+      "bits": "ff7fffff",
+      "value": "-3.4028234663852886e+38",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": null
+    },
+    {
+      "bits": "80000001",
+      "value": "-1.401298464324817e-45",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": null
+    },
+    {
+      "bits": "7fc00000",
+      "value": "nan",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": null
+    },
+    {
+      "bits": "ffc00000",
+      "value": "nan",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": null
+    },
+    {
+      "bits": "7f800001",
+      "value": "nan",
+      "eager": 0,
+      "compiled": 0,
+      "exact_positive": null
+    }
+  ],
+  "positive_mathematical_contract_passed": true,
+  "expected_repaired": true,
+  "scope": "派生输入范围诊断，不增加社区分母、不签性能门禁"
+}

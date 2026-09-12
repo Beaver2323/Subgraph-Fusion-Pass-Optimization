@@ -1,7 +1,11 @@
 # T-090 功能与性能测例讲解
 
-> 更新时间：2026-09-10 23:14:54 CST（UTC+08:00）
-> 状态：1 个单元已准备，等待原生 GPU reference；4 个 normalization 候选延期。
+> 更新时间：2026-09-11 15:17 CST（UTC+08:00）
+> 状态：GPU/NPU功能、正式比较与六臂性能全部完成，PERF_NEUTRAL；4个normalization候选延期。
+
+最新 [参数规范化、下游改写与实际性能讲解](../results/current/T-090/normalize-cat-aten_讲解.md)。
+
+本轮精确 handler 5 次改图、原生组合计数及证据见 [阶段报告](../report/t087_t090_npu_progress_20260911.md)。
 
 NPU功能、修复验证和性能固定使用`triton_experimental`，并在导入torch前选择后端。
 

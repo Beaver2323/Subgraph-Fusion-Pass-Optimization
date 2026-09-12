@@ -1,0 +1,16 @@
+diff --git a/torch_npu/_inductor/triton_experimental/device.py b/torch_npu/_inductor/triton_experimental/device.py
+index a47278f41..4e8a8ba5e 100644
+--- a/torch_npu/_inductor/triton_experimental/device.py
++++ b/torch_npu/_inductor/triton_experimental/device.py
+@@ -53,6 +53,11 @@ def get_current_raw_stream(device):
+ 
+ 
+ class NewNPUDeviceOpOverrides(NPUDeviceOpOverrides):
++    def current_device_idx_expr(self) -> str:
++        # Compile-on-one-rank resolves the device in the generated wrapper,
++        # not while compiling this rank. Other NPU backends remain unchanged.
++        return "torch.npu.current_device()"
++
+     def import_get_raw_stream_as(self, name):
+         return f"from torch_npu._inductor.triton_experimental import get_current_raw_stream as {name}"
+ 

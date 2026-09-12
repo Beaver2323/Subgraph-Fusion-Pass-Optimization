@@ -132,6 +132,7 @@
           "items": {"type": "string", "minLength": 1}
         },
         "native_observer": {"const": true},
+        "native_contract_observer": {"const": true},
         "evidence_scope": {"type": "string"},
         "correctness_evidence": {"type": "string"},
         "entrypoint": {"type": "string"},

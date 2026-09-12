@@ -1,0 +1,66 @@
+[
+  {
+    "case": "ordinary-compile",
+    "command": [
+      "/home/z50063656/envs/Pass/bin/python",
+      "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t087_installed_neighbors.py",
+      "--case",
+      "ordinary-compile",
+      "--artifact-dir",
+      "/home/z50063656/tmp/t087-ordinary-compile-_b8seysu/artifacts"
+    ],
+    "return_code": 0,
+    "artifact_dir": "/home/z50063656/tmp/t087-ordinary-compile-_b8seysu/artifacts",
+    "pid": 1605966,
+    "generated_at": "2026-09-11T18:15:09.017470+08:00",
+    "visible_devices": "5"
+  },
+  {
+    "case": "cpp-wrapper-rejected",
+    "command": [
+      "/home/z50063656/envs/Pass/bin/python",
+      "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t087_installed_neighbors.py",
+      "--case",
+      "cpp-wrapper-rejected",
+      "--artifact-dir",
+      "/home/z50063656/tmp/t087-cpp-wrapper-rejected-v7w671mu/artifacts"
+    ],
+    "return_code": 0,
+    "artifact_dir": "/home/z50063656/tmp/t087-cpp-wrapper-rejected-v7w671mu/artifacts",
+    "pid": 1617297,
+    "generated_at": "2026-09-11T18:15:23.895050+08:00",
+    "visible_devices": "5"
+  },
+  {
+    "case": "fx-wrapper-rejected",
+    "command": [
+      "/home/z50063656/envs/Pass/bin/python",
+      "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t087_installed_neighbors.py",
+      "--case",
+      "fx-wrapper-rejected",
+      "--artifact-dir",
+      "/home/z50063656/tmp/t087-fx-wrapper-rejected-j0cn6ga8/artifacts"
+    ],
+    "return_code": 0,
+    "artifact_dir": "/home/z50063656/tmp/t087-fx-wrapper-rejected-j0cn6ga8/artifacts",
+    "pid": 1620419,
+    "generated_at": "2026-09-11T18:15:39.356145+08:00",
+    "visible_devices": "5"
+  },
+  {
+    "case": "two-device-code-identical",
+    "command": [
+      "/home/z50063656/envs/Pass/bin/python",
+      "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t087_installed_neighbors.py",
+      "--case",
+      "two-device-code-identical",
+      "--artifact-dir",
+      "/home/z50063656/tmp/t087-two-device-code-identical-91qub8ou/artifacts"
+    ],
+    "return_code": 0,
+    "artifact_dir": "/home/z50063656/tmp/t087-two-device-code-identical-91qub8ou/artifacts",
+    "pid": 1623575,
+    "generated_at": "2026-09-11T18:17:14.680496+08:00",
+    "visible_devices": "5,6"
+  }
+]

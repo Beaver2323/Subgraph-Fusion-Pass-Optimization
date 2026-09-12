@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-09-11T18:20:16.392244+08:00",
+  "source_run": "/home/z50063656/tmp/t087-ordinary-compile-_b8seysu/artifacts",
+  "files": [
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/adapted_test.py",
+      "sha256": "240dc8ad8fabcfb3a13b9f9a632fe05d39c7db43769bbdefe2b64298c1782525",
+      "bytes": 822
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "9a93f01ce031c2ea37397dcf50e9405925ccbf3e6d6057fced14ca8345484d71",
+      "bytes": 808
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "9a93f01ce031c2ea37397dcf50e9405925ccbf3e6d6057fced14ca8345484d71",
+      "bytes": 808
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "be64693060225abb940f6f65ae45225761c1edc1d9d16a8dda7c6169d8ee902b",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "cea155a7628747896d8a0c24b3b439a23c25dd9255f81dd3f8ee8d8d93bc72b7",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "6365ce1fbe1e395809234d02a124f5a175fa481cf5ca57c5e008e6646747d548",
+      "bytes": 11980
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+      "sha256": "5b39c95ceef072b446b6ee59afc30af9dd15157bdb731ebd1bf9588e90d11410",
+      "bytes": 808
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+      "sha256": "5b39c95ceef072b446b6ee59afc30af9dd15157bdb731ebd1bf9588e90d11410",
+      "bytes": 808
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+      "sha256": "5d88a76c92e2bfe3b3a39855efd5314fb8372fa52b032279d7782a8a14d9445a",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+      "sha256": "f7fdf4dcafc1c1392ff5f3810375ef13d248b44fd4fa09407c069661129f2b72",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/output_code.py",
+      "sha256": "73ce2fc04fe392c9465d3f18e0641cbf7860e2822b50bad07ca2f5b4f4776d5f",
+      "bytes": 12010
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/result.json",
+      "sha256": "cf192e1e17033e710d87d87b72eeb1939726e12829797676246b64312e14768a",
+      "bytes": 1197
+    }
+  ],
+  "generated_output_code_present": true
+}

@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-09-11T18:35:10.009953+08:00",
+  "source_run": "/home/z50063656/tmp/t096-domain-baseline-UNxCWd",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "80908501ffa9902264e82da6e837fa29e2aa4fb247ec18065d2616b30ad2db1b",
+      "bytes": 855
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "80908501ffa9902264e82da6e837fa29e2aa4fb247ec18065d2616b30ad2db1b",
+      "bytes": 855
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "732a4c4a9daf25b5e589578f8c6d7ba0d360817ec50b155190071eb5fa7100b5",
+      "bytes": 2863
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "f2df094cce5035613fe53e9f3283a647bd2571602992393a2277295df4fbb345",
+      "bytes": 2861
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_18_36_930298-pid_1655845/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "b1469f8e886f369c6cbc01370762ef91e59da70694e12cd3980399053f3f055d",
+      "bytes": 12679
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/artifacts/result.json",
+      "sha256": "d7a036c15ba1416c2ae3424d042fdee4249921e65cd76384ae0b3d600597f43a",
+      "bytes": 3701
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-before-20260911/stdout.log",
+      "sha256": "26c1a635cd12139a8e8660940095fda9b8527a11ab24d80366f2a40b5a3308e7",
+      "bytes": 4565
+    }
+  ],
+  "generated_output_code_present": true
+}

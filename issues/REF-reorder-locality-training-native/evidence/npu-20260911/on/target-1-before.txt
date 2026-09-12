@@ -1,0 +1,35 @@
+graph():
+    %primals_1 : [num_users=1] = placeholder[target=primals_1]
+    %primals_2 : [num_users=2] = placeholder[target=primals_2]
+    %primals_3 : [num_users=1] = placeholder[target=primals_3]
+    %mm : [num_users=1] = placeholder[target=mm]
+    %mm_1 : [num_users=1] = placeholder[target=mm_1]
+    %tangents_1 : [num_users=1] = placeholder[target=tangents_1]
+    %unsqueeze : [num_users=1] = call_function[target=torch.ops.aten.unsqueeze.default](args = (%tangents_1, 1), kwargs = {})
+    %expand : [num_users=4] = call_function[target=torch.ops.aten.expand.default](args = (%unsqueeze, [8, 16]), kwargs = {})
+    %tanh : [num_users=4] = call_function[target=torch.ops.aten.tanh.default](args = (%mm,), kwargs = {})
+    %sin : [num_users=1] = call_function[target=torch.ops.aten.sin.default](args = (%tanh,), kwargs = {})
+    %mul_2 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%expand, %sin), kwargs = {})
+    %sigmoid : [num_users=5] = call_function[target=torch.ops.aten.sigmoid.default](args = (%mm_1,), kwargs = {})
+    %cos : [num_users=1] = call_function[target=torch.ops.aten.cos.default](args = (%sigmoid,), kwargs = {})
+    %mul_3 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%expand, %cos), kwargs = {})
+    %sin_1 : [num_users=1] = call_function[target=torch.ops.aten.sin.default](args = (%sigmoid,), kwargs = {})
+    %neg : [num_users=1] = call_function[target=torch.ops.aten.neg.default](args = (%sin_1,), kwargs = {})
+    %mul_4 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%mul_2, %neg), kwargs = {})
+    %cos_1 : [num_users=1] = call_function[target=torch.ops.aten.cos.default](args = (%tanh,), kwargs = {})
+    %mul_5 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%mul_3, %cos_1), kwargs = {})
+    %mul_6 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%expand, %tanh), kwargs = {})
+    %mul_7 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%expand, %sigmoid), kwargs = {})
+    %add_1 : [num_users=1] = call_function[target=torch.ops.aten.add.Tensor](args = (%mul_5, %mul_7), kwargs = {})
+    %add_2 : [num_users=1] = call_function[target=torch.ops.aten.add.Tensor](args = (%mul_4, %mul_6), kwargs = {})
+    %sub : [num_users=1] = call_function[target=torch.ops.aten.sub.Tensor](args = (1, %sigmoid), kwargs = {})
+    %mul_8 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%sigmoid, %sub), kwargs = {})
+    %mul_9 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%add_2, %mul_8), kwargs = {})
+    %matmul_backward : [num_users=1] = call_function[target=torch.ops.aten.matmul_backward.default](args = (%mul_9, %primals_2, %primals_3, [False, True]), kwargs = {})
+    %getitem_1 : [num_users=1] = call_function[target=operator.getitem](args = (%matmul_backward, 1), kwargs = {})
+    %mul_10 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%tanh, %tanh), kwargs = {})
+    %sub_1 : [num_users=1] = call_function[target=torch.ops.aten.sub.Tensor](args = (1, %mul_10), kwargs = {})
+    %mul_11 : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%add_1, %sub_1), kwargs = {})
+    %matmul_backward_1 : [num_users=1] = call_function[target=torch.ops.aten.matmul_backward.default](args = (%mul_11, %primals_2, %primals_1, [False, True]), kwargs = {})
+    %getitem_3 : [num_users=1] = call_function[target=operator.getitem](args = (%matmul_backward_1, 1), kwargs = {})
+    return (getitem_3, None, getitem_1)

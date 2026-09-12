@@ -1,0 +1,1 @@
+worker_status=passed unit=normalize-cat-aten mode=off phase=benchmark

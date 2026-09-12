@@ -1,0 +1,55 @@
+{
+  "task_id": "T-083",
+  "acceptance_unit_id": "AU-post-grad-bucket-all-reduce",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "all-reduce-community-shape",
+  "world_size": 2,
+  "input_spec": [
+    {
+      "shape": [
+        4,
+        384
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        384,
+        512
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        384,
+        512
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        384,
+        256
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "5713c56a39f84cce82978da02deb8cf1511f2ec3e01be9135577648513abbbdd",
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-08T01:33:29.414028+08:00",
+  "reviewer": "tracker-control-node",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "317c62fa7ea66989f2f07a26ae732c37b2140def8e2f44351b140c3a2cf49a0f"
+  },
+  "target_functional": {
+    "path": "../functional/all-reduce-on.json",
+    "sha256": "d9b9971baecbcdd00368a66b253d1e9bcc018840129ddc454510bc6163e0b455"
+  }
+}

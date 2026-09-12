@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-088",
+  "generated_at": "2026-09-11T15:25:08.180422+08:00",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "select-cat-aten",
+      "acceptance_unit_id": "AU-split-cat-merge-select-cat-aten",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-088/functional/select-cat-aten.json",
+      "gate": "results/current/T-088/performance_gates/select-cat-aten.json",
+      "artifacts": 24
+    },
+    {
+      "unit": "split-cat-aten",
+      "acceptance_unit_id": "AU-split-cat-merge-split-cat-aten",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-088/functional/split-cat-aten.json",
+      "gate": "results/current/T-088/performance_gates/split-cat-aten.json",
+      "artifacts": 20
+    }
+  ],
+  "scope": "仅units列出的已通过单元；不包含安装态失败的设备解析候选"
+}

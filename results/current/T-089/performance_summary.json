@@ -1,0 +1,539 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-089",
+  "backend": "triton_experimental",
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-split-cat-move-view-after-cat",
+      "unit": "move-view-after-cat",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
+      "product_action": "保留现有默认配置；局部实测不自动推广为全模型默认开启",
+      "measurement_workload": "move-view-after-cat-community-shape",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.5459699314087629,
+            "p99": 0.6383379874751001
+          },
+          "on": {
+            "p50": 0.5064799915999174,
+            "p99": 0.6115965824574361
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.4167799949645996,
+            "p99": 0.46459840834140803
+          },
+          "on": {
+            "p50": 0.38976000249385834,
+            "p99": 0.42068960487842566
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": 7.2329880341486685,
+          "p99": 4.189223505785344
+        },
+        "event_ms": {
+          "p50": 6.483034885836181,
+          "p99": 9.450915602516696
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.0686040279430602,
+        "host_ms_on": 1.0247736594161492,
+        "event_ms_off": 1.0435942125726105,
+        "event_ms_on": 1.0336403711904416
+      },
+      "memory": {
+        "off1": {
+          "allocated": 131584,
+          "reserved": 2097152
+        },
+        "on1": {
+          "allocated": 131584,
+          "reserved": 2097152
+        },
+        "on2": {
+          "allocated": 131584,
+          "reserved": 2097152
+        },
+        "off2": {
+          "allocated": 131584,
+          "reserved": 2097152
+        },
+        "off3": {
+          "allocated": 131584,
+          "reserved": 2097152
+        },
+        "on3": {
+          "allocated": 131584,
+          "reserved": 2097152
+        }
+      },
+      "compile_ms": {
+        "off1": 14799.549960065633,
+        "on1": 30246.33996002376,
+        "on2": 31595.906989648938,
+        "off2": 14337.474040221423,
+        "off3": 16097.581959795207,
+        "on3": 30008.83220974356
+      },
+      "codegen_review": {
+        "off1": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 3
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "on1": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 2
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "on2": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 2
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "off2": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 3
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "off3": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 3
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "on3": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 2
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        }
+      },
+      "gate": {
+        "path": "performance_gates/move-view-after-cat.json",
+        "sha256": "2ef3bc42aba1026c5188b74307f3bedbb13fc0cae329064d37c356ec5190ea6b"
+      },
+      "source_run_dir": "/home/z50063656/tmp/t089-npu-results/benchmark-20260911T144735+0800/move-view-after-cat",
+      "artifact_inventory": [
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off1/debug/torch_compile_debug/run_2026_09_11_14_47_45_087705-pid_617212/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "b170f5373e244bbd24c502e8920e41d5994e9b6d33a4d3e2d3e0a4e14d185d60",
+          "bytes": 2477
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off1/debug/torch_compile_debug/run_2026_09_11_14_47_45_087705-pid_617212/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "d0ae8db30a26df2af0f8f5d8a302a197e39da781b154e3ffd94969acca13023c",
+          "bytes": 2663
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off1/debug/torch_compile_debug/run_2026_09_11_14_47_45_087705-pid_617212/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "892c467b84f4fa25d61dc4a54f6b34d31bcf58cb9a42bec8902e8bf536325525",
+          "bytes": 1582
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off1/debug/torch_compile_debug/run_2026_09_11_14_47_45_087705-pid_617212/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "892c467b84f4fa25d61dc4a54f6b34d31bcf58cb9a42bec8902e8bf536325525",
+          "bytes": 1582
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off1/debug/torch_compile_debug/run_2026_09_11_14_47_45_087705-pid_617212/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "dacb83db5220fe8cd2b6ef0c80ae1c706256ef05acfbbe85c0374cad965cde97",
+          "bytes": 4487
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off1/execution.json",
+          "sha256": "89bd65f358336026d4e37766522edd43c78485f36a1308b87b56f7dc382f57d2",
+          "bytes": 781
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off1/result.json",
+          "sha256": "aae7dfb08b93bde71377ee38944245be743318858f1ad3470a2f393ba0c905df",
+          "bytes": 71475
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off1/stderr.log",
+          "sha256": "8c4f8d9ecfe27cea986dc2f762a726c525ea44fe8d0d17a875adbcaa45df5de3",
+          "bytes": 897
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off1/stdout.log",
+          "sha256": "2f92756917412e192760b8419685ce9b957334e4dca37599ceb47209410b94a8",
+          "bytes": 71
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/debug/torch_compile_debug/run_2026_09_11_14_48_14_964430-pid_625250/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "b170f5373e244bbd24c502e8920e41d5994e9b6d33a4d3e2d3e0a4e14d185d60",
+          "bytes": 2477
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/debug/torch_compile_debug/run_2026_09_11_14_48_14_964430-pid_625250/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "0c6ec7112d96a17b13a7b56878612d02ea58fe93420f6f9e84a20c1e931b0a9b",
+          "bytes": 2797
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/debug/torch_compile_debug/run_2026_09_11_14_48_14_964430-pid_625250/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "dcef02688bb78424bc3e1a369e620afbac7345b643349be2a251dbc66e13516e",
+          "bytes": 2234
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/debug/torch_compile_debug/run_2026_09_11_14_48_14_964430-pid_625250/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "a9622ea16e925caf1e10cbaa3e060e8f865814794d6e206c9d48366c859a77a3",
+          "bytes": 2249
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/debug/torch_compile_debug/run_2026_09_11_14_48_14_964430-pid_625250/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "d5b23d46c1948dc984542241e3e99c438988a3c4e66f1ccf1e3e1dd36cc88a35",
+          "bytes": 10795
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/execution.json",
+          "sha256": "b416ceae195b9ad70a5199dc83da46deeb1c3425bfe42baacc8ec06cbeee3fdf",
+          "bytes": 779
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/result.json",
+          "sha256": "9815e402ec1a5328213806fccb8f46a04fc77e8e88a9ac6f0fa646fc86fb9303",
+          "bytes": 72754
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/stderr.log",
+          "sha256": "2d8783b94298ada1ae6d06ad1c584a81d74daaa2c663fc9ddf40cc9d796e89bd",
+          "bytes": 896
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/stdout.log",
+          "sha256": "3fbf9f7734a94bae2f8dcade444fab378c29a83b7f9063f875c8ac98d71be3a7",
+          "bytes": 70
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/target-0-after.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/target-0-before.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/target-1-after.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/target-1-before.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/target-2-after.txt",
+          "sha256": "325f54686b1c9afc956c619588c59512a9a564ac804f0f134ccc9fc4f9e99388",
+          "bytes": 1546
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on1/target-2-before.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/debug/torch_compile_debug/run_2026_09_11_14_49_01_610371-pid_637101/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "b170f5373e244bbd24c502e8920e41d5994e9b6d33a4d3e2d3e0a4e14d185d60",
+          "bytes": 2477
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/debug/torch_compile_debug/run_2026_09_11_14_49_01_610371-pid_637101/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "0c6ec7112d96a17b13a7b56878612d02ea58fe93420f6f9e84a20c1e931b0a9b",
+          "bytes": 2797
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/debug/torch_compile_debug/run_2026_09_11_14_49_01_610371-pid_637101/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "dcef02688bb78424bc3e1a369e620afbac7345b643349be2a251dbc66e13516e",
+          "bytes": 2234
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/debug/torch_compile_debug/run_2026_09_11_14_49_01_610371-pid_637101/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "a9622ea16e925caf1e10cbaa3e060e8f865814794d6e206c9d48366c859a77a3",
+          "bytes": 2249
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/debug/torch_compile_debug/run_2026_09_11_14_49_01_610371-pid_637101/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "e11f15108b8abe2e9255b0cefe8c9f7fe7148b805cc20c7694b5a799adfbe2a8",
+          "bytes": 10795
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/execution.json",
+          "sha256": "9c6fc2c8991892a803875304d6949dbb0bc0a7fc20a9cc3ddd764f11142bb45e",
+          "bytes": 779
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/result.json",
+          "sha256": "10dbd27fac0b4d924a35809aa21964f5430e3da571184d2336b7ac979bb02874",
+          "bytes": 72782
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/stderr.log",
+          "sha256": "4da5bac5dce370613d6400a2a22b60149607ac83454ddac9a90eb18de9d8380d",
+          "bytes": 896
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/stdout.log",
+          "sha256": "3fbf9f7734a94bae2f8dcade444fab378c29a83b7f9063f875c8ac98d71be3a7",
+          "bytes": 70
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/target-0-after.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/target-0-before.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/target-1-after.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/target-1-before.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/target-2-after.txt",
+          "sha256": "325f54686b1c9afc956c619588c59512a9a564ac804f0f134ccc9fc4f9e99388",
+          "bytes": 1546
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on2/target-2-before.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off2/debug/torch_compile_debug/run_2026_09_11_14_49_49_220509-pid_650228/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "b170f5373e244bbd24c502e8920e41d5994e9b6d33a4d3e2d3e0a4e14d185d60",
+          "bytes": 2477
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off2/debug/torch_compile_debug/run_2026_09_11_14_49_49_220509-pid_650228/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "d0ae8db30a26df2af0f8f5d8a302a197e39da781b154e3ffd94969acca13023c",
+          "bytes": 2663
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off2/debug/torch_compile_debug/run_2026_09_11_14_49_49_220509-pid_650228/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "892c467b84f4fa25d61dc4a54f6b34d31bcf58cb9a42bec8902e8bf536325525",
+          "bytes": 1582
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off2/debug/torch_compile_debug/run_2026_09_11_14_49_49_220509-pid_650228/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "892c467b84f4fa25d61dc4a54f6b34d31bcf58cb9a42bec8902e8bf536325525",
+          "bytes": 1582
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off2/debug/torch_compile_debug/run_2026_09_11_14_49_49_220509-pid_650228/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "dacb83db5220fe8cd2b6ef0c80ae1c706256ef05acfbbe85c0374cad965cde97",
+          "bytes": 4487
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off2/execution.json",
+          "sha256": "b47beb3c2a8fd71f122fbf3f6010d7f12b82dcdb564993f78765b52932020335",
+          "bytes": 781
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off2/result.json",
+          "sha256": "669111c9b958f0d3e39a10300bbb3213b9f175054826da1103dedf3610c8156d",
+          "bytes": 71468
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off2/stderr.log",
+          "sha256": "1dce3b4a7129540c26b5fabe2135c45c40faa38a8bd5ca254524ce7922e4aa42",
+          "bytes": 897
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off2/stdout.log",
+          "sha256": "2f92756917412e192760b8419685ce9b957334e4dca37599ceb47209410b94a8",
+          "bytes": 71
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off3/debug/torch_compile_debug/run_2026_09_11_14_50_20_596783-pid_660780/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "b170f5373e244bbd24c502e8920e41d5994e9b6d33a4d3e2d3e0a4e14d185d60",
+          "bytes": 2477
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off3/debug/torch_compile_debug/run_2026_09_11_14_50_20_596783-pid_660780/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "d0ae8db30a26df2af0f8f5d8a302a197e39da781b154e3ffd94969acca13023c",
+          "bytes": 2663
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off3/debug/torch_compile_debug/run_2026_09_11_14_50_20_596783-pid_660780/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "892c467b84f4fa25d61dc4a54f6b34d31bcf58cb9a42bec8902e8bf536325525",
+          "bytes": 1582
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off3/debug/torch_compile_debug/run_2026_09_11_14_50_20_596783-pid_660780/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "892c467b84f4fa25d61dc4a54f6b34d31bcf58cb9a42bec8902e8bf536325525",
+          "bytes": 1582
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off3/debug/torch_compile_debug/run_2026_09_11_14_50_20_596783-pid_660780/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "dacb83db5220fe8cd2b6ef0c80ae1c706256ef05acfbbe85c0374cad965cde97",
+          "bytes": 4487
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off3/execution.json",
+          "sha256": "56b44cdfa42c09a89848a3abd3bea7ae4d0347233273806a2967ff4921ddadc1",
+          "bytes": 781
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off3/result.json",
+          "sha256": "272e0d34cf058832d0d44c62beb1ae1a02ae42c74f2c53fd61c52bedd6d14d4f",
+          "bytes": 71475
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off3/stderr.log",
+          "sha256": "0cfe6b15a269ee8eafcf0065fb5318462b8d2c5846b43e90928567f91b9cf901",
+          "bytes": 897
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/off3/stdout.log",
+          "sha256": "2f92756917412e192760b8419685ce9b957334e4dca37599ceb47209410b94a8",
+          "bytes": 71
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/debug/torch_compile_debug/run_2026_09_11_14_50_53_623346-pid_674121/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "b170f5373e244bbd24c502e8920e41d5994e9b6d33a4d3e2d3e0a4e14d185d60",
+          "bytes": 2477
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/debug/torch_compile_debug/run_2026_09_11_14_50_53_623346-pid_674121/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "0c6ec7112d96a17b13a7b56878612d02ea58fe93420f6f9e84a20c1e931b0a9b",
+          "bytes": 2797
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/debug/torch_compile_debug/run_2026_09_11_14_50_53_623346-pid_674121/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "dcef02688bb78424bc3e1a369e620afbac7345b643349be2a251dbc66e13516e",
+          "bytes": 2234
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/debug/torch_compile_debug/run_2026_09_11_14_50_53_623346-pid_674121/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "a9622ea16e925caf1e10cbaa3e060e8f865814794d6e206c9d48366c859a77a3",
+          "bytes": 2249
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/debug/torch_compile_debug/run_2026_09_11_14_50_53_623346-pid_674121/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "5e6aa3dc3ae1bac18c18cd7d978e97a13bf02d018ba7269d58625eef96c34643",
+          "bytes": 10795
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/execution.json",
+          "sha256": "ec766f3b36f5891e13d5487dde5e552643fa5a4dead00d9cc3d9224002ab6e52",
+          "bytes": 779
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/result.json",
+          "sha256": "9a51aeee5368741da1062e81ae8762f75a17ab00d9ccd604d83e8905fdc02bfb",
+          "bytes": 72754
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/stderr.log",
+          "sha256": "23e5d0c43c2ba485ee9b8307217d0cbc4160cbe20ac15c45ef1762102303cd18",
+          "bytes": 896
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/stdout.log",
+          "sha256": "3fbf9f7734a94bae2f8dcade444fab378c29a83b7f9063f875c8ac98d71be3a7",
+          "bytes": 70
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/target-0-after.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/target-0-before.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/target-1-after.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/target-1-before.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/target-2-after.txt",
+          "sha256": "325f54686b1c9afc956c619588c59512a9a564ac804f0f134ccc9fc4f9e99388",
+          "bytes": 1546
+        },
+        {
+          "path": "issues/REF-move-view-after-cat-aten-native/evidence/performance-benchmark-20260911T144735+0800/move-view-after-cat/on3/target-2-before.txt",
+          "sha256": "95d550f77894577dbf8c7ead51da9be253f5d787790fc6a535aa520b6f4744d4",
+          "bytes": 1484
+        }
+      ],
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "scope": "社区子图端到端（不含编译）",
+        "clocks": [
+          "同步 host",
+          "NPU Event"
+        ],
+        "model_e2e": false
+      },
+      "pattern_explanation": {
+        "name": "将 view 移到 cat 之后",
+        "intent": "把多个切片 view 的拼接改为先拼接再 view，减少重复视图处理；保留 clone 多用户关系。",
+        "source": "torch/_inductor/fx_passes/split_cat.py:2935",
+        "source_excerpt": "# 语义示意：cat([view(p0), ..., view(p6)]) -> view(cat([p0, ..., p6]))",
+        "gpu_behavior": "原 [7,8,96]、clone 与嵌套 cat 的社区合同通过。",
+        "npu_behavior": "精确 handler 改图且原数值通过。实际 OFF 为 3 次 NPU cat extern；ON 为 1 个 Triton 切片/复制核加 2 次 NPU cat extern，并非所有 cat 都被消除。"
+      }
+    }
+  ],
+  "generated_at": "2026-09-11T15:25:08.180422+08:00",
+  "status": "performance-disposition-complete"
+}

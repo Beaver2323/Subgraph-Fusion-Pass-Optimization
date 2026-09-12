@@ -1,0 +1,23 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_inductor_code_identical_across_devices (builtins.TestCompileOnOneRankDeviceAsParameter.test_inductor_code_identical_across_devices) ... [W911 18:15:49.511177810 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+Compiled module path: /home/z50063656/tmp/t087-two-device-code-identical-91qub8ou/artifacts/inductor-cache/tmp81k7iite/3v/c3vyxpvb4e7znwbipf7c2n3avzz2oqstn4b3cwdp7za3dmc7fsgh.py
+W0911 18:16:17.916000 1623575 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t087-two-device-code-identical-91qub8ou/artifacts/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+Compiled module path: /home/z50063656/tmp/t087-two-device-code-identical-91qub8ou/artifacts/inductor-cache/tmpusikd1ez/cn/ccnjikxvukmrwlnvwo6pjdcbzeiksota3ryvm7ge7t547uub7boo.py
+W0911 18:16:40.531000 1623575 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_inference_1 debug trace: /home/z50063656/tmp/t087-two-device-code-identical-91qub8ou/artifacts/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0911 18:16:55.105000 1623575 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__2_inference_2 debug trace: /home/z50063656/tmp/t087-two-device-code-identical-91qub8ou/artifacts/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0911 18:17:09.657000 1623575 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__3_inference_3 debug trace: /home/z50063656/tmp/t087-two-device-code-identical-91qub8ou/artifacts/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 79.755s
+
+OK

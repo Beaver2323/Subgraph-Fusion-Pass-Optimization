@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-11T18:35:10.360870+08:00",
+  "source_run": "/home/z50063656/tmp/t096-npu-results/functional-20260911T182951-swod5y_r/off",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "cf778e3b8a24f6647f269da1b8d443f39aab5842cb40432e53d8577c56df7444",
+      "bytes": 2846
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "87eae6858ac6a40c0fdb2f9fcc043a1bd49f8163762aeae75d35e199dec99825",
+      "bytes": 2844
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/debug/torch_compile_debug/run_2026_09_11_18_30_00_589840-pid_1785479/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "6693cae9b222bc4311c23a151392dafc41db47b3a1804d653b4f159c24032114",
+      "bytes": 12673
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/artifacts/result.json",
+      "sha256": "af1094da9ef1676876f1c8beee069bc9a7b7308f0c7082e81ab217e17fceb48e",
+      "bytes": 67268
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/execution.json",
+      "sha256": "cff4e4f1a0ec3d0e04ebbe7c03e75cca8290b9928200064421b9d4e6e13d760a",
+      "bytes": 500
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/stderr.log",
+      "sha256": "dbaa7ff0814ef03ae703eadb88e6da225b5eb481107516640254b184c5f7d25e",
+      "bytes": 893
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-off/stdout.log",
+      "sha256": "fa8e768e2ba9a590d4362fa58dce3cc4c6ed10405fbca871502bb80ddbb2105c",
+      "bytes": 69
+    }
+  ],
+  "generated_output_code_present": true
+}

@@ -1,10 +1,13 @@
 {
-  "rule_version": "2026-09-08.1",
-  "validator_version": "2.2.0",
-  "updated_at": "2026-09-08T21:10:00+08:00",
+  "rule_version": "2026-09-11.1",
+  "validator_version": "2.3.0",
+  "updated_at": "2026-09-11T12:32:00+08:00",
   "required_npu_backend": "triton_experimental",
   "history_tasks": ["T-076", "T-077"],
   "rules": {
+    "target_attribution": "expected_assertions不是已执行断言；回读原生源码确认精确目标/数值/梯度覆盖。具名entry只读观察仅证明目标动作，不证明数值。正例应改图，负例可被尝试但必须不发生禁止改写。",
+    "staged_progress": "带原件哈希、实际后端和正负合同的NPU阶段进度可单列，但不得自动冻结分母、生成正式comparison或签发性能gate。",
+    "canonical_counting": "同一优化不同入口保留原ID/原件，以canonical_acceptance_unit_id归并，别名independent_unit_contribution=0；跟踪行数不等于独立能力数。",
     "reference": "原始日志重解析：返回码为零、用例数与计划一致、完整 OK，禁止 skip/expected failure/unexpected success 计通过。代码生成断言不能替代数值正确性。",
     "gpu_functional": "GPU 功能 reference 默认共享、可选 --exclusive；--wait-gpu 默认每 1 秒轮询指定卡，默认显存门槛 1024 MiB，可设 0。记录运行策略；不杀其他进程、不改计算模式；共享耗时不得作为正式性能证据。",
     "npu": "只接受 triton_experimental；失败证据可保留，但不得宣称已修复或性能通过。记录校验不等同于原始运行重验。",

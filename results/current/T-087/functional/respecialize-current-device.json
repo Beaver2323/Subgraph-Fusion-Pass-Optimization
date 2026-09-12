@@ -1,0 +1,318 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-087",
+  "acceptance_unit_id": "AU-post-grad-respecialize-current-device",
+  "generated_at": "2026-09-11T18:20:16.690981+08:00",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "comparison_verdict": "NEWLY_SUPPORTED",
+  "repair_status": "installed-fix-verified-not-upstream-merged",
+  "original": {
+    "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/result.json",
+    "sha256": "b1c0623c6db000ea3c3a2eacdd8acf3933222c3140224c3abb542983b5b6d6d0"
+  },
+  "launch": {
+    "path": "issues/REF-respecialize-current-device-native/adapter_runs/native-20260911T181204-4oswvqij/run_result.json",
+    "sha256": "6e02ad34810edb56c7d6446b4a07fac5923b794598656f6a0fca80613751f614"
+  },
+  "neighbors": [
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/result.json",
+      "sha256": "cf192e1e17033e710d87d87b72eeb1939726e12829797676246b64312e14768a"
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-cpp-wrapper-rejected-20260911/result.json",
+      "sha256": "caed4735c5a2f9f1873d538eec13e880c8ee536b6c3470839914e47036d83c48"
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-fx-wrapper-rejected-20260911/result.json",
+      "sha256": "9f26a67fe86f80570764039227ceb41c87846b68a091539ef1fad9f8801fb2ff"
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/result.json",
+      "sha256": "ab20f3fa62d670a5e14562ddbb3436429ccc9ff582237dda34a81a37f66ca6de"
+    }
+  ],
+  "neighbor_launch": {
+    "path": "issues/REF-respecialize-current-device-native/installed_neighbor_runs/20260911T181410-k_inh39q/execution.json",
+    "sha256": "48b84148cccc8afbc2956f52da580acbb66eef050c6d5f718bac6c1c7242ab72"
+  },
+  "deployment": {
+    "path": "issues/REF-respecialize-current-device-native/installed_deployment_20260911.json",
+    "sha256": "a5591fbf54ba1e6cc78b2f7216b90d940b93a49036b8f9c2f9f68d87266ada5f"
+  },
+  "artifact_inventory": [
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/adapted_test.py",
+      "sha256": "3766e50096cf62cf95353dbb1fff2575a5b817251196f014597614df6a3dfef7",
+      "bytes": 1094
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "52efa45c5aec4d8d8019bcc9c06205f7dcaee317942dcdeb4d4f52caa8336677",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "be64693060225abb940f6f65ae45225761c1edc1d9d16a8dda7c6169d8ee902b",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "cea155a7628747896d8a0c24b3b439a23c25dd9255f81dd3f8ee8d8d93bc72b7",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/debug/torch_compile_debug/run_2026_09_11_18_12_16_685290-pid_1582002/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "725fe486fb5adc4e6ea16dc4cf8b3bdeceedfbadbd09d7253d2acaa56ba9c599",
+      "bytes": 11882
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/output_code_0.py",
+      "sha256": "725fe486fb5adc4e6ea16dc4cf8b3bdeceedfbadbd09d7253d2acaa56ba9c599",
+      "bytes": 11882
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/result.json",
+      "sha256": "b1c0623c6db000ea3c3a2eacdd8acf3933222c3140224c3abb542983b5b6d6d0",
+      "bytes": 1463
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/target-0-after.txt",
+      "sha256": "1d78813e445a58d2a19c44b254270a7250309bb7c72604537deb8a99c323ed3e",
+      "bytes": 341
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-pass-20260911T181204/adapter/target-0-before.txt",
+      "sha256": "3af23e22b357b6777623f53f6fed51fad6fa8337ee281f389fbdeddba4a54d4d",
+      "bytes": 437
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/adapted_test.py",
+      "sha256": "240dc8ad8fabcfb3a13b9f9a632fe05d39c7db43769bbdefe2b64298c1782525",
+      "bytes": 822
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "9a93f01ce031c2ea37397dcf50e9405925ccbf3e6d6057fced14ca8345484d71",
+      "bytes": 808
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "9a93f01ce031c2ea37397dcf50e9405925ccbf3e6d6057fced14ca8345484d71",
+      "bytes": 808
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "be64693060225abb940f6f65ae45225761c1edc1d9d16a8dda7c6169d8ee902b",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "cea155a7628747896d8a0c24b3b439a23c25dd9255f81dd3f8ee8d8d93bc72b7",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "6365ce1fbe1e395809234d02a124f5a175fa481cf5ca57c5e008e6646747d548",
+      "bytes": 11980
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+      "sha256": "5b39c95ceef072b446b6ee59afc30af9dd15157bdb731ebd1bf9588e90d11410",
+      "bytes": 808
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+      "sha256": "5b39c95ceef072b446b6ee59afc30af9dd15157bdb731ebd1bf9588e90d11410",
+      "bytes": 808
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+      "sha256": "5d88a76c92e2bfe3b3a39855efd5314fb8372fa52b032279d7782a8a14d9445a",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+      "sha256": "f7fdf4dcafc1c1392ff5f3810375ef13d248b44fd4fa09407c069661129f2b72",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/debug/torch_compile_debug/run_2026_09_11_18_14_21_560130-pid_1605966/torchinductor/model__1_inference_1.1/output_code.py",
+      "sha256": "73ce2fc04fe392c9465d3f18e0641cbf7860e2822b50bad07ca2f5b4f4776d5f",
+      "bytes": 12010
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-ordinary-compile-20260911/result.json",
+      "sha256": "cf192e1e17033e710d87d87b72eeb1939726e12829797676246b64312e14768a",
+      "bytes": 1197
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-cpp-wrapper-rejected-20260911/adapted_test.py",
+      "sha256": "e3236dfecc50bb0f01240f6a021e7ff50227e53dc8fd2955aeafef7f4e0eaf40",
+      "bytes": 1278
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-cpp-wrapper-rejected-20260911/result.json",
+      "sha256": "caed4735c5a2f9f1873d538eec13e880c8ee536b6c3470839914e47036d83c48",
+      "bytes": 1064
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-fx-wrapper-rejected-20260911/adapted_test.py",
+      "sha256": "0e34d1a3bb2e3ee416b7b2b8a079bfca4b438b5b017a60701d7e3204f73a0891",
+      "bytes": 1265
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-fx-wrapper-rejected-20260911/result.json",
+      "sha256": "9f26a67fe86f80570764039227ceb41c87846b68a091539ef1fad9f8801fb2ff",
+      "bytes": 1062
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/adapted_test.py",
+      "sha256": "d526567d9e01e131c282e9c2b78c00639850f0329af8545362a76eacd6fa52f8",
+      "bytes": 1767
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "52efa45c5aec4d8d8019bcc9c06205f7dcaee317942dcdeb4d4f52caa8336677",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "be64693060225abb940f6f65ae45225761c1edc1d9d16a8dda7c6169d8ee902b",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "cea155a7628747896d8a0c24b3b439a23c25dd9255f81dd3f8ee8d8d93bc72b7",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "377363199b790ec5c5be44f99463845fdc8e471e612402f5177f5e9e55033b09",
+      "bytes": 14325
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+      "sha256": "d9d3d90394ad7a7a642f31eb27fe1804ddae0300b0cb7782976f14d7e7de0d7c",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+      "sha256": "e7f2b0f5e758f630fe9d6063504839b28207d143393dd5c675d644d28304fa39",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+      "sha256": "6e3d20771f6cf7fdaa5715b449d6c19efe02b298f6883247cfef5a3588a1f9f3",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__1_inference_1.1/output_code.py",
+      "sha256": "aa72038eabdd032060c97b7466ca2740a9cf6191373796f5c07f21e057f3dfc6",
+      "bytes": 14325
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/fx_graph_transformed.py",
+      "sha256": "52efa45c5aec4d8d8019bcc9c06205f7dcaee317942dcdeb4d4f52caa8336677",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/ir_post_fusion.txt",
+      "sha256": "be64693060225abb940f6f65ae45225761c1edc1d9d16a8dda7c6169d8ee902b",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/ir_pre_fusion.txt",
+      "sha256": "cea155a7628747896d8a0c24b3b439a23c25dd9255f81dd3f8ee8d8d93bc72b7",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__2_inference_2.2/output_code.py",
+      "sha256": "db9cf87673a49ab3f9ac99f874873763837ce5a426d763ac0b6abe89957a0cbf",
+      "bytes": 21594
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/fx_graph_readable.py",
+      "sha256": "a684f6e3b36620d0c6e39d3dbb59cc80918f12a845cd783af4e32806b96d8fda",
+      "bytes": 884
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/fx_graph_transformed.py",
+      "sha256": "d9d3d90394ad7a7a642f31eb27fe1804ddae0300b0cb7782976f14d7e7de0d7c",
+      "bytes": 784
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/ir_post_fusion.txt",
+      "sha256": "e7f2b0f5e758f630fe9d6063504839b28207d143393dd5c675d644d28304fa39",
+      "bytes": 2123
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/ir_pre_fusion.txt",
+      "sha256": "6e3d20771f6cf7fdaa5715b449d6c19efe02b298f6883247cfef5a3588a1f9f3",
+      "bytes": 2177
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/debug/torch_compile_debug/run_2026_09_11_18_15_50_012744-pid_1623575/torchinductor/model__3_inference_3.3/output_code.py",
+      "sha256": "9549691c8e05f6d045329f49c8d3e95d200b561520991b7b3630938c683db4d9",
+      "bytes": 21594
+    },
+    {
+      "path": "issues/REF-respecialize-current-device-native/evidence/installed-neighbor-two-device-code-identical-20260911/result.json",
+      "sha256": "ab20f3fa62d670a5e14562ddbb3436429ccc9ff582237dda34a81a37f66ca6de",
+      "bytes": 1078
+    }
+  ],
+  "installed_product": {
+    "_inductor/triton_experimental/device.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/device.py",
+      "sha256": "2f3ea97ea780d01a505cf788555c01c2aebb9721c15d76613e65ca5728730835"
+    },
+    "_inductor/triton_experimental/codegen/triton.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/codegen/triton.py",
+      "sha256": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381"
+    },
+    "_inductor/triton_experimental/__init__.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/__init__.py",
+      "sha256": "4cc36498c39a4a88b1b8133b29e8904cf1272f3cdb9acafccce2d941a3ae1ca8"
+    }
+  },
+  "product_candidate": null,
+  "community_alignment": {
+    "status": "FULL_ALIGNED",
+    "aligned_scope": [
+      "冻结单设备原合同：真实编译/数值与无固化设备编号",
+      "两设备代码一致性与普通编译及非法wrapper拒绝近邻"
+    ],
+    "divergent_scope": [],
+    "open_scope": [
+      "未验证多rank通信和跨卡kernel handle复用；不计入当前单设备合同"
+    ],
+    "disposition": "原安装态失败已修复并回归；仅Pass环境部署，未社区合入"
+  }
+}

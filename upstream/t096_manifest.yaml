@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-10T21:38:54+08:00",
-  "status": "prepared-awaiting-gpu-reference",
+  "generated_at": "2026-09-11T18:40:09.323215+08:00",
+  "status": "completed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -27,12 +27,12 @@
     "minimum_gpus": 1,
     "distributed_world_size": null,
     "scope": "原生CUDA编译、数值、目标命中/改写与必要梯度合同",
-    "suite_status": "pending-gpu-reference"
+    "suite_status": "valid-reference-suite"
   },
   "counting_policy": {
     "current_manifest_units": 1,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0,
+    "current_frozen_denominator_units": 1,
+    "current_formally_closed_units": 1,
     "denominator_rule": "原生GPU suite有效、零skip并完成人工FX复核后冻结"
   },
   "acceptance_units": [
@@ -40,9 +40,9 @@
       "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
       "contract_name": "pre-SM100 E8M0 log2-ceil精确位运算替换",
       "stage": "post_grad",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/misc_patterns.py",
@@ -75,8 +75,8 @@
           "expected_reference_match": true,
           "expected_behavior": "A100使用位域提取替代log2+ceil且输出等价",
           "expected_counter": "FX after不再保留software log2+ceil链",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-installed-fix"
         },
         {
           "variant_id": "one-ulp-boundary-positive",
@@ -84,8 +84,8 @@
           "expected_reference_match": true,
           "expected_behavior": "2^e上方1 ULP编码为bias+e+1",
           "expected_counter": "uint8逐元素精确相等",
-          "reference_status": "not-run",
-          "npu_status": "capability-pending"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-installed-fix"
         },
         {
           "variant_id": "gh178045-regression",
@@ -93,8 +93,8 @@
           "expected_reference_match": true,
           "expected_behavior": "避免software log2边界舍入少1",
           "expected_counter": "回归断言通过",
-          "reference_status": "not-run",
-          "npu_status": "capability-pending"
+          "reference_status": "valid-reference",
+          "npu_status": "passed-installed-fix"
         }
       ],
       "tracking": {

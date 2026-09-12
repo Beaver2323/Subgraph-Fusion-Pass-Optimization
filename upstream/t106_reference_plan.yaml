@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-106",
-  "generated_at": "2026-09-10T22:55:21+08:00",
+  "generated_at": "2026-09-11T12:12:00+08:00",
   "status": "gpu-ready-awaiting-native-execution",
   "performance_plan": {
     "path": "upstream/t106_performance_plan.yaml",
@@ -32,6 +32,7 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-21",
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_21_gpu",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "pattern-21-community-product"
       ],
@@ -52,6 +53,7 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-22",
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_22_gpu",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "pattern-22-community-product"
       ],
@@ -72,6 +74,7 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-23",
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_23_gpu",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "pattern-23-community-product"
       ],
@@ -92,6 +95,7 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-24",
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_24_gpu",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "pattern-24-community-product"
       ],

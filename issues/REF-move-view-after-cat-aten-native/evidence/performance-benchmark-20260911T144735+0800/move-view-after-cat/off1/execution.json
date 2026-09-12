@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t087_t090_performance_worker.py",
+    "--unit",
+    "move-view-after-cat",
+    "--mode",
+    "off",
+    "--device",
+    "npu",
+    "--phase",
+    "benchmark",
+    "--output",
+    "/home/z50063656/tmp/t089-npu-results/benchmark-20260911T144735+0800/move-view-after-cat/off1",
+    "--warmup",
+    "10",
+    "--runs",
+    "100",
+    "--gate",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-089/performance_gates/move-view-after-cat.json"
+  ],
+  "pid": 617212,
+  "return_code": 0,
+  "timed_out": false,
+  "working_directory": "/home/z50063656/tmp",
+  "physical_npu": 5,
+  "generated_at": "2026-09-11T14:48:05.763643+08:00"
+}

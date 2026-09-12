@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-10T22:55:21+08:00",
-  "status": "prepared-awaiting-gpu-reference",
+  "generated_at": "2026-09-11T12:04:00+08:00",
+  "status": "duplicate-contract-evidence-retained",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -31,6 +31,8 @@
   },
   "counting_policy": {
     "current_manifest_units": 1,
+    "independent_unit_contribution": 0,
+    "canonical_task": "T-084",
     "current_frozen_denominator_units": 0,
     "current_formally_closed_units": 0,
     "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结"
@@ -40,9 +42,12 @@
       "acceptance_unit_id": "AU-fsdp-get-dedup-rs",
       "contract_name": "线性reduce-scatter相加去重",
       "stage": "post_grad",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "duplicate-contract-evidence-retained",
+      "denominator_eligible": "no-duplicate-contract",
+      "canonical_acceptance_unit_id": "AU-post-grad-dedup-reduce-scatters",
+      "canonical_task_id": "T-084",
+      "independent_unit_contribution": 0,
+      "coverage_phase": "duplicate-evidence-retained-not-counting",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/fsdp.py",
@@ -91,8 +96,8 @@
         "config": "dedup_reduce_scatters",
         "off": false,
         "on": true,
-        "status": "prepared-two-rank-required",
-        "next_action": "GPU原生结构reference通过后，NPU用2-rank HCCL确认2→1改写、数值和通信，再签性能gate"
+        "status": "duplicate-contract-do-not-run-independently",
+        "next_action": "本ID为T-084别名；保留GPU补证，不重复执行NPU或性能，新增测量归属canonical合同"
       }
     }
   ],

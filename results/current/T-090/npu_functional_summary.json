@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-090",
+  "generated_at": "2026-09-11T15:25:08.180422+08:00",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "normalize-cat-aten",
+      "acceptance_unit_id": "AU-split-cat-normalize-cat-default-aten",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-090/functional/normalize-cat-aten.json",
+      "gate": "results/current/T-090/performance_gates/normalize-cat-aten.json",
+      "artifacts": 26
+    }
+  ],
+  "scope": "仅units列出的已通过单元；不包含安装态失败的设备解析候选"
+}

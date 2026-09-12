@@ -1,0 +1,8 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_select_cat_post_grad (__main__.TestSplitCatAten.test_select_cat_post_grad) ... skipped 'requires gpu and triton'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK (skipped=1)

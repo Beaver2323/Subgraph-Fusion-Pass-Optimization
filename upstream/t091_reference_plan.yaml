@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-091",
-  "generated_at": "2026-09-10T21:38:54+08:00",
+  "generated_at": "2026-09-11T12:37:00+08:00",
   "status": "gpu-ready-awaiting-native-execution",
   "performance_plan": {
     "path": "upstream/t091_performance_plan.yaml",
@@ -32,6 +32,7 @@
       "acceptance_unit_id": "AU-split-cat-normalize-stack-default",
       "source_test": "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_stack_normalization_axis_kwarg",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "axis-kwarg-positive"
       ],

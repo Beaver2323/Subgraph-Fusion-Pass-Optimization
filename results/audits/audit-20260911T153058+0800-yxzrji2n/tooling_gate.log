@@ -1,0 +1,221 @@
+Cannot open netlink socket: Operation not permitted
+START unit_tests
+.........................................................................................../home/z50063656/tmp/tmpkwg3ub9u/scripts/workers/run.sh: line 2: syntax error: unexpected end of file
+.......................................................................................................
+----------------------------------------------------------------------
+Ran 194 tests in 23.133s
+
+OK
+current_acceptance_matrix=OK units=71 compared=38 backend=triton_experimental
+pending_candidate_archive_validation=OK records=8 device_execution=false deployed=false
+t087_t090_archive_validation=OK units=5 device_execution=false
+START validate_tracker_data.py
+tracker_data_validation=OK
+acceptance_units=5
+mapped_candidates=5
+variants=20
+community_tests=13
+reference_cases=13
+reference_executed_variants=14
+reference_non_executed_variants=6
+denominator_frozen=5
+torch_imported=0
+START validate_comparison_data.py
+comparison_data_validation=OK
+comparison_units=38
+legacy_comparison_units=21
+compact_functional_closed_units=17
+comparison_variants=84
+formally_closed_units=38
+fully_covered_units=70
+coverage_pending_units=1
+coverage_pending_variants=1
+open_or_inconclusive_units=0
+torch_imported=0
+START validate_prepared_tasks.py
+prepared_task_validation=OK task=T-078 units=4 cases=15 variants=23 performance_units=4 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-079 units=4 cases=4 variants=14 performance_units=4 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-080 units=3 cases=13 variants=13 performance_units=3 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-081 units=2 cases=3 variants=10 performance_units=2 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-082 units=2 cases=4 variants=8 performance_units=2 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-083 units=3 cases=4 variants=6 performance_units=3 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-084 units=1 cases=1 variants=1 performance_units=1 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-085 units=3 cases=5 variants=8 performance_units=3 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-086 units=1 cases=2 variants=2 performance_units=1 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-087 units=2 cases=3 variants=3 performance_units=2 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-088 units=2 cases=3 variants=3 performance_units=2 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-089 units=1 cases=1 variants=1 performance_units=1 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-090 units=1 cases=1 variants=1 performance_units=1 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+prepared_task_validation=OK task=T-091 units=1 cases=1 variants=1 performance_units=1 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-092 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-093 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-094 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-095 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-096 units=1 cases=3 variants=3 performance_units=1 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-097 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-098 units=1 cases=1 variants=3 performance_units=1 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-099 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-100 units=1 cases=1 variants=2 performance_units=1 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-101 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-102 units=5 cases=5 variants=5 performance_units=5 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-103 units=5 cases=5 variants=5 performance_units=5 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-104 units=5 cases=5 variants=5 performance_units=5 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-105 units=5 cases=5 variants=5 performance_units=5 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-106 units=4 cases=4 variants=4 performance_units=4 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-107 units=3 cases=3 variants=3 performance_units=3 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-108 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-109 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-110 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-111 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+prepared_task_validation=OK task=T-112 units=1 cases=1 variants=1 performance_units=1 guide=valid performance_readiness=worker-static-only worker=implemented-awaiting-runtime-validation
+prepared_task_validation=OK task=T-113 units=0 cases=0 variants=0 performance_units=0 guide=valid performance_readiness=plan-only worker=not-implemented
+START review_uploaded_gpu_tasks.py
+T-087 gpu-contract-reviewed-awaiting-npu 3
+T-088 gpu-contract-reviewed-awaiting-npu 3
+T-089 gpu-contract-reviewed-awaiting-npu 1
+T-090 gpu-contract-reviewed-awaiting-npu 1
+T-091 native-passed-target-attribution-pending 1
+T-096 gpu-contract-reviewed-awaiting-npu 3
+T-102 native-passed-target-attribution-pending 5
+T-103 native-passed-target-attribution-pending 5
+T-104 native-passed-target-attribution-pending 5
+T-105 native-passed-target-attribution-pending 5
+T-106 native-passed-target-attribution-pending 4
+T-107 native-passed-target-attribution-pending 3
+T-112 gpu-validated-duplicate-contract 1
+START t087_t090_archives
+t087_t090_archive_validation=OK units=5 device_execution=false
+START pending_candidate_archives
+pending_candidate_archive_validation=OK records=8 device_execution=false deployed=false
+START current_acceptance_matrix
+current_acceptance_matrix=OK units=71 compared=38 backend=triton_experimental
+START task_backlog
+task_backlog_validation=OK {"inventory_units": 188, "selected_manifest_units": 71, "remaining_provisional_units": 87, "non_counting_review_records": 30, "draft_batches": 0, "reviewed_zero_batches": 12, "prepared_batches": 21, "scheduled_batches": 33, "deferred_review_units": 87}
+START reference_plan
+reference_plan_validation=OK acceptance_units=5 cases=13 community_tests=13 variants=20 executed_variants=14 non_executed_variants=6
+torch_imported=0 gpu_executed=0
+START t077_reference_plan
+reference_plan_validation=OK acceptance_units=5 cases=11 community_tests=11 variants=17 executed_variants=17 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t078_reference_plan
+prepared_task_validation=OK task=T-078 units=4 cases=15 variants=23 performance_units=4 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+reference_plan_validation=OK acceptance_units=4 cases=15 community_tests=12 variants=23 executed_variants=23 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t079_reference_plan
+prepared_task_validation=OK task=T-079 units=4 cases=4 variants=14 performance_units=4 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+reference_plan_validation=OK acceptance_units=4 cases=4 community_tests=4 variants=14 executed_variants=14 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t080_reference_plan
+prepared_task_validation=OK task=T-080 units=3 cases=13 variants=13 performance_units=3 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+reference_plan_validation=OK acceptance_units=3 cases=13 community_tests=13 variants=13 executed_variants=13 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t081_reference_plan
+prepared_task_validation=OK task=T-081 units=2 cases=3 variants=10 performance_units=2 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+reference_plan_validation=OK acceptance_units=2 cases=3 community_tests=3 variants=10 executed_variants=10 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t082_reference_plan
+prepared_task_validation=OK task=T-082 units=2 cases=4 variants=8 performance_units=2 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+reference_plan_validation=OK acceptance_units=2 cases=4 community_tests=4 variants=8 executed_variants=8 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t083_reference_plan
+prepared_task_validation=OK task=T-083 units=3 cases=4 variants=6 performance_units=3 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+reference_plan_validation=OK acceptance_units=3 cases=4 community_tests=4 variants=6 executed_variants=6 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t084_reference_plan
+prepared_task_validation=OK task=T-084 units=1 cases=1 variants=1 performance_units=1 guide=valid performance_readiness=worker-runtime-validated worker=implemented-runtime-validated
+reference_plan_validation=OK acceptance_units=1 cases=1 community_tests=1 variants=1 executed_variants=1 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t085_reference_plan
+t085_preparation_validation=OK units=3 cases=5 variants=8 deferred=2 performance_runnable=3 performance_blocked=0 torch_imported=0 validator_device_execution=false
+reference_plan_validation=OK acceptance_units=3 cases=5 community_tests=5 variants=8 executed_variants=8 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t086_reference_plan
+t086_preparation_validation=OK units=1 cases=2 variants=2 deferred=4 validator_device_execution=false
+reference_plan_validation=OK acceptance_units=1 cases=2 community_tests=2 variants=2 executed_variants=2 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t087_reference_plan
+reference_plan_validation=OK acceptance_units=2 cases=3 community_tests=3 variants=3 executed_variants=3 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t088_reference_plan
+reference_plan_validation=OK acceptance_units=2 cases=3 community_tests=3 variants=3 executed_variants=3 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t089_reference_plan
+reference_plan_validation=OK acceptance_units=1 cases=1 community_tests=1 variants=1 executed_variants=1 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t090_reference_plan
+reference_plan_validation=OK acceptance_units=1 cases=1 community_tests=1 variants=1 executed_variants=1 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t091_reference_plan
+reference_plan_validation=OK acceptance_units=1 cases=1 community_tests=1 variants=1 executed_variants=1 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t092_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t093_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t094_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t095_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t096_reference_plan
+reference_plan_validation=OK acceptance_units=1 cases=3 community_tests=3 variants=3 executed_variants=3 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t097_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t098_reference_plan
+reference_plan_validation=OK acceptance_units=1 cases=1 community_tests=1 variants=3 executed_variants=3 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t099_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t100_reference_plan
+reference_plan_validation=OK acceptance_units=1 cases=1 community_tests=1 variants=2 executed_variants=2 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t101_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t102_reference_plan
+reference_plan_validation=OK acceptance_units=5 cases=5 community_tests=5 variants=5 executed_variants=5 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t103_reference_plan
+reference_plan_validation=OK acceptance_units=5 cases=5 community_tests=5 variants=5 executed_variants=5 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t104_reference_plan
+reference_plan_validation=OK acceptance_units=5 cases=5 community_tests=5 variants=5 executed_variants=5 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t105_reference_plan
+reference_plan_validation=OK acceptance_units=5 cases=5 community_tests=5 variants=5 executed_variants=5 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t106_reference_plan
+reference_plan_validation=OK acceptance_units=4 cases=4 community_tests=4 variants=4 executed_variants=4 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t107_reference_plan
+reference_plan_validation=OK acceptance_units=3 cases=3 community_tests=3 variants=3 executed_variants=3 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t108_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t109_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t110_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t111_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t112_reference_plan
+reference_plan_validation=OK acceptance_units=1 cases=1 community_tests=1 variants=1 executed_variants=1 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START t113_reference_plan
+reference_plan_validation=OK acceptance_units=0 cases=0 community_tests=0 variants=0 executed_variants=0 non_executed_variants=0
+torch_imported=0 gpu_executed=0
+START whitespace
+history_audit=/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/audits/latest.json
+tooling_gate=passed
+history_recertification=pending counts={"exempt": 3, "pending": 41}
+gate_scope=tooling-only exit_code=0

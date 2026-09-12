@@ -1,0 +1,569 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-090",
+  "backend": "triton_experimental",
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-split-cat-normalize-cat-default-aten",
+      "unit": "normalize-cat-aten",
+      "performance_status": "measured",
+      "verdict": "PERF_NEUTRAL",
+      "product_action": "保留现有默认配置；局部实测不自动推广为全模型默认开启",
+      "measurement_workload": "normalize-cat-aten-community-shape",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.5770998541265726,
+            "p99": 0.7011821260675819
+          },
+          "on": {
+            "p50": 0.5569302011281252,
+            "p99": 0.6925425399094854
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.4573899954557419,
+            "p99": 0.5028908118605632
+          },
+          "on": {
+            "p50": 0.43532000482082367,
+            "p99": 0.4881737950444222
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": 3.495002269403402,
+          "p99": 1.232145805904894
+        },
+        "event_ms": {
+          "p50": 4.825201874590135,
+          "p99": 2.926483536593538
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.02707437966412,
+        "host_ms_on": 1.053115490002002,
+        "event_ms_off": 1.0395389024114103,
+        "event_ms_on": 1.0432475068047373
+      },
+      "memory": {
+        "off1": {
+          "allocated": 6955008,
+          "reserved": 23068672
+        },
+        "on1": {
+          "allocated": 6426624,
+          "reserved": 23068672
+        },
+        "on2": {
+          "allocated": 6426624,
+          "reserved": 23068672
+        },
+        "off2": {
+          "allocated": 6955008,
+          "reserved": 23068672
+        },
+        "off3": {
+          "allocated": 6955008,
+          "reserved": 23068672
+        },
+        "on3": {
+          "allocated": 6426624,
+          "reserved": 23068672
+        }
+      },
+      "compile_ms": {
+        "off1": 13819.51752025634,
+        "on1": 14861.82689992711,
+        "on2": 13725.49214027822,
+        "off2": 13997.128420043737,
+        "off3": 14084.87014984712,
+        "on3": 13986.382429953665
+      },
+      "codegen_review": {
+        "off1": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 4
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "on1": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 4
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "on2": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 4
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "off2": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 4
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "off3": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 4
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        },
+        "on3": {
+          "generated_graphs": 1,
+          "registered_npu_extern_ops": [],
+          "registered_npu_aten_calls": {
+            "aten.cat.default": 4
+          },
+          "lowering_difference": "cat由npu_cat显式注册为NPU extern；matmul_backward由后端fallback注册保留图内NPU调用（op-plugin有原生实现）；view为设备视图。不把这些算作Triton融合核，也不与CPU/图外fallback混淆。",
+          "unexpected_cpu_or_graph_external_fallbacks": 0
+        }
+      },
+      "gate": {
+        "path": "performance_gates/normalize-cat-aten.json",
+        "sha256": "4496acb0038a4fcd295b02e08dea88dab1421a407303485c26c225e540c6bccc"
+      },
+      "source_run_dir": "/home/z50063656/tmp/t090-npu-results/benchmark-20260911T145129+0800/normalize-cat-aten",
+      "artifact_inventory": [
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off1/debug/torch_compile_debug/run_2026_09_11_14_51_39_221663-pid_685262/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "1baf1910aecfaeb3a36ef5604880a4c31705a3a23bc847b99c1a7ef56e40ae0b",
+          "bytes": 1924
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off1/debug/torch_compile_debug/run_2026_09_11_14_51_39_221663-pid_685262/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "1baf1910aecfaeb3a36ef5604880a4c31705a3a23bc847b99c1a7ef56e40ae0b",
+          "bytes": 1924
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off1/debug/torch_compile_debug/run_2026_09_11_14_51_39_221663-pid_685262/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off1/debug/torch_compile_debug/run_2026_09_11_14_51_39_221663-pid_685262/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off1/debug/torch_compile_debug/run_2026_09_11_14_51_39_221663-pid_685262/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "f651b242e234ecbe65478fd6bcb197ea04d6961af7aed7ab85b31b1fd32f9bcd",
+          "bytes": 4889
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off1/execution.json",
+          "sha256": "44aa6d39c53a61d85eb9442ad3901dd9a9dff3ad4625b29b8c8a9b7d56abf03d",
+          "bytes": 778
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off1/result.json",
+          "sha256": "acc735a3623b7211c799817d1c2725270525c80acee0531dc4cb481ee2a61426",
+          "bytes": 71556
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off1/stderr.log",
+          "sha256": "f34b03cd207c3586c2e9d230a896226ef748994ccfe0a63f9f90cfc1b275d131",
+          "bytes": 896
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off1/stdout.log",
+          "sha256": "3482816bb39a7692d8027257c8253774f7d645559b591cecbbf4604e46065d30",
+          "bytes": 70
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/debug/torch_compile_debug/run_2026_09_11_14_52_08_592008-pid_693245/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "1baf1910aecfaeb3a36ef5604880a4c31705a3a23bc847b99c1a7ef56e40ae0b",
+          "bytes": 1924
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/debug/torch_compile_debug/run_2026_09_11_14_52_08_592008-pid_693245/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "5da3eaf049da94c7b85c8b649774a859cd1f907ab31e7f6d185706f0336a4a94",
+          "bytes": 1659
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/debug/torch_compile_debug/run_2026_09_11_14_52_08_592008-pid_693245/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/debug/torch_compile_debug/run_2026_09_11_14_52_08_592008-pid_693245/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/debug/torch_compile_debug/run_2026_09_11_14_52_08_592008-pid_693245/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "64e75d9a27bba035c7ea524ef73e4d81ef70fbd78a16678109370d7dab86c386",
+          "bytes": 4450
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/execution.json",
+          "sha256": "625349b0b1d3456708543bd2bdcbcda1741a3f9479923deac1e48204dbc4bd24",
+          "bytes": 776
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/result.json",
+          "sha256": "f1c628ebbe68280a5e9865b4be53c6ac674cae515ba840218e974dbb787c3608",
+          "bytes": 71689
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/stderr.log",
+          "sha256": "63d657959d47522be6cb8e913a8f83e223505d9327e76bf6bb375438e443ba18",
+          "bytes": 895
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/stdout.log",
+          "sha256": "141e7d7a46a94675b26c3906eaf4f92dcf78d935cbc4167b180138f9fff4f3be",
+          "bytes": 69
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/target-0-after.txt",
+          "sha256": "4ac6b2559f729247faf6057d695f5923a69845230e436cc1d6a92cb7674d20c3",
+          "bytes": 838
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/target-0-before.txt",
+          "sha256": "c52bad33b8ef7af532c2d5284337b5b82ae394c24b70d1c6643a226bc3b72c2e",
+          "bytes": 820
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/target-1-after.txt",
+          "sha256": "785060417fef06d447fb7db4d68d24ac525d48505873ece16e5a374a87b09927",
+          "bytes": 868
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/target-1-before.txt",
+          "sha256": "4ac6b2559f729247faf6057d695f5923a69845230e436cc1d6a92cb7674d20c3",
+          "bytes": 838
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/target-2-after.txt",
+          "sha256": "5f0bc7f3ea00ac58ab26d15b732f5ddcd27338dc3c79ebdd44d3325be4d1e08d",
+          "bytes": 898
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/target-2-before.txt",
+          "sha256": "785060417fef06d447fb7db4d68d24ac525d48505873ece16e5a374a87b09927",
+          "bytes": 868
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/target-3-after.txt",
+          "sha256": "8111c1a302a32aaafabda0f881003e2622cac1bda2a0ab64f5e8d5ca2f39f4e8",
+          "bytes": 1172
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on1/target-3-before.txt",
+          "sha256": "8d81feb4ead7b7aadfd7e3fe43297966043887f3b6e54b83e96d33ba399b067f",
+          "bytes": 1136
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/debug/torch_compile_debug/run_2026_09_11_14_52_39_648128-pid_702441/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "1baf1910aecfaeb3a36ef5604880a4c31705a3a23bc847b99c1a7ef56e40ae0b",
+          "bytes": 1924
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/debug/torch_compile_debug/run_2026_09_11_14_52_39_648128-pid_702441/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "5da3eaf049da94c7b85c8b649774a859cd1f907ab31e7f6d185706f0336a4a94",
+          "bytes": 1659
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/debug/torch_compile_debug/run_2026_09_11_14_52_39_648128-pid_702441/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/debug/torch_compile_debug/run_2026_09_11_14_52_39_648128-pid_702441/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/debug/torch_compile_debug/run_2026_09_11_14_52_39_648128-pid_702441/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "64e75d9a27bba035c7ea524ef73e4d81ef70fbd78a16678109370d7dab86c386",
+          "bytes": 4450
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/execution.json",
+          "sha256": "279e119cd4d532aa4a1c9509be107563d3122dc1e5db85979790dff5c5a566f7",
+          "bytes": 776
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/result.json",
+          "sha256": "65bbc234a087a5ae14cef9ec5f7b3248bf948ac9e1c1f17b909d1f2aa2b24142",
+          "bytes": 71691
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/stderr.log",
+          "sha256": "41a5f068e78808dbb9cfc5ec68cb57b21badc3ce83214b63775e0905ff2cae95",
+          "bytes": 895
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/stdout.log",
+          "sha256": "141e7d7a46a94675b26c3906eaf4f92dcf78d935cbc4167b180138f9fff4f3be",
+          "bytes": 69
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/target-0-after.txt",
+          "sha256": "4ac6b2559f729247faf6057d695f5923a69845230e436cc1d6a92cb7674d20c3",
+          "bytes": 838
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/target-0-before.txt",
+          "sha256": "c52bad33b8ef7af532c2d5284337b5b82ae394c24b70d1c6643a226bc3b72c2e",
+          "bytes": 820
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/target-1-after.txt",
+          "sha256": "785060417fef06d447fb7db4d68d24ac525d48505873ece16e5a374a87b09927",
+          "bytes": 868
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/target-1-before.txt",
+          "sha256": "4ac6b2559f729247faf6057d695f5923a69845230e436cc1d6a92cb7674d20c3",
+          "bytes": 838
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/target-2-after.txt",
+          "sha256": "5f0bc7f3ea00ac58ab26d15b732f5ddcd27338dc3c79ebdd44d3325be4d1e08d",
+          "bytes": 898
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/target-2-before.txt",
+          "sha256": "785060417fef06d447fb7db4d68d24ac525d48505873ece16e5a374a87b09927",
+          "bytes": 868
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/target-3-after.txt",
+          "sha256": "8111c1a302a32aaafabda0f881003e2622cac1bda2a0ab64f5e8d5ca2f39f4e8",
+          "bytes": 1172
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on2/target-3-before.txt",
+          "sha256": "8d81feb4ead7b7aadfd7e3fe43297966043887f3b6e54b83e96d33ba399b067f",
+          "bytes": 1136
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off2/debug/torch_compile_debug/run_2026_09_11_14_53_08_925456-pid_711919/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "1baf1910aecfaeb3a36ef5604880a4c31705a3a23bc847b99c1a7ef56e40ae0b",
+          "bytes": 1924
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off2/debug/torch_compile_debug/run_2026_09_11_14_53_08_925456-pid_711919/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "1baf1910aecfaeb3a36ef5604880a4c31705a3a23bc847b99c1a7ef56e40ae0b",
+          "bytes": 1924
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off2/debug/torch_compile_debug/run_2026_09_11_14_53_08_925456-pid_711919/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off2/debug/torch_compile_debug/run_2026_09_11_14_53_08_925456-pid_711919/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off2/debug/torch_compile_debug/run_2026_09_11_14_53_08_925456-pid_711919/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "f651b242e234ecbe65478fd6bcb197ea04d6961af7aed7ab85b31b1fd32f9bcd",
+          "bytes": 4889
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off2/execution.json",
+          "sha256": "4ca122467fa4cfbbc0928b9169555f1aa4f39c44554bbfe056c080757d0a652f",
+          "bytes": 778
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off2/result.json",
+          "sha256": "13b2cbf61b4d802e0ef6ad192a8c9127082fbae9452eec188296c959245546be",
+          "bytes": 71556
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off2/stderr.log",
+          "sha256": "02f2820487494fa525798520d0b427783f8cf3323876cd2d048d0c3c29f22938",
+          "bytes": 896
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off2/stdout.log",
+          "sha256": "3482816bb39a7692d8027257c8253774f7d645559b591cecbbf4604e46065d30",
+          "bytes": 70
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off3/debug/torch_compile_debug/run_2026_09_11_14_53_38_129203-pid_719871/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "1baf1910aecfaeb3a36ef5604880a4c31705a3a23bc847b99c1a7ef56e40ae0b",
+          "bytes": 1924
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off3/debug/torch_compile_debug/run_2026_09_11_14_53_38_129203-pid_719871/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "1baf1910aecfaeb3a36ef5604880a4c31705a3a23bc847b99c1a7ef56e40ae0b",
+          "bytes": 1924
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off3/debug/torch_compile_debug/run_2026_09_11_14_53_38_129203-pid_719871/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off3/debug/torch_compile_debug/run_2026_09_11_14_53_38_129203-pid_719871/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off3/debug/torch_compile_debug/run_2026_09_11_14_53_38_129203-pid_719871/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "f651b242e234ecbe65478fd6bcb197ea04d6961af7aed7ab85b31b1fd32f9bcd",
+          "bytes": 4889
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off3/execution.json",
+          "sha256": "6d2b23d57bbe1cd8ff3766f21fcbf7f13e3832959a51984e9412bc65aaaaccff",
+          "bytes": 778
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off3/result.json",
+          "sha256": "fdff885cf950645dbb466266cd928c3312e00cf836f730c8eaf2be614b77d3b2",
+          "bytes": 71565
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off3/stderr.log",
+          "sha256": "aa02f48aa0646e8413f921fc0394453da8ad4775c46d30f14882c74e5a56d7be",
+          "bytes": 896
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/off3/stdout.log",
+          "sha256": "3482816bb39a7692d8027257c8253774f7d645559b591cecbbf4604e46065d30",
+          "bytes": 70
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/debug/torch_compile_debug/run_2026_09_11_14_54_07_020550-pid_727618/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "1baf1910aecfaeb3a36ef5604880a4c31705a3a23bc847b99c1a7ef56e40ae0b",
+          "bytes": 1924
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/debug/torch_compile_debug/run_2026_09_11_14_54_07_020550-pid_727618/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "5da3eaf049da94c7b85c8b649774a859cd1f907ab31e7f6d185706f0336a4a94",
+          "bytes": 1659
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/debug/torch_compile_debug/run_2026_09_11_14_54_07_020550-pid_727618/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/debug/torch_compile_debug/run_2026_09_11_14_54_07_020550-pid_727618/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "e2efa67ed57b4d4b943a73cc9b7af6bbaa8f76ac0586d1084e16827da34dcc2b",
+          "bytes": 2253
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/debug/torch_compile_debug/run_2026_09_11_14_54_07_020550-pid_727618/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "64e75d9a27bba035c7ea524ef73e4d81ef70fbd78a16678109370d7dab86c386",
+          "bytes": 4450
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/execution.json",
+          "sha256": "b2aea25f95a7e8bb3764d88d46616be9b77a727ee2e3b11d4b535b37e4153ece",
+          "bytes": 776
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/result.json",
+          "sha256": "b6c3ccdcc8e0b23da6620bc2bacebf248f8075e10568fa5fc05dce0af5a9f5e9",
+          "bytes": 71683
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/stderr.log",
+          "sha256": "ccf52a52183f25519403a9bbcc948f67fdf2771e57007cc76464bb0c944e0516",
+          "bytes": 895
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/stdout.log",
+          "sha256": "141e7d7a46a94675b26c3906eaf4f92dcf78d935cbc4167b180138f9fff4f3be",
+          "bytes": 69
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/target-0-after.txt",
+          "sha256": "4ac6b2559f729247faf6057d695f5923a69845230e436cc1d6a92cb7674d20c3",
+          "bytes": 838
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/target-0-before.txt",
+          "sha256": "c52bad33b8ef7af532c2d5284337b5b82ae394c24b70d1c6643a226bc3b72c2e",
+          "bytes": 820
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/target-1-after.txt",
+          "sha256": "785060417fef06d447fb7db4d68d24ac525d48505873ece16e5a374a87b09927",
+          "bytes": 868
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/target-1-before.txt",
+          "sha256": "4ac6b2559f729247faf6057d695f5923a69845230e436cc1d6a92cb7674d20c3",
+          "bytes": 838
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/target-2-after.txt",
+          "sha256": "5f0bc7f3ea00ac58ab26d15b732f5ddcd27338dc3c79ebdd44d3325be4d1e08d",
+          "bytes": 898
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/target-2-before.txt",
+          "sha256": "785060417fef06d447fb7db4d68d24ac525d48505873ece16e5a374a87b09927",
+          "bytes": 868
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/target-3-after.txt",
+          "sha256": "8111c1a302a32aaafabda0f881003e2622cac1bda2a0ab64f5e8d5ca2f39f4e8",
+          "bytes": 1172
+        },
+        {
+          "path": "issues/REF-normalize-cat-default-aten-native/evidence/performance-benchmark-20260911T145129+0800/normalize-cat-aten/on3/target-3-before.txt",
+          "sha256": "8d81feb4ead7b7aadfd7e3fe43297966043887f3b6e54b83e96d33ba399b067f",
+          "bytes": 1136
+        }
+      ],
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "scope": "社区子图端到端（不含编译）",
+        "clocks": [
+          "同步 host",
+          "NPU Event"
+        ],
+        "model_e2e": false
+      },
+      "pattern_explanation": {
+        "name": "ATen cat 参数规范化",
+        "intent": "把位置参数、关键字与维度写法规范化，帮助后续 matcher 识别；它不是独立计算核。",
+        "source": "torch/_inductor/fx_passes/split_cat.py:1959",
+        "source_excerpt": "tensors = get_arg_value(cat_node, 0, 'tensors')\ncat_dim = get_arg_value(cat_node, 1, 'dim')",
+        "gpu_behavior": "两组 split-cat 社区图提供 normalization 精确处理与数值合同。",
+        "npu_behavior": "精确 normalize_cat_default_aten 改图。性能切换 normalization pass、保留下游 split-cat，收益若存在属于前提使能链，不能全归因于单个参数改写。"
+      }
+    }
+  ],
+  "generated_at": "2026-09-11T15:25:08.180422+08:00",
+  "status": "performance-disposition-complete"
+}

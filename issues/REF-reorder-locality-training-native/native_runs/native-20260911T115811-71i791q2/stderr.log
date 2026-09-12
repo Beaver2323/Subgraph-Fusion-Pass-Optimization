@@ -1,0 +1,13 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+TestReorderForLocalityInTrainingCUDA (unittest.loader._FailedTest.TestReorderForLocalityInTrainingCUDA) ... ERROR
+
+======================================================================
+ERROR: TestReorderForLocalityInTrainingCUDA (unittest.loader._FailedTest.TestReorderForLocalityInTrainingCUDA)
+----------------------------------------------------------------------
+AttributeError: module '__main__' has no attribute 'TestReorderForLocalityInTrainingCUDA'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

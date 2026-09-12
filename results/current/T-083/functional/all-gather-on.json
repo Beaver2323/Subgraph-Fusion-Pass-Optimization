@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-083",
+  "acceptance_unit_id": "AU-post-grad-bucket-all-gathers",
+  "unit": "all-gather",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "all-gather-community-shape",
+  "world_size": 2,
+  "process_group_backend": "hccl",
+  "input_spec": [
+    {
+      "shape": [
+        64
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        64
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        64
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "worker_sha256": "5713c56a39f84cce82978da02deb8cf1511f2ec3e01be9135577648513abbbdd",
+  "source_files": {
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/post_grad.py": "0793616f6e7d3612a4a935412b380571b47f5fb7d15042c8cdbcfc0b88271431",
+    "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/config.py": "68ae6164377297481de5dcd3329dc4701f6005dfddb60c46aaac92850c9f763b",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/bucketing.py": "c63f4a83f33228948d64eeea1fb147583d8e3acb6184fd114e02f3ec8b3f047e"
+  },
+  "off_observation": [
+    {
+      "handler_calls": 0,
+      "graph_changes": 0,
+      "collective_counts": [],
+      "post_grad_counts": [
+        3
+      ]
+    },
+    {
+      "handler_calls": 0,
+      "graph_changes": 0,
+      "collective_counts": [],
+      "post_grad_counts": [
+        3
+      ]
+    }
+  ],
+  "on_observation": [
+    {
+      "handler_calls": 1,
+      "graph_changes": 1,
+      "collective_counts": [
+        {
+          "before": 3,
+          "after": 1
+        }
+      ],
+      "post_grad_counts": [
+        1
+      ]
+    },
+    {
+      "handler_calls": 1,
+      "graph_changes": 1,
+      "collective_counts": [
+        {
+          "before": 3,
+          "after": 1
+        }
+      ],
+      "post_grad_counts": [
+        1
+      ]
+    }
+  ],
+  "target_graph_after": "\n\n\ndef forward(self, arg0_1, arg1_1, arg2_1):\n    empty = torch.ops.aten.empty.memory_format([384], dtype = torch.float32, device = device(type='npu', index=0), pin_memory = False)\n    slice_1 = torch.ops.aten.slice.Tensor(empty, 0, 0, 192)\n    view = torch.ops.aten.view.default(arg0_1, [-1]);  arg0_1 = None\n    view_1 = torch.ops.aten.view.default(arg1_1, [-1]);  arg1_1 = None\n    view_2 = torch.ops.aten.view.default(arg2_1, [-1]);  arg2_1 = None\n    cat = torch.ops.aten.cat.default([view, view_1, view_2]);  view = view_1 = view_2 = None\n    copy_ = torch.ops.aten.copy_.default(slice_1, cat);  slice_1 = cat = None\n    all_gather_into_tensor_out = torch.ops._c10d_functional.all_gather_into_tensor_out.default(copy_, 2, '0', out = empty);  copy_ = empty = None\n    wait_tensor_3 = torch.ops._c10d_functional.wait_tensor.default(all_gather_into_tensor_out);  all_gather_into_tensor_out = None\n    view_3 = torch.ops.aten.view.default(wait_tensor_3, [2, -1]);  wait_tensor_3 = None\n    split_with_sizes = torch.ops.aten.split_with_sizes.default(view_3, [64, 64, 64], 1);  view_3 = None\n    getitem = split_with_sizes[0]\n    getitem_1 = split_with_sizes[1]\n    getitem_2 = split_with_sizes[2];  split_with_sizes = None\n    clone = torch.ops.aten.clone.default(getitem, memory_format = torch.contiguous_format);  getitem = None\n    _unsafe_view = torch.ops.aten._unsafe_view.default(clone, [128]);  clone = None\n    clone_1 = torch.ops.aten.clone.default(getitem_1, memory_format = torch.contiguous_format);  getitem_1 = None\n    _unsafe_view_1 = torch.ops.aten._unsafe_view.default(clone_1, [128]);  clone_1 = None\n    clone_2 = torch.ops.aten.clone.default(getitem_2, memory_format = torch.contiguous_format);  getitem_2 = None\n    _unsafe_view_2 = torch.ops.aten._unsafe_view.default(clone_2, [128]);  clone_2 = None\n    return (_unsafe_view, _unsafe_view_1, _unsafe_view_2)\n    ",
+  "source_run_dir": "/home/z50063656/tmp/t083-npu-functional-results/functional-20260908T012449+0800",
+  "source_off_summary": {
+    "path": "/home/z50063656/tmp/t083-npu-functional-results/functional-20260908T012449+0800/all-gather/off/functional_summary.json",
+    "sha256": "7f0291e06ab657b0915faf5361cef766f291ea75ffd66c2e227933490c3d4717"
+  },
+  "source_on_summary": {
+    "path": "/home/z50063656/tmp/t083-npu-functional-results/functional-20260908T012449+0800/all-gather/on/functional_summary.json",
+    "sha256": "7b4e78c27c5a67519de8693725adb963a48e94b26019ce56e07ffaf22a16eacb"
+  },
+  "reviewed_at": "2026-09-08T01:33:29.414028+08:00",
+  "reviewer": "tracker-control-node"
+}

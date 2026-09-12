@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-096",
+  "reviewed_at": "2026-09-11T12:24:13.289276+08:00",
+  "run_id": "reference-20260911T100049+0800-rlb436sf",
+  "status": "gpu-contract-reviewed-awaiting-npu",
+  "reference_backend": "inductor-default",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "input": "results/incoming/T-096/text-handoff.json",
+  "input_sha256": "92e7f58f78486155e5f8ef1f0c6a7eb34e750b4f44694fe22cac1fd0f8180a5f",
+  "payload_sha256": "e8d8fffa031101d89235435e4e42ed6b1bbcf178250ce7a343f833461679ab24",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "native_cases_passed": 3,
+  "tests_skipped": 0,
+  "restored_text_files": 41,
+  "acceptance_units": [
+    "AU-misc-patterns-e8m0-rceil-log2"
+  ],
+  "cases": [
+    {
+      "case_id": "REF-e8m0-log2-pattern-native",
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "source_test": "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_pattern_fires_and_is_correct",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_fp8.py",
+        "-v",
+        "TestE8M0Log2PatternBitManip.test_pattern_fires_and_is_correct"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "0d8688729f6cca2df7e5a8f97a1c85e68617821f323de32160305080b9198216"
+    },
+    {
+      "case_id": "REF-e8m0-log2-one-ulp-native",
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "source_test": "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_correct_for_values_one_ulp_above_power_of_two",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_fp8.py",
+        "-v",
+        "TestE8M0Log2PatternBitManip.test_correct_for_values_one_ulp_above_power_of_two"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "f486ba1e2b0cacaf51cd9261de81586cb73b725025495f1319718f06ff9f1c32"
+    },
+    {
+      "case_id": "REF-e8m0-log2-gh178045-native",
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "source_test": "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_fp8.py",
+        "-v",
+        "TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "34adf06edd69c9bd49dba4d4c2e0d709aa13f52882dca8afdf3d4ef15444f8ac"
+    }
+  ],
+  "review_boundary": "GPU 合同通过，不代表 NPU 功能、产品合入或性能通过。",
+  "npu_execution_in_this_review": false,
+  "denominator_frozen_by_this_review": false,
+  "independent_unit_contribution": 1,
+  "report": "report/gpu_incoming_review_20260911.md"
+}

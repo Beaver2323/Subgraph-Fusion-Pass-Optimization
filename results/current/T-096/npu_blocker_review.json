@@ -1,0 +1,107 @@
+{
+  "task_id": "T-096",
+  "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+  "generated_at": "2026-09-11T15:17:03.242071+08:00",
+  "backend": "triton_experimental",
+  "result": {
+    "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/baseline-20260911/adapter/result.json",
+    "sha256": "e405cb40ff053c77f7c6e9519219bf40c91714951a6c7bde6992b049c99b373c",
+    "original_test_passed": false,
+    "target_rewrite": false,
+    "numerical_execution": true
+  },
+  "baseline_cases": {
+    "REF-e8m0-log2-pattern-native": {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/baseline-20260911/adapter/result.json",
+      "sha256": "fc947bb04423796e602d3774e3c791e2a6a0022b911b35b1d114eb0757c0edfb",
+      "original_test_passed": true,
+      "target_rewrite": false,
+      "numerical_execution": true
+    },
+    "REF-e8m0-log2-one-ulp-native": {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/baseline-20260911/adapter/result.json",
+      "sha256": "e405cb40ff053c77f7c6e9519219bf40c91714951a6c7bde6992b049c99b373c",
+      "original_test_passed": false,
+      "target_rewrite": false,
+      "numerical_execution": true
+    },
+    "REF-e8m0-log2-gh178045-native": {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/baseline-20260911/adapter/result.json",
+      "sha256": "97418abbc7946dbbb564f9ddba8ed7c5849ab62ed9790994d9f7f88bb7ec1a08",
+      "original_test_passed": false,
+      "target_rewrite": false,
+      "numerical_execution": true
+    }
+  },
+  "candidate_cases": {
+    "REF-e8m0-log2-pattern-native": {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/candidate-bitwise-pass-20260911/adapter/result.json",
+      "sha256": "a8e0825b2f7e2e8ce8475d24bdf024f1c0b2453ad0475f8905e4c272fe259172",
+      "launch": {
+        "path": "issues/REF-e8m0-log2-pattern-native/candidate_runs/native-20260911T151306-4wqk7fm7/run_result.json",
+        "sha256": "d0664cf8091275a9ae689b07c1f9d6ffe44d0c0ca6632df3d3302272075a0326"
+      },
+      "status": "original-contract-passed-in-isolated-source-candidate",
+      "installed_environment_modified": false,
+      "product_merged": false,
+      "functional_closure": false,
+      "product_candidate": {
+        "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-e8m0-log2-pattern-native/e8m0_npu_candidate.py",
+        "sha256": "236bb3e6ae1a1d07c481547e2575700e27e725d874b19240086791261be113d0",
+        "scope": "process-local-source-candidate",
+        "installed_environment_modified": false
+      }
+    },
+    "REF-e8m0-log2-one-ulp-native": {
+      "path": "issues/REF-e8m0-log2-one-ulp-native/evidence/candidate-bitwise-pass-20260911/adapter/result.json",
+      "sha256": "85d56756d783894c3e98d362806592808492b9d8c194e7e9086d7e3c33e5743f",
+      "launch": {
+        "path": "issues/REF-e8m0-log2-one-ulp-native/candidate_runs/native-20260911T151343-7p8xbh8k/run_result.json",
+        "sha256": "679fa611332fdd08ea234e892ea5a7d0eb97c1acb78be1a6f4d8b8b73046aa34"
+      },
+      "status": "original-contract-passed-in-isolated-source-candidate",
+      "installed_environment_modified": false,
+      "product_merged": false,
+      "functional_closure": false,
+      "product_candidate": {
+        "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-e8m0-log2-pattern-native/e8m0_npu_candidate.py",
+        "sha256": "236bb3e6ae1a1d07c481547e2575700e27e725d874b19240086791261be113d0",
+        "scope": "process-local-source-candidate",
+        "installed_environment_modified": false
+      }
+    },
+    "REF-e8m0-log2-gh178045-native": {
+      "path": "issues/REF-e8m0-log2-gh178045-native/evidence/candidate-bitwise-pass-20260911/adapter/result.json",
+      "sha256": "44759fcc89f0c81a4a8a2ca6119cf1e3b3e9d0879007d28cf60b2fd3e8f0bfbb",
+      "launch": {
+        "path": "issues/REF-e8m0-log2-gh178045-native/candidate_runs/native-20260911T151422-vpb07e2w/run_result.json",
+        "sha256": "90b499087873d151a73f8342e531530e1a4542a73d4141a2578fa04df81cc15f"
+      },
+      "status": "original-contract-passed-in-isolated-source-candidate",
+      "installed_environment_modified": false,
+      "product_merged": false,
+      "functional_closure": false,
+      "product_candidate": {
+        "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-e8m0-log2-pattern-native/e8m0_npu_candidate.py",
+        "sha256": "236bb3e6ae1a1d07c481547e2575700e27e725d874b19240086791261be113d0",
+        "scope": "process-local-source-candidate",
+        "installed_environment_modified": false
+      }
+    }
+  },
+  "correctness": "ordinary-pass-boundary-failed-installed",
+  "current_phase": "npu-precision-failed-awaiting-product-fix",
+  "repair_status": "isolated-source-candidate-passed-not-deployed",
+  "reason": "安装态没有NPU位运算pattern：普通输入正确但未改写；one-ULP/gh178045精度失败。",
+  "next_action": "候选3/3原合同及实际位运算核通过；待产品边界/安装态部署评审。数学oracle与eager软件log2差异明确保留；不对错误OFF计时。",
+  "report": "issues/REF-e8m0-log2-pattern-native/根因分析.md",
+  "installed_resolution": {
+    "generated_at": "2026-09-11T18:40:09.323215+08:00",
+    "status": "resolved-by-installed-fix",
+    "functional": {
+      "path": "results/current/T-096/functional/e8m0-rceil-log2.json",
+      "sha256": "25b11763a35e82cb72229dabb31d78af73150d4f334d84f3d3798891c5821e87"
+    },
+    "note": "原失败与隔离候选证据保留；当前以已部署修复及性能处置为准"
+  }
+}

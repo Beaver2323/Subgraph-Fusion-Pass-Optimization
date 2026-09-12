@@ -1,0 +1,11 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_cpp_wrapper_under_coor_rejected (builtins.TestCompileOnOneRankDeviceAsParameter.test_cpp_wrapper_under_coor_rejected) ... [W911 18:15:19.332812410 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.164s
+
+OK

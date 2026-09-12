@@ -6,6 +6,7 @@ from collections import Counter
 import importlib.util
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +24,24 @@ matrix = load_generator()
 
 
 class CurrentAcceptanceMatrixTests(unittest.TestCase):
+    def test_progress_rejects_foreign_backend_and_fake_completion(self):
+        original = matrix.read_json
+        for field, value in (("backend", "default"), ("contract_complete", False)):
+            def altered(path):
+                data = original(path)
+                if path.name == "npu_contract_progress.json" and data.get("task_id") == "T-088":
+                    data["units"]["AU-split-cat-merge-select-cat-aten"][field] = value
+                return data
+            with self.subTest(field=field), patch.object(matrix, "read_json", side_effect=altered):
+                with self.assertRaises(ValueError):
+                    matrix.npu_contract_progress("T-088", "AU-split-cat-merge-select-cat-aten")
+
+    def test_progress_rejects_wrong_digest_and_outside_path(self):
+        with self.assertRaises(ValueError):
+            matrix.verified_file("../activate_pass.sh", "0" * 64)
+        with self.assertRaises(ValueError):
+            matrix.verified_file("results/current/T-087/npu_training_review.json", "0" * 64)
+
     def test_current_units_and_task_boundaries(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
         self.assertEqual(len(rows), 71)
@@ -58,6 +77,10 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             }),
         )
         self.assertEqual(len({row["acceptance_unit_id"] for row in rows}), 71)
+        self.assertEqual(sum(row["independent_unit_contribution"] for row in rows), 70)
+        alias = next(row for row in rows if row["task_id"] == "T-112")
+        self.assertEqual(alias["canonical_acceptance_unit_id"], "AU-post-grad-dedup-reduce-scatters")
+        self.assertEqual(alias["independent_unit_contribution"], 0)
 
     def test_npu_backend_never_inherits_reference_backend(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
@@ -74,22 +97,29 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
 
     def test_dynamic_and_pending_evidence_are_not_conflated(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 33)
+        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 40)
         self.assertEqual(
-            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 33
+            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 40
         )
         self.assertEqual(
-            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 38
+            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 2
         )
         self.assertEqual(
             sum(row["current_phase"] == "awaiting-npu" for row in rows), 0
         )
+        progress = [row for row in rows if row["npu_progress_path"]]
+        self.assertEqual(len(progress), 0)
+        installed = [row for row in rows if row["repair_status"] == "installed-fix-verified-not-upstream-merged"]
+        self.assertEqual(len(installed), 2)
+        self.assertTrue(all(row["comparison_verdict"] == "NEWLY_SUPPORTED" for row in installed))
+        self.assertTrue(all(row["comparison_result_path"] for row in installed))
+        self.assertEqual(sum(row["current_phase"] == "gpu-target-attribution-pending" for row in rows), 28)
         self.assertEqual(
             sum(row["current_phase"] == "functional-comparison-closed" for row in rows),
             27,
         )
         self.assertEqual(
-            sum(row["current_phase"] == "formally-closed" for row in rows), 5
+            sum(row["current_phase"] == "formally-closed" for row in rows), 12
         )
         self.assertEqual(
             sum(
@@ -112,7 +142,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                 row["performance_evidence_path"].startswith("results/current/")
                 for row in rows
             ),
-            33,
+            40,
         )
 
     def test_t084_t086_bind_explicit_alignment_and_performance(self):

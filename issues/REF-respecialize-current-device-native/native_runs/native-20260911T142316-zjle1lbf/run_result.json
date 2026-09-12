@@ -1,0 +1,26 @@
+{
+  "task_id": "T-087",
+  "case_id": "REF-respecialize-current-device-native",
+  "generated_at": "2026-09-11T14:23:16.908084+08:00",
+  "status": "skipped-or-xfail",
+  "tests_ran": 1,
+  "tests_skipped": 1,
+  "return_code": 0,
+  "mode": "native",
+  "test_body_execution_proven": false,
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/src/pytorch/test/distributed/tensor/test_compile_on_one_rank.py",
+    "-v",
+    "TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor"
+  ],
+  "working_directory": "/home/z50063656/tmp",
+  "physical_npu": 2,
+  "backend_requested": "triton_experimental",
+  "backend_verified": false,
+  "contract_review_required": true,
+  "source_sha256": "45622cbc1d6b4c026f4b32fabfe27ed3600d517df96f7ede4e9c945e1bdbf996",
+  "raw_artifact_dir": "/home/z50063656/tmp/t087-native-uer9w40g",
+  "product_gate_bypassed": false,
+  "body_or_assertions_modified": false
+}

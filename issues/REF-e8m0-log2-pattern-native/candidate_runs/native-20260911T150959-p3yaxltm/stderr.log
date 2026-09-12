@@ -1,0 +1,14 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+[W911 15:10:10.948314230 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+test_pattern_fires_and_is_correct (builtins.TestE8M0Log2PatternBitManip.test_pattern_fires_and_is_correct)
+The log2+ceil pattern should be matched and produce correct uint8. ... /home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0911 15:10:30.526000 1970222 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t096-native-0ovf7wde/adapter/debug/torch_compile_debug/run_2026_09_11_15_10_10_745505-pid_1970222/torchinductor/model__0_inference_0.0
+[W911 15:10:30.085827620 TensorFactories.cpp:406] Warning: Cannot create tensor with internal format while allow_internal_format=False, tensor will be created with base format. (function operator())
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 19.975s
+
+OK

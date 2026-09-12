@@ -1,0 +1,26 @@
+{
+  "task_id": "T-088",
+  "case_id": "REF-split-cat-aten-singular-native",
+  "generated_at": "2026-09-11T12:11:59.983466+08:00",
+  "status": "failed",
+  "tests_ran": 1,
+  "tests_skipped": 0,
+  "return_code": 1,
+  "mode": "adapter",
+  "test_body_execution_proven": false,
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-split-cat-aten-singular-native/npu_adapter.py",
+    "--artifact-dir",
+    "/home/z50063656/tmp/t088-native-47_b6wz2/adapter"
+  ],
+  "working_directory": "/home/z50063656/tmp",
+  "physical_npu": 2,
+  "backend_requested": "triton_experimental",
+  "backend_verified": false,
+  "contract_review_required": true,
+  "source_sha256": "722801699299de71ef9192b470feacc7f56cd77b4e97e48c647a8082e21b25fe",
+  "raw_artifact_dir": "/home/z50063656/tmp/t088-native-47_b6wz2",
+  "product_gate_bypassed": false,
+  "body_or_assertions_modified": false
+}

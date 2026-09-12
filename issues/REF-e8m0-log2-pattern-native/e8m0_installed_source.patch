@@ -1,0 +1,89 @@
+diff --git a/torch_npu/_inductor/triton_experimental/__init__.py b/torch_npu/_inductor/triton_experimental/__init__.py
+index bd5222c05..aaf9b94d0 100644
+--- a/torch_npu/_inductor/triton_experimental/__init__.py
++++ b/torch_npu/_inductor/triton_experimental/__init__.py
+@@ -90,4 +90,7 @@ def _activate():
+ 
+     device.register_interface_for_npu()
+ 
++    from .e8m0 import register_e8m0_pattern
++    register_e8m0_pattern()
++
+     enable_mspti_autotune()
+diff --git a/torch_npu/_inductor/triton_experimental/config.py b/torch_npu/_inductor/triton_experimental/config.py
+index 941b1c7c9..46fc91603 100644
+--- a/torch_npu/_inductor/triton_experimental/config.py
++++ b/torch_npu/_inductor/triton_experimental/config.py
+@@ -28,6 +28,9 @@ from torch.utils._config_module import install_config_module
+ # Cross-core r-axis split for OUTER reductions (40-core partial + combine).
+ rsplit_outer: bool = True
+ 
++# Exact FP32 log2/ceil E8M0 encoding, including one-ULP exponent boundaries.
++enable_e8m0_rceil_log2: bool = True
++
+ # Rewrite ``.to(tl.int1)`` load casts as ``!= 0`` (the packed-i1 trunc path can
+ # UB-OOB on Ascend).
+ rewrite_int1_cast_as_ne: bool = True
+diff --git a/torch_npu/_inductor/triton_experimental/e8m0.py b/torch_npu/_inductor/triton_experimental/e8m0.py
+new file mode 100644
+index 000000000..6a0653859
+--- /dev/null
++++ b/torch_npu/_inductor/triton_experimental/e8m0.py
+@@ -0,0 +1,57 @@
++# Copyright (c) 2026, Huawei Technologies Co., Ltd
++"""Exact FP32 log2/ceil E8M0 encoding for triton_experimental.
++
++Normal positive inputs follow upstream pre-SM100 integer exponent extraction.
++Handle subnormals and non-positive/NaN inputs explicitly: tensor metadata alone
++cannot prove the positive-normal input assumption used by the upstream rewrite.
++"""
++import torch
++
++from torch._inductor.pattern_matcher import fwd_only, init_once_fakemode, register_replacement
++
++from . import config as ncfg
++
++
++def e8m0_rceil_log2_pattern(inp):
++    return (torch.clamp(torch.ceil(torch.log2(inp)), -127, 127) + 127).to(torch.uint8)
++
++
++def e8m0_rceil_log2_replacement(inp):
++    bits = inp.view(torch.int32)
++    exponent = (bits >> 23) & 0xFF
++    mantissa = bits & 0x7FFFFF
++    normal = torch.clamp(exponent + (mantissa != 0).to(torch.int32), 0, 254)
++    # Subnormals cross the only unsaturated exponent boundary at exactly 2^-127.
++    # The corresponding mantissa is 2^22; ceil rounds up only strictly above it.
++    subnormal = (mantissa > 0x400000).to(torch.int32)
++    encoded = torch.where(exponent == 0, subnormal, normal)
++    # Preserve NPU log2/clamp/to(uint8) behavior for negative values and NaNs.
++    # +inf saturates to 254; both signs of zero encode as zero.
++    invalid = (bits < 0) | ((exponent == 0xFF) & (mantissa != 0))
++    return torch.where(invalid, 0, encoded).to(torch.uint8)
++
++
++def e8m0_extra_check(match):
++    if not ncfg.enable_e8m0_rceil_log2:
++        return False
++    inp = match.kwargs.get("inp")
++    value = inp.meta.get("val") if inp is not None else None
++    return value is not None and value.device.type == "npu" and value.dtype == torch.float32
++
++
++@init_once_fakemode
++def register_e8m0_pattern():
++    from torch._inductor.fx_passes.post_grad import pass_patterns
++
++    # Fake CPU example traces device-independent operator structure without
++    # allocating an accelerator tensor during backend activation.
++    register_replacement(
++        e8m0_rceil_log2_pattern,
++        e8m0_rceil_log2_replacement,
++        [torch.empty(32, dtype=torch.float32)],
++        fwd_only,
++        [pass_patterns[1]],
++        extra_check=e8m0_extra_check,
++        skip_duplicates=True,
++        pattern_name="e8m0_rceil_log2_pattern",
++    )

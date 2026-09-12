@@ -1,0 +1,19 @@
+
+
+
+def forward(self, arg0_1, arg1_1, arg2_1):
+    cat = torch.ops.aten.cat.default([arg0_1, arg1_1], 1);  arg0_1 = arg1_1 = None
+    split = torch.ops.aten.split.Tensor(cat, 32, 1);  cat = None
+    getitem = split[0]
+    getitem_1 = split[1]
+    getitem_2 = split[2]
+    getitem_3 = split[3]
+    getitem_4 = split[4]
+    getitem_5 = split[5]
+    getitem_6 = split[6]
+    getitem_7 = split[7];  split = None
+    cat_1 = torch.ops.aten.cat.default([getitem, getitem_1, getitem_2, getitem_3, getitem_4, getitem_5, getitem_6, getitem_7], 1);  getitem_1 = getitem_2 = getitem_3 = getitem_4 = getitem_5 = getitem_6 = getitem_7 = None
+    cat_2 = torch.ops.aten.cat.default([getitem, arg2_1], 1);  getitem = arg2_1 = None
+    cat_3 = torch.ops.aten.cat.default([cat_1, cat_2], 1);  cat_1 = cat_2 = None
+    return (cat_3,)
+    

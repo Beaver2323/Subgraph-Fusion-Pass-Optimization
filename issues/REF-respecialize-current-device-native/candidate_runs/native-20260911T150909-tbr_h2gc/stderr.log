@@ -1,0 +1,12 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_inductor_compiles_under_coor (builtins.TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor) ... [W911 15:09:21.308605220 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0911 15:09:54.626000 1792440 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t087-native-a9_ytt5s/adapter/debug/torch_compile_debug/run_2026_09_11_15_09_21_811168-pid_1792440/torchinductor/model__0_inference_0.0
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 33.209s
+
+OK

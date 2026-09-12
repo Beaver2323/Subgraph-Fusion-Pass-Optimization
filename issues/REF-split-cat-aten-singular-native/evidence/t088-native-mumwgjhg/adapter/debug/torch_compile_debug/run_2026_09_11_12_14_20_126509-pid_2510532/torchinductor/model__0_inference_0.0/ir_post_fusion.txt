@@ -1,0 +1,73 @@
+op0: ExternKernelSchedulerNode(FallbackKernel)
+op0.writes = [StarDep(name='buf0', mode=None)]
+op0.unmet_dependencies = []
+op0.met_dependencies = [StarDep(name='arg0_1', mode=None), StarDep(name='arg1_1', mode=None)]
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: FallbackKernel
+    buf0.layout = FixedLayout('npu:0', torch.float32, size=[1024, 256], stride=[256, 1])
+    buf0.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op1'), can_inplace=False, is_weak=False),
+        NodeUser(node=SchedulerNode(name='op2'), can_inplace=False, is_weak=False),
+    ]
+]
+op0.node.kernel = torch.ops.aten.cat.default
+
+
+op1: ExternKernelSchedulerNode(FallbackKernel)
+op1.writes = [StarDep(name='buf1', mode=None)]
+op1.unmet_dependencies = [StarDep(name='buf0', mode=None)]
+op1.met_dependencies = [StarDep(name='arg2_1', mode=None)]
+op1.min_input_distance = 1
+op1.max_input_distance = 1
+op1.outputs = [
+    buf1: FallbackKernel
+    buf1.layout = FixedLayout('npu:0', torch.float32, size=[1024, 64], stride=[64, 1])
+    buf1.users = [NodeUser(node=ExternKernelSchedulerNode(name='op3'), can_inplace=False, is_weak=False)]
+]
+op1.node.kernel = torch.ops.aten.cat.default
+
+
+op2: SchedulerNode(ComputedBuffer)
+op2.writes = [MemoryDep('buf2', c0, {c0: 32768})]
+op2.unmet_dependencies = [MemoryDep('buf0', 256*c0 + c1, {c0: 1024, c1: 32})]
+op2.met_dependencies = []
+op2.min_input_distance = 1
+op2.max_input_distance = 1
+op2.outputs = [
+    buf2: ComputedBuffer
+    buf2.layout = FixedLayout('npu:0', torch.float32, size=[1024, 32], stride=[32, 1])
+    buf2.users = [NodeUser(node=ExternKernelSchedulerNode(name='op3'), can_inplace=False, is_weak=False)]
+]
+op2.group.device = npu:0
+op2.group.iteration = (32768, 1)
+op2.sizes = ((1024, 32), ())
+buf0_layout = FixedLayout('npu:0', torch.float32, size=[1024, 256], stride=[256, 1])
+buf2_layout = FixedLayout('npu:0', torch.float32, size=[1024, 32], stride=[32, 1])
+class op2_loop_body:
+    var_ranges = {p0: 1024, p1: 32}
+    index0 = 256*p0 + p1
+    index1 = 32*p0 + p1
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('buf0', get_index)
+        get_index_1 = self.get_index('index1')
+        store = ops.store('buf2', get_index_1, load, None)
+        return store
+
+
+op3: ExternKernelSchedulerNode(FallbackKernel)
+op3.writes = [StarDep(name='buf3', mode=None)]
+op3.unmet_dependencies = [StarDep(name='buf1', mode=None), StarDep(name='buf2', mode=None)]
+op3.met_dependencies = []
+op3.min_input_distance = 2
+op3.max_input_distance = 2
+op3.outputs = [
+    buf3: FallbackKernel
+    buf3.layout = FixedLayout('npu:0', torch.float32, size=[1024, 96], stride=[96, 1])
+    buf3.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op3.node.kernel = torch.ops.aten.cat.default
+
+

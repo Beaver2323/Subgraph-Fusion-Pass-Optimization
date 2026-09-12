@@ -131,6 +131,7 @@ def build(repo_root: Path, generated_at: str) -> dict:
                          else "prepared-with-explicit-deferred-candidates"
                      ), reference_ready=bool(ready), reference_frozen=reference_frozen,
                      formally_closed=formally_closed,
+                     formally_closed_units=manifest.get("counting_policy", {}).get("current_formally_closed_units", 0),
                      performance_readiness=(
                          "runtime-validated-performance-disposition-complete"
                          if formally_closed
@@ -143,7 +144,10 @@ def build(repo_root: Path, generated_at: str) -> dict:
                      ready_acceptance_units=sorted(ready), deferred_candidates=list(deferred.values()),
                      manifest=manifest_file.relative_to(repo_root).as_posix())
         for unit in batch["units"]:
+            current_unit = next((u for u in manifest['acceptance_units']
+                if u['acceptance_unit_id'] == ALIASES.get(unit['provisional_unit_id'], unit['provisional_unit_id'])), {})
             unit["review_disposition"] = (
+                current_unit['coverage_phase'] if current_unit.get('coverage_phase') else
                 "gpu-npu-functional-and-performance-complete"
                 if formally_closed and ALIASES.get(unit["provisional_unit_id"], unit["provisional_unit_id"]) in ready
                 else
@@ -184,7 +188,7 @@ def markdown(data: dict) -> str:
         "机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。", "",
         f"T-074 的 {counts['inventory_units']} 个 provisional 单元中，活动 manifest 已接入 {counts['selected_manifest_units']} 个；",
         f"未接入的 {counts['remaining_provisional_units']} 个候选中，{counts['deferred_review_units']} 个留在已审批次延期，{counts['reviewed_zero_batches']} 个批次已确认零GPU-ready，其余保留 {counts['draft_batches']} 个草案批次；另有 {counts['non_counting_review_records']} 条非计数结构记录已按原因单列，不进入GPU分母，只有源码或映射变化时才重开。", "",
-        "T-081～T-086 的已选12单元已完成原生GPU reference、NPU triton_experimental功能验证与性能处置；T-087～T-100有10个单元等待GPU；T-101～T-113从52个候选中准备28个GPU原生合同、明确延期24个，其中6个批次合法零GPU-ready。至此T-081～T-113全部完成准备/延期审核，保留原批次和旧ID，不重排。", "",
+        "T-081～T-113全部完成准备/延期审核，保留原批次和旧ID，不重排。动态进度以下表及当前兼容性矩阵为准；等待GPU包括首次回传和精确目标归因补证，不代表原生测试从未执行。安装态失败与隔离候选通过分列，不把候选计作已闭环。", "",
         "| 草案任务 | 源码 family | 暂列单元数 | 状态 |", "| --- | --- | ---: | --- |"]
     for batch in data["batches"]:
         if batch.get("formally_closed"):
@@ -195,12 +199,13 @@ def markdown(data: dict) -> str:
         elif batch.get("reference_frozen"):
             status = (
                 f"已冻结{len(batch.get('ready_acceptance_units', []))}，"
-                f"延期{len(batch.get('deferred_candidates', []))}；等NPU"
+                f"已闭环{batch.get('formally_closed_units', 0)}，"
+                f"延期{len(batch.get('deferred_candidates', []))}；余项NPU处理中"
             )
         elif batch["reference_ready"]:
             status = (
                 f"已准备{len(batch.get('ready_acceptance_units', []))}，"
-                f"延期{len(batch.get('deferred_candidates', []))}；等GPU"
+                f"延期{len(batch.get('deferred_candidates', []))}；等GPU/补证"
             )
         elif batch["status"] == "reviewed-no-gpu-ready-units":
             status = (

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-105",
-  "generated_at": "2026-09-10T22:55:21+08:00",
+  "generated_at": "2026-09-11T12:12:00+08:00",
   "status": "gpu-ready-awaiting-native-execution",
   "performance_plan": {
     "path": "upstream/t105_performance_plan.yaml",
@@ -32,6 +32,7 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-16",
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_16_inference_gpu",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "pattern-16-community-product"
       ],
@@ -52,6 +53,7 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-17",
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_17_gpu",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "pattern-17-community-product"
       ],
@@ -72,6 +74,7 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-18",
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_18_gpu",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "pattern-18-community-product"
       ],
@@ -92,6 +95,7 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-19",
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_19_gpu",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "pattern-19-community-product"
       ],
@@ -112,6 +116,7 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-20",
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_20_gpu",
       "tracking_mode": "direct",
+      "native_contract_observer": true,
       "variant_ids": [
         "pattern-20-community-product"
       ],

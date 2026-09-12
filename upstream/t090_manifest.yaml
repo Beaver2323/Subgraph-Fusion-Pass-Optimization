@@ -1,21 +1,125 @@
 {
-  "schema_version": "1.0", "generated_at": "2026-09-10T23:14:54+08:00", "status": "prepared-awaiting-gpu-reference",
-  "source_baselines": {"pytorch": {"commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "branch": "release/2.14", "relevant_tracked_files_state": "clean"}},
-  "mapping_review": {"input_scope": "T-090五个normalization候选逐项复核", "selected_acceptance_units": ["AU-split-cat-normalize-cat-default-aten"], "corrections": ["test_split_cat_post_grad是直接GPU组合合同并精确断言normalization_aten_pass次数，可作为normalize_cat_default_aten邻接分母。", "非aten cat及clamp/detach/reshape normalization当前候选仅CPU/间接证据，不能借组合GPU结果外推。"]},
-  "reference_contract": {"device_class": "GPU", "backend": "inductor-default", "execution_order": "native-community-test-first-then-minimal-adapter-if-required", "minimum_gpus": 1, "distributed_world_size": null, "scope": "原生GPU normalization_aten组合合同", "suite_status": "pending-gpu-reference"},
-  "counting_policy": {"current_manifest_units": 1, "current_frozen_denominator_units": 0, "current_formally_closed_units": 0, "denominator_rule": "GPU测例和FX确认cat规范化后冻结；组合测例不外推到其他handler"},
-  "acceptance_units": [{
-    "acceptance_unit_id": "AU-split-cat-normalize-cat-default-aten", "contract_name": "aten.cat参数规范化", "stage": "post_grad", "review_status": "prepared-awaiting-gpu-reference", "denominator_eligible": "yes-provisional", "coverage_phase": "awaiting-gpu-reference",
-    "upstream_sources": [{"path": "torch/_inductor/fx_passes/split_cat.py", "line": 1959, "symbol": "normalize_cat_default_aten", "role": "normalization-pattern"}],
-    "community_tests": [{"nodeid": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad", "role": "direct-composite-positive", "evidence_scope": "真实GPU；输入图包含多个aten.cat且normalization_aten_pass=5，随后split_cat=1并验证数值"}],
-    "variants": [{"variant_id": "cat-positional-dim-normalization-positive", "kind": "positive", "expected_reference_match": true, "expected_behavior": "aten.cat positional/axis/dim规范为kwargs dim的合法非负轴，保持meta与语义", "expected_counter": "normalization_aten_pass=5 in composite test", "reference_status": "not-run", "npu_status": "not-run"}],
-    "tracking": {"reference_mode": "direct", "npu_mode": "triton-experimental-derived-from-community-functional-case", "allowed_local_deviation": ["NPU保持社区组合图、shape和两个pass顺序"], "forbidden_local_deviation": ["将组合counter外推为clamp/detach/reshape已覆盖", "关闭整个post_grad"]},
-    "npu_control": {"config": "post_grad_fusion_options.normalization_aten_pass", "off": "omit-normalization-only", "on": {}, "status": "prepared", "next_action": "GPU冻结后确认精确cat handler调用并执行NPU OFF/ON"}
-  }],
+  "schema_version": "1.0",
+  "generated_at": "2026-09-11T15:25:08.180422+08:00",
+  "status": "completed",
+  "source_baselines": {
+    "pytorch": {
+      "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+      "branch": "release/2.14",
+      "relevant_tracked_files_state": "clean"
+    }
+  },
+  "mapping_review": {
+    "input_scope": "T-090五个normalization候选逐项复核",
+    "selected_acceptance_units": [
+      "AU-split-cat-normalize-cat-default-aten"
+    ],
+    "corrections": [
+      "test_split_cat_post_grad是直接GPU组合合同并精确断言normalization_aten_pass次数，可作为normalize_cat_default_aten邻接分母。",
+      "非aten cat及clamp/detach/reshape normalization当前候选仅CPU/间接证据，不能借组合GPU结果外推。"
+    ]
+  },
+  "reference_contract": {
+    "device_class": "GPU",
+    "backend": "inductor-default",
+    "execution_order": "native-community-test-first-then-minimal-adapter-if-required",
+    "minimum_gpus": 1,
+    "distributed_world_size": null,
+    "scope": "原生GPU normalization_aten组合合同",
+    "suite_status": "valid-reference-suite"
+  },
+  "counting_policy": {
+    "current_manifest_units": 1,
+    "current_frozen_denominator_units": 1,
+    "current_formally_closed_units": 1,
+    "denominator_rule": "GPU测例和FX确认cat规范化后冻结；组合测例不外推到其他handler"
+  },
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-split-cat-normalize-cat-default-aten",
+      "contract_name": "aten.cat参数规范化",
+      "stage": "post_grad",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
+      "upstream_sources": [
+        {
+          "path": "torch/_inductor/fx_passes/split_cat.py",
+          "line": 1959,
+          "symbol": "normalize_cat_default_aten",
+          "role": "normalization-pattern"
+        }
+      ],
+      "community_tests": [
+        {
+          "nodeid": "test/inductor/test_split_cat_fx_aten_passes.py::TestSplitCatAten.test_split_cat_post_grad",
+          "role": "direct-composite-positive",
+          "evidence_scope": "真实GPU；输入图包含多个aten.cat且normalization_aten_pass=5，随后split_cat=1并验证数值"
+        }
+      ],
+      "variants": [
+        {
+          "variant_id": "cat-positional-dim-normalization-positive",
+          "kind": "positive",
+          "expected_reference_match": true,
+          "expected_behavior": "aten.cat positional/axis/dim规范为kwargs dim的合法非负轴，保持meta与语义",
+          "expected_counter": "normalization_aten_pass=5 in composite test",
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
+        }
+      ],
+      "tracking": {
+        "reference_mode": "direct",
+        "npu_mode": "triton-experimental-derived-from-community-functional-case",
+        "allowed_local_deviation": [
+          "NPU保持社区组合图、shape和两个pass顺序"
+        ],
+        "forbidden_local_deviation": [
+          "将组合counter外推为clamp/detach/reshape已覆盖",
+          "关闭整个post_grad"
+        ]
+      },
+      "npu_control": {
+        "config": "post_grad_fusion_options.normalization_aten_pass",
+        "off": "omit-normalization-only",
+        "on": {},
+        "status": "prepared",
+        "next_action": "GPU冻结后确认精确cat handler调用并执行NPU OFF/ON"
+      }
+    }
+  ],
   "deferred_candidates": [
-    {"provisional_unit_id": "AU-split-cat-normalize-cat-default", "status": "deferred-cpu-only", "reason": "非aten社区入口为CPU。", "denominator_eligible": false, "performance_readiness": "blocked-by-gpu-contract", "next_action": "补GPU合同"},
-    {"provisional_unit_id": "AU-split-cat-normalize-clamp-default", "status": "deferred-no-direct-gpu-handler-evidence", "reason": "没有直接GPU clamp normalization合同。", "denominator_eligible": false, "performance_readiness": "blocked-by-direct-test", "next_action": "补GPU正负例"},
-    {"provisional_unit_id": "AU-split-cat-normalize-detach-default", "status": "deferred-no-direct-gpu-handler-evidence", "reason": "没有直接GPU detach normalization合同。", "denominator_eligible": false, "performance_readiness": "blocked-by-direct-test", "next_action": "补GPU正负例"},
-    {"provisional_unit_id": "AU-split-cat-normalize-reshape-default", "status": "deferred-no-direct-gpu-handler-evidence", "reason": "没有直接GPU reshape normalization合同。", "denominator_eligible": false, "performance_readiness": "blocked-by-direct-test", "next_action": "补GPU正负例"}
+    {
+      "provisional_unit_id": "AU-split-cat-normalize-cat-default",
+      "status": "deferred-cpu-only",
+      "reason": "非aten社区入口为CPU。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-gpu-contract",
+      "next_action": "补GPU合同"
+    },
+    {
+      "provisional_unit_id": "AU-split-cat-normalize-clamp-default",
+      "status": "deferred-no-direct-gpu-handler-evidence",
+      "reason": "没有直接GPU clamp normalization合同。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-test",
+      "next_action": "补GPU正负例"
+    },
+    {
+      "provisional_unit_id": "AU-split-cat-normalize-detach-default",
+      "status": "deferred-no-direct-gpu-handler-evidence",
+      "reason": "没有直接GPU detach normalization合同。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-test",
+      "next_action": "补GPU正负例"
+    },
+    {
+      "provisional_unit_id": "AU-split-cat-normalize-reshape-default",
+      "status": "deferred-no-direct-gpu-handler-evidence",
+      "reason": "没有直接GPU reshape normalization合同。",
+      "denominator_eligible": false,
+      "performance_readiness": "blocked-by-direct-test",
+      "next_action": "补GPU正负例"
+    }
   ]
 }

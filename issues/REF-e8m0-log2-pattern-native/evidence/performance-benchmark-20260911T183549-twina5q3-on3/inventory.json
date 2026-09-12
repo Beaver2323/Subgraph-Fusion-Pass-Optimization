@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-09-11T18:40:09.308535+08:00",
+  "source_run": "/home/z50063656/tmp/t096-npu-results/benchmark-20260911T183549-twina5q3/on3",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+      "bytes": 852
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "9ba6a4dfff9c31841e67aab9264278c4fe9ff69f02ff65846823a0c46327f91c",
+      "bytes": 2925
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "53e7ccc5d6cd1220d8fc801f414297276ceadebd9fe7e418a90b209fe687ce04",
+      "bytes": 4920
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "a91464c714edabd75866f8bfead1dceaf589366173188ade7f94900556db073f",
+      "bytes": 4919
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "f6e32732dc0e3e4a3adc2784062dcdf1c0420593ac8d94a895ab4a034def8926",
+      "bytes": 12868
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/result.json",
+      "sha256": "07d7fc8ef810852bd403c85aa107794498447c6e1677670b4e6d926a8de0cbd6",
+      "bytes": 72576
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/target-0-after.txt",
+      "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+      "bytes": 2345
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/target-0-before.txt",
+      "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+      "bytes": 524
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/execution.json",
+      "sha256": "55cde7158ff396c8dcde3cff321edb043d1941cd0c3d18421a8424c596172a49",
+      "bytes": 634
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/stderr.log",
+      "sha256": "b21e7b6a6e435f7f2e7f7a6ddfcd82438a9f2da9cc6e64cfcb04429fa9dfaa14",
+      "bytes": 1091
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/stdout.log",
+      "sha256": "369e63971c9455cbc86b2f922fa9e37a308c4ff8a93d6212fedb7ef2fd9c7fef",
+      "bytes": 67
+    }
+  ],
+  "generated_output_code_present": true
+}

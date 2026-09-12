@@ -1,0 +1,56 @@
+op0: SchedulerNode(ComputedBuffer)
+op0.writes = [MemoryDep('buf0', 672*d0 + d1, {d0: 8, d1: 672})]
+op0.unmet_dependencies = []
+op0.met_dependencies = [   MemoryDep('arg0_1', 96*d0 + 768*((d1//96)) + (ModularIndexing(d1, 1, 96)), {d0: 8, d1: 672})]
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: ComputedBuffer
+    buf0.layout = FixedLayout('npu:0', torch.float32, size=[8, 672], stride=[672, 1])
+    buf0.users = [NodeUser(node=ExternKernelSchedulerNode(name='op1'), can_inplace=False, is_weak=False)]
+]
+op0.group.device = npu:0
+op0.group.iteration = (5376, 1)
+op0.sizes = ([8, 672], [])
+arg0_1_layout = FixedLayout('npu:0', torch.float32, size=[7, 8, 96], stride=[768, 96, 1])
+buf0_layout = FixedLayout('npu:0', torch.float32, size=[8, 672], stride=[672, 1])
+class op0_loop_body:
+    var_ranges = {p0: 8, p1: 672}
+    index0 = 96*p0 + 768*((p1//96)) + (ModularIndexing(p1, 1, 96))
+    index1 = 672*p0 + p1
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('arg0_1', get_index)
+        get_index_1 = self.get_index('index1')
+        store = ops.store('buf0', get_index_1, load, None)
+        return store
+
+
+op1: ExternKernelSchedulerNode(FallbackKernel)
+op1.writes = [StarDep(name='buf1', mode=None)]
+op1.unmet_dependencies = [StarDep(name='buf0', mode=None)]
+op1.met_dependencies = [StarDep(name='arg0_1', mode=None)]
+op1.min_input_distance = 1
+op1.max_input_distance = 1
+op1.outputs = [
+    buf1: FallbackKernel
+    buf1.layout = FixedLayout('npu:0', torch.float32, size=[8, 768], stride=[768, 1])
+    buf1.users = [NodeUser(node=ExternKernelSchedulerNode(name='op2'), can_inplace=False, is_weak=False)]
+]
+op1.node.kernel = torch.ops.aten.cat.default
+
+
+op2: ExternKernelSchedulerNode(FallbackKernel)
+op2.writes = [StarDep(name='buf2', mode=None)]
+op2.unmet_dependencies = [StarDep(name='buf1', mode=None)]
+op2.met_dependencies = [StarDep(name='arg0_1', mode=None)]
+op2.min_input_distance = 2
+op2.max_input_distance = 2
+op2.outputs = [
+    buf2: FallbackKernel
+    buf2.layout = FixedLayout('npu:0', torch.float32, size=[8, 864], stride=[864, 1])
+    buf2.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op2.node.kernel = torch.ops.aten.cat.default
+
+

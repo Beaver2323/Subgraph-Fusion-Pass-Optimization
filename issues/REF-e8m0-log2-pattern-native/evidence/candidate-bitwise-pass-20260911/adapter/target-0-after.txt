@@ -1,0 +1,16 @@
+
+
+
+def forward(self, arg0_1):
+    view_dtype = torch.ops.aten.view.dtype(arg0_1, torch.int32);  arg0_1 = None
+    __rshift___scalar = torch.ops.aten.__rshift__.Scalar(view_dtype, 23)
+    bitwise_and_scalar = torch.ops.aten.bitwise_and.Scalar(__rshift___scalar, 255);  __rshift___scalar = None
+    bitwise_and_scalar_1 = torch.ops.aten.bitwise_and.Scalar(view_dtype, 8388607);  view_dtype = None
+    ne_scalar = torch.ops.aten.ne.Scalar(bitwise_and_scalar_1, 0);  bitwise_and_scalar_1 = None
+    convert_element_type_default = torch.ops.prims.convert_element_type.default(ne_scalar, torch.int32);  ne_scalar = None
+    add_tensor = torch.ops.aten.add.Tensor(bitwise_and_scalar, convert_element_type_default);  bitwise_and_scalar = convert_element_type_default = None
+    clamp_min_default = torch.ops.aten.clamp_min.default(add_tensor, 0);  add_tensor = None
+    clamp_max_default = torch.ops.aten.clamp_max.default(clamp_min_default, 254);  clamp_min_default = None
+    convert_element_type_default_1 = torch.ops.prims.convert_element_type.default(clamp_max_default, torch.uint8);  clamp_max_default = None
+    return (convert_element_type_default_1,)
+    

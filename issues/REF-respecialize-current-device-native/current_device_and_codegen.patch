@@ -1,0 +1,53 @@
+diff --git a/torch_npu/_inductor/triton_experimental/codegen/triton.py b/torch_npu/_inductor/triton_experimental/codegen/triton.py
+index a20d1f02e..e503daa9f 100644
+--- a/torch_npu/_inductor/triton_experimental/codegen/triton.py
++++ b/torch_npu/_inductor/triton_experimental/codegen/triton.py
+@@ -78,6 +78,15 @@ import torch
+ triton_codegen_linearize = ncfg.codegen_linearize
+ 
+ 
++def _npu_codegen_device():
++    from torch.fx.experimental.proxy_tensor import _coor_enabled
++
++    device = V.graph.get_current_device_or_throw()
++    # Like upstream Triton codegen, preserve index=None under compile-on-one-rank.
++    # The runtime launcher resolves the actual device when loading the kernel.
++    return torch.device(device.type) if _coor_enabled() else device
++
++
+ def _npu_parse_generated_line(line: str):
+     indent = line[: len(line) - len(line.lstrip())]
+     try:
+@@ -3764,7 +3773,7 @@ class NPUTritonKernel(TritonKernel):
+             "signature": triton_meta_signature,
+             **({"downcast_args": downcast_args} if downcast_args else {}),
+             # 2.7.1: DeviceProperties instead of raw device index
+-            "device": DeviceProperties.create(V.graph.get_current_device_or_throw()),
++            "device": DeviceProperties.create(_npu_codegen_device()),
+             "constants": {},
+             "mix_mode": "aiv",  # NPU: force vector kernel generation
+         }
+@@ -5107,7 +5116,7 @@ class NPUTritonScheduling(TritonScheduling):
+                 "xnumel": "i32",
+                 "r0_numel": "i32",
+             },
+-            "device": DeviceProperties.create(V.graph.get_current_device_or_throw()),
++            "device": DeviceProperties.create(_npu_codegen_device()),
+             "constants": {"r0_numel": total_cores},
+             "mix_mode": "aiv",
+             "configs": [combine_attrs],
+diff --git a/torch_npu/_inductor/triton_experimental/device.py b/torch_npu/_inductor/triton_experimental/device.py
+index a47278f41..4e8a8ba5e 100644
+--- a/torch_npu/_inductor/triton_experimental/device.py
++++ b/torch_npu/_inductor/triton_experimental/device.py
+@@ -53,6 +53,11 @@ def get_current_raw_stream(device):
+ 
+ 
+ class NewNPUDeviceOpOverrides(NPUDeviceOpOverrides):
++    def current_device_idx_expr(self) -> str:
++        # Compile-on-one-rank resolves the device in the generated wrapper,
++        # not while compiling this rank. Other NPU backends remain unchanged.
++        return "torch.npu.current_device()"
++
+     def import_get_raw_stream_as(self, name):
+         return f"from torch_npu._inductor.triton_experimental import get_current_raw_stream as {name}"

@@ -1,0 +1,9 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_regression_gh178045_encoding_correctness (__main__.TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness)
+Regression for gh-178045: encoding must be correct for inputs near power-of-2. ... skipped 'Requires CUDA + Triton'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK (skipped=1)

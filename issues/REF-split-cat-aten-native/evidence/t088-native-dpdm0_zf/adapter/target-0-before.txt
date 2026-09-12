@@ -1,0 +1,19 @@
+
+
+
+def forward(self, arg0_1, arg1_1, arg2_1):
+    cat_default_3 = torch.ops.aten.cat.default([arg0_1, arg1_1], dim = 1);  arg0_1 = arg1_1 = None
+    split_with_sizes_default = torch.ops.aten.split_with_sizes.default(cat_default_3, [32, 32, 32, 32, 32, 32, 32, 32], dim = 1);  cat_default_3 = None
+    getitem = split_with_sizes_default[0]
+    getitem_1 = split_with_sizes_default[1]
+    getitem_2 = split_with_sizes_default[2]
+    getitem_3 = split_with_sizes_default[3]
+    getitem_4 = split_with_sizes_default[4]
+    getitem_5 = split_with_sizes_default[5]
+    getitem_6 = split_with_sizes_default[6]
+    getitem_7 = split_with_sizes_default[7];  split_with_sizes_default = None
+    cat_default_2 = torch.ops.aten.cat.default([getitem, getitem_1, getitem_2, getitem_3, getitem_4, getitem_5, getitem_6, getitem_7], dim = 1);  getitem_1 = getitem_2 = getitem_3 = getitem_4 = getitem_5 = getitem_6 = getitem_7 = None
+    cat_default_1 = torch.ops.aten.cat.default([getitem, arg2_1], dim = 1);  getitem = arg2_1 = None
+    cat_default = torch.ops.aten.cat.default([cat_default_2, cat_default_1], dim = 1);  cat_default_2 = cat_default_1 = None
+    return (cat_default,)
+    

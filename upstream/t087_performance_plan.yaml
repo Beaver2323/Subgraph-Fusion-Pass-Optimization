@@ -1,28 +1,139 @@
 {
-  "schema_version": "1.0", "task_id": "T-087", "generated_at": "2026-09-10T23:14:54+08:00", "status": "prepared-awaiting-gpu-and-npu-functional-gates",
-  "implementation": {"status": "implemented-awaiting-runtime-validation", "entrypoint": "runners/t087_t090_performance_worker.py", "launcher": "scripts/run_t087_t090_performance.py"},
-  "backend_contract": {"npu_backend": "triton_experimental", "selection_timing": "新进程内导入torch/torch_npu之前设置TORCHINDUCTOR_NPU_BACKEND", "process_isolation": "fresh-process-per-arm", "off_on_order": ["OFF1", "ON1", "ON2", "OFF2", "OFF3", "ON3"], "explicit_disable_policy": "产品明确disable则记录并免测；禁止绕过产品gate"},
-  "measurement_contract": {"correctness_gate": "GPU原生reference有效后，NPU先验证OFF/ON数值、梯度、目标调用与实际图改写、零graph break/CPU fallback，再人工签gate", "warmup": 10, "runs": 100, "timing": ["host synchronized wall time p50/p99", "device Event p50/p99", "compile latency separate", "raw samples"], "memory": ["peak allocated", "peak reserved"], "verdict_thresholds": {"improved_percent": 5, "regressed_percent": -5, "otherwise": "PERF_NEUTRAL"}, "rounds": 3, "aggregation": "三OFF/三ON分别取各臂p50/p99后再取中位数"},
-  "hardware_contract": {"gpu_reference_minimum_devices": 1, "performance_minimum_devices": 1, "performance_world_size": 1, "actual_device_execution_required": true, "fake_tensor_allowed_as_performance_oracle": false},
-  "benchmark_search": {"revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b", "paths": ["benchmarks/", "test/inductor/", "test/distributed/"], "terms": ["reorder_for_locality", "compile_on_one_rank", "current_device"], "result": "未发现精确控制目标pass的社区性能benchmark；性能图严格派生自直接社区功能图。", "source_priority": "复用社区模型/shape/训练步骤；不称为社区原生benchmark或模型端到端"},
+  "schema_version": "1.0",
+  "task_id": "T-087",
+  "generated_at": "2026-09-11T15:25:08.180422+08:00",
+  "status": "performance-disposition-complete",
+  "implementation": {
+    "status": "implemented-runtime-validated",
+    "entrypoint": "runners/t087_t090_performance_worker.py",
+    "launcher": "scripts/run_t087_t090_performance.py"
+  },
+  "backend_contract": {
+    "npu_backend": "triton_experimental",
+    "selection_timing": "新进程内导入torch/torch_npu之前设置TORCHINDUCTOR_NPU_BACKEND",
+    "process_isolation": "fresh-process-per-arm",
+    "off_on_order": [
+      "OFF1",
+      "ON1",
+      "ON2",
+      "OFF2",
+      "OFF3",
+      "ON3"
+    ],
+    "explicit_disable_policy": "产品明确disable则记录并免测；禁止绕过产品gate"
+  },
+  "measurement_contract": {
+    "correctness_gate": "GPU原生reference有效后，NPU先验证OFF/ON数值、梯度、目标调用与实际图改写、零graph break/CPU fallback，再人工签gate",
+    "warmup": 10,
+    "runs": 100,
+    "timing": [
+      "host synchronized wall time p50/p99",
+      "device Event p50/p99",
+      "compile latency separate",
+      "raw samples"
+    ],
+    "memory": [
+      "peak allocated",
+      "peak reserved"
+    ],
+    "verdict_thresholds": {
+      "improved_percent": 5,
+      "regressed_percent": -5,
+      "otherwise": "PERF_NEUTRAL"
+    },
+    "rounds": 3,
+    "aggregation": "三OFF/三ON分别取各臂p50/p99后再取中位数"
+  },
+  "hardware_contract": {
+    "gpu_reference_minimum_devices": 1,
+    "performance_minimum_devices": 1,
+    "performance_world_size": 1,
+    "actual_device_execution_required": true,
+    "fake_tensor_allowed_as_performance_oracle": false
+  },
+  "benchmark_search": {
+    "revision": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "paths": [
+      "benchmarks/",
+      "test/inductor/",
+      "test/distributed/"
+    ],
+    "terms": [
+      "reorder_for_locality",
+      "compile_on_one_rank",
+      "current_device"
+    ],
+    "result": "未发现精确控制目标pass的社区性能benchmark；性能图严格派生自直接社区功能图。",
+    "source_priority": "复用社区模型/shape/训练步骤；不称为社区原生benchmark或模型端到端"
+  },
   "acceptance_units": [
     {
-      "acceptance_unit_id": "AU-post-grad-reorder-for-locality", "worker_unit": "reorder-locality", "performance_status": "prepared-awaiting-functional-gate", "verdict": "planned",
-      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/inductor/test_reorder_for_locality_in_training.py::TestReorderForLocalityInTrainingCUDA.test_training_flag_reorders_and_preserves_semantics_cuda"], "reason": "无社区性能benchmark；复用_TwoBranch、[8,16]、两组[16,16]参数、前向+反向"},
+      "acceptance_unit_id": "AU-post-grad-reorder-for-locality",
+      "worker_unit": "reorder-locality",
+      "performance_status": "measured",
+      "verdict": "PERF_MIXED",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/inductor/test_reorder_for_locality_in_training.py::TestReorderForLocalityInTrainingCUDA.test_training_flag_reorders_and_preserves_semantics_cuda"
+        ],
+        "reason": "无社区性能benchmark；复用_TwoBranch、[8,16]、两组[16,16]参数、前向+反向"
+      },
       "functional_gate": "OFF不得调用目标；ON必须调用且节点顺序实际变化；输出、梯度与eager一致，无graph break/CPU fallback。",
-      "workloads": [{"workload_id": "reorder-locality-community-shape", "role": "primary", "shape_contract": "社区_TwoBranch，x=[8,16] fp32，两组[16,16]参数，固定seed", "measurement_scope": "一次compiled前向+backward训练子图，不含optimizer、数据加载或完整模型"}],
+      "workloads": [
+        {
+          "workload_id": "reorder-locality-community-shape",
+          "role": "primary",
+          "shape_contract": "社区_TwoBranch，x=[8,16] fp32，两组[16,16]参数，固定seed",
+          "measurement_scope": "一次compiled前向+backward训练子图，不含optimizer、数据加载或完整模型"
+        }
+      ],
       "off_on_control": "只切换reorder_for_locality_in_training false/true，reorder_for_locality保持true；每臂新进程。",
-      "artifacts": ["GPU与NPU功能原件sha256", "post-grad目标前后FX", "output_code.py与IR", "梯度/数值", "host/Event原始样本、显存和编译耗时", "loaded source sha256"],
-      "negative_cases": ["总开关关闭时子开关不得调用目标", "ON未移动、数值/梯度错误、graph break/fallback或产品disable均拒绝计时"]
+      "artifacts": [
+        "GPU与NPU功能原件sha256",
+        "post-grad目标前后FX",
+        "output_code.py与IR",
+        "梯度/数值",
+        "host/Event原始样本、显存和编译耗时",
+        "loaded source sha256"
+      ],
+      "negative_cases": [
+        "总开关关闭时子开关不得调用目标",
+        "ON未移动、数值/梯度错误、graph break/fallback或产品disable均拒绝计时"
+      ]
     },
     {
-      "acceptance_unit_id": "AU-post-grad-respecialize-current-device", "worker_unit": "none", "performance_status": "exempt-no-legal-off-path", "verdict": "PERF_EXEMPT",
-      "case_source": {"kind": "tracker-derived-from-community-functional-case", "nodeids": ["test/distributed/tensor/test_compile_on_one_rank.py::TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor"], "reason": "只用于说明功能输入来源；该必需正确性改写无合法性能OFF，不进入worker"},
+      "acceptance_unit_id": "AU-post-grad-respecialize-current-device",
+      "worker_unit": "none",
+      "performance_status": "exempt-no-legal-off-path",
+      "verdict": "PERF_EXEMPT",
+      "case_source": {
+        "kind": "tracker-derived-from-community-functional-case",
+        "nodeids": [
+          "test/distributed/tensor/test_compile_on_one_rank.py::TestCompileOnOneRankDeviceAsParameter.test_inductor_compiles_under_coor"
+        ],
+        "reason": "只用于说明功能输入来源；该必需正确性改写无合法性能OFF，不进入worker"
+      },
       "functional_gate": "真实NPU triton_experimental编译并确认current-device节点在lowering前消除，generated code不固化设备且数值正确。",
-      "workloads": [{"workload_id": "respecialize-current-device-functional-only", "role": "functional-only", "shape_contract": "社区_coor_inductor_fn，x=[2,8]，创建[4,8]当前设备tensor并做reduction", "measurement_scope": "仅功能与generated-code合同；不计性能收益"}],
+      "workloads": [
+        {
+          "workload_id": "respecialize-current-device-functional-only",
+          "role": "functional-only",
+          "shape_contract": "社区_coor_inductor_fn，x=[2,8]，创建[4,8]当前设备tensor并做reduction",
+          "measurement_scope": "仅功能与generated-code合同；不计性能收益"
+        }
+      ],
       "off_on_control": "无合法OFF：删除改写会让Inductor不支持的device-valued op进入lowering；禁止把预期编译失败当基线。",
-      "artifacts": ["GPU reference", "NPU FX before/after", "generated code当前设备与无固化索引断言", "backend/source sha256"],
-      "negative_cases": ["不得临时删除pass制造OFF", "default/DVM/MLIR结果不得替代triton_experimental"]
+      "artifacts": [
+        "GPU reference",
+        "NPU FX before/after",
+        "generated code当前设备与无固化索引断言",
+        "backend/source sha256"
+      ],
+      "negative_cases": [
+        "不得临时删除pass制造OFF",
+        "default/DVM/MLIR结果不得替代triton_experimental"
+      ]
     }
   ]
 }

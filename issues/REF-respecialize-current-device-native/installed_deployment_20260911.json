@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-09-11",
+  "timezone": "Asia/Shanghai",
+  "authorization": "用户在部署授权问题后回复继续",
+  "scope": "仅 /home/z50063656/envs/Pass；不修改系统或其他用户环境",
+  "backend": "triton_experimental",
+  "source_worktree": "/home/z50063656/Pass/worktrees/torch_npu_t087_current_device",
+  "source_patch": "current_device_and_codegen.patch",
+  "backup_directory": "/home/z50063656/Pass/backups/t087-deploy-20260911-gJQFfy",
+  "files": [
+    {
+      "installed": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/device.py",
+      "backup": "device.py",
+      "before_sha256": "167f1c990feb9c1991432d2a0bb15afb067a90d2a5050f932d7143dbaa39b476",
+      "after_sha256": "2f3ea97ea780d01a505cf788555c01c2aebb9721c15d76613e65ca5728730835"
+    },
+    {
+      "installed": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/codegen/triton.py",
+      "backup": "triton.py",
+      "before_sha256": "fdf903dbb2d645c1aa0e34e9f01a65998370a2a9790e8e950bb912c0085e2813",
+      "after_sha256": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381"
+    }
+  ],
+  "deployed": true,
+  "verification_status": "passed-original-and-four-neighbors",
+  "verified_at": "2026-09-11T18:20:16.690981+08:00"
+}

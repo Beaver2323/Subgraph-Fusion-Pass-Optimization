@@ -1,2 +1,7 @@
 # NPU 编译器原始文本按字节哈希归档；保留生成器产生的尾随空格和末尾空行。
 issues/**/evidence/** -whitespace
+
+# 2026-09-12 20:17 CST：三份原始 unified diff 的空白上下文行也是补丁语法，不能为格式检查改写原件。
+issues/REF-respecialize-current-device-native/current_device.patch whitespace=-blank-at-eol,-blank-at-eof
+issues/REF-respecialize-current-device-native/current_device_and_codegen.patch whitespace=-blank-at-eol,-blank-at-eof
+issues/REF-e8m0-log2-pattern-native/e8m0_installed_source.patch whitespace=-blank-at-eol,-blank-at-eof

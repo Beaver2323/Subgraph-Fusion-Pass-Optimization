@@ -1,0 +1,463 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-096",
+  "backend": "triton_experimental",
+  "generated_at": "2026-09-11T18:40:09.323215+08:00",
+  "status": "performance-disposition-complete",
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "unit": "e8m0-rceil-log2",
+      "performance_status": "measured",
+      "verdict": "PERF_REGRESSED",
+      "improvement_percent": {
+        "host_ms": {
+          "p50": -21.760094235966076,
+          "p99": -29.25305351231591
+        },
+        "event_ms": {
+          "p50": -28.322111262087812,
+          "p99": -27.654409500474042
+        }
+      },
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.47042500227689743,
+            "p99": 0.5182899022474923
+          },
+          "on": {
+            "p50": 0.5727899260818958,
+            "p99": 0.6699055247008809
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.3563999980688095,
+            "p99": 0.379270400106907
+          },
+          "on": {
+            "p50": 0.4573400020599365,
+            "p99": 0.48415538966655736
+          }
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.0610993847279622,
+        "host_ms_on": 1.1126916843649868,
+        "event_ms_off": 1.0709113739796525,
+        "event_ms_on": 1.040295724546337
+      },
+      "gate": {
+        "path": "results/current/T-096/performance_gates/e8m0-rceil-log2.json",
+        "sha256": "dac296f1c0dbec1ccce25b98c7e110ae495fbf431b5c7df63e6ce9868ffbb322"
+      },
+      "source_run_dir": "/home/z50063656/tmp/t096-npu-results/benchmark-20260911T183549-twina5q3",
+      "artifact_inventory": [
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_35_58_753997-pid_1855631/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+          "bytes": 852
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_35_58_753997-pid_1855631/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+          "bytes": 852
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_35_58_753997-pid_1855631/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "cf778e3b8a24f6647f269da1b8d443f39aab5842cb40432e53d8577c56df7444",
+          "bytes": 2846
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_35_58_753997-pid_1855631/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "87eae6858ac6a40c0fdb2f9fcc043a1bd49f8163762aeae75d35e199dec99825",
+          "bytes": 2844
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_35_58_753997-pid_1855631/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "866ff131df5e88e212b1bba8db0a8ff12ae8f4a8dbbef1e92d0a95b233ae13e9",
+          "bytes": 12673
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off1/artifacts/result.json",
+          "sha256": "07cf74f65c5811abd2cb69c836406fe9fb1654d184f03951d3a697d870bbe473",
+          "bytes": 72888
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off1/execution.json",
+          "sha256": "5c62f2bcc6babf43f8d71c0c4b565a60dbf23a01176739e176b35d3a48132686",
+          "bytes": 636
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off1/stderr.log",
+          "sha256": "c7d6de3ec0f269fc347b7941419b21d2982e75186b8d973ece9fe9187df2b0a0",
+          "bytes": 893
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off1/stdout.log",
+          "sha256": "f321a7c226eef3d63ecef1c574b9d111933fa817131027dbb9d3a4741e7261b3",
+          "bytes": 68
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_36_37_512279-pid_1863564/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+          "bytes": 852
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_36_37_512279-pid_1863564/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "9ba6a4dfff9c31841e67aab9264278c4fe9ff69f02ff65846823a0c46327f91c",
+          "bytes": 2925
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_36_37_512279-pid_1863564/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "53e7ccc5d6cd1220d8fc801f414297276ceadebd9fe7e418a90b209fe687ce04",
+          "bytes": 4920
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_36_37_512279-pid_1863564/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "a91464c714edabd75866f8bfead1dceaf589366173188ade7f94900556db073f",
+          "bytes": 4919
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/artifacts/debug/torch_compile_debug/run_2026_09_11_18_36_37_512279-pid_1863564/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "6881a934d4ff914a81662b2a82db9411558e5f1bdff1d87d151a1ee758b82c1f",
+          "bytes": 12868
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/artifacts/result.json",
+          "sha256": "699132e7a6afb578df8dc2eaa42d9d26331caa774b82ea9b50b40fa8388aaa69",
+          "bytes": 72567
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/artifacts/target-0-after.txt",
+          "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+          "bytes": 2345
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/artifacts/target-0-before.txt",
+          "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+          "bytes": 524
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/execution.json",
+          "sha256": "ba6c536b6e42d0c443fa525d9857b72d0889c97a38fdd5dc9c180c67dc449db1",
+          "bytes": 634
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/stderr.log",
+          "sha256": "fa2f10942772f0d0d028063a90a10eb061543e243283569be42ed27c30236076",
+          "bytes": 1091
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on1/stdout.log",
+          "sha256": "369e63971c9455cbc86b2f922fa9e37a308c4ff8a93d6212fedb7ef2fd9c7fef",
+          "bytes": 67
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_13_071664-pid_1870353/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+          "bytes": 852
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_13_071664-pid_1870353/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "9ba6a4dfff9c31841e67aab9264278c4fe9ff69f02ff65846823a0c46327f91c",
+          "bytes": 2925
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_13_071664-pid_1870353/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "53e7ccc5d6cd1220d8fc801f414297276ceadebd9fe7e418a90b209fe687ce04",
+          "bytes": 4920
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_13_071664-pid_1870353/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "a91464c714edabd75866f8bfead1dceaf589366173188ade7f94900556db073f",
+          "bytes": 4919
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_13_071664-pid_1870353/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "07a2eba9cf233f304fcc0d99f2471892a813777d1e76f63eaff7d666362a223d",
+          "bytes": 12868
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/artifacts/result.json",
+          "sha256": "9055884b1602e3ddaffde87d5c73f45a197f0334bd5e0b987f24380b6468240a",
+          "bytes": 72585
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/artifacts/target-0-after.txt",
+          "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+          "bytes": 2345
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/artifacts/target-0-before.txt",
+          "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+          "bytes": 524
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/execution.json",
+          "sha256": "255d018a2fce681d3a8840f35d691aa0f3eca89bc9eefb1def601bba5f5f6bec",
+          "bytes": 634
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/stderr.log",
+          "sha256": "98d1812818b93c3d7a7fae5929913c955b60127996442886151bef500c68c8ee",
+          "bytes": 1091
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on2/stdout.log",
+          "sha256": "369e63971c9455cbc86b2f922fa9e37a308c4ff8a93d6212fedb7ef2fd9c7fef",
+          "bytes": 67
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_48_839875-pid_1877531/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+          "bytes": 852
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_48_839875-pid_1877531/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+          "bytes": 852
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_48_839875-pid_1877531/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "cf778e3b8a24f6647f269da1b8d443f39aab5842cb40432e53d8577c56df7444",
+          "bytes": 2846
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_48_839875-pid_1877531/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "87eae6858ac6a40c0fdb2f9fcc043a1bd49f8163762aeae75d35e199dec99825",
+          "bytes": 2844
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off2/artifacts/debug/torch_compile_debug/run_2026_09_11_18_37_48_839875-pid_1877531/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "2c105473b3574e77374f17d74fcbb6a63758da203c8f21a4e20ea5b161846772",
+          "bytes": 12673
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off2/artifacts/result.json",
+          "sha256": "e1c9c3732e8ca281ceccc463a0a8bd3322ae2b98a03873fcf82d5951e68b09b6",
+          "bytes": 72879
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off2/execution.json",
+          "sha256": "e41b41b8c743605cb226627b5e84a6dc5430c241b96a1dc11f3aa023600129c1",
+          "bytes": 636
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off2/stderr.log",
+          "sha256": "7bdd3c0a95674e38b152fa2e4d6a8fbb1591fd292e3f87d716c3c18d0a0c17f0",
+          "bytes": 893
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off2/stdout.log",
+          "sha256": "f321a7c226eef3d63ecef1c574b9d111933fa817131027dbb9d3a4741e7261b3",
+          "bytes": 68
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_38_27_869565-pid_1885203/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+          "bytes": 852
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_38_27_869565-pid_1885203/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+          "bytes": 852
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_38_27_869565-pid_1885203/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "cf778e3b8a24f6647f269da1b8d443f39aab5842cb40432e53d8577c56df7444",
+          "bytes": 2846
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_38_27_869565-pid_1885203/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "87eae6858ac6a40c0fdb2f9fcc043a1bd49f8163762aeae75d35e199dec99825",
+          "bytes": 2844
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_38_27_869565-pid_1885203/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "801d5d69897af3181fe5387c9eeb35dcb25f764eb98fc912d85ccbec66ff611d",
+          "bytes": 12673
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off3/artifacts/result.json",
+          "sha256": "6b647101d29ffeff47c600a3fd2bb42d8340a95ffecd28e4f4cdab8ce5b11e0d",
+          "bytes": 72873
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off3/execution.json",
+          "sha256": "072c3d86678e177772eede9f2d761fc37ff45ab071aeb710ac59bc88113382c9",
+          "bytes": 636
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off3/stderr.log",
+          "sha256": "41408d18cd09b4874d5300f089aa1ebbc26b348d0914ebadc506eea9a7da8b26",
+          "bytes": 893
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-off3/stdout.log",
+          "sha256": "f321a7c226eef3d63ecef1c574b9d111933fa817131027dbb9d3a4741e7261b3",
+          "bytes": 68
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "sha256": "f00e78540f94d8ec402451b7b65e23925569b511eb74d9235838fcd2121e02d5",
+          "bytes": 852
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "sha256": "9ba6a4dfff9c31841e67aab9264278c4fe9ff69f02ff65846823a0c46327f91c",
+          "bytes": 2925
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+          "sha256": "53e7ccc5d6cd1220d8fc801f414297276ceadebd9fe7e418a90b209fe687ce04",
+          "bytes": 4920
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+          "sha256": "a91464c714edabd75866f8bfead1dceaf589366173188ade7f94900556db073f",
+          "bytes": 4919
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/debug/torch_compile_debug/run_2026_09_11_18_39_07_856679-pid_1893178/torchinductor/model__0_inference_0.0/output_code.py",
+          "sha256": "f6e32732dc0e3e4a3adc2784062dcdf1c0420593ac8d94a895ab4a034def8926",
+          "bytes": 12868
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/result.json",
+          "sha256": "07d7fc8ef810852bd403c85aa107794498447c6e1677670b4e6d926a8de0cbd6",
+          "bytes": 72576
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/target-0-after.txt",
+          "sha256": "0e48ccd758968951eecd0495b5b409ad4a42c46cd462e4f396dedae2922a9393",
+          "bytes": 2345
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/artifacts/target-0-before.txt",
+          "sha256": "591dc454817534a3a39b3c13d17be9620a4c26c93dd286a61ef30244e675a727",
+          "bytes": 524
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/execution.json",
+          "sha256": "55cde7158ff396c8dcde3cff321edb043d1941cd0c3d18421a8424c596172a49",
+          "bytes": 634
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/stderr.log",
+          "sha256": "b21e7b6a6e435f7f2e7f7a6ddfcd82438a9f2da9cc6e64cfcb04429fa9dfaa14",
+          "bytes": 1091
+        },
+        {
+          "path": "issues/REF-e8m0-log2-pattern-native/evidence/performance-benchmark-20260911T183549-twina5q3-on3/stdout.log",
+          "sha256": "369e63971c9455cbc86b2f922fa9e37a308c4ff8a93d6212fedb7ef2fd9c7fef",
+          "bytes": 67
+        }
+      ],
+      "compile_ms": {
+        "off1": 23560.50506979227,
+        "on1": 20256.74970028922,
+        "on2": 20306.345850229263,
+        "off2": 24466.29411028698,
+        "off3": 24546.35650990531,
+        "on3": 20372.289729770273
+      },
+      "memory": {
+        "off1": {
+          "allocated": 3072,
+          "reserved": 2097152
+        },
+        "on1": {
+          "allocated": 3072,
+          "reserved": 2097152
+        },
+        "on2": {
+          "allocated": 3072,
+          "reserved": 2097152
+        },
+        "off2": {
+          "allocated": 3072,
+          "reserved": 2097152
+        },
+        "off3": {
+          "allocated": 3072,
+          "reserved": 2097152
+        },
+        "on3": {
+          "allocated": 3072,
+          "reserved": 2097152
+        }
+      },
+      "codegen_review": {
+        "off1": {
+          "graphs": 1,
+          "npu_graph_internal_extern": [
+            "aten.ceil.default"
+          ],
+          "cpu_or_graph_external_fallbacks": 0,
+          "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+        },
+        "on1": {
+          "graphs": 1,
+          "npu_graph_internal_extern": [
+            "aten.__rshift__.Scalar",
+            "aten.view.dtype"
+          ],
+          "cpu_or_graph_external_fallbacks": 0,
+          "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+        },
+        "on2": {
+          "graphs": 1,
+          "npu_graph_internal_extern": [
+            "aten.__rshift__.Scalar",
+            "aten.view.dtype"
+          ],
+          "cpu_or_graph_external_fallbacks": 0,
+          "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+        },
+        "off2": {
+          "graphs": 1,
+          "npu_graph_internal_extern": [
+            "aten.ceil.default"
+          ],
+          "cpu_or_graph_external_fallbacks": 0,
+          "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+        },
+        "off3": {
+          "graphs": 1,
+          "npu_graph_internal_extern": [
+            "aten.ceil.default"
+          ],
+          "cpu_or_graph_external_fallbacks": 0,
+          "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+        },
+        "on3": {
+          "graphs": 1,
+          "npu_graph_internal_extern": [
+            "aten.__rshift__.Scalar",
+            "aten.view.dtype"
+          ],
+          "cpu_or_graph_external_fallbacks": 0,
+          "scope": "NPU dtype-view、整数右移/ceil 为图内NPU extern；不声称与CUDA kernel完全相同"
+        }
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "runs_per_arm": 100,
+        "warmup": 10,
+        "fresh_processes": 6,
+        "workload": "社区原七元素FP32向量",
+        "model_e2e": false
+      },
+      "product_action": "新增开关默认开启是正确性修复，不是依据此局部性能把显式关闭优化打开"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-096",
+  "generated_at": "2026-09-11T18:40:09.323215+08:00",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
+      "unit": "e8m0-rceil-log2",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-096/functional/e8m0-rceil-log2.json",
+      "gate": "results/current/T-096/performance_gates/e8m0-rceil-log2.json"
+    }
+  ],
+  "scope": "三个原FP32合同；特殊值/guard/strided/sweep为NPU派生扩展，未冒充GPU原例"
+}

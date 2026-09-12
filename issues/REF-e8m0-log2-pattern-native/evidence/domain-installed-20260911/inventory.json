@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-09-11T18:35:10.099040+08:00",
+  "source_run": "/home/z50063656/tmp/t096-domain-installed-3Rqrwy",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "80908501ffa9902264e82da6e837fa29e2aa4fb247ec18065d2616b30ad2db1b",
+      "bytes": 855
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "f1e7833b196a4cbead7f73005734f8ea5a53c7a6341c7545ef35ed4e90a4aedb",
+      "bytes": 2942
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "f9386a2fb5ae8b1d85cd0da403b087852879e976d1e275dc36a2e187c0f897c0",
+      "bytes": 4932
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "127f12425819b5db8afa8d24f25cbe3f2f095da804f5b60f8664de365120f7bd",
+      "bytes": 4931
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/debug/torch_compile_debug/run_2026_09_11_18_28_30_489981-pid_1769328/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "78e2dd8cdfef74cf34eb8fb5ebe39d922a2e15517ad7f3890d51d5b292df950e",
+      "bytes": 12890
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/artifacts/result.json",
+      "sha256": "a8ebbc9fe782bfeadeb04227910fed16c3fd06a5abe97ccbc61b2fd9ed806f44",
+      "bytes": 3700
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/domain-installed-20260911/stdout.log",
+      "sha256": "5f8a5b9a749d4f266e68799d66805e24dab6850c64bdc82b9c38298b6ad658a8",
+      "bytes": 4764
+    }
+  ],
+  "generated_output_code_present": true
+}

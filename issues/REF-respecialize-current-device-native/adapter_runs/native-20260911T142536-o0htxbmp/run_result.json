@@ -1,0 +1,26 @@
+{
+  "task_id": "T-087",
+  "case_id": "REF-respecialize-current-device-native",
+  "generated_at": "2026-09-11T14:25:36.800341+08:00",
+  "status": "failed",
+  "tests_ran": 1,
+  "tests_skipped": 0,
+  "return_code": 1,
+  "mode": "adapter",
+  "test_body_execution_proven": false,
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-respecialize-current-device-native/npu_adapter.py",
+    "--artifact-dir",
+    "/home/z50063656/tmp/t087-native-syitm5yo/adapter"
+  ],
+  "working_directory": "/home/z50063656/tmp",
+  "physical_npu": 2,
+  "backend_requested": "triton_experimental",
+  "backend_verified": false,
+  "contract_review_required": true,
+  "source_sha256": "45622cbc1d6b4c026f4b32fabfe27ed3600d517df96f7ede4e9c945e1bdbf996",
+  "raw_artifact_dir": "/home/z50063656/tmp/t087-native-syitm5yo",
+  "product_gate_bypassed": false,
+  "body_or_assertions_modified": false
+}

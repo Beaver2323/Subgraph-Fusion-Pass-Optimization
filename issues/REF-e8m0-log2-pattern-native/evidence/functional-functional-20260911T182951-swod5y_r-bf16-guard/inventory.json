@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-11T18:35:11.149957+08:00",
+  "source_run": "/home/z50063656/tmp/t096-npu-results/functional-20260911T182951-swod5y_r/bf16-guard",
+  "files": [
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "f42e766ffb2040a7aa1b3e43b458235d02258cd8ae2095cd654cb56dba5f22e9",
+      "bytes": 1174
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "f42e766ffb2040a7aa1b3e43b458235d02258cd8ae2095cd654cb56dba5f22e9",
+      "bytes": 1174
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "fcfdb33aceb80d12e053e6638be0c3598a8a353fcc156ae95bf657986fcc596e",
+      "bytes": 3083
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "680bfd8117afc4b7a9eedc296e8793ef6e9d7229c7e99f0a9463625ed75cefeb",
+      "bytes": 3081
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/debug/torch_compile_debug/run_2026_09_11_18_31_57_108959-pid_1807404/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "6774ef70ae8bf3498b480c2f598853075c3df45b3f34653c384dc2fb2813436c",
+      "bytes": 13239
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/artifacts/result.json",
+      "sha256": "a342e51c5809948d198596b898d1c83702e8eb70d05c6cbb55c68b1e8f32f6f4",
+      "bytes": 67292
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/execution.json",
+      "sha256": "ef5d6869a7d4ab7424f2a41c14a51fd3dcbc3cd5eb1d5cf6c49731ee4252856d",
+      "bytes": 508
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/stderr.log",
+      "sha256": "84457bdffd3cc50319d10e05ee46477aaa337de44a814b801421f83685b26851",
+      "bytes": 900
+    },
+    {
+      "path": "issues/REF-e8m0-log2-pattern-native/evidence/functional-functional-20260911T182951-swod5y_r-bf16-guard/stdout.log",
+      "sha256": "32860800def3b6acdc6a0c284d4c720a235146002d2ed254f1000482671a4e0b",
+      "bytes": 70
+    }
+  ],
+  "generated_output_code_present": true
+}

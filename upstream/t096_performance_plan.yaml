@@ -1,12 +1,12 @@
 {
   "schema_version": "1.0",
   "task_id": "T-096",
-  "generated_at": "2026-09-10T21:38:54+08:00",
-  "status": "blocked-capability-pending-reviewed-adaptation",
+  "generated_at": "2026-09-11T18:40:09.323215+08:00",
+  "status": "performance-disposition-complete",
   "implementation": {
-    "status": "not-implemented",
-    "entrypoint": null,
-    "reason": "NPU原生注册缺失；等待真机阻断和最小适配评审"
+    "status": "implemented-runtime-validated",
+    "entrypoint": "scripts/run_t096_installed.py",
+    "reason": "安装态原合同、输入域和精确OFF/ON门禁通过，仅原七元素正确输入测性能"
   },
   "backend_contract": {
     "npu_backend": "triton_experimental",
@@ -46,8 +46,8 @@
   },
   "hardware_contract": {
     "gpu_reference_minimum_devices": 1,
-    "performance_minimum_devices": 0,
-    "performance_world_size": 0,
+    "performance_minimum_devices": 1,
+    "performance_world_size": 1,
     "actual_device_execution_required": true,
     "fake_tensor_allowed_as_performance_oracle": false
   },
@@ -66,9 +66,9 @@
   "acceptance_units": [
     {
       "acceptance_unit_id": "AU-misc-patterns-e8m0-rceil-log2",
-      "worker_unit": "none",
-      "performance_status": "blocked-capability-pending-npu-registration",
-      "verdict": "planned-after-reviewed-adaptation",
+      "worker_unit": "e8m0-rceil-log2",
+      "performance_status": "measured",
+      "verdict": "PERF_REGRESSED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -76,23 +76,29 @@
           "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_correct_for_values_one_ulp_above_power_of_two",
           "test/inductor/test_fp8.py::TestE8M0Log2PatternBitManip.test_regression_gh178045_encoding_correctness"
         ],
-        "reason": "社区无性能benchmark；边界向量可派生但NPU原生没有目标注册，适配评审前禁止制造ON"
+        "reason": "社区无性能benchmark；原边界向量OFF实测编码错误，仅功能验证。普通7元素正例已通过安装态功能与数值域评审，独立门禁后完成六臂计时；其他两个nodeid不作性能输入"
       },
-      "functional_gate": "先证明A100原生路径；NPU triton_experimental原生阻断必须留证，再单独审核generic guard最小适配。",
+      "functional_gate": "原3例及NPU输入域、dtype/device/stride/指数边界通过；独立OFF/ON七元素数学正确且精确改图",
       "workloads": [
         {
           "workload_id": "e8m0-log2-boundary-vector",
-          "role": "planned-after-adaptation",
+          "role": "functional-only-off-mathematically-incorrect",
           "shape_contract": "float32正数与2^e上方1 ULP向量，uint8精确输出",
           "measurement_scope": "仅目标编码子图；不是模型端到端"
+        },
+        {
+          "workload_id": "community-ordinary-seven-fp32",
+          "role": "measured",
+          "shape_contract": "[1,2,4,3,1.5,0.5,0.25]，float32[7]→uint8[7]",
+          "measurement_scope": "目标编码子图一次调用，不含编译，不是模型E2E"
         }
       ],
-      "off_on_control": "当前无NPU ON；不得绕过device guard。批准适配后再定义等价OFF/ON。",
+      "off_on_control": "新进程内设置 experimental.config.enable_e8m0_rceil_log2；仅本目标extra_check读取；不改总pattern_matcher",
       "artifacts": [
-        "GPU reference FX",
-        "NPU原生阻断",
-        "device guard源码",
-        "未来适配diff与功能证据"
+        "原GPU reference",
+        "安装态原例及边界/guard",
+        "实际FX/IR/output_code",
+        "六臂原始时延/显存/编译时间"
       ],
       "negative_cases": [
         "SM100 PTX路径不适用于A100/NPU",
