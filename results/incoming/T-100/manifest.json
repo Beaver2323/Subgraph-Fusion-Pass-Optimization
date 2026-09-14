@@ -1,0 +1,31 @@
+{
+  "split_format_version": "1.1",
+  "generated_at": "2026-09-14T20:35:13+08:00",
+  "source_name": "text-handoff.json",
+  "source_bytes": 523044,
+  "source_sha256": "b5b754d5847675cdaaff856c82fd4865b48f468ce802eceda54a8bfc5798fedf",
+  "payload_sha256": "3070e5ecad4cd93ef710c70e18b8379ed2886ee035d90298609ef0c620a7cb10",
+  "part_payload_bytes": 49152,
+  "part_count": 2,
+  "parts": [
+    {
+      "path": "part-0001.json",
+      "index": 1,
+      "source_offset": 0,
+      "payload_bytes": 49152,
+      "payload_sha256": "7e787866b72a92172c975426ffdc5148e7267ab97006ab7af7ce6687e798651d",
+      "transport_file_bytes": 66380
+    },
+    {
+      "path": "part-0002.json",
+      "index": 2,
+      "source_offset": 49152,
+      "payload_bytes": 29712,
+      "payload_sha256": "d8be6a0e1fbe6c345c0c2d0a6b7720c11cc5f8525410ff76a72e1404389146b5",
+      "transport_file_bytes": 40264
+    }
+  ],
+  "transport_encoding": "xz",
+  "transport_bytes": 78864,
+  "transport_sha256": "a256a8bc5a823d0a283c29fb586908067a45ce753685272ee0ea630c44b1c735"
+}
