@@ -1,0 +1,13 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+[W914 23:21:25.262388990 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 23:21:27.167000 329078 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1806] [0/0] Not enough SMs to use max_autotune_gemm mode
+W0914 23:22:51.054000 329078 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/attention-functional-20260914-unskip/functional-20260914T231936+0800/pattern-15/on/debug/torch_compile_debug/run_2026_09_14_23_21_26_542210-pid_329078/torchinductor/model__0_inference_0.0
+Traceback (most recent call last):
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py", line 433, in <module>
+    main()
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py", line 330, in main
+    raise RuntimeError(
+RuntimeError: ON未命中精确pattern：exact=0 general=0

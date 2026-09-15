@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-09-14T23:36:53.629816+08:00",
+  "source_run": "/home/z50063656/tmp/attention22-broadcast-9UHTiO",
+  "files": [
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/broadcast-shape-candidate-20260914T233440/candidate/diagnostic_source.py",
+      "sha256": "e7848d14c04a2796431ac1f0a2c88c108af0a1bb3cecf9b9dff05c1f4447894f",
+      "bytes": 7204
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/broadcast-shape-candidate-20260914T233440/candidate/generated_source.py",
+      "sha256": "312c4ef1ea6b51e8890f496cd80068682a37fed5cb8ed6fa5f6bcca137f38eec",
+      "bytes": 62361
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/broadcast-shape-candidate-20260914T233440/candidate/original_generated_source.py",
+      "sha256": "d92fe32c77e0b0ca24d83e69e998eb734b519f1a14b3de9328c0ca6c66d0e5e9",
+      "bytes": 62409
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/broadcast-shape-candidate-20260914T233440/candidate/result.json",
+      "sha256": "e12815b5429cbc6ae60f4fb6c85647dcc0a2a39138d9d1ca9262d90d297cb99c",
+      "bytes": 10385
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/broadcast-shape-candidate-20260914T233440/stderr.log",
+      "sha256": "7a61b6488664a4bbf2b4683b29b70c448072f52a69f1fbd14c73a97bcbb0e3b3",
+      "bytes": 410
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/broadcast-shape-candidate-20260914T233440/stdout.log",
+      "sha256": "667235b0b3f0f8d4e8ebe0fac40889d56d634d6124bdefc4b09d53fbf4859876",
+      "bytes": 5821
+    }
+  ],
+  "generated_output_code_present": false
+}

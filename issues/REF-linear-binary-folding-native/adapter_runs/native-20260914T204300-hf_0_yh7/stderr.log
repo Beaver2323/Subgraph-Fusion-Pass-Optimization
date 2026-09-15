@@ -1,0 +1,541 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+/home/z50063656/Pass/src/pytorch/test/inductor/test_binary_folding.py:385: UserWarning: CUDA is not available or torch_xla is imported. Disabling autocast.
+  autocast = torch.amp.autocast(device_type=GPU_TYPE)
+test_linear_binary_folding_cuda (module_folding_community_npu.main.<locals>.NpuCase.test_linear_binary_folding_cuda) ... [W914 20:43:13.632433600 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+[W914 20:43:14.719727700 ToKernelNpu.cpp:40] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+W0914 20:43:27.539000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__0_inference_0.0
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:27.808000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_inference_1 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__1_inference_1.1
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:28.044000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__2_inference_2 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__2_inference_2.2
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:28.590000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__3_inference_3 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__3_inference_3.3
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:28.827000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__4_inference_4 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__4_inference_4.4
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:29.066000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__5_inference_5 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__5_inference_5.5
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:29.304000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__6_inference_6 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__6_inference_6.6
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:29.544000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__7_inference_7 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__7_inference_7.7
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:29.790000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__8_inference_8 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__8_inference_8.8
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:30.021000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__9_inference_9 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__9_inference_9.9
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:30.253000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__10_inference_10 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__10_inference_10.10
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:30.484000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__11_inference_11 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__11_inference_11.11
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:30.721000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__12_inference_12 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__12_inference_12.12
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:30.961000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__13_inference_13 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__13_inference_13.13
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:31.200000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__14_inference_14 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__14_inference_14.14
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:31.438000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__15_inference_15 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__15_inference_15.15
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:31.678000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__16_inference_16 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__16_inference_16.16
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:31.913000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__17_inference_17 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__17_inference_17.17
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:32.145000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__18_inference_18 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__18_inference_18.18
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:32.376000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__19_inference_19 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__19_inference_19.19
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:32.613000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__20_inference_20 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__20_inference_20.20
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:32.849000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__21_inference_21 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__21_inference_21.21
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:33.087000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__22_inference_22 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__22_inference_22.22
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:33.325000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__23_inference_23 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__23_inference_23.23
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:33.559000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__24_inference_24 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__24_inference_24.24
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:33.790000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__25_inference_25 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__25_inference_25.25
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:34.022000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__26_inference_26 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__26_inference_26.26
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:34.254000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__27_inference_27 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__27_inference_27.27
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:34.491000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__28_inference_28 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__28_inference_28.28
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:34.729000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__29_inference_29 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__29_inference_29.29
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:34.966000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__30_inference_30 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__30_inference_30.30
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:35.204000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__31_inference_31 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__31_inference_31.31
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:35.419000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__32_inference_32 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__32_inference_32.32
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:35.627000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__33_inference_33 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__33_inference_33.33
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:35.842000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__34_inference_34 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__34_inference_34.34
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:36.052000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__35_inference_35 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__35_inference_35.35
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:36.272000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__36_inference_36 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__36_inference_36.36
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:36.491000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__37_inference_37 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__37_inference_37.37
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:36.713000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__38_inference_38 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__38_inference_38.38
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:36.934000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__39_inference_39 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__39_inference_39.39
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:37.150000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__40_inference_40 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__40_inference_40.40
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:37.365000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__41_inference_41 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__41_inference_41.41
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:37.578000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__42_inference_42 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__42_inference_42.42
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:37.795000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__43_inference_43 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__43_inference_43.43
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:38.017000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__44_inference_44 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__44_inference_44.44
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:38.236000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__45_inference_45 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__45_inference_45.45
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:38.453000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__46_inference_46 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__46_inference_46.46
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:38.670000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__47_inference_47 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__47_inference_47.47
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:38.843000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1806] [0/0] Not enough SMs to use max_autotune_gemm mode
+W0914 20:43:38.861000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__48_inference_48 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__48_inference_48.48
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:39.058000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__49_inference_49 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__49_inference_49.49
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:39.249000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__50_inference_50 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__50_inference_50.50
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:39.440000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__51_inference_51 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__51_inference_51.51
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:39.636000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__52_inference_52 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__52_inference_52.52
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:39.833000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__53_inference_53 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__53_inference_53.53
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:40.029000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__54_inference_54 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__54_inference_54.54
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:40.230000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__55_inference_55 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__55_inference_55.55
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:40.422000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__56_inference_56 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__56_inference_56.56
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:40.621000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__57_inference_57 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__57_inference_57.57
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:40.816000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__58_inference_58 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__58_inference_58.58
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:41.007000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__59_inference_59 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__59_inference_59.59
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:41.205000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__60_inference_60 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__60_inference_60.60
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:41.404000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__61_inference_61 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__61_inference_61.61
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:41.962000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__62_inference_62 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__62_inference_62.62
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:42.157000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__63_inference_63 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__63_inference_63.63
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:42.449000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__64_inference_64 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__64_inference_64.64
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:42.734000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__65_inference_65 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__65_inference_65.65
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:43.026000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__66_inference_66 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__66_inference_66.66
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:43.312000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__67_inference_67 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__67_inference_67.67
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:43.598000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__68_inference_68 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__68_inference_68.68
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:43.884000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__69_inference_69 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__69_inference_69.69
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:44.174000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__70_inference_70 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__70_inference_70.70
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:44.464000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__71_inference_71 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__71_inference_71.71
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:44.765000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__72_inference_72 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__72_inference_72.72
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:45.058000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__73_inference_73 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__73_inference_73.73
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:45.349000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__74_inference_74 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__74_inference_74.74
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:45.655000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__75_inference_75 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__75_inference_75.75
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:45.943000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__76_inference_76 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__76_inference_76.76
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:46.231000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__77_inference_77 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__77_inference_77.77
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:46.518000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__78_inference_78 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__78_inference_78.78
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:46.806000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__79_inference_79 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__79_inference_79.79
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:47.094000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__80_inference_80 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__80_inference_80.80
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:47.384000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__81_inference_81 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__81_inference_81.81
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:47.676000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__82_inference_82 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__82_inference_82.82
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:47.971000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__83_inference_83 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__83_inference_83.83
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:48.269000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__84_inference_84 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__84_inference_84.84
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:48.558000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__85_inference_85 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__85_inference_85.85
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:48.848000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__86_inference_86 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__86_inference_86.86
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:49.142000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__87_inference_87 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__87_inference_87.87
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:49.431000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__88_inference_88 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__88_inference_88.88
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:49.722000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__89_inference_89 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__89_inference_89.89
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:50.027000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__90_inference_90 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__90_inference_90.90
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:50.325000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__91_inference_91 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__91_inference_91.91
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:50.623000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__92_inference_92 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__92_inference_92.92
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:50.917000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__93_inference_93 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__93_inference_93.93
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:51.210000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__94_inference_94 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__94_inference_94.94
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:51.512000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__95_inference_95 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__95_inference_95.95
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:51.806000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__96_inference_96 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__96_inference_96.96
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:52.106000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__97_inference_97 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__97_inference_97.97
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:52.400000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__98_inference_98 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__98_inference_98.98
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:52.694000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__99_inference_99 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__99_inference_99.99
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:52.990000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__100_inference_100 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__100_inference_100.100
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:53.284000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__101_inference_101 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__101_inference_101.101
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:53.573000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__102_inference_102 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__102_inference_102.102
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:53.862000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__103_inference_103 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__103_inference_103.103
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:54.152000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__104_inference_104 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__104_inference_104.104
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:54.440000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__105_inference_105 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__105_inference_105.105
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:54.733000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__106_inference_106 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__106_inference_106.106
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:55.028000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__107_inference_107 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__107_inference_107.107
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:55.325000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__108_inference_108 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__108_inference_108.108
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:55.620000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__109_inference_109 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__109_inference_109.109
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:55.913000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__110_inference_110 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__110_inference_110.110
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:56.209000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__111_inference_111 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__111_inference_111.111
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:56.476000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__112_inference_112 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__112_inference_112.112
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:56.739000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__113_inference_113 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__113_inference_113.113
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:57.008000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__114_inference_114 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__114_inference_114.114
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:57.274000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__115_inference_115 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__115_inference_115.115
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:57.914000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__116_inference_116 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__116_inference_116.116
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:58.181000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__117_inference_117 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__117_inference_117.117
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:58.451000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__118_inference_118 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__118_inference_118.118
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:58.720000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__119_inference_119 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__119_inference_119.119
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:58.987000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__120_inference_120 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__120_inference_120.120
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:59.258000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__121_inference_121 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__121_inference_121.121
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:59.527000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__122_inference_122 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__122_inference_122.122
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:43:59.798000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__123_inference_123 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__123_inference_123.123
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:00.063000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__124_inference_124 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__124_inference_124.124
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:00.329000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__125_inference_125 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__125_inference_125.125
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:00.593000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__126_inference_126 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__126_inference_126.126
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:00.859000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__127_inference_127 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__127_inference_127.127
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:01.131000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__128_inference_128 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__128_inference_128.128
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:01.399000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__129_inference_129 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__129_inference_129.129
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:01.672000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__130_inference_130 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__130_inference_130.130
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:01.942000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__131_inference_131 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__131_inference_131.131
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:02.212000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__132_inference_132 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__132_inference_132.132
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:02.512000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__133_inference_133 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__133_inference_133.133
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:02.783000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__134_inference_134 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__134_inference_134.134
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:03.053000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__135_inference_135 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__135_inference_135.135
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:03.301000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__136_inference_136 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__136_inference_136.136
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:03.546000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__137_inference_137 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__137_inference_137.137
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:03.788000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__138_inference_138 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__138_inference_138.138
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:04.031000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__139_inference_139 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__139_inference_139.139
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:04.275000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__140_inference_140 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__140_inference_140.140
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:04.519000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__141_inference_141 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__141_inference_141.141
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:04.768000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__142_inference_142 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__142_inference_142.142
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:05.017000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__143_inference_143 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__143_inference_143.143
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:05.281000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__144_inference_144 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__144_inference_144.144
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:05.531000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__145_inference_145 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__145_inference_145.145
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:05.779000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__146_inference_146 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__146_inference_146.146
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:06.028000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__147_inference_147 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__147_inference_147.147
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:06.272000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__148_inference_148 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__148_inference_148.148
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:06.516000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__149_inference_149 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__149_inference_149.149
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:06.758000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__150_inference_150 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__150_inference_150.150
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:07.000000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__151_inference_151 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__151_inference_151.151
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:07.241000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__152_inference_152 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__152_inference_152.152
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:07.482000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__153_inference_153 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__153_inference_153.153
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:07.730000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__154_inference_154 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__154_inference_154.154
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:07.979000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__155_inference_155 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__155_inference_155.155
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:08.227000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__156_inference_156 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__156_inference_156.156
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:08.480000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__157_inference_157 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__157_inference_157.157
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:08.729000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__158_inference_158 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__158_inference_158.158
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:08.977000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__159_inference_159 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__159_inference_159.159
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:27.301000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__160_inference_160 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__160_inference_160.160
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:32.286000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__161_inference_161 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__161_inference_161.161
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:37.562000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__162_inference_162 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__162_inference_162.162
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:42.852000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__163_inference_163 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__163_inference_163.163
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:47.843000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__164_inference_164 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__164_inference_164.164
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:53.511000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__165_inference_165 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__165_inference_165.165
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:44:58.598000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__166_inference_166 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__166_inference_166.166
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:45:04.003000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__167_inference_167 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__167_inference_167.167
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:45:09.172000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__168_inference_168 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__168_inference_168.168
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:45:14.218000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__169_inference_169 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__169_inference_169.169
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:45:18.933000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__170_inference_170 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__170_inference_170.170
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:45:23.834000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__171_inference_171 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__171_inference_171.171
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:45:28.533000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__172_inference_172 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__172_inference_172.172
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:45:33.389000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__173_inference_173 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__173_inference_173.173
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:45:38.168000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__174_inference_174 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__174_inference_174.174
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:45:43.115000 1997596 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__175_inference_175 debug trace: /home/z50063656/tmp/t100-native-zbaadbq5/adapter/debug/torch_compile_debug/run_2026_09_14_20_43_13_394863-pid_1997596/torchinductor/model__175_inference_175.175
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 150.042s
+
+OK

@@ -1,0 +1,207 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-091",
+  "generated_at": "2026-09-14T21:07:22.072710+08:00",
+  "backend": "triton_experimental",
+  "status": "performance-disposition-complete",
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-split-cat-normalize-stack-default",
+      "unit": "stack-normalization",
+      "performance_status": "measured",
+      "verdict": "PERF_MIXED",
+      "product_action": "不改变默认开关；局部收益不外推到完整模型",
+      "measurement_workload": "stack-normalization-community-shape",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.38062501698732376,
+            "p99": 0.5699811270460516
+          },
+          "on": {
+            "p50": 0.38529979065060616,
+            "p99": 0.5171779450029165
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.26422999799251556,
+            "p99": 0.29169338643550874
+          },
+          "on": {
+            "p50": 0.2734200060367584,
+            "p99": 0.33376241087913533
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": -1.2281835020418796,
+          "p99": 9.26402288384347
+        },
+        "event_ms": {
+          "p50": -3.47803357456149,
+          "p99": -14.422344283396281
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.0691739036355474,
+        "host_ms_on": 1.0156432487225129,
+        "event_ms_off": 1.0936108843202408,
+        "event_ms_on": 1.0460556654312074
+      },
+      "memory": {
+        "off1": {
+          "allocated": 2560,
+          "reserved": 2097152
+        },
+        "on1": {
+          "allocated": 2560,
+          "reserved": 2097152
+        },
+        "on2": {
+          "allocated": 2560,
+          "reserved": 2097152
+        },
+        "off2": {
+          "allocated": 2560,
+          "reserved": 2097152
+        },
+        "off3": {
+          "allocated": 2560,
+          "reserved": 2097152
+        },
+        "on3": {
+          "allocated": 2560,
+          "reserved": 2097152
+        }
+      },
+      "compile_ms": {
+        "off1": 13907.401079777628,
+        "on1": 14284.627390094101,
+        "on2": 14457.855150103569,
+        "off2": 14268.26796028763,
+        "off3": 14297.013489995152,
+        "on3": 14535.759760066867
+      },
+      "codegen_review": {
+        "off1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.aten.cat.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "六臂实际均为NPU aten.cat加view；不是CPU fallback，也不声称Triton融合核减少。两臂fullgraph数值通过，精确handler计数OFF=0/ON=1。"
+        },
+        "on1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.aten.cat.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "六臂实际均为NPU aten.cat加view；不是CPU fallback，也不声称Triton融合核减少。两臂fullgraph数值通过，精确handler计数OFF=0/ON=1。"
+        },
+        "on2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.aten.cat.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "六臂实际均为NPU aten.cat加view；不是CPU fallback，也不声称Triton融合核减少。两臂fullgraph数值通过，精确handler计数OFF=0/ON=1。"
+        },
+        "off2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.aten.cat.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "六臂实际均为NPU aten.cat加view；不是CPU fallback，也不声称Triton融合核减少。两臂fullgraph数值通过，精确handler计数OFF=0/ON=1。"
+        },
+        "off3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.aten.cat.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "六臂实际均为NPU aten.cat加view；不是CPU fallback，也不声称Triton融合核减少。两臂fullgraph数值通过，精确handler计数OFF=0/ON=1。"
+        },
+        "on3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.aten.cat.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "六臂实际均为NPU aten.cat加view；不是CPU fallback，也不声称Triton融合核减少。两臂fullgraph数值通过，精确handler计数OFF=0/ON=1。"
+        }
+      },
+      "raw_results": {
+        "off1": {
+          "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/result.json",
+          "sha256": "d2431747fd8483f4c47142908219744c4aa775d06cb8e3dbcf7121d3fa73602b"
+        },
+        "on1": {
+          "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/result.json",
+          "sha256": "c0f17caa3bb1ad72aabe4af5e28b76f9186493fb0ad7b636a21d9f20090e0a0c"
+        },
+        "on2": {
+          "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/result.json",
+          "sha256": "24ea818fafa78b326a848ab2bbd3131c73660ac90098106713871df5c027d1f5"
+        },
+        "off2": {
+          "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/result.json",
+          "sha256": "a94f6007520b1357322e89cdfce9ad01e0935668760216b7988b48d3a984ae66"
+        },
+        "off3": {
+          "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/result.json",
+          "sha256": "0774127748e5d5c9c8c863db75aa229ac6991485addef132cfe5a27ae88abe13"
+        },
+        "on3": {
+          "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/result.json",
+          "sha256": "dc8e5233195c9320505d30f4016a771bf152f7c83afffc078b8f0e0f2fe47200"
+        }
+      },
+      "inventories": [
+        {
+          "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/inventory.json",
+          "sha256": "94bd28595eccacf841bc3d0ef5b0c9ea313a2a41cf7383749587db671f876c8d"
+        },
+        {
+          "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/inventory.json",
+          "sha256": "2d3f3c05410dcf1ae53193e63c11fc25b7431a4e8e7821a1bb171a9f0147bd96"
+        }
+      ],
+      "worker_source": {
+        "path": "issues/REF-stack-axis-normalization-native/evidence/performance-worker-2509ad20.py",
+        "sha256": "2509ad203fce7242f964002e683e779d51db712fe2df79d280a5a6f05443bfe2"
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "scope": "社区功能图派生的compiled子图，不含编译/数据加载",
+        "model_e2e": false,
+        "aggregation": "三OFF/三ON各臂p50/p99的中位数；高波动或时钟方向冲突记MIXED"
+      }
+    }
+  ]
+}

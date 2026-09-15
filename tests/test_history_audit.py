@@ -80,6 +80,8 @@ class HistoryTests(HistoryFixtures):
         self.assertEqual(payload["status"], "pending")
         self.assertEqual(payload["component_counts"]["gpu_key_text_cases_passed"], 24)
         self.assertEqual(payload["component_counts"]["gpu_empty_logs_verified_without_transfer"], 24)
+        self.assertEqual(payload["component_counts"]["gpu_log_reparse_cases_passed"], 24)
+        self.assertEqual(payload["component_counts"]["gpu_missing_nonempty_logs"], 0)
         gaps = {case["case_id"] for task in payload["tasks"] for case in task["gpu_cases"] if case["checks"]["assertion_semantics"]["status"] == "pending"}
         self.assertTrue((set(audit.catalog.NUMERICAL_GAPS) | audit.catalog.INPUT_GRADIENT_GAPS) <= gaps)
         self.assertEqual(payload["validator_files"]["scripts/audit_history.py"], audit.digest(ROOT / "scripts/audit_history.py"))

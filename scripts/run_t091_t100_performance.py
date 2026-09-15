@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 from datetime import datetime
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -46,6 +48,13 @@ def main() -> int:
         compile(WORKER.read_text(encoding="utf-8"), str(WORKER), "exec")
         print(f"prepared_performance_validation=OK task={args.task} units={len(units)}")
         return 0
+    lock = None
+    if args.phase == "benchmark":
+        lock = (work / "pass-tracker-npu-performance.lock").open("a")
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            parser.error("已有 tracker 性能测量运行；拒绝并发污染 OFF/ON")
     timestamp = datetime.now().astimezone().strftime("%Y%m%dT%H%M%S%z")
     root = (
         args.output_root
@@ -85,7 +94,18 @@ def main() -> int:
                     ["--gate", str(args.gate_root / args.task / f"{unit}.json")]
                 )
             print(f"START task={args.task} unit={unit} arm={name}", flush=True)
-            subprocess.run(command, cwd=work, env=env, check=True)
+            arm = run/unit/name
+            arm.mkdir(parents=True,exist_ok=False)
+            with (arm/'stdout.log').open('w') as stdout, (arm/'stderr.log').open('w') as stderr:
+                result = subprocess.run(command,cwd=work,env=env,stdout=stdout,stderr=stderr)
+            (arm/'execution.json').write_text(json.dumps(dict(command=command,return_code=result.returncode,
+                cwd=str(work),backend=env['TORCHINDUCTOR_NPU_BACKEND'],
+                physical_npu=env.get('ASCEND_RT_VISIBLE_DEVICES'),
+                generated_at=datetime.now().astimezone().isoformat()),ensure_ascii=False,indent=2)+'\n')
+            print(f"END task={args.task} unit={unit} arm={name} return_code={result.returncode} artifacts={arm}",flush=True)
+            if result.returncode:
+                print((arm/'stderr.log').read_text(errors='replace')[-5000:])
+                return result.returncode
     print(f"task_run=passed artifacts={run}")
     return 0
 

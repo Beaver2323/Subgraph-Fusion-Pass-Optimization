@@ -1,0 +1,412 @@
+{
+  "task_id": "T-098",
+  "case_id": "REF-efficient-conv-bn-eval-product-native",
+  "artifacts": [
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_backward_3.1/fx_graph_readable.py",
+      "sha256": "8f61d192d0e226a1f7079117922cf5d05f46e7f91faca64e8ce2add236d35110"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_backward_3.1/fx_graph_transformed.py",
+      "sha256": "c5cd2d4bcccf8597e67acb57421b43664c6c7f7b1d599c4f88fdb08a535ee28f"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_backward_3.1/ir_post_fusion.txt",
+      "sha256": "b8523561722af69d7ae19d5d4952c5364ce3470e13537b7b5632e5c23f58709e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_backward_3.1/ir_pre_fusion.txt",
+      "sha256": "d2302c21acdb892b70243805b1ac1b1705173205bc21a51f5c9e2772349024fb"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_backward_3.1/output_code.py",
+      "sha256": "3316c2e7f18c88a8ebe875d11622b810b372f63d1b07db4951cf8e5136f14648"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_forward_1.0/fx_graph_readable.py",
+      "sha256": "9d1a4aac06d648c1a0aefbd0808dd02400edb59aca0bde1f2d0f07fca537d742"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_forward_1.0/fx_graph_transformed.py",
+      "sha256": "c7f9e9e1d82fe5f1f3cd7bf0281d2804b80cb8f164261494df6245e9a06f75da"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_forward_1.0/ir_post_fusion.txt",
+      "sha256": "60c4399065627dd363cfd6e21fab81b4691243da444394e90ec7e0046a993a3d"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_forward_1.0/ir_pre_fusion.txt",
+      "sha256": "692ac870bc383dffd357065207580f7099736bb501ee54946dfd39c49ccfa594"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_forward_1.0/output_code.py",
+      "sha256": "93e55c3daed0c1332d8c928f0d873d11b1761699dc5f18f3a7eb50794d32de4f"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_backward_7.3/fx_graph_readable.py",
+      "sha256": "11955971a157e82c8fc8064f846f9e36610653cad16ca85c9e1606187e740cd2"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_backward_7.3/fx_graph_transformed.py",
+      "sha256": "5a34395833ec1d6fc379eb65bb6bf29bd57c6119f18072c2651135dfa94dfa87"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_backward_7.3/ir_post_fusion.txt",
+      "sha256": "b3a4eb8d218cb3195cfa7f4fcc58159d842963e005c710a80f7d2077f6fbd219"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_backward_7.3/ir_pre_fusion.txt",
+      "sha256": "a05f62892d11e8330bd3ddfb33c9141b5c7132436725eba052e7d06947c9a25e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_backward_7.3/output_code.py",
+      "sha256": "4820c261a87a8b1102a0a78922de1ca2389ed57275e94da2395ac59c1f23a8d1"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_forward_5.2/fx_graph_readable.py",
+      "sha256": "466fc76fc118ad2a9c713165f7caf146a707d1ced860d3586f5ebb24826f3729"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_forward_5.2/fx_graph_transformed.py",
+      "sha256": "f1abc417e8b07bce44982ad1763f35aaa14c941d18c46f17fb75d45d34999e43"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_forward_5.2/ir_post_fusion.txt",
+      "sha256": "40847b298ecef7c9a0283f67401db2d2d45ef02c670bc01329cf220469f190ec"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_forward_5.2/ir_pre_fusion.txt",
+      "sha256": "51ce59c18c6818a61a03ee6c8c008acf73c087c9663ef61b24995ba91d112166"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_forward_5.2/output_code.py",
+      "sha256": "17ae3d9e2cbf3fb2a27310b6c38d2d919e2f6baeac4e148d294688d077939d46"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_backward_11.5/fx_graph_readable.py",
+      "sha256": "8f61d192d0e226a1f7079117922cf5d05f46e7f91faca64e8ce2add236d35110"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_backward_11.5/fx_graph_transformed.py",
+      "sha256": "c5cd2d4bcccf8597e67acb57421b43664c6c7f7b1d599c4f88fdb08a535ee28f"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_backward_11.5/ir_post_fusion.txt",
+      "sha256": "b8523561722af69d7ae19d5d4952c5364ce3470e13537b7b5632e5c23f58709e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_backward_11.5/ir_pre_fusion.txt",
+      "sha256": "d2302c21acdb892b70243805b1ac1b1705173205bc21a51f5c9e2772349024fb"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_backward_11.5/output_code.py",
+      "sha256": "517c979c1d3eb5657db5eed475d42a406b3ebeb8050d6b19717ec94a119c557b"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_forward_9.4/fx_graph_readable.py",
+      "sha256": "9d1a4aac06d648c1a0aefbd0808dd02400edb59aca0bde1f2d0f07fca537d742"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_forward_9.4/fx_graph_transformed.py",
+      "sha256": "c7f9e9e1d82fe5f1f3cd7bf0281d2804b80cb8f164261494df6245e9a06f75da"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_forward_9.4/ir_post_fusion.txt",
+      "sha256": "60c4399065627dd363cfd6e21fab81b4691243da444394e90ec7e0046a993a3d"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_forward_9.4/ir_pre_fusion.txt",
+      "sha256": "692ac870bc383dffd357065207580f7099736bb501ee54946dfd39c49ccfa594"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_forward_9.4/output_code.py",
+      "sha256": "78f21eb62759b042ca80647cd753c7431c9dfa48e42bc69377e5d78b372b9918"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_backward_15.7/fx_graph_readable.py",
+      "sha256": "11955971a157e82c8fc8064f846f9e36610653cad16ca85c9e1606187e740cd2"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_backward_15.7/fx_graph_transformed.py",
+      "sha256": "5a34395833ec1d6fc379eb65bb6bf29bd57c6119f18072c2651135dfa94dfa87"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_backward_15.7/ir_post_fusion.txt",
+      "sha256": "b3a4eb8d218cb3195cfa7f4fcc58159d842963e005c710a80f7d2077f6fbd219"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_backward_15.7/ir_pre_fusion.txt",
+      "sha256": "a05f62892d11e8330bd3ddfb33c9141b5c7132436725eba052e7d06947c9a25e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_backward_15.7/output_code.py",
+      "sha256": "2ceaadccda1827469d42aa17f83ded15008c40852ddc6ffdad534514f054e604"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_forward_13.6/fx_graph_readable.py",
+      "sha256": "466fc76fc118ad2a9c713165f7caf146a707d1ced860d3586f5ebb24826f3729"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_forward_13.6/fx_graph_transformed.py",
+      "sha256": "f1abc417e8b07bce44982ad1763f35aaa14c941d18c46f17fb75d45d34999e43"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_forward_13.6/ir_post_fusion.txt",
+      "sha256": "40847b298ecef7c9a0283f67401db2d2d45ef02c670bc01329cf220469f190ec"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_forward_13.6/ir_pre_fusion.txt",
+      "sha256": "51ce59c18c6818a61a03ee6c8c008acf73c087c9663ef61b24995ba91d112166"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_forward_13.6/output_code.py",
+      "sha256": "87ffb065f9ef5228e9b3f4d46772817e08bf0d1d708cd5b3312552444010374e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__4_forward_17.8/fx_graph_readable.py",
+      "sha256": "9817eedda1953e907ce0a837724ca4d1227f47fcd2318241a503b3a3bd656fa3"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__4_forward_17.8/fx_graph_transformed.py",
+      "sha256": "56cfad63caa0343171142faae79e6320e919e5b0d4e8fbe82e4c71e9c746d4b0"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__4_forward_17.8/ir_post_fusion.txt",
+      "sha256": "5fdfee50fd043281c63c04d0364a2255268062a1cf367667c7d7fe91802c1c53"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__4_forward_17.8/ir_pre_fusion.txt",
+      "sha256": "7a65ce6d1a0b32b5b2210e74aa533543c4dbc4857a04f82f0bcad5a9d01ac313"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__4_forward_17.8/output_code.py",
+      "sha256": "40327a72b4bcec955a4283dc288322b25edd32cf6cfb495c2237f2c6515143a9"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp2o8b8y2q/y4/cy43awgoe32kz5vrikpwpl7swdzjtze7tux3lunzynogrmnyoc5u.debug/fx_graph_readable.py",
+      "sha256": "8f61d192d0e226a1f7079117922cf5d05f46e7f91faca64e8ce2add236d35110"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp2o8b8y2q/y4/cy43awgoe32kz5vrikpwpl7swdzjtze7tux3lunzynogrmnyoc5u.debug/fx_graph_transformed.py",
+      "sha256": "c5cd2d4bcccf8597e67acb57421b43664c6c7f7b1d599c4f88fdb08a535ee28f"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp2o8b8y2q/y4/cy43awgoe32kz5vrikpwpl7swdzjtze7tux3lunzynogrmnyoc5u.debug/ir_post_fusion.txt",
+      "sha256": "b8523561722af69d7ae19d5d4952c5364ce3470e13537b7b5632e5c23f58709e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp2o8b8y2q/y4/cy43awgoe32kz5vrikpwpl7swdzjtze7tux3lunzynogrmnyoc5u.debug/ir_pre_fusion.txt",
+      "sha256": "d2302c21acdb892b70243805b1ac1b1705173205bc21a51f5c9e2772349024fb"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp2o8b8y2q/y4/cy43awgoe32kz5vrikpwpl7swdzjtze7tux3lunzynogrmnyoc5u.debug/output_code.py",
+      "sha256": "3316c2e7f18c88a8ebe875d11622b810b372f63d1b07db4951cf8e5136f14648"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp40rqsbsy/qf/cqfwflhrsckut55x72mebpl2tyt3qe24zzzcpfo3vnmtatrkeksg.debug/fx_graph_readable.py",
+      "sha256": "9d1a4aac06d648c1a0aefbd0808dd02400edb59aca0bde1f2d0f07fca537d742"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp40rqsbsy/qf/cqfwflhrsckut55x72mebpl2tyt3qe24zzzcpfo3vnmtatrkeksg.debug/fx_graph_transformed.py",
+      "sha256": "c7f9e9e1d82fe5f1f3cd7bf0281d2804b80cb8f164261494df6245e9a06f75da"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp40rqsbsy/qf/cqfwflhrsckut55x72mebpl2tyt3qe24zzzcpfo3vnmtatrkeksg.debug/ir_post_fusion.txt",
+      "sha256": "60c4399065627dd363cfd6e21fab81b4691243da444394e90ec7e0046a993a3d"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp40rqsbsy/qf/cqfwflhrsckut55x72mebpl2tyt3qe24zzzcpfo3vnmtatrkeksg.debug/ir_pre_fusion.txt",
+      "sha256": "692ac870bc383dffd357065207580f7099736bb501ee54946dfd39c49ccfa594"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp40rqsbsy/qf/cqfwflhrsckut55x72mebpl2tyt3qe24zzzcpfo3vnmtatrkeksg.debug/output_code.py",
+      "sha256": "93e55c3daed0c1332d8c928f0d873d11b1761699dc5f18f3a7eb50794d32de4f"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp497zfynf/7e/c7ex3ysaj6c5zpiovlbbvissbvpydqijft6p3ohqw22qjtfsu4pg.debug/fx_graph_readable.py",
+      "sha256": "11955971a157e82c8fc8064f846f9e36610653cad16ca85c9e1606187e740cd2"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp497zfynf/7e/c7ex3ysaj6c5zpiovlbbvissbvpydqijft6p3ohqw22qjtfsu4pg.debug/fx_graph_transformed.py",
+      "sha256": "5a34395833ec1d6fc379eb65bb6bf29bd57c6119f18072c2651135dfa94dfa87"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp497zfynf/7e/c7ex3ysaj6c5zpiovlbbvissbvpydqijft6p3ohqw22qjtfsu4pg.debug/ir_post_fusion.txt",
+      "sha256": "b3a4eb8d218cb3195cfa7f4fcc58159d842963e005c710a80f7d2077f6fbd219"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp497zfynf/7e/c7ex3ysaj6c5zpiovlbbvissbvpydqijft6p3ohqw22qjtfsu4pg.debug/ir_pre_fusion.txt",
+      "sha256": "a05f62892d11e8330bd3ddfb33c9141b5c7132436725eba052e7d06947c9a25e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmp497zfynf/7e/c7ex3ysaj6c5zpiovlbbvissbvpydqijft6p3ohqw22qjtfsu4pg.debug/output_code.py",
+      "sha256": "2ceaadccda1827469d42aa17f83ded15008c40852ddc6ffdad534514f054e604"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpbmfyp26y/vh/cvhggfxmr46ynaqegxrwrforzc3ibtnabsjksuvi2u5jueykg7gg.debug/fx_graph_readable.py",
+      "sha256": "466fc76fc118ad2a9c713165f7caf146a707d1ced860d3586f5ebb24826f3729"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpbmfyp26y/vh/cvhggfxmr46ynaqegxrwrforzc3ibtnabsjksuvi2u5jueykg7gg.debug/fx_graph_transformed.py",
+      "sha256": "f1abc417e8b07bce44982ad1763f35aaa14c941d18c46f17fb75d45d34999e43"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpbmfyp26y/vh/cvhggfxmr46ynaqegxrwrforzc3ibtnabsjksuvi2u5jueykg7gg.debug/ir_post_fusion.txt",
+      "sha256": "40847b298ecef7c9a0283f67401db2d2d45ef02c670bc01329cf220469f190ec"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpbmfyp26y/vh/cvhggfxmr46ynaqegxrwrforzc3ibtnabsjksuvi2u5jueykg7gg.debug/ir_pre_fusion.txt",
+      "sha256": "51ce59c18c6818a61a03ee6c8c008acf73c087c9663ef61b24995ba91d112166"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpbmfyp26y/vh/cvhggfxmr46ynaqegxrwrforzc3ibtnabsjksuvi2u5jueykg7gg.debug/output_code.py",
+      "sha256": "17ae3d9e2cbf3fb2a27310b6c38d2d919e2f6baeac4e148d294688d077939d46"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpjwfxdm3s/we/cweud6vfheyegbvjpi3oiffugzw5xcuks2kmv7nfcmr46zjcyy2w.debug/fx_graph_readable.py",
+      "sha256": "11955971a157e82c8fc8064f846f9e36610653cad16ca85c9e1606187e740cd2"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpjwfxdm3s/we/cweud6vfheyegbvjpi3oiffugzw5xcuks2kmv7nfcmr46zjcyy2w.debug/fx_graph_transformed.py",
+      "sha256": "5a34395833ec1d6fc379eb65bb6bf29bd57c6119f18072c2651135dfa94dfa87"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpjwfxdm3s/we/cweud6vfheyegbvjpi3oiffugzw5xcuks2kmv7nfcmr46zjcyy2w.debug/ir_post_fusion.txt",
+      "sha256": "b3a4eb8d218cb3195cfa7f4fcc58159d842963e005c710a80f7d2077f6fbd219"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpjwfxdm3s/we/cweud6vfheyegbvjpi3oiffugzw5xcuks2kmv7nfcmr46zjcyy2w.debug/ir_pre_fusion.txt",
+      "sha256": "a05f62892d11e8330bd3ddfb33c9141b5c7132436725eba052e7d06947c9a25e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpjwfxdm3s/we/cweud6vfheyegbvjpi3oiffugzw5xcuks2kmv7nfcmr46zjcyy2w.debug/output_code.py",
+      "sha256": "4820c261a87a8b1102a0a78922de1ca2389ed57275e94da2395ac59c1f23a8d1"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpk_0ny7ju/qh/cqh3hhjmklnpcd37wjdoadiygaspxrgedyb4vfse2rharhmaxulr.debug/fx_graph_readable.py",
+      "sha256": "9817eedda1953e907ce0a837724ca4d1227f47fcd2318241a503b3a3bd656fa3"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpk_0ny7ju/qh/cqh3hhjmklnpcd37wjdoadiygaspxrgedyb4vfse2rharhmaxulr.debug/fx_graph_transformed.py",
+      "sha256": "56cfad63caa0343171142faae79e6320e919e5b0d4e8fbe82e4c71e9c746d4b0"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpk_0ny7ju/qh/cqh3hhjmklnpcd37wjdoadiygaspxrgedyb4vfse2rharhmaxulr.debug/ir_post_fusion.txt",
+      "sha256": "5fdfee50fd043281c63c04d0364a2255268062a1cf367667c7d7fe91802c1c53"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpk_0ny7ju/qh/cqh3hhjmklnpcd37wjdoadiygaspxrgedyb4vfse2rharhmaxulr.debug/ir_pre_fusion.txt",
+      "sha256": "7a65ce6d1a0b32b5b2210e74aa533543c4dbc4857a04f82f0bcad5a9d01ac313"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpk_0ny7ju/qh/cqh3hhjmklnpcd37wjdoadiygaspxrgedyb4vfse2rharhmaxulr.debug/output_code.py",
+      "sha256": "40327a72b4bcec955a4283dc288322b25edd32cf6cfb495c2237f2c6515143a9"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo3xp67ll/kb/ckb25kjbx25ajcmir3zjhih4zlggtrj5rwih63u3kcllyyujspk4.debug/fx_graph_readable.py",
+      "sha256": "8f61d192d0e226a1f7079117922cf5d05f46e7f91faca64e8ce2add236d35110"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo3xp67ll/kb/ckb25kjbx25ajcmir3zjhih4zlggtrj5rwih63u3kcllyyujspk4.debug/fx_graph_transformed.py",
+      "sha256": "c5cd2d4bcccf8597e67acb57421b43664c6c7f7b1d599c4f88fdb08a535ee28f"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo3xp67ll/kb/ckb25kjbx25ajcmir3zjhih4zlggtrj5rwih63u3kcllyyujspk4.debug/ir_post_fusion.txt",
+      "sha256": "b8523561722af69d7ae19d5d4952c5364ce3470e13537b7b5632e5c23f58709e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo3xp67ll/kb/ckb25kjbx25ajcmir3zjhih4zlggtrj5rwih63u3kcllyyujspk4.debug/ir_pre_fusion.txt",
+      "sha256": "d2302c21acdb892b70243805b1ac1b1705173205bc21a51f5c9e2772349024fb"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo3xp67ll/kb/ckb25kjbx25ajcmir3zjhih4zlggtrj5rwih63u3kcllyyujspk4.debug/output_code.py",
+      "sha256": "517c979c1d3eb5657db5eed475d42a406b3ebeb8050d6b19717ec94a119c557b"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo5tdtryg/kx/ckxaxbl2fwz52thg7mum5hros7q4pfn2i5mkbefolt3j6u7dwe5k.debug/fx_graph_readable.py",
+      "sha256": "466fc76fc118ad2a9c713165f7caf146a707d1ced860d3586f5ebb24826f3729"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo5tdtryg/kx/ckxaxbl2fwz52thg7mum5hros7q4pfn2i5mkbefolt3j6u7dwe5k.debug/fx_graph_transformed.py",
+      "sha256": "f1abc417e8b07bce44982ad1763f35aaa14c941d18c46f17fb75d45d34999e43"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo5tdtryg/kx/ckxaxbl2fwz52thg7mum5hros7q4pfn2i5mkbefolt3j6u7dwe5k.debug/ir_post_fusion.txt",
+      "sha256": "40847b298ecef7c9a0283f67401db2d2d45ef02c670bc01329cf220469f190ec"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo5tdtryg/kx/ckxaxbl2fwz52thg7mum5hros7q4pfn2i5mkbefolt3j6u7dwe5k.debug/ir_pre_fusion.txt",
+      "sha256": "51ce59c18c6818a61a03ee6c8c008acf73c087c9663ef61b24995ba91d112166"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmpo5tdtryg/kx/ckxaxbl2fwz52thg7mum5hros7q4pfn2i5mkbefolt3j6u7dwe5k.debug/output_code.py",
+      "sha256": "87ffb065f9ef5228e9b3f4d46772817e08bf0d1d708cd5b3312552444010374e"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmppmuucbyw/ex/cexw4ybevivp4pxum2xu743c4yups3kljnyclsqgfg7sn3g4swry.debug/fx_graph_readable.py",
+      "sha256": "9d1a4aac06d648c1a0aefbd0808dd02400edb59aca0bde1f2d0f07fca537d742"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmppmuucbyw/ex/cexw4ybevivp4pxum2xu743c4yups3kljnyclsqgfg7sn3g4swry.debug/fx_graph_transformed.py",
+      "sha256": "c7f9e9e1d82fe5f1f3cd7bf0281d2804b80cb8f164261494df6245e9a06f75da"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmppmuucbyw/ex/cexw4ybevivp4pxum2xu743c4yups3kljnyclsqgfg7sn3g4swry.debug/ir_post_fusion.txt",
+      "sha256": "60c4399065627dd363cfd6e21fab81b4691243da444394e90ec7e0046a993a3d"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmppmuucbyw/ex/cexw4ybevivp4pxum2xu743c4yups3kljnyclsqgfg7sn3g4swry.debug/ir_pre_fusion.txt",
+      "sha256": "692ac870bc383dffd357065207580f7099736bb501ee54946dfd39c49ccfa594"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/inductor-cache/tmppmuucbyw/ex/cexw4ybevivp4pxum2xu743c4yups3kljnyclsqgfg7sn3g4swry.debug/output_code.py",
+      "sha256": "78f21eb62759b042ca80647cd753c7431c9dfa48e42bc69377e5d78b372b9918"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/result.json",
+      "sha256": "b307127a67b9b71ae77890d730b3b7aaa208ab0d300c50184e27675dea8f6543"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-0-after.txt",
+      "sha256": "0f690af09de73be9c88999ddb6c82cabc3153c43f4b9fffb1204d91ca8835444"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-0-before.txt",
+      "sha256": "8367102b92cee4e8726411a339c6c0a228910163001b2ce90b7f0ff3ffc5e8fc"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-1-after.txt",
+      "sha256": "bc7e96095f820bde1b62b824291177b18b7524fccbfc6a69551a9816db32c021"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-1-before.txt",
+      "sha256": "b8c50e81cf2ed1214ed0a1a96818be9f155c3e581ed5ef3ecd64636454235e6c"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-2-after.txt",
+      "sha256": "0f690af09de73be9c88999ddb6c82cabc3153c43f4b9fffb1204d91ca8835444"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-2-before.txt",
+      "sha256": "8367102b92cee4e8726411a339c6c0a228910163001b2ce90b7f0ff3ffc5e8fc"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-3-after.txt",
+      "sha256": "bc7e96095f820bde1b62b824291177b18b7524fccbfc6a69551a9816db32c021"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-3-before.txt",
+      "sha256": "b8c50e81cf2ed1214ed0a1a96818be9f155c3e581ed5ef3ecd64636454235e6c"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-4-after.txt",
+      "sha256": "1a16f0f9876edaf3f7a9d424c5787afd333542d666f523ac733acbaa5837c078"
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/target-4-before.txt",
+      "sha256": "56c3095320bc065a137dbf2b534fa6acc50ce6c5792ad26c4ba39bbc24fbb529"
+    }
+  ],
+  "archive_scope": "evidence-only-not-installed-pass",
+  "source_run_dir": "/home/z50063656/tmp/t098-native-eh4e214v/adapter"
+}

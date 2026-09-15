@@ -1,0 +1,115 @@
+{
+  "task_id": "T-104",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-13",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "sfdp-pattern-13-registered-half-inference",
+  "worker_sha256": "c72ed16c537f6ad8aee44e2086f663eeeca582c01c3fd9142fee56e14f0c65c1",
+  "target_control_sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+  "observer_sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae",
+  "input_spec": [
+    {
+      "shape": [
+        1024,
+        128,
+        128
+      ],
+      "stride": [
+        16384,
+        128,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    },
+    {
+      "shape": [
+        1024,
+        128,
+        128
+      ],
+      "stride": [
+        16384,
+        128,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    },
+    {
+      "shape": [
+        1024,
+        128,
+        128
+      ],
+      "stride": [
+        16384,
+        128,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    }
+  ],
+  "registration_name": "_sfdp_pattern_13_half_inference",
+  "dropout_p": 0.0,
+  "reviewed_at": "2026-09-14T23:08:40.113064+08:00",
+  "reviewer": "Codex：原社区合同及目标OFF/ON生成代码逐图复核",
+  "manual_codegen_review": "逐图检查：OFF仅移除13号两项注册且保留132项，实际NPU两次extern bmm加一次softmax；ON本编号改图一次，实际npu_fusion_attention_v3，scale=1/keep_prob=1。两臂同FP16输入、fullgraph和eager对照通过，没有CPU转移；仅登记的推理微图，不含backward或模型端到端。",
+  "community_oracle_scope": "原社区已执行的数值断言及独立性能输入比较",
+  "codegen_review": {
+    "off": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__softmax_0.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    },
+    "on": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "torch.ops.npu.npu_fusion_attention_v3.default": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    }
+  },
+  "gpu_reference": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-104/gpu_reference_review.json",
+    "sha256": "34c46e3dec9b879553f449009bcce400837483be71d842f16deeb1bf5482d844"
+  },
+  "community_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-13-native/evidence/t104-native-cw5by_le/adapter/result.json",
+    "sha256": "52381470848a60a323c0e3bdb6bac17578cad68c6a9697802cd804336857d208"
+  },
+  "off_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-13-native/evidence/functional-20260914T230539+0800/off/result.json",
+    "sha256": "a7751bb30bc172a5c499bf1b06e74f0e17084846d1c1555c435f13e64c8bc06b"
+  },
+  "target_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-13-native/evidence/functional-20260914T230539+0800/on/result.json",
+    "sha256": "c214ea73657a69675d79cd4a45d6c12d6fbccb0ee41a069ccedd211a02ae6242"
+  },
+  "worker_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-13-native/evidence/functional-20260914T230539+0800/t102_t107_attention_performance_worker.py",
+    "sha256": "c72ed16c537f6ad8aee44e2086f663eeeca582c01c3fd9142fee56e14f0c65c1"
+  },
+  "target_control_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-13-native/evidence/functional-20260914T230539+0800/target_entry_control.py",
+    "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+  },
+  "observer_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-13-native/evidence/functional-20260914T230539+0800/native_contract_observer.py",
+    "sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae"
+  }
+}

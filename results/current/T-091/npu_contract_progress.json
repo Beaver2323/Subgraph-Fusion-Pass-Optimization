@@ -1,0 +1,78 @@
+{
+  "task_id": "T-091",
+  "units": {
+    "AU-split-cat-normalize-stack-default": {
+      "cases": {
+        "REF-stack-axis-normalization-native": {
+          "result_path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/result.json",
+          "sha256": "069d218f83d9430ec030b1b64d950e2f2f768b6bdf9ad4663d22a13f640270be",
+          "artifacts": [
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/debug/torch_compile_debug/run_2026_09_14_20_02_01_384236-pid_1383776/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+              "sha256": "9e684c76286f43367c8f9e3ac3128729fcde88f0374a9f8bbb4c4405e49494fa"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/debug/torch_compile_debug/run_2026_09_14_20_02_01_384236-pid_1383776/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+              "sha256": "f60ecec93429814412adba5c904206082ac35925678ac8ac1f9505cb5fdf116f"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/debug/torch_compile_debug/run_2026_09_14_20_02_01_384236-pid_1383776/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+              "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/debug/torch_compile_debug/run_2026_09_14_20_02_01_384236-pid_1383776/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+              "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/debug/torch_compile_debug/run_2026_09_14_20_02_01_384236-pid_1383776/torchinductor/model__0_inference_0.0/output_code.py",
+              "sha256": "ac71945a0f37ee49706ef94b2aff9c6aa0e2f589edc6255edde3b47c290b4c41"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/inductor-cache/tmpgqx9536p/5l/c5lxitni7c2ce5wjzyja77zfuz5dxxi7ez7qt3sz4bhndpirxryl.debug/fx_graph_readable.py",
+              "sha256": "9e684c76286f43367c8f9e3ac3128729fcde88f0374a9f8bbb4c4405e49494fa"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/inductor-cache/tmpgqx9536p/5l/c5lxitni7c2ce5wjzyja77zfuz5dxxi7ez7qt3sz4bhndpirxryl.debug/fx_graph_transformed.py",
+              "sha256": "f60ecec93429814412adba5c904206082ac35925678ac8ac1f9505cb5fdf116f"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/inductor-cache/tmpgqx9536p/5l/c5lxitni7c2ce5wjzyja77zfuz5dxxi7ez7qt3sz4bhndpirxryl.debug/ir_post_fusion.txt",
+              "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/inductor-cache/tmpgqx9536p/5l/c5lxitni7c2ce5wjzyja77zfuz5dxxi7ez7qt3sz4bhndpirxryl.debug/ir_pre_fusion.txt",
+              "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/inductor-cache/tmpgqx9536p/5l/c5lxitni7c2ce5wjzyja77zfuz5dxxi7ez7qt3sz4bhndpirxryl.debug/output_code.py",
+              "sha256": "ac71945a0f37ee49706ef94b2aff9c6aa0e2f589edc6255edde3b47c290b4c41"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/result.json",
+              "sha256": "069d218f83d9430ec030b1b64d950e2f2f768b6bdf9ad4663d22a13f640270be"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/target-observations/1383776-GraphPatternEntry-0001/contract_observation.json",
+              "sha256": "b49e3a49221047f7d8a88c779be859b139265f6c13c100a6aa31666e93bc1332"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/target-observations/1383776-GraphPatternEntry-0001/fx_graph_readable.py",
+              "sha256": "c7708a203e4ead35de8d40989010056e912e4c1e6dfa9de0f962439b31cd1152"
+            },
+            {
+              "path": "issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/target-observations/1383776-GraphPatternEntry-0001/fx_graph_transformed.py",
+              "sha256": "5f24c8fad3427debcc132479885cda49ae99351b1c8b242fb376d13cb534d1e9"
+            }
+          ]
+        }
+      },
+      "backend": "triton_experimental",
+      "correctness": "passed-for-recorded-cases",
+      "contract_complete": true,
+      "pending_cases": [],
+      "fallback_review": "manual-review-pending",
+      "performance_gate_issued": false
+    }
+  },
+  "updated_at": "2026-09-14T20:03:02.788550+08:00"
+}

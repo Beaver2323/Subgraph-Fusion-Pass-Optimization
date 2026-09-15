@@ -1,0 +1,208 @@
+===== graph 1: debug/native_contract_observer/1671491-ReplacementPatternEntry-0001/fx_graph_readable.py =====
+
+
+
+def forward(self, arg0_1, arg1_1, arg2_1):
+    full_default = torch.ops.aten.full.default([2, 2], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+    permute = torch.ops.aten.permute.default(arg0_1, [0, 2, 1, 3]);  arg0_1 = None
+    permute_1 = torch.ops.aten.permute.default(arg1_1, [0, 2, 1, 3]);  arg1_1 = None
+    permute_2 = torch.ops.aten.permute.default(arg2_1, [0, 2, 1, 3]);  arg2_1 = None
+    permute_3 = torch.ops.aten.permute.default(permute, [0, 1, 3, 2]);  permute = None
+    expand = torch.ops.aten.expand.default(permute_1, [4, 16, 2, 32]);  permute_1 = None
+    clone = torch.ops.aten.clone.default(expand, memory_format = torch.contiguous_format);  expand = None
+    view = torch.ops.aten.view.default(clone, [64, 2, 32]);  clone = None
+    expand_1 = torch.ops.aten.expand.default(permute_3, [4, 16, 32, 2]);  permute_3 = None
+    clone_1 = torch.ops.aten.clone.default(expand_1, memory_format = torch.contiguous_format);  expand_1 = None
+    view_1 = torch.ops.aten.view.default(clone_1, [64, 32, 2]);  clone_1 = None
+    bmm = torch.ops.aten.bmm.default(view, view_1);  view = view_1 = None
+    view_2 = torch.ops.aten.view.default(bmm, [4, 16, 2, 2]);  bmm = None
+    div = torch.ops.aten.div.Tensor(view_2, 3.0);  view_2 = None
+    iota = torch.ops.prims.iota.default(2, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+    unsqueeze = torch.ops.aten.unsqueeze.default(iota, -2);  iota = None
+    iota_1 = torch.ops.prims.iota.default(2, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+    unsqueeze_1 = torch.ops.aten.unsqueeze.default(iota_1, -1);  iota_1 = None
+    sub = torch.ops.aten.sub.Tensor(unsqueeze, unsqueeze_1);  unsqueeze = unsqueeze_1 = None
+    le = torch.ops.aten.le.Scalar(sub, 0);  sub = None
+    logical_and = torch.ops.aten.logical_and.default(le, full_default);  le = full_default = None
+    logical_not = torch.ops.aten.logical_not.default(logical_and)
+    full_default_1 = torch.ops.aten.full.default([], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+    where = torch.ops.aten.where.self(logical_not, full_default_1, logical_and);  logical_not = full_default_1 = logical_and = None
+    add = torch.ops.aten.add.Tensor(div, where);  div = where = None
+    amax = torch.ops.aten.amax.default(add, [-1], True)
+    sub_1 = torch.ops.aten.sub.Tensor(add, amax);  add = amax = None
+    exp = torch.ops.aten.exp.default(sub_1);  sub_1 = None
+    sum_1 = torch.ops.aten.sum.dim_IntList(exp, [-1], True)
+    div_1 = torch.ops.aten.div.Tensor(exp, sum_1);  exp = sum_1 = None
+    expand_2 = torch.ops.aten.expand.default(div_1, [4, 16, 2, 2]);  div_1 = None
+    view_3 = torch.ops.aten.view.default(expand_2, [64, 2, 2]);  expand_2 = None
+    expand_3 = torch.ops.aten.expand.default(permute_2, [4, 16, 2, 32]);  permute_2 = None
+    clone_2 = torch.ops.aten.clone.default(expand_3, memory_format = torch.contiguous_format);  expand_3 = None
+    view_4 = torch.ops.aten.view.default(clone_2, [64, 2, 32]);  clone_2 = None
+    bmm_1 = torch.ops.aten.bmm.default(view_3, view_4);  view_3 = view_4 = None
+    view_5 = torch.ops.aten.view.default(bmm_1, [4, 16, 2, 32]);  bmm_1 = None
+    return (view_5,)
+    
+===== graph 2: debug/native_contract_observer/1671491-ReplacementPatternEntry-0002/fx_graph_readable.py =====
+
+
+
+def forward(self, primals, tangents):
+    primals_1, primals_2, primals_3, tangents_1, = fx_pytree.tree_flatten_spec([primals, tangents], self._in_spec)
+    full_default = torch.ops.aten.full.default([2, 2], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+    permute = torch.ops.aten.permute.default(primals_1, [0, 2, 1, 3]);  primals_1 = None
+    permute_1 = torch.ops.aten.permute.default(primals_2, [0, 2, 1, 3]);  primals_2 = None
+    permute_2 = torch.ops.aten.permute.default(primals_3, [0, 2, 1, 3]);  primals_3 = None
+    permute_3 = torch.ops.aten.permute.default(permute, [0, 1, 3, 2]);  permute = None
+    expand = torch.ops.aten.expand.default(permute_1, [4, 16, 2, 32]);  permute_1 = None
+    clone = torch.ops.aten.clone.default(expand, memory_format = torch.contiguous_format);  expand = None
+    view = torch.ops.aten.view.default(clone, [64, 2, 32]);  clone = None
+    expand_1 = torch.ops.aten.expand.default(permute_3, [4, 16, 32, 2]);  permute_3 = None
+    clone_1 = torch.ops.aten.clone.default(expand_1, memory_format = torch.contiguous_format);  expand_1 = None
+    view_1 = torch.ops.aten.view.default(clone_1, [64, 32, 2]);  clone_1 = None
+    bmm = torch.ops.aten.bmm.default(view, view_1)
+    view_2 = torch.ops.aten.view.default(bmm, [4, 16, 2, 2]);  bmm = None
+    div = torch.ops.aten.div.Tensor(view_2, 3.0);  view_2 = None
+    iota = torch.ops.prims.iota.default(2, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+    unsqueeze = torch.ops.aten.unsqueeze.default(iota, -2);  iota = None
+    iota_1 = torch.ops.prims.iota.default(2, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+    unsqueeze_1 = torch.ops.aten.unsqueeze.default(iota_1, -1);  iota_1 = None
+    sub = torch.ops.aten.sub.Tensor(unsqueeze, unsqueeze_1);  unsqueeze = unsqueeze_1 = None
+    le = torch.ops.aten.le.Scalar(sub, 0);  sub = None
+    logical_and = torch.ops.aten.logical_and.default(le, full_default);  le = full_default = None
+    logical_not = torch.ops.aten.logical_not.default(logical_and)
+    full_default_1 = torch.ops.aten.full.default([], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+    where = torch.ops.aten.where.self(logical_not, full_default_1, logical_and);  logical_not = full_default_1 = logical_and = None
+    add = torch.ops.aten.add.Tensor(div, where);  div = where = None
+    amax = torch.ops.aten.amax.default(add, [-1], True)
+    sub_1 = torch.ops.aten.sub.Tensor(add, amax);  add = amax = None
+    exp = torch.ops.aten.exp.default(sub_1);  sub_1 = None
+    sum_1 = torch.ops.aten.sum.dim_IntList(exp, [-1], True)
+    div_1 = torch.ops.aten.div.Tensor(exp, sum_1);  exp = sum_1 = None
+    expand_2 = torch.ops.aten.expand.default(div_1, [4, 16, 2, 2])
+    view_3 = torch.ops.aten.view.default(expand_2, [64, 2, 2]);  expand_2 = None
+    expand_3 = torch.ops.aten.expand.default(permute_2, [4, 16, 2, 32]);  permute_2 = None
+    clone_2 = torch.ops.aten.clone.default(expand_3, memory_format = torch.contiguous_format);  expand_3 = None
+    view_4 = torch.ops.aten.view.default(clone_2, [64, 2, 32]);  clone_2 = None
+    bmm_1 = torch.ops.aten.bmm.default(view_3, view_4)
+    view_5 = torch.ops.aten.view.default(bmm_1, [4, 16, 2, 32]);  bmm_1 = None
+    view_6 = torch.ops.aten.view.default(tangents_1, [64, 2, 32]);  tangents_1 = None
+    permute_4 = torch.ops.aten.permute.default(view_3, [0, 2, 1]);  view_3 = None
+    bmm_2 = torch.ops.aten.bmm.default(permute_4, view_6);  permute_4 = None
+    permute_5 = torch.ops.aten.permute.default(view_4, [0, 2, 1]);  view_4 = None
+    bmm_3 = torch.ops.aten.bmm.default(view_6, permute_5);  view_6 = permute_5 = None
+    view_7 = torch.ops.aten.view.default(bmm_2, [4, 16, 2, 32]);  bmm_2 = None
+    view_8 = torch.ops.aten.view.default(bmm_3, [4, 16, 2, 2]);  bmm_3 = None
+    mul = torch.ops.aten.mul.Tensor(view_8, div_1);  view_8 = None
+    sum_2 = torch.ops.aten.sum.dim_IntList(mul, [-1], True)
+    neg = torch.ops.aten.neg.default(div_1);  div_1 = None
+    fma = torch.ops.prims.fma.default(neg, sum_2, mul);  neg = sum_2 = mul = None
+    div_2 = torch.ops.aten.div.Tensor(fma, 3.0);  fma = None
+    view_9 = torch.ops.aten.view.default(div_2, [64, 2, 2]);  div_2 = None
+    permute_6 = torch.ops.aten.permute.default(view, [0, 2, 1]);  view = None
+    bmm_4 = torch.ops.aten.bmm.default(permute_6, view_9);  permute_6 = None
+    permute_7 = torch.ops.aten.permute.default(view_1, [0, 2, 1]);  view_1 = None
+    bmm_5 = torch.ops.aten.bmm.default(view_9, permute_7);  view_9 = permute_7 = None
+    view_10 = torch.ops.aten.view.default(bmm_4, [4, 16, 32, 2]);  bmm_4 = None
+    view_11 = torch.ops.aten.view.default(bmm_5, [4, 16, 2, 32]);  bmm_5 = None
+    permute_8 = torch.ops.aten.permute.default(view_10, [0, 1, 3, 2]);  view_10 = None
+    permute_9 = torch.ops.aten.permute.default(view_7, [0, 2, 1, 3]);  view_7 = None
+    permute_10 = torch.ops.aten.permute.default(view_11, [0, 2, 1, 3]);  view_11 = None
+    permute_11 = torch.ops.aten.permute.default(permute_8, [0, 2, 1, 3]);  permute_8 = None
+    return pytree.tree_unflatten([view_5, permute_11, permute_10, permute_9], self._out_spec)
+    
+===== graph 3: debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/fx_graph_readable.py =====
+class <lambda>(torch.nn.Module):
+    def forward(self, arg0_1: "f32[4, 2, 16, 32]", arg1_1: "f32[4, 2, 16, 32]", arg2_1: "f32[4, 2, 16, 32]"):
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:950 in dot_prod_attention, code: attn_mask = torch.ones(
+        full_default: "b8[2, 2]" = torch.ops.aten.full.default([2, 2], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:952 in dot_prod_attention, code: ).tril(diagonal=0)
+        iota: "i64[2]" = torch.ops.prims.iota.default(2, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze: "i64[1, 2]" = torch.ops.aten.unsqueeze.default(iota, -2);  iota = None
+        iota_1: "i64[2]" = torch.ops.prims.iota.default(2, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_1: "i64[2, 1]" = torch.ops.aten.unsqueeze.default(iota_1, -1);  iota_1 = None
+        sub: "i64[2, 2]" = torch.ops.aten.sub.Tensor(unsqueeze, unsqueeze_1);  unsqueeze = unsqueeze_1 = None
+        le: "b8[2, 2]" = torch.ops.aten.le.Scalar(sub, 0);  sub = None
+        logical_and: "b8[2, 2]" = torch.ops.aten.logical_and.default(le, full_default);  le = full_default = None
+
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:954 in dot_prod_attention, code: torch.logical_not(attn_mask), -float("inf")
+        logical_not: "b8[2, 2]" = torch.ops.aten.logical_not.default(logical_and)
+
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:953 in dot_prod_attention, code: attn_mask = attn_mask.masked_fill(
+        full_default_1: "b8[]" = torch.ops.aten.full.default([], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        where: "b8[2, 2]" = torch.ops.aten.where.self(logical_not, full_default_1, logical_and);  logical_not = full_default_1 = logical_and = None
+
+        # No stacktrace found for following nodes
+        permute_default: "f32[4, 16, 2, 32]" = torch.ops.aten.permute.default(arg1_1, [0, 2, 1, 3]);  arg1_1 = None
+        permute_default_1: "f32[4, 16, 2, 32]" = torch.ops.aten.permute.default(arg0_1, [0, 2, 1, 3]);  arg0_1 = None
+        permute_default_2: "f32[4, 16, 2, 32]" = torch.ops.aten.permute.default(arg2_1, [0, 2, 1, 3]);  arg2_1 = None
+        convert_element_type_default: "f32[2, 2]" = torch.ops.prims.convert_element_type.default(where, torch.float32);  where = None
+        constant_pad_nd_default: "f32[2, 8]" = torch.ops.aten.constant_pad_nd.default(convert_element_type_default, [0, 6], 0.0);  convert_element_type_default = None
+        slice_tensor: "f32[2, 2]" = torch.ops.aten.slice.Tensor(constant_pad_nd_default, -1, 0, 2);  constant_pad_nd_default = None
+        expand_default: "f32[4, 16, 2, 2]" = torch.ops.aten.expand.default(slice_tensor, [4, 16, 2, 2]);  slice_tensor = None
+        _scaled_dot_product_efficient_attention_default = torch.ops.aten._scaled_dot_product_efficient_attention.default(permute_default, permute_default_1, permute_default_2, expand_default, False, scale = 0.3333333333333333);  permute_default = permute_default_1 = permute_default_2 = expand_default = None
+
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:962 in dot_prod_attention, code: .matmul(v)
+        getitem: "f32[4, 16, 2, 32]" = _scaled_dot_product_efficient_attention_default[0];  _scaled_dot_product_efficient_attention_default = None
+        return (getitem,)
+
+===== graph 4: debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/fx_graph_readable.py =====
+class GraphModule(torch.nn.Module):
+    def forward(self, permute_default: "f32[4, 16, 2, 32]", permute_default_1: "f32[4, 16, 2, 32]", permute_default_2: "f32[4, 16, 2, 32]", slice_tensor: "f32[2, 2]", getitem: "f32[4, 16, 2, 32]", getitem_1: "f32[4, 16, 32]", getitem_2: "i64[]", getitem_3: "i64[]", tangents_1: "f32[4, 16, 2, 32]"):
+        # No stacktrace found for following nodes
+        expand_default: "f32[4, 16, 2, 2]" = torch.ops.aten.expand.default(slice_tensor, [4, 16, 2, 2]);  slice_tensor = None
+        _scaled_dot_product_efficient_attention_backward_default = torch.ops.aten._scaled_dot_product_efficient_attention_backward.default(tangents_1, permute_default, permute_default_1, permute_default_2, expand_default, getitem, getitem_1, getitem_2, getitem_3, 0.0, [True, True, True, False], scale = 0.3333333333333333);  tangents_1 = permute_default = permute_default_1 = permute_default_2 = expand_default = getitem = getitem_1 = getitem_2 = getitem_3 = None
+        getitem_4: "f32[4, 16, 2, 32]" = _scaled_dot_product_efficient_attention_backward_default[0]
+        getitem_5: "f32[4, 16, 2, 32]" = _scaled_dot_product_efficient_attention_backward_default[1]
+        getitem_6: "f32[4, 16, 2, 32]" = _scaled_dot_product_efficient_attention_backward_default[2];  _scaled_dot_product_efficient_attention_backward_default = None
+
+        # Backward of forward node: File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:958 in dot_prod_attention, code: v = value.permute(0, 2, 1, 3)
+        permute_default_3: "f32[4, 2, 16, 32]" = torch.ops.aten.permute.default(getitem_6, [0, 2, 1, 3]);  getitem_6 = None
+
+        # Backward of forward node: File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:957 in dot_prod_attention, code: k = key.permute(0, 2, 1, 3)
+        permute_default_4: "f32[4, 2, 16, 32]" = torch.ops.aten.permute.default(getitem_5, [0, 2, 1, 3]);  getitem_5 = None
+
+        # Backward of forward node: File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:956 in dot_prod_attention, code: q = query.permute(0, 2, 1, 3)
+        permute_default_5: "f32[4, 2, 16, 32]" = torch.ops.aten.permute.default(getitem_4, [0, 2, 1, 3]);  getitem_4 = None
+        return (permute_default_4, permute_default_5, permute_default_3)
+
+===== graph 5: debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/fx_graph_readable.py =====
+class GraphModule(torch.nn.Module):
+    def forward(self, primals_1: "f32[4, 2, 16, 32]", primals_2: "f32[4, 2, 16, 32]", primals_3: "f32[4, 2, 16, 32]"):
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:950 in dot_prod_attention, code: attn_mask = torch.ones(
+        full_default: "b8[2, 2]" = torch.ops.aten.full.default([2, 2], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:952 in dot_prod_attention, code: ).tril(diagonal=0)
+        iota: "i64[2]" = torch.ops.prims.iota.default(2, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze: "i64[1, 2]" = torch.ops.aten.unsqueeze.default(iota, -2)
+        unsqueeze_1: "i64[2, 1]" = torch.ops.aten.unsqueeze.default(iota, -1);  iota = None
+        sub: "i64[2, 2]" = torch.ops.aten.sub.Tensor(unsqueeze, unsqueeze_1);  unsqueeze = unsqueeze_1 = None
+        le: "b8[2, 2]" = torch.ops.aten.le.Scalar(sub, 0);  sub = None
+        logical_and: "b8[2, 2]" = torch.ops.aten.logical_and.default(le, full_default);  le = full_default = None
+
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:954 in dot_prod_attention, code: torch.logical_not(attn_mask), -float("inf")
+        logical_not: "b8[2, 2]" = torch.ops.aten.logical_not.default(logical_and)
+
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:953 in dot_prod_attention, code: attn_mask = attn_mask.masked_fill(
+        full_default_1: "b8[]" = torch.ops.aten.full.default([], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        where: "b8[2, 2]" = torch.ops.aten.where.self(logical_not, full_default_1, logical_and);  logical_not = full_default_1 = logical_and = None
+
+        # No stacktrace found for following nodes
+        permute_default: "f32[4, 16, 2, 32]" = torch.ops.aten.permute.default(primals_2, [0, 2, 1, 3]);  primals_2 = None
+        permute_default_1: "f32[4, 16, 2, 32]" = torch.ops.aten.permute.default(primals_1, [0, 2, 1, 3]);  primals_1 = None
+        permute_default_2: "f32[4, 16, 2, 32]" = torch.ops.aten.permute.default(primals_3, [0, 2, 1, 3]);  primals_3 = None
+        convert_element_type_default: "f32[2, 2]" = torch.ops.prims.convert_element_type.default(where, torch.float32);  where = None
+        constant_pad_nd_default: "f32[2, 8]" = torch.ops.aten.constant_pad_nd.default(convert_element_type_default, [0, 6], 0.0);  convert_element_type_default = None
+        slice_tensor: "f32[2, 2]" = torch.ops.aten.slice.Tensor(constant_pad_nd_default, -1, 0, 2);  constant_pad_nd_default = None
+        expand_default: "f32[4, 16, 2, 2]" = torch.ops.aten.expand.default(slice_tensor, [4, 16, 2, 2])
+        _scaled_dot_product_efficient_attention_default = torch.ops.aten._scaled_dot_product_efficient_attention.default(permute_default, permute_default_1, permute_default_2, expand_default, True, scale = 0.3333333333333333);  expand_default = None
+
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:962 in dot_prod_attention, code: .matmul(v)
+        getitem: "f32[4, 16, 2, 32]" = _scaled_dot_product_efficient_attention_default[0]
+
+        # No stacktrace found for following nodes
+        getitem_1: "f32[4, 16, 32]" = _scaled_dot_product_efficient_attention_default[1]
+        getitem_2: "i64[]" = _scaled_dot_product_efficient_attention_default[2]
+        getitem_3: "i64[]" = _scaled_dot_product_efficient_attention_default[3];  _scaled_dot_product_efficient_attention_default = None
+        return (getitem, permute_default, permute_default_1, permute_default_2, slice_tensor, getitem, getitem_1, getitem_2, getitem_3)
+

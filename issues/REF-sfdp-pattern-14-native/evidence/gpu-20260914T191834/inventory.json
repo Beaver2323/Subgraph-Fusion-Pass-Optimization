@@ -1,0 +1,137 @@
+{
+  "generated_at": "2026-09-14T22:40:52.589314+08:00",
+  "source_run": "/home/z50063656/tmp/t104-gpu-code-review-20260914/text-import-nfq7lu_3/reference-20260914T191834+0800-0x3nqs19/cases/REF-sfdp-pattern-14-native",
+  "files": [
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/artifact_inventory.json",
+      "sha256": "33c389e2ed56827e92b3d7d63d0f23cbeff6f7ab26336d25aa82cee564e2215b",
+      "bytes": 7996
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/native_contract_observer/1671491-ReplacementPatternEntry-0001/fx_graph_readable.py",
+      "sha256": "5c6f1dea9b288d989a4b198ef040132007aba2a3acdddd33de796a48bd6fd776",
+      "bytes": 3383
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/native_contract_observer/1671491-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+      "sha256": "5598f40781f4bd103dc365d4747b97b715efbd1e57a9000e6db5513bb5d07359",
+      "bytes": 2478
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/native_contract_observer/1671491-ReplacementPatternEntry-0002/fx_graph_readable.py",
+      "sha256": "1e393f62f788419154de49d0ad14c920c167a05376f5b2d3e9ec3f3aecdac373",
+      "bytes": 5330
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/native_contract_observer/1671491-ReplacementPatternEntry-0002/fx_graph_transformed.py",
+      "sha256": "d251395bd0f16d069f78496ab0e8f51664c6c8cef2cb879a6d0bbd4e9791bc19",
+      "bytes": 3861
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "6a9e8df2acebdc4f9ee688fa9c9604a0861be99e9edc246d2d2ff2ff654e39a7",
+      "bytes": 3688
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "fd0c1a2a1c0d43f128cb9758ce6cdc88026e606075ac9149f25380dbea6a1d32",
+      "bytes": 3874
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "76f43e0a111773f5b9bb33ef5cddb3e10854933710f0a78f2551fb091d6ebf25",
+      "bytes": 5350
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "b8f219ed27f5be7c5fcb2242b2b053c496b3c28f86311a068eae567f810138a0",
+      "bytes": 5399
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "7d706f52d4946ae093810209ff950335a828ebc9f8767f1fa09391413e1ee3f2",
+      "bytes": 17025
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/fx_graph_readable.py",
+      "sha256": "e59a0fc8081c2ee6c94dd7f676099ddbda42c715733f7fd46ae7bb91f18d9a87",
+      "bytes": 2305
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/fx_graph_transformed.py",
+      "sha256": "e59a0fc8081c2ee6c94dd7f676099ddbda42c715733f7fd46ae7bb91f18d9a87",
+      "bytes": 2305
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/ir_post_fusion.txt",
+      "sha256": "8b28f97d1636375efd93022b3d8a899229ff049eea0e01dd579ab5f48c0a3fe8",
+      "bytes": 2734
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/ir_pre_fusion.txt",
+      "sha256": "8b28f97d1636375efd93022b3d8a899229ff049eea0e01dd579ab5f48c0a3fe8",
+      "bytes": 2734
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/output_code.py",
+      "sha256": "76aeec181b5c239d074efd3c0cc7e4e8dd92540c6b1b00599210d2583b241605",
+      "bytes": 6189
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/fx_graph_readable.py",
+      "sha256": "6b78bf36ac07da25ce3bd9e0d45d46a01e92b2bb60b290c6a212137266f5bb45",
+      "bytes": 3866
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/fx_graph_transformed.py",
+      "sha256": "6b78bf36ac07da25ce3bd9e0d45d46a01e92b2bb60b290c6a212137266f5bb45",
+      "bytes": 3866
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/ir_post_fusion.txt",
+      "sha256": "ebeb5908d1ff6ed81d2c68980410268d17b7bd0a1efbd0c6366d62d0f5cb783d",
+      "bytes": 5876
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/ir_pre_fusion.txt",
+      "sha256": "3fffb01d4768181c6aaa615692660e50d8d0a44359cada760974c5a50e4cce55",
+      "bytes": 5889
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/output_code.py",
+      "sha256": "6813e6164f27111b994488ee4d64bcb5414a5da5ee77cbefe4264f7426fdb0ff",
+      "bytes": 12491
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/fx_after.txt",
+      "sha256": "dac486b61eda1661c6284954962455c8446cab5b4c6018d4cb0f7f8d12c91c96",
+      "bytes": 17065
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/fx_before.txt",
+      "sha256": "0a1d9e3bff03b25c838cc39ddebdb6a0dc1b0d82577dbb13a5862f8bcb668629",
+      "bytes": 19238
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/metadata.json",
+      "sha256": "6bba3ff6ecd7c2d1fe6ac81cc2efba0fe1f99fd38346827a44c68734f1edb454",
+      "bytes": 708
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/reference_result.json",
+      "sha256": "0096d79cc5bb2978f1bbfaaa9b97573c15211b01af7a95b03d9c6b15134514cc",
+      "bytes": 6535
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/stderr.log",
+      "sha256": "3d940a54f993a9f6d6d83e50aeb65610ba12c35c43cbec33210efd4ff329bdba",
+      "bytes": 3374
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-14-native/evidence/gpu-20260914T191834/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "generated_output_code_present": true
+}

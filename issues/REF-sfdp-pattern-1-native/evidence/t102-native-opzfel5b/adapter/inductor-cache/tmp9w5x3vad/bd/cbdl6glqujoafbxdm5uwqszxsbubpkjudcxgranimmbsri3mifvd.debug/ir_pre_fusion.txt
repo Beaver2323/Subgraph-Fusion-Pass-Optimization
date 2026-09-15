@@ -1,0 +1,48 @@
+op0: ExternKernelSchedulerNode(FallbackKernel)
+op0.writes = [StarDep(name='buf0', mode=None)]
+op0.unmet_dependencies = []
+op0.met_dependencies = 
+    [   StarDep(name='primals_1', mode=None),
+        StarDep(name='primals_2', mode=None),
+        StarDep(name='primals_3', mode=None)]
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: FallbackKernel
+    buf0.layout = MultiOutputLayout(device=device(type='npu', index=0))
+    buf0.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op1'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op4'), can_inplace=False, is_weak=False),
+    ]
+]
+op0.node.kernel = torch.ops.npu.npu_fusion_attention_v3.default
+
+
+op1: ExternKernelSchedulerNode(MultiOutput)
+op1.writes = [   MemoryDep('buf1', 1024*d0 + 512*d1 + 32*d2 + d3, {d0: 4, d1: 2, d2: 16, d3: 32})]
+op1.unmet_dependencies = [StarDep(name='buf0', mode=None)]
+op1.met_dependencies = []
+op1.min_input_distance = 1
+op1.max_input_distance = 1
+op1.outputs = [
+    buf1: MultiOutput
+    buf1.layout = FixedLayout('npu:0', torch.float16, size=[4, 2, 16, 32], stride=[1024, 512, 32, 1])
+    buf1.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op1.node.kernel = None
+
+
+op4: ExternKernelSchedulerNode(MultiOutput)
+op4.writes = [MemoryDep('buf4', d0, {d0: 0})]
+op4.unmet_dependencies = [StarDep(name='buf0', mode=None)]
+op4.met_dependencies = []
+op4.min_input_distance = 1
+op4.max_input_distance = 1
+op4.outputs = [
+    buf4: MultiOutput
+    buf4.layout = FixedLayout('npu:0', torch.float16, size=[0], stride=[1])
+    buf4.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op4.node.kernel = None
+
+

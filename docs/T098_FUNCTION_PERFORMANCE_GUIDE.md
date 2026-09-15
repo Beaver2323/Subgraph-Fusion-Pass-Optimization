@@ -1,7 +1,13 @@
 # T-098 功能与性能测例讲解
 
-> 更新时间：2026-09-11 11:14 CST（UTC+08:00）
-> 状态：1 个GPU-ready单元，2 个候选明确延期。
+> 更新时间：2026-09-15 09:05 CST（UTC+08:00）
+> 最新状态：延长至12600秒的HF32-off轮次仍超时，完成84/112组合、最后169次Tensor断言通过，仅部分进度，性能门禁仍关闭。下行保留前轮历史。
+> 状态（2026-09-14 22:14 CST更新）：GPU原完整合同已复核；NPU默认HF32模式失败已留证，HF32-off全量轮次因一小时限额不足主动中断，完整112组仍待更长限额复验；性能未签门禁，原2个延期候选保留。
+
+详细适配步骤、失败代码、调用栈及四进程对照见[适配报告](../issues/REF-efficient-conv-bn-eval-product-native/适配报告.md)、
+[根因分析](../issues/REF-efficient-conv-bn-eval-product-native/根因分析.md)。默认模式与精度模式适配结果分开，不能把关闭HF32的测试对照说成产品默认精度已经修复。
+`progress.json` 只是中间快照，最终以退出码、完整日志和 `result.json` 为准。中断轮次记录35组合/70次Tensor比较通过，
+信号退出不能记为全量PASS，也不是新增数值失败；原件见issue的`evidence/hf32-off-partial-interrupted-20260914`。
 
 NPU 功能、修复验证和性能统一使用 `triton_experimental`，并在导入 `torch`/`torch_npu` 前选后端；OFF/ON 每臂使用新进程。
 
@@ -43,7 +49,7 @@ bias_on_the_fly = bn.bias + coefff_on_the_fly.flatten() * (conv_bias - bn.runnin
 return functional_call(conv, {"weight": weight_on_the_fly, "bias": bias_on_the_fly}, x)
 ```
 
-功能测例是社区真实CUDA完整乘积，覆盖Linear/Conv/ConvTranspose、bias、SyncBN、单/多用户、inlined/decomposed，并检查前向、梯度、SGD后结果和精确counter。两个handler合为一个行为合同。性能测例从乘积中固定Conv2d+BN2d代表图，测forward+backward；不是完整模型端到端。
+功能测例是社区真实CUDA完整乘积，覆盖Linear/Conv/ConvTranspose、bias、SyncBN、单/多用户、inlined/decomposed，并比较前向及SGD后输出、检查精确counter。它执行backward，通过参数更新后的输出间接约束梯度，不是逐输入/参数梯度直接比对。两个handler合为一个行为合同。性能测例从乘积中固定Conv2d+BN2d代表图，测forward+backward；不是完整模型端到端。
 
 ## 延期候选
 

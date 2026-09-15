@@ -1,0 +1,148 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_basic_cuda (module_folding_community_npu.main.<locals>.NpuCase.test_basic_cuda) ... [W914 21:29:29.748553530 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/utils/storage.py:55: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:30:28.121000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_forward_1 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_forward_1.0
+W0914 21:30:28.594000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1806] [0/0] Not enough SMs to use max_autotune_gemm mode
+W0914 21:30:59.836000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_backward_3 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_backward_3.1
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:31:31.782000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_forward_5 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_forward_5.2
+W0914 21:32:04.653000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_backward_7 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_backward_7.3
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:32:44.780000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__2_forward_9 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_forward_9.4
+W0914 21:33:16.199000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__2_backward_11 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_backward_11.5
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:33:47.686000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__3_forward_13 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_forward_13.6
+W0914 21:34:20.340000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__3_backward_15 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_backward_15.7
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:35:07.655000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__4_forward_17 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_forward_17.8
+W0914 21:35:28.894000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__4_backward_19 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_backward_19.9
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:36:14.155000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__5_forward_21 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_forward_21.10
+W0914 21:36:35.264000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__5_backward_23 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_backward_23.11
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:37:31.058000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__6_forward_25 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_forward_25.12
+W0914 21:37:51.336000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__6_backward_27 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_backward_27.13
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:38:37.076000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__7_forward_29 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_forward_29.14
+W0914 21:38:57.625000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__7_backward_31 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_backward_31.15
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:39:37.644000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__8_forward_33 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_forward_33.16
+W0914 21:39:56.506000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__8_backward_35 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_backward_35.17
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:40:36.465000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__9_forward_37 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_forward_37.18
+W0914 21:40:54.841000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__9_backward_39 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_backward_39.19
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:41:37.051000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__10_forward_41 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_forward_41.20
+W0914 21:41:56.133000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__10_backward_43 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_backward_43.21
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:42:36.612000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__11_forward_45 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_forward_45.22
+W0914 21:42:55.226000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__11_backward_47 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_backward_47.23
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:43:37.546000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__12_forward_49 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_forward_49.24
+W0914 21:44:24.217000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__12_backward_51 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_backward_51.25
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:45:06.729000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__13_forward_53 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_forward_53.26
+W0914 21:45:52.012000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__13_backward_55 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_backward_55.27
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:46:31.384000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__14_forward_57 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_forward_57.28
+W0914 21:47:17.502000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__14_backward_59 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_backward_59.29
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:47:59.778000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__15_forward_61 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_forward_61.30
+W0914 21:48:45.884000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__15_backward_63 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_backward_63.31
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:49:22.970000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__16_forward_65 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_forward_65.32
+W0914 21:49:45.837000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__16_backward_67 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_backward_67.33
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:50:23.168000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__17_forward_69 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_forward_69.34
+W0914 21:50:45.896000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__17_backward_71 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_backward_71.35
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:51:23.176000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__18_forward_73 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_forward_73.36
+W0914 21:51:46.078000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__18_backward_75 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_backward_75.37
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:52:23.771000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__19_forward_77 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_forward_77.38
+W0914 21:52:46.853000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__19_backward_79 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_backward_79.39
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:53:27.847000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__20_forward_81 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_forward_81.40
+W0914 21:53:49.364000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__20_backward_83 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_backward_83.41
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:54:29.364000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__21_forward_85 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_forward_85.42
+W0914 21:54:50.659000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__21_backward_87 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_backward_87.43
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:55:31.050000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__22_forward_89 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_forward_89.44
+W0914 21:55:52.410000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__22_backward_91 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_backward_91.45
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:56:32.771000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__23_forward_93 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_forward_93.46
+W0914 21:56:54.101000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__23_backward_95 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_backward_95.47
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:57:39.822000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__24_forward_97 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_forward_97.48
+W0914 21:58:35.665000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__24_backward_99 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_backward_99.49
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:59:21.012000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__25_forward_101 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_forward_101.50
+W0914 22:00:17.409000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__25_backward_103 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_backward_103.51
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:01:03.568000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__26_forward_105 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_forward_105.52
+W0914 22:02:03.096000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__26_backward_107 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_backward_107.53
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:02:50.731000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__27_forward_109 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_forward_109.54
+W0914 22:03:46.884000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__27_backward_111 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_backward_111.55
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:04:17.797000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__28_forward_113 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_forward_113.56
+W0914 22:04:49.673000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__28_backward_115 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_backward_115.57
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:05:20.445000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__29_forward_117 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_forward_117.58
+W0914 22:05:52.338000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__29_backward_119 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_backward_119.59
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:06:24.082000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__30_forward_121 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_forward_121.60
+W0914 22:06:55.447000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__30_backward_123 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_backward_123.61
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:07:26.164000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__31_forward_125 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_forward_125.62
+W0914 22:07:57.513000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__31_backward_127 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_backward_127.63
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:08:43.023000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__32_forward_129 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_forward_129.64
+W0914 22:09:06.542000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__32_backward_131 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_backward_131.65
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:09:52.985000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__33_forward_133 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_forward_133.66
+W0914 22:10:13.510000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__33_backward_135 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_backward_135.67
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:10:59.054000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__34_forward_137 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_forward_137.68
+W0914 22:11:19.316000 2759201 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__34_backward_139 debug trace: /home/z50063656/tmp/t098-native-doq0hsal/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_backward_139.69
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(

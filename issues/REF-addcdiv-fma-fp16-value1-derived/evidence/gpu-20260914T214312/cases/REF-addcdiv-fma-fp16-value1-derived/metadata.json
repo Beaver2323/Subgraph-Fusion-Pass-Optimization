@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T21:43:19+08:00",
+  "run_id": "reference-20260914T214312+0800-jqft26ak",
+  "case_id": "REF-addcdiv-fma-fp16-value1-derived",
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "variant_ids": [
+    "fp16-value1-bitwise-regression"
+  ],
+  "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda",
+  "tracking_mode": "derived",
+  "expected_match": false,
+  "expected_assertions": [
+    "FP16 compiled/eager 位级一致",
+    "addcdiv_fma_fused=0",
+    "不得通过FMA重融合掩盖普通div+add精度问题"
+  ],
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "derivation": {
+    "basis": "community-test-dtype-extension",
+    "changed_dimensions": [
+      "dtype"
+    ],
+    "preserved_contract": [
+      "shape=64x64",
+      "value=1社区既有子分支",
+      "eager/compiled bitwise equal",
+      "addcdiv_fma_fused=0"
+    ]
+  }
+}

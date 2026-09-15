@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-10T22:55:21+08:00",
-  "status": "prepared-awaiting-gpu-reference",
+  "generated_at": "2026-09-15T01:30:00+08:00",
+  "status": "partially-completed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -31,12 +31,12 @@
     "minimum_gpus": 1,
     "distributed_world_size": null,
     "scope": "原生CUDA编译、数值/梯度、目标编号或生成代码改写",
-    "suite_status": "pending-gpu-reference"
+    "suite_status": "partially-frozen-reference"
   },
   "counting_policy": {
     "current_manifest_units": 5,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0,
+    "current_frozen_denominator_units": 2,
+    "current_formally_closed_units": 2,
     "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结"
   },
   "acceptance_units": [
@@ -102,9 +102,9 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-17",
       "contract_name": "SDPA pattern 17：DistilBERT masked_fill+dropout",
       "stage": "joint_graph",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "duplicate-contract-evidence-retained",
+      "denominator_eligible": "no-duplicate-contract",
+      "coverage_phase": "duplicate-evidence-retained-not-counting",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/fuse_attention.py",
@@ -125,8 +125,8 @@
           "variant_id": "pattern-17-community-product",
           "kind": "positive-product",
           "expected_reference_match": true,
-          "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；规范布尔mask并保留dropout",
-          "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_17前缀>=1",
+          "expected_behavior": "冻结版本仅有dropout=0推理注册，与15同结构、同replacement且注册去重；不要求独立17命中，不外推训练支持",
+          "expected_counter": "默认注册由canonical pattern15承载；不制造独立17计数",
           "reference_status": "not-run",
           "npu_status": "not-run"
         }
@@ -135,7 +135,7 @@
         "reference_mode": "direct",
         "npu_mode": "triton-experimental-derived-from-community-functional-case",
         "allowed_local_deviation": [
-          "NPU使用注册器实际生成的同编号half inference输入，设备替换为NPU并保持pattern合同"
+          "本版本按注册去重归并到15；保留原GPU收件，不新增动态PASS"
         ],
         "forbidden_local_deviation": [
           "用通用fuse_attention总计数冒充精确编号",
@@ -144,25 +144,28 @@
         ]
       },
       "community_alignment": {
-        "status": "pending-device-comparison",
-        "gpu_scope": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现",
-        "npu_scope": "必须在triton_experimental真机确认精确编号、数值和无fallback后才能定论"
+        "status": "duplicate-contract-evidence-retained",
+        "gpu_scope": "15承载同一推理合同；17原生PASS不证明独立编号",
+        "npu_scope": "沿用canonical合同的未决问题，不借别名宣布修复"
       },
       "npu_control": {
         "config": "use_joint_graph_passes on/off on an isolated target-only workload",
         "off": false,
         "on": true,
-        "status": "prepared",
-        "next_action": "GPU原生reference人工复核后，在NPU运行独立fresh-process OFF/ON功能臂；功能通过才签性能gate"
-      }
+        "status": "duplicate-contract-do-not-run-independently",
+        "next_action": "无需17独立GPU/NPU或性能；见results/current/T-105/pattern17_alias_review/review.json；15的数值问题仍待修复"
+      },
+      "canonical_acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-15",
+      "canonical_task_id": "T-104",
+      "independent_unit_contribution": 0
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-18",
       "contract_name": "SDPA pattern 18：GPT2 causal mask并返回K/V",
       "stage": "joint_graph",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/fuse_attention.py",
@@ -185,8 +188,8 @@
           "expected_reference_match": true,
           "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；融合attention同时保持多输出K/V",
           "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_18前缀>=1",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
         }
       ],
       "tracking": {
@@ -218,9 +221,9 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-19",
       "contract_name": "SDPA pattern 19：GPT2 causal mask叠加attention mask",
       "stage": "joint_graph",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/fuse_attention.py",
@@ -243,8 +246,8 @@
           "expected_reference_match": true,
           "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；先合成mask再交给SDPA",
           "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_19前缀>=1",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
         }
       ],
       "tracking": {

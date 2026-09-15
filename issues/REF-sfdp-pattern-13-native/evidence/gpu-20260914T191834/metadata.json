@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T19:19:25+08:00",
+  "run_id": "reference-20260914T191834+0800-0x3nqs19",
+  "case_id": "REF-sfdp-pattern-13-native",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-13",
+  "variant_ids": [
+    "pattern-13-community-product"
+  ],
+  "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_13_gpu",
+  "tracking_mode": "direct",
+  "expected_match": true,
+  "expected_assertions": [
+    "真实CUDA torch.compile且零skip",
+    "人工FX/per-pattern counter确认编号13命中",
+    "输出及社区要求的梯度与eager一致"
+  ],
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+}

@@ -1,0 +1,46 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_sdpa_rewriter_22_gpu (attention_community_npu.main.<locals>.NpuCase.test_sdpa_rewriter_22_gpu)
+partial(func, *args, **keywords) - new function with partial application ... [W914 22:59:03.963547660 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:59:04.883000 5397 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1806] [0/0] Not enough SMs to use max_autotune_gemm mode
+W0914 23:00:58.887000 5397 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t106-native-xtdt3xs0/adapter/debug/torch_compile_debug/run_2026_09_14_22_59_03_658879-pid_5397/torchinductor/model__0_inference_0.0
+FAIL
+
+======================================================================
+FAIL: test_sdpa_rewriter_22_gpu (attention_community_npu.main.<locals>.NpuCase.test_sdpa_rewriter_22_gpu)
+partial(func, *args, **keywords) - new function with partial application
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py", line 3829, in wrapper
+    method(*args, **kwargs)
+  File "/home/z50063656/Pass/src/pytorch/test/inductor/test_fused_attention.py", line 1411, in _test_sdpa_rewriter_22
+    self._check_common(
+  File "/home/z50063656/Pass/src/pytorch/test/inductor/test_fused_attention.py", line 138, in _check_common
+    self.assertEqual(result1, result2, atol=atol, rtol=rtol)
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/attention_community_npu.py", line 136, in assertEqual
+    result = super().assertEqual(a, b, *pos, **kw)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_dynamo/test_case.py", line 127, in assertEqual
+    return super().assertEqual(x, y, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py", line 4879, in assertEqual
+    raise error_metas.pop()[0].to_error(  # type: ignore[index]
+AssertionError: Tensor-likes are not close!
+
+Mismatched elements: 3772 / 4096 (92.1%)
+Greatest absolute difference: 160767568.0 at index (3, 2, 0, 16) (up to 0.001 allowed)
+Greatest relative difference: 36843524096.0 at index (0, 4, 0, 16) (up to 0.2 allowed)
+
+The failure occurred for item [0]
+
+To execute this test, run the following from the base repo dir:
+    python attention_community_npu.py NpuCase.test_sdpa_rewriter_22_gpu
+
+This message can be suppressed by setting PYTORCH_PRINT_REPRO_ON_FAILURE=0
+
+----------------------------------------------------------------------
+Ran 1 test in 116.350s
+
+FAILED (failures=1)

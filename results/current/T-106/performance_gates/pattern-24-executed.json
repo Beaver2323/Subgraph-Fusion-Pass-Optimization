@@ -1,0 +1,144 @@
+{
+  "task_id": "T-106",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-24",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "sfdp-pattern-24-registered-half-inference",
+  "worker_sha256": "c72ed16c537f6ad8aee44e2086f663eeeca582c01c3fd9142fee56e14f0c65c1",
+  "target_control_sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+  "observer_sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae",
+  "input_spec": [
+    {
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    },
+    {
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    },
+    {
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    },
+    {
+      "shape": [
+        1,
+        1,
+        8,
+        8
+      ],
+      "stride": [
+        64,
+        64,
+        8,
+        1
+      ],
+      "dtype": "torch.float32",
+      "requires_grad": false
+    }
+  ],
+  "registration_name": "_sfdp_pattern_24_half_inference",
+  "dropout_p": 0.0,
+  "reviewed_at": "2026-09-14T23:34:57.540070+08:00",
+  "reviewer": "Codex：原社区合同及目标OFF/ON生成代码逐图复核",
+  "manual_codegen_review": "逐图审查目标FX、完整FX/IR及Runner.call：OFF为FP16两次NPU bmm和单softmax；ON命中本编号后走SDPA数学展开，Q/K/V提升FP32，mask按replacement转FP16，safe_softmax含aten.any，末尾回FP16。两臂真实NPU、无CPU转移；OFF精确/通用0，ON本编号1；独立数值和完整原社区安装态原例通过。ON未生成融合FA，不能以symbol不存在误判未生效；性能是已声明half注册微图，不外推模型或其他精度域。",
+  "community_oracle_scope": "原社区已执行的数值断言及独立性能输入比较",
+  "codegen_review": {
+    "off": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__softmax__to_copy_add_view_0.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    },
+    "on": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "triton_unk_fused__to_copy_mul_0.run": 1,
+        "triton_unk_fused__to_copy_mul_transpose_1.run": 1,
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__safe_softmax__to_copy_add_matmul_2.run": 1,
+        "torch.ops.aten.any.dim": 1,
+        "triton_unk_fused__safe_softmax__to_copy_add_matmul_3.run": 1,
+        "triton_unk_fused__to_copy_4.run": 1,
+        "triton_unk_fused_matmul_view_5.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    }
+  },
+  "gpu_reference": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-106/gpu_reference_review.json",
+    "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+  },
+  "community_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-24-native/evidence/t106-native-uvnnjcrx/adapter/result.json",
+    "sha256": "421ab5786553b51495ea2545af7d88d8552c691ea3b6b2381994b2484c551afc"
+  },
+  "off_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/off/result.json",
+    "sha256": "e7b4705f398416136852d98b71bd1b2d8a56e1754732470146bb6d22574eb41c"
+  },
+  "target_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/on/result.json",
+    "sha256": "96bb74f8bf1afebdb3b2ad0c1dee6343a03bf9a7b36973f313befbe14c317d80"
+  },
+  "worker_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/t102_t107_attention_performance_worker.py",
+    "sha256": "c72ed16c537f6ad8aee44e2086f663eeeca582c01c3fd9142fee56e14f0c65c1"
+  },
+  "target_control_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/target_entry_control.py",
+    "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+  },
+  "observer_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/native_contract_observer.py",
+    "sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae"
+  }
+}

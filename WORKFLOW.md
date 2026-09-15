@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-11 18:44 CST（UTC+08:00）
+> 更新时间：2026-09-15 01:30 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -10,6 +10,18 @@
 
 编译路径复核必须读取实际 NPU output_code：图内 NPU extern（例如 cat、view(dtype)、rshift、matmul_backward）与 CPU / 图外 fallback 分列，不用 CUDA 生成代码的写法作为 NPU 唯一判据。
 性能门禁必须绑定原社区合同、独立 OFF/ON 的实际改图/设备数值、源码和 worker 哈希；六臂保存逐样本、编译时间、峰值显存及生成代码。候选、失败和正式证据各建独立目录，禁止覆盖旧 gate/原件。
+
+2026-09-14 精度模式补充：适配 CUDA 社区测试时，必须审查 `tf32_on_and_off`、cuDNN TF32 与 NPU HF32 的实际控制范围。
+不能在 CUDA TF32-OFF 的紧容差下无说明地保留 NPU HF32-ON，再把差异直接归为编译缺陷；
+也不能暗中关闭 HF32 或放宽容差来宣布默认产品已修复。先保留默认失败，分别比较 eager 原图、
+eager 重参数化和 compiled 图，以新进程记录实际精度开关。精度模式适配单列目录，明确覆盖的社区模式；
+完整原方法未通过，或只验证其中一种模式时，不外推其他模式。正在执行的长原例应保存非PASS的阶段进度；
+适配器与候选代码在运行开始时快照并绑定哈希，不用后续源码补造历史执行版本。
+
+2026-09-14 22:46 CST 补充：设备子进程存活期间不编辑其正在执行的harness或产品源码；
+观察器修正放在运行边界应用，新旧轮次各自绑定快照。异常栈的行号必须对照该轮`harness_source.py`，
+不能对照后来已修改的工作树；若Python的linecache回显了新文件行文，保留原日志并单列说明，不重写原栈。
+容器`assertEqual`须区分“社区没有数值断言”和“观察器未枚举容器Tensor叶子”，叶子计数不能冒充独立case数。
 对于数学修复合同（如 E8M0 one-ULP 编码），不得把“compiled=eager”代替原数学 oracle；错误的 OFF 不得用于计算性能收益。测例、后端 lowering 差异、部署状态均须写入中文学习报告。
 
 安装态升级必须先获得环境修改授权，保留逐文件备份与前后SHA256，以窄补丁保护既有修复；原合同使用不加载候选的新进程重跑。公共注册/codegen改变还须回归普通路径、拒绝/guard、dtype/device与适用的多设备边界。启动前后产品哈希、原日志和实际FX/IR/output_code全部归档，不能只保留手写PASS摘要。
@@ -579,6 +591,18 @@ reference；2026-09-11 已确认其与 T-084 同合同，别名保留、独立�
 
 ### 18.2 原生通过、目标归因和阶段进度必须分开
 
+2026-09-15补充：原生方法通过但实际命中邻接编号时，先审查注册是否仅推理、dropout归零、
+序列化结构与replacement等价及默认去重顺序。可证明同合同者保留ID并归并，不移除canonical注册制造独立命中。
+确需改变输入才能保留目标结构时，仅开放具名16/29的`community-test-target-input-extension`：
+源测试哈希与AST锚点固定，维度偏差逐项登记，原guard/注册不动，复用原数值helper并检查精确编号。
+此类补充单独case、单独原件和评审，不自动回填历史variant；低概率dropout数值回归不等于原概率统计等价。
+准备与命令见`report/remaining_work_20260915.md`，旧原生批次复核器不得误接派生补包。
+
+2026-09-14 补充：同一 incoming 目录有新单文件和旧 manifest 时，必须显式绑定本轮输入及 run_id，
+不得以“manifest 优先”猜测；统一校验使用 `review_uploaded_gpu_tasks.py --check-current`。
+同批部分编号通过、部分命中别的编号时，矩阵按 case 的 `target_review` 分别显示，不整批误通过或阻塞。
+`graph_changed=true` 只证明观察边界的文本/节点变化；像 stack 规范化前后均为 dim=1 时，不能声称发生新的数学优化。
+
 `expected_assertions` 是人工验收要求，不意味着原生方法实际执行了其中所有断言。收到 handoff 后须回读冻结源码，
 分别确认 tests/skip、精确目标、数值/输入梯度和阶段边界；源码只断言通用 counter 或数值时不得宣称目标归因完成。
 T-091/T-102～T-107 使用 `native_contract_observer` 只读记录精确 entry 的名称、成功返回和边界图，
@@ -589,6 +613,33 @@ dropout、training/inference 及特殊 layout 的断言范围仍必须按社区�
 （训练三臂可用专门 review），绑定原件路径/SHA256、实际后端及正负例，矩阵单列阶段状态。
 不得将此类记录移入正式结果目录以伪造闭环，不能冻结新分母或自动签性能 gate。负例允许 handler 被尝试后不改图，
 正例才要求真正改写；“所有例均应 graph_changed”是错误判据。
+
+2026-09-14 20:52 CST补充：失败及隔离候选以`npu_stage_reviews.json`单列，baseline/candidate分别绑定
+实际原件SHA256。候选通过只显示`isolated-candidate-verified-not-deployed`，不改安装态失败、不签正式comparison。
+`archive_prepared_npu_case.py --evidence-only`可保留失败/候选的完整前后FX、IR、output_code，绝不产生PASS进度。
+代码生成专属断言如CUDA SDPA符号需要适配时，须先留原失败，再按AST实际调用核验NPU对应实现；
+显式记录`codegen_assertion_modified=true`，不得混写成全部断言未改；数值、梯度、counter断言不放宽。
+
+性能OFF只删除精确目标注册，不能关闭整轮joint/normalization。原注册用`torch.empty`没有初始化，
+只能作为trace example；派生测量必须确定性初始化并保留shape/stride/dtype，注明不是社区原生benchmark。
+实际OFF若被相邻attention接替则不能归因为目标收益。采集器自身修正不回写历史原件。
+
+2026-09-14 21:47 CST补充：attention inference注册可能将dropout置零并去重，不能把其自动当作同编号训练dropout性能图。
+3/4/6/7/9/12/28的当前准备采用社区极低非零dropout策略和同编号training注册，仅计前向；
+必须另外通过真实精确目标与数值门禁，不能因概率很小省略比较、重抽种子或把forward收益称完整训练收益。
+性能gate须绑定GPU、完整社区安装态、OFF/ON功能原件、输入requires_grad、dropout及helper源码哈希；候选不能冒充安装态。
+设计依据与未验证边界见 `report/attention_performance_contract_review_20260914.md`。
+
+2026-09-14 23:24 CST补充：内部search函数被Dynamo跳过时可用局部`dont_skip_tracing`入口适配，
+但必须保留fullgraph、原运算与精确OFF/ON检查，归档前置失败，不改变全局追踪规则。
+注册`empty`输入初始化还须满足mask数值域（如0/1乘性mask），不能随意填成其他语义。
+原社区合同与派生性能图的shape、容差、输出/梯度oracle分别列明；派生通过不能补写原例没有的断言。
+六臂结果须绑定每臂实际执行器/helper快照、安装源码、独立PID、代码图与逐样本，离线重算后才冻结单个单元。
+计时launcher直接使用gate绑定并验哈希的本仓库worker与helper快照，公共执行器随后修正不污染已签功能合同。
+注册用零维Tensor标量只是追踪占位时，按原guard/社区调用检查Python标量语义；只对具名参数做compile外转换，
+记录转换前后合同，禁止把所有零维Tensor无差别转标量或删除guard。
+`review_attention_completion.py --check-current`只读仓库证据复核，不把执行过的原件误报为未设备执行。
+生成代码定位实验按阶段独立归档，修改生成代码的候选不是产品修复，也不能代替原社区全合同复验。
 
 遇到同合同的不同入口时保留原 ID/证据，用 `canonical_acceptance_unit_id` 和
 `independent_unit_contribution=0` 标记别名；统计同时显示跟踪 ID 数与独立单元数，历史结果不删、不冒充再认证。

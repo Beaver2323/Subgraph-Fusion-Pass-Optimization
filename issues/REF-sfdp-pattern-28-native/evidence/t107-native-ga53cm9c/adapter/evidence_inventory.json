@@ -1,0 +1,68 @@
+{
+  "task_id": "T-107",
+  "case_id": "REF-sfdp-pattern-28-native",
+  "artifacts": [
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "9f9c53082742c387706b4bf57ee5af23d79b4f30b8758936c926c59453b7e327"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "9f9c53082742c387706b4bf57ee5af23d79b4f30b8758936c926c59453b7e327"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "e125035c03b43cfce121783da75499d349daccdf72301030473546011ba59a12"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "1d10a48246dce6903db1229fddcf3573e7cd23ff47a37472b4ad2a1e175a7ee2"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "101d028f458bb22ac18f0b7e1cf8fad9d46f27ac647bddf074c590601d6568b4"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__1_forward_2.1/fx_graph_readable.py",
+      "sha256": "50ae0b2df3046ee1eacee09a3ed2e61961ee6ef86fac6bbc59d605d8997a77f8"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__1_forward_2.1/fx_graph_transformed.py",
+      "sha256": "44b61e282ca100ee88a169d721280c76e0de1faa64cc1f63944479a7e93b594a"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__1_forward_2.1/ir_post_fusion.txt",
+      "sha256": "bfd88ec3fa8edc376f72ed059b4054575725478ff44a72f90c1314d07d1f43a9"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__1_forward_2.1/ir_pre_fusion.txt",
+      "sha256": "ec0ffb1679a38ce585e360e6b8150c5acbe61c329e9e23e15fc8e3df4d428e6e"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/debug/torch_compile_debug/run_2026_09_14_22_46_10_978556-pid_4006115/torchinductor/model__1_forward_2.1/output_code.py",
+      "sha256": "47ae4d70a909258a8b4d1e815851f5ab3f210ca4e4fdaabfe80b876bf3468dbe"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/harness_source.py",
+      "sha256": "949055e92875caf1163d13e7a12544a66ac239ea937adb4b4247df1cdb9e5008"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/result.json",
+      "sha256": "c9f202d26f1304ece9644b58de80d1a989c9f6913d440f057d8ab27722986097"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/target-observations/4006115-ReplacementPatternEntry-0001/contract_observation.json",
+      "sha256": "61594a1b1a230d901df0a253c99e18fd8ef24162754a7764d774a44d6dc12777"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/target-observations/4006115-ReplacementPatternEntry-0001/fx_graph_readable.py",
+      "sha256": "de8344d0efa01d50ca58bd75d74f6a225cfe81e779b28125d306739a13a912c1"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-28-native/evidence/t107-native-ga53cm9c/adapter/target-observations/4006115-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+      "sha256": "6f4238c85e8992bee13e242e4e98f3cdc3565af00457d20a64de2afdbc098eb2"
+    }
+  ],
+  "archive_scope": "evidence-only-not-installed-pass",
+  "source_run_dir": "/home/z50063656/tmp/t107-native-ga53cm9c/adapter"
+}

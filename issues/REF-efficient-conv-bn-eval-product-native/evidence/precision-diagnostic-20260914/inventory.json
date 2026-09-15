@@ -1,0 +1,177 @@
+{
+  "generated_at": "2026-09-14T21:10:59.005461+08:00",
+  "source_run": "/home/z50063656/tmp/t098-precision-diagnostic-20260914",
+  "files": [
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__0_forward_1.0/fx_graph_readable.py",
+      "sha256": "4281dba0d8655b36422d2e9c79bd55f914feacfcad9ee111ac8df56c41e014de",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__0_forward_1.0/fx_graph_transformed.py",
+      "sha256": "6607d36a7e6ee2c43d3c6144223bf993ce8d0cc1ae897c716224706a558edeac",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__0_forward_1.0/ir_post_fusion.txt",
+      "sha256": "09ba39d5b011e8c3af40d38e16706321574544252ba1dbd770a069b034a70f3a",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__0_forward_1.0/ir_pre_fusion.txt",
+      "sha256": "867ee3f7c682ee02dafe45c08f79608ab7669f2b3e1ba155ccb4f34d9676c109",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__0_forward_1.0/output_code.py",
+      "sha256": "0fced5f1a402a2e64536b6f07d4da6c2749458b2ff3335512091d5c8cd732931",
+      "bytes": 30132
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__1_forward_4.1/fx_graph_readable.py",
+      "sha256": "4281dba0d8655b36422d2e9c79bd55f914feacfcad9ee111ac8df56c41e014de",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__1_forward_4.1/fx_graph_transformed.py",
+      "sha256": "6607d36a7e6ee2c43d3c6144223bf993ce8d0cc1ae897c716224706a558edeac",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__1_forward_4.1/ir_post_fusion.txt",
+      "sha256": "09ba39d5b011e8c3af40d38e16706321574544252ba1dbd770a069b034a70f3a",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__1_forward_4.1/ir_pre_fusion.txt",
+      "sha256": "867ee3f7c682ee02dafe45c08f79608ab7669f2b3e1ba155ccb4f34d9676c109",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__1_forward_4.1/output_code.py",
+      "sha256": "b62d3ca032baf04113df023d1652c1946eb68ce058e228af88aae389d546e668",
+      "bytes": 30132
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__2_forward_7.2/fx_graph_readable.py",
+      "sha256": "4281dba0d8655b36422d2e9c79bd55f914feacfcad9ee111ac8df56c41e014de",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__2_forward_7.2/fx_graph_transformed.py",
+      "sha256": "6607d36a7e6ee2c43d3c6144223bf993ce8d0cc1ae897c716224706a558edeac",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__2_forward_7.2/ir_post_fusion.txt",
+      "sha256": "09ba39d5b011e8c3af40d38e16706321574544252ba1dbd770a069b034a70f3a",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__2_forward_7.2/ir_pre_fusion.txt",
+      "sha256": "867ee3f7c682ee02dafe45c08f79608ab7669f2b3e1ba155ccb4f34d9676c109",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/debug/torch_compile_debug/run_2026_09_14_21_04_50_586589-pid_2340741/torchinductor/model__2_forward_7.2/output_code.py",
+      "sha256": "2b9c5c20a4e49c0a55425fdd55f1bd37270daef2279e2352266070fddb2bfb20",
+      "bytes": 30132
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-default-on/result.json",
+      "sha256": "769e7ef2da1ce720f524f640ceb3423005aba1f94c80a62f209883512467e66a",
+      "bytes": 3318
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__0_forward_1.0/fx_graph_readable.py",
+      "sha256": "4281dba0d8655b36422d2e9c79bd55f914feacfcad9ee111ac8df56c41e014de",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__0_forward_1.0/fx_graph_transformed.py",
+      "sha256": "6607d36a7e6ee2c43d3c6144223bf993ce8d0cc1ae897c716224706a558edeac",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__0_forward_1.0/ir_post_fusion.txt",
+      "sha256": "09ba39d5b011e8c3af40d38e16706321574544252ba1dbd770a069b034a70f3a",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__0_forward_1.0/ir_pre_fusion.txt",
+      "sha256": "867ee3f7c682ee02dafe45c08f79608ab7669f2b3e1ba155ccb4f34d9676c109",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__0_forward_1.0/output_code.py",
+      "sha256": "2316c3a6b5a551d3943f6aed38491cbe0420e67b22a601b4b9293c6f13f7b424",
+      "bytes": 30132
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__1_forward_4.1/fx_graph_readable.py",
+      "sha256": "4281dba0d8655b36422d2e9c79bd55f914feacfcad9ee111ac8df56c41e014de",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__1_forward_4.1/fx_graph_transformed.py",
+      "sha256": "6607d36a7e6ee2c43d3c6144223bf993ce8d0cc1ae897c716224706a558edeac",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__1_forward_4.1/ir_post_fusion.txt",
+      "sha256": "09ba39d5b011e8c3af40d38e16706321574544252ba1dbd770a069b034a70f3a",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__1_forward_4.1/ir_pre_fusion.txt",
+      "sha256": "867ee3f7c682ee02dafe45c08f79608ab7669f2b3e1ba155ccb4f34d9676c109",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__1_forward_4.1/output_code.py",
+      "sha256": "40c2b26cfb2501eaf0475e9645790dbd855c8eb232599a9944efab896f530e7b",
+      "bytes": 30132
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__2_forward_7.2/fx_graph_readable.py",
+      "sha256": "4281dba0d8655b36422d2e9c79bd55f914feacfcad9ee111ac8df56c41e014de",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__2_forward_7.2/fx_graph_transformed.py",
+      "sha256": "6607d36a7e6ee2c43d3c6144223bf993ce8d0cc1ae897c716224706a558edeac",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__2_forward_7.2/ir_post_fusion.txt",
+      "sha256": "09ba39d5b011e8c3af40d38e16706321574544252ba1dbd770a069b034a70f3a",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__2_forward_7.2/ir_pre_fusion.txt",
+      "sha256": "867ee3f7c682ee02dafe45c08f79608ab7669f2b3e1ba155ccb4f34d9676c109",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/debug/torch_compile_debug/run_2026_09_14_21_07_40_428060-pid_2385628/torchinductor/model__2_forward_7.2/output_code.py",
+      "sha256": "5f880dab50e5238e48780d735dcafab6039021452542746183c3a029ad3e4bce",
+      "bytes": 30132
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/compile-hf32off-on/result.json",
+      "sha256": "9db064278e1ebd70ad3d752506284d898bcbd74317639ac2645b450cd284327c",
+      "bytes": 3305
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/eager-default/result.json",
+      "sha256": "d61b31f5ec18b8c44398a5dc809c85f5413f2c6bd364a74e9183c82c7ee992ad",
+      "bytes": 2022
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/precision-diagnostic-20260914/eager-hf32off/result.json",
+      "sha256": "4c6753be5816a8cbefe5c695e0e916fc4e10332c408bdbc1ba66f1b00c544e30",
+      "bytes": 2017
+    }
+  ],
+  "generated_output_code_present": true
+}

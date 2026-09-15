@@ -19,7 +19,7 @@ def identity(entry):
     return name if name == 'normalize_stack_default' else None
 
 
-def install(entry_type, root: Path):
+def install(entry_type, root: Path, *, test_body_modified=False):
     original = entry_type.apply
     serial = 0
     @functools.wraps(original)
@@ -39,7 +39,7 @@ def install(entry_type, root: Path):
         (dest/'contract_observation.json').write_text(json.dumps({
             'capture_scope':'pattern-entry-apply-after-extra-check', 'target':name,
             'entry_type':entry_type.__name__, 'handler_returned':True,
-            'graph_changed':before != after, 'test_body_modified':False,
+            'graph_changed':before != after, 'test_body_modified':test_body_modified,
             'device_modified':False, 'assertions_modified':False,
             'product_gate_bypassed':False, 'numerical_correctness_proven_by_observer':False,
         },ensure_ascii=False,indent=2)+'\n')

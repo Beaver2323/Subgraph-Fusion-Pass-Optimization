@@ -1,0 +1,33 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_sdpa_rewriter_11_gpu (attention_community_npu.main.<locals>.NpuCase.test_sdpa_rewriter_11_gpu) ... [W914 22:26:43.039069080 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:26:57.915000 3710390 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t104-native-cjwd6uba/adapter/debug/torch_compile_debug/run_2026_09_14_22_26_43_732834-pid_3710390/torchinductor/model__0_inference_0.0
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:26:58.760000 3710390 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1806] [0/0] Not enough SMs to use max_autotune_gemm mode
+W0914 22:28:45.542000 3710390 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_forward_2 debug trace: /home/z50063656/tmp/t104-native-cjwd6uba/adapter/debug/torch_compile_debug/run_2026_09_14_22_26_43_732834-pid_3710390/torchinductor/model__1_forward_2.1
+FAIL
+
+======================================================================
+FAIL: test_sdpa_rewriter_11_gpu (attention_community_npu.main.<locals>.NpuCase.test_sdpa_rewriter_11_gpu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py", line 3829, in wrapper
+    method(*args, **kwargs)
+  File "/home/z50063656/Pass/src/pytorch/test/inductor/test_fused_attention.py", line 806, in _test_sdpa_rewriter_11
+    self._check_common(dot_prod_attention)
+  File "/home/z50063656/Pass/src/pytorch/test/inductor/test_fused_attention.py", line 121, in _check_common
+    self.assertGreaterEqual(counters["inductor"]["fuse_attention"], 1)
+AssertionError: 0 not greater than or equal to 1
+
+To execute this test, run the following from the base repo dir:
+    python attention_community_npu.py NpuCase.test_sdpa_rewriter_11_gpu
+
+This message can be suppressed by setting PYTORCH_PRINT_REPRO_ON_FAILURE=0
+
+----------------------------------------------------------------------
+Ran 1 test in 122.796s
+
+FAILED (failures=1)

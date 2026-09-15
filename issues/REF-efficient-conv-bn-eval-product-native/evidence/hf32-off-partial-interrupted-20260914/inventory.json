@@ -1,0 +1,2152 @@
+{
+  "generated_at": "2026-09-14T22:13:10.283659+08:00",
+  "source_run": "/home/z50063656/tmp/t098-native-doq0hsal",
+  "files": [
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_backward_3.1/fx_graph_readable.py",
+      "sha256": "8f61d192d0e226a1f7079117922cf5d05f46e7f91faca64e8ce2add236d35110",
+      "bytes": 2109
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_backward_3.1/fx_graph_transformed.py",
+      "sha256": "c5cd2d4bcccf8597e67acb57421b43664c6c7f7b1d599c4f88fdb08a535ee28f",
+      "bytes": 2127
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_backward_3.1/ir_post_fusion.txt",
+      "sha256": "b8523561722af69d7ae19d5d4952c5364ce3470e13537b7b5632e5c23f58709e",
+      "bytes": 13547
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_backward_3.1/ir_pre_fusion.txt",
+      "sha256": "d2302c21acdb892b70243805b1ac1b1705173205bc21a51f5c9e2772349024fb",
+      "bytes": 11457
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_backward_3.1/output_code.py",
+      "sha256": "3acab9475406daf626bcdfb62ae18ddb274226f7ef2f8df825a4dc8907e4fff7",
+      "bytes": 26332
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_forward_1.0/fx_graph_readable.py",
+      "sha256": "9d1a4aac06d648c1a0aefbd0808dd02400edb59aca0bde1f2d0f07fca537d742",
+      "bytes": 1373
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_forward_1.0/fx_graph_transformed.py",
+      "sha256": "c7f9e9e1d82fe5f1f3cd7bf0281d2804b80cb8f164261494df6245e9a06f75da",
+      "bytes": 1382
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_forward_1.0/ir_post_fusion.txt",
+      "sha256": "60c4399065627dd363cfd6e21fab81b4691243da444394e90ec7e0046a993a3d",
+      "bytes": 5357
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_forward_1.0/ir_pre_fusion.txt",
+      "sha256": "692ac870bc383dffd357065207580f7099736bb501ee54946dfd39c49ccfa594",
+      "bytes": 5428
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__0_forward_1.0/output_code.py",
+      "sha256": "443503da415c7af3507a9cf90935fb8954a97a8575cb63b07822725571dc7e55",
+      "bytes": 22082
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_backward_43.21/fx_graph_readable.py",
+      "sha256": "f9565671a672e551bab0315a776fd48eb94e365d05e8367a01a11913745eef33",
+      "bytes": 2250
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_backward_43.21/fx_graph_transformed.py",
+      "sha256": "3cd80fd5c23bad45bf353679d7064210d8bcfcfb6fb8fb396669ad8db8dc219a",
+      "bytes": 2265
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_backward_43.21/ir_post_fusion.txt",
+      "sha256": "be21d63734c0f354df797ecaf5eb306f2f85eca3572351aebf8bb71ef3465680",
+      "bytes": 11704
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_backward_43.21/ir_pre_fusion.txt",
+      "sha256": "29691af2eec44ba2e1f2a5710577988484865cffe90f2d018cc8981897c9de3d",
+      "bytes": 10201
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_backward_43.21/output_code.py",
+      "sha256": "fa83dbf0c03ec003d9098239577639bda60ce1ca6387ea46d6be471d03905353",
+      "bytes": 20983
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_forward_41.20/fx_graph_readable.py",
+      "sha256": "96631080734e237853b35af0737ed4266e3cc7890aa0977c2d87226e4bd41689",
+      "bytes": 1393
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_forward_41.20/fx_graph_transformed.py",
+      "sha256": "d2f07cae3ad56bece16f2c1051d1e302ee725daad9bdaeada206176ca48ae09b",
+      "bytes": 1402
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_forward_41.20/ir_post_fusion.txt",
+      "sha256": "8fb0ae0a567e22eed541d8d32313ebddb1d3e28e8e9151cea2bf64062f2d8723",
+      "bytes": 6876
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_forward_41.20/ir_pre_fusion.txt",
+      "sha256": "a12732afa5d54f9d2fdbff7d530edeeeff42469d5497a66b8f7d9367d34b3bd0",
+      "bytes": 7258
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__10_forward_41.20/output_code.py",
+      "sha256": "e936a19884e39915fea8ae10f432bcc8651c9aa0fa27dafc6753be59184fc076",
+      "bytes": 30284
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_backward_47.23/fx_graph_readable.py",
+      "sha256": "2d5a2c7011e476d88d58c147d9cf5bcf598ab7c2bfe106047532844592f7a75d",
+      "bytes": 2250
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_backward_47.23/fx_graph_transformed.py",
+      "sha256": "52b3936c7f0ffb4a303c0a24dd1306d8f76ae3f7347abd6001363598150a9e9a",
+      "bytes": 2265
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_backward_47.23/ir_post_fusion.txt",
+      "sha256": "46fb81b64461101b61fd514cfb8eb0e1442f04dbb3b0fff8cb431d0f433a6196",
+      "bytes": 11704
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_backward_47.23/ir_pre_fusion.txt",
+      "sha256": "3cd06d876ab8a23ab8ed34c53884caafdaf27af21fcbf59f4a61aa64ba9b4acf",
+      "bytes": 10201
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_backward_47.23/output_code.py",
+      "sha256": "db019b4dfd4b689509791d1c5cf8e44f33432dab507cab86b731235660282d55",
+      "bytes": 20983
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_forward_45.22/fx_graph_readable.py",
+      "sha256": "334500d967b4535e1df98a5c9a4cbf7e06af74182b23bf33e4cdb48186d80d07",
+      "bytes": 1393
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_forward_45.22/fx_graph_transformed.py",
+      "sha256": "54afa07cde2cb5462b554054227f7c79bcf4d39f287346f7b3d3626c9e4830ca",
+      "bytes": 1402
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_forward_45.22/ir_post_fusion.txt",
+      "sha256": "82557521a9bb5a8dbdfcca288013932da6a3fac7c87de045f12a628567062bc8",
+      "bytes": 6876
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_forward_45.22/ir_pre_fusion.txt",
+      "sha256": "18c408403fae704b14b2a518d960183f1ec9541fabda9bcfcd294c1377e043db",
+      "bytes": 7258
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__11_forward_45.22/output_code.py",
+      "sha256": "b036551ff15c67f586a811aa9320cb78172544d0129454c279c4181194308e70",
+      "bytes": 30284
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_backward_51.25/fx_graph_readable.py",
+      "sha256": "9298d242671a6b5bf0a8fc891ae7ecd1923fd543ed25b3548ef935e21fc36a48",
+      "bytes": 2318
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_backward_51.25/fx_graph_transformed.py",
+      "sha256": "0997b18449e8263b51d833a3b8da72c3b93178d376d4a66f3648dc952727bd1b",
+      "bytes": 2333
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_backward_51.25/ir_post_fusion.txt",
+      "sha256": "606cb3b1f61eefef77a058468dc8a9dfcefade02d9b464ebc18c3c59ff7977e7",
+      "bytes": 11911
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_backward_51.25/ir_pre_fusion.txt",
+      "sha256": "e7aec237644f7577f9d9ad351ddf3af69010595bfbbc907a25fb30e137246864",
+      "bytes": 10472
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_backward_51.25/output_code.py",
+      "sha256": "57b57ffc2a044286c0f9987539620f5474134730baf059055275c6302a77898c",
+      "bytes": 21181
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_forward_49.24/fx_graph_readable.py",
+      "sha256": "1d88155924d64c3b8084a72989cfafb3ea2014a57ac16364d9135005d01b439f",
+      "bytes": 1434
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_forward_49.24/fx_graph_transformed.py",
+      "sha256": "a3a23ea2a415dd5bea2847972f45a9533f3a1711d71e26698c44b33382a9946c",
+      "bytes": 1443
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_forward_49.24/ir_post_fusion.txt",
+      "sha256": "3d720530a7c6a7c37ad1728c3cd791e070d348fe8fa08166196b6a59e143f311",
+      "bytes": 6996
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_forward_49.24/ir_pre_fusion.txt",
+      "sha256": "2d39be6c7a03f5a4be429d6cea828d5dd527542b5f1735387abd15569a308f2a",
+      "bytes": 7535
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__12_forward_49.24/output_code.py",
+      "sha256": "6d1cdefa1221585fcaeac64b0a581fed283584355af36af71dc5ee2936293863",
+      "bytes": 30557
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_backward_55.27/fx_graph_readable.py",
+      "sha256": "53cc064c860d5b31b92c17fe4f61c93e1c1f9b5913d3fbaef91666c87c624934",
+      "bytes": 2318
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_backward_55.27/fx_graph_transformed.py",
+      "sha256": "261a888b9ca94793dace86cef9f073767c6f6146adf1bbdeab77fe40c45841a4",
+      "bytes": 2333
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_backward_55.27/ir_post_fusion.txt",
+      "sha256": "3e9dea3aabd2370d8da571c0ff491592a8477ed41970813371840cd723d21a6b",
+      "bytes": 11911
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_backward_55.27/ir_pre_fusion.txt",
+      "sha256": "e4cf8dc69cc2668e5a4114fadd1570cf83dcf538b1af08b485ca7507abb2e930",
+      "bytes": 10472
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_backward_55.27/output_code.py",
+      "sha256": "747df79a8de40d6fd28b9294938316094231ef399b9161bd7fb492d1cbdb1c53",
+      "bytes": 21181
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_forward_53.26/fx_graph_readable.py",
+      "sha256": "ce69300fc2df6b75919fb7f9df8719fd36c6d34a6c0abae372bd9ff28189952c",
+      "bytes": 1434
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_forward_53.26/fx_graph_transformed.py",
+      "sha256": "09976ce043c433397123eba3cb6f37975ec3e2fd7e72d6273b9d115d9a8686c0",
+      "bytes": 1443
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_forward_53.26/ir_post_fusion.txt",
+      "sha256": "1e1f019d5035fa43d5777aa6abbf4df64180e38ace24d0ad3c2e1e7790aca2b3",
+      "bytes": 6996
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_forward_53.26/ir_pre_fusion.txt",
+      "sha256": "13699c075a8cbad4bc28a5e768f3dff904690ff7153449f0cbacbfb4c1bb515a",
+      "bytes": 7535
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__13_forward_53.26/output_code.py",
+      "sha256": "d91514487cc4a7409f44fa5845854721b4bf89c12d33f3fd78f89dd39c9043bb",
+      "bytes": 30557
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_backward_59.29/fx_graph_readable.py",
+      "sha256": "9298d242671a6b5bf0a8fc891ae7ecd1923fd543ed25b3548ef935e21fc36a48",
+      "bytes": 2318
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_backward_59.29/fx_graph_transformed.py",
+      "sha256": "0997b18449e8263b51d833a3b8da72c3b93178d376d4a66f3648dc952727bd1b",
+      "bytes": 2333
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_backward_59.29/ir_post_fusion.txt",
+      "sha256": "606cb3b1f61eefef77a058468dc8a9dfcefade02d9b464ebc18c3c59ff7977e7",
+      "bytes": 11911
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_backward_59.29/ir_pre_fusion.txt",
+      "sha256": "e7aec237644f7577f9d9ad351ddf3af69010595bfbbc907a25fb30e137246864",
+      "bytes": 10472
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_backward_59.29/output_code.py",
+      "sha256": "65b3e8e947ab25ce563e9f834a679ad5d31cc8aba4341b78bbd00a5b37b61706",
+      "bytes": 21181
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_forward_57.28/fx_graph_readable.py",
+      "sha256": "1d88155924d64c3b8084a72989cfafb3ea2014a57ac16364d9135005d01b439f",
+      "bytes": 1434
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_forward_57.28/fx_graph_transformed.py",
+      "sha256": "a3a23ea2a415dd5bea2847972f45a9533f3a1711d71e26698c44b33382a9946c",
+      "bytes": 1443
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_forward_57.28/ir_post_fusion.txt",
+      "sha256": "3d720530a7c6a7c37ad1728c3cd791e070d348fe8fa08166196b6a59e143f311",
+      "bytes": 6996
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_forward_57.28/ir_pre_fusion.txt",
+      "sha256": "2d39be6c7a03f5a4be429d6cea828d5dd527542b5f1735387abd15569a308f2a",
+      "bytes": 7535
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__14_forward_57.28/output_code.py",
+      "sha256": "19306b7681aa3a606c7cd95ef2f2a588c757442b8e054613dac61ebbf182584f",
+      "bytes": 30557
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_backward_63.31/fx_graph_readable.py",
+      "sha256": "53cc064c860d5b31b92c17fe4f61c93e1c1f9b5913d3fbaef91666c87c624934",
+      "bytes": 2318
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_backward_63.31/fx_graph_transformed.py",
+      "sha256": "261a888b9ca94793dace86cef9f073767c6f6146adf1bbdeab77fe40c45841a4",
+      "bytes": 2333
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_backward_63.31/ir_post_fusion.txt",
+      "sha256": "3e9dea3aabd2370d8da571c0ff491592a8477ed41970813371840cd723d21a6b",
+      "bytes": 11911
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_backward_63.31/ir_pre_fusion.txt",
+      "sha256": "e4cf8dc69cc2668e5a4114fadd1570cf83dcf538b1af08b485ca7507abb2e930",
+      "bytes": 10472
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_backward_63.31/output_code.py",
+      "sha256": "b49d750da72c86df864b7f78299fc097c6fa9d34815a58ed20ccfa5b9cda4200",
+      "bytes": 21181
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_forward_61.30/fx_graph_readable.py",
+      "sha256": "ce69300fc2df6b75919fb7f9df8719fd36c6d34a6c0abae372bd9ff28189952c",
+      "bytes": 1434
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_forward_61.30/fx_graph_transformed.py",
+      "sha256": "09976ce043c433397123eba3cb6f37975ec3e2fd7e72d6273b9d115d9a8686c0",
+      "bytes": 1443
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_forward_61.30/ir_post_fusion.txt",
+      "sha256": "1e1f019d5035fa43d5777aa6abbf4df64180e38ace24d0ad3c2e1e7790aca2b3",
+      "bytes": 6996
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_forward_61.30/ir_pre_fusion.txt",
+      "sha256": "13699c075a8cbad4bc28a5e768f3dff904690ff7153449f0cbacbfb4c1bb515a",
+      "bytes": 7535
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__15_forward_61.30/output_code.py",
+      "sha256": "293c6a3cc9bd3c5e87925725e546181d4db29976dbbeb2fde29d23491f3d7359",
+      "bytes": 30557
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_backward_67.33/fx_graph_readable.py",
+      "sha256": "bcb376a78bf31cea557f1f8f2e3438ee71335e6975b91277416e737fc1ca4bb2",
+      "bytes": 2179
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_backward_67.33/fx_graph_transformed.py",
+      "sha256": "4bccf65b0701ee65e214c5b03a9737d7673722d30aa7ead900418d0cf4a49d26",
+      "bytes": 2194
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_backward_67.33/ir_post_fusion.txt",
+      "sha256": "d9098438e990d0b2c8d178bb94dc5e02e59b363f67c9178015345c0b0604a356",
+      "bytes": 11768
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_backward_67.33/ir_pre_fusion.txt",
+      "sha256": "a06e52934993a8a4fd361893ebd34f93d56d5a4ed985c73633d02ab511159fef",
+      "bytes": 9987
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_backward_67.33/output_code.py",
+      "sha256": "d694e0da66ab1b0d4ecef46c076605ad06a8acd08941840edb332a9521d632c1",
+      "bytes": 22473
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_forward_65.32/fx_graph_readable.py",
+      "sha256": "c0732ddfaff500ba6e3db98ba895e651ff504e225e8c60e515872c6ab0369fd3",
+      "bytes": 1349
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_forward_65.32/fx_graph_transformed.py",
+      "sha256": "bb29bdf9c70e6c988fdb4baf00ebca35450434d48efc76fd44da2927406517e6",
+      "bytes": 1358
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_forward_65.32/ir_post_fusion.txt",
+      "sha256": "2d51cc444f53b7e664a4ae26e1c223a070aaded5dee383bae8f05cf7a8eacb19",
+      "bytes": 6812
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_forward_65.32/ir_pre_fusion.txt",
+      "sha256": "ec5ea8dd0a4ea7dd1b57bd9639ddf016448d50599038b52d24e37135808fe5d9",
+      "bytes": 7027
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__16_forward_65.32/output_code.py",
+      "sha256": "8c0d546d9843f8c0d7bbe829803359760b440a6742f4a79da15bf97149f8d8ad",
+      "bytes": 30682
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_backward_71.35/fx_graph_readable.py",
+      "sha256": "a7e4cd1f511c3d42466d55e5cbf41d256e7301b5b68d9a61d63beaacf646f5e0",
+      "bytes": 2179
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_backward_71.35/fx_graph_transformed.py",
+      "sha256": "af7f519c7ce1400191e9381797e11390b84cc6e5ab50b341eeb2bc7362a03661",
+      "bytes": 2194
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_backward_71.35/ir_post_fusion.txt",
+      "sha256": "b247cd586ea52b23ec25f52726e3dc6a46117af7e6cdca8f9b9f58ab4dae091d",
+      "bytes": 11768
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_backward_71.35/ir_pre_fusion.txt",
+      "sha256": "a7f774523855bd321bce6d7f9cfda6f12607de74f195c928f324e31c3a8a8899",
+      "bytes": 9987
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_backward_71.35/output_code.py",
+      "sha256": "8a407d4ae47ee4b90cc191559c89b410283d0267358e3a6da532301ef9859170",
+      "bytes": 22473
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_forward_69.34/fx_graph_readable.py",
+      "sha256": "67c632c3b47112ede1d315d96b585a941f205a394f654fae8873f0b708110c05",
+      "bytes": 1349
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_forward_69.34/fx_graph_transformed.py",
+      "sha256": "154bc67ece6adb4a536ddafd5b62ca278819207b7d1b94a0a157eeb02ea54124",
+      "bytes": 1358
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_forward_69.34/ir_post_fusion.txt",
+      "sha256": "5eebd7de714af722c2451fce6c7bfcc8fae356d9dedc64bffd098bc3b22e676a",
+      "bytes": 6812
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_forward_69.34/ir_pre_fusion.txt",
+      "sha256": "35cabe7d99af804a74d4bb3ea22d79455cba8eca5e1f071be991e979890edec2",
+      "bytes": 7027
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__17_forward_69.34/output_code.py",
+      "sha256": "916e8cec19b54f4dfcdd53dd9d998d11c64a9420b249d62324feeb2da6340bff",
+      "bytes": 30682
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_backward_75.37/fx_graph_readable.py",
+      "sha256": "bcb376a78bf31cea557f1f8f2e3438ee71335e6975b91277416e737fc1ca4bb2",
+      "bytes": 2179
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_backward_75.37/fx_graph_transformed.py",
+      "sha256": "4bccf65b0701ee65e214c5b03a9737d7673722d30aa7ead900418d0cf4a49d26",
+      "bytes": 2194
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_backward_75.37/ir_post_fusion.txt",
+      "sha256": "d9098438e990d0b2c8d178bb94dc5e02e59b363f67c9178015345c0b0604a356",
+      "bytes": 11768
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_backward_75.37/ir_pre_fusion.txt",
+      "sha256": "a06e52934993a8a4fd361893ebd34f93d56d5a4ed985c73633d02ab511159fef",
+      "bytes": 9987
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_backward_75.37/output_code.py",
+      "sha256": "7f4863e70db7c4e03361e78181fac32ec665122b08d81b4ea066336f78ee8cdd",
+      "bytes": 22473
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_forward_73.36/fx_graph_readable.py",
+      "sha256": "c0732ddfaff500ba6e3db98ba895e651ff504e225e8c60e515872c6ab0369fd3",
+      "bytes": 1349
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_forward_73.36/fx_graph_transformed.py",
+      "sha256": "bb29bdf9c70e6c988fdb4baf00ebca35450434d48efc76fd44da2927406517e6",
+      "bytes": 1358
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_forward_73.36/ir_post_fusion.txt",
+      "sha256": "2d51cc444f53b7e664a4ae26e1c223a070aaded5dee383bae8f05cf7a8eacb19",
+      "bytes": 6812
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_forward_73.36/ir_pre_fusion.txt",
+      "sha256": "ec5ea8dd0a4ea7dd1b57bd9639ddf016448d50599038b52d24e37135808fe5d9",
+      "bytes": 7027
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__18_forward_73.36/output_code.py",
+      "sha256": "bae9db24e8021e3cf0c0cd9686c2f2c71416d73bbb7dd87577546279dde5bc24",
+      "bytes": 30682
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_backward_79.39/fx_graph_readable.py",
+      "sha256": "a7e4cd1f511c3d42466d55e5cbf41d256e7301b5b68d9a61d63beaacf646f5e0",
+      "bytes": 2179
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_backward_79.39/fx_graph_transformed.py",
+      "sha256": "af7f519c7ce1400191e9381797e11390b84cc6e5ab50b341eeb2bc7362a03661",
+      "bytes": 2194
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_backward_79.39/ir_post_fusion.txt",
+      "sha256": "b247cd586ea52b23ec25f52726e3dc6a46117af7e6cdca8f9b9f58ab4dae091d",
+      "bytes": 11768
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_backward_79.39/ir_pre_fusion.txt",
+      "sha256": "a7f774523855bd321bce6d7f9cfda6f12607de74f195c928f324e31c3a8a8899",
+      "bytes": 9987
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_backward_79.39/output_code.py",
+      "sha256": "64ed1a7c26ac65fdd4ae5d39acfc9fa7d089d0fd7bf4a28f62fca39c7ce4b08b",
+      "bytes": 22473
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_forward_77.38/fx_graph_readable.py",
+      "sha256": "67c632c3b47112ede1d315d96b585a941f205a394f654fae8873f0b708110c05",
+      "bytes": 1349
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_forward_77.38/fx_graph_transformed.py",
+      "sha256": "154bc67ece6adb4a536ddafd5b62ca278819207b7d1b94a0a157eeb02ea54124",
+      "bytes": 1358
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_forward_77.38/ir_post_fusion.txt",
+      "sha256": "5eebd7de714af722c2451fce6c7bfcc8fae356d9dedc64bffd098bc3b22e676a",
+      "bytes": 6812
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_forward_77.38/ir_pre_fusion.txt",
+      "sha256": "35cabe7d99af804a74d4bb3ea22d79455cba8eca5e1f071be991e979890edec2",
+      "bytes": 7027
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__19_forward_77.38/output_code.py",
+      "sha256": "1a9e444b6f95aa68c3256383cff7117e29e6e58153bd6e7f9702c5a7581e1d96",
+      "bytes": 30682
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_backward_7.3/fx_graph_readable.py",
+      "sha256": "11955971a157e82c8fc8064f846f9e36610653cad16ca85c9e1606187e740cd2",
+      "bytes": 2109
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_backward_7.3/fx_graph_transformed.py",
+      "sha256": "5a34395833ec1d6fc379eb65bb6bf29bd57c6119f18072c2651135dfa94dfa87",
+      "bytes": 2127
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_backward_7.3/ir_post_fusion.txt",
+      "sha256": "b3a4eb8d218cb3195cfa7f4fcc58159d842963e005c710a80f7d2077f6fbd219",
+      "bytes": 13547
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_backward_7.3/ir_pre_fusion.txt",
+      "sha256": "a05f62892d11e8330bd3ddfb33c9141b5c7132436725eba052e7d06947c9a25e",
+      "bytes": 11457
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_backward_7.3/output_code.py",
+      "sha256": "a7d8fd2017008ea8abdb2adc5e7158b58392efe3c74382b113eef6e9d79104ec",
+      "bytes": 26332
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_forward_5.2/fx_graph_readable.py",
+      "sha256": "466fc76fc118ad2a9c713165f7caf146a707d1ced860d3586f5ebb24826f3729",
+      "bytes": 1373
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_forward_5.2/fx_graph_transformed.py",
+      "sha256": "f1abc417e8b07bce44982ad1763f35aaa14c941d18c46f17fb75d45d34999e43",
+      "bytes": 1382
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_forward_5.2/ir_post_fusion.txt",
+      "sha256": "40847b298ecef7c9a0283f67401db2d2d45ef02c670bc01329cf220469f190ec",
+      "bytes": 5357
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_forward_5.2/ir_pre_fusion.txt",
+      "sha256": "51ce59c18c6818a61a03ee6c8c008acf73c087c9663ef61b24995ba91d112166",
+      "bytes": 5428
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__1_forward_5.2/output_code.py",
+      "sha256": "a38334d27a1f61de40f0515f05644b2478e739f6eebc0f11c90a390d5cefe54b",
+      "bytes": 22082
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_backward_83.41/fx_graph_readable.py",
+      "sha256": "b0a46184c790d9fbaedcb05e0de6824e85864414c9d68cf94f00f0e170406469",
+      "bytes": 2245
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_backward_83.41/fx_graph_transformed.py",
+      "sha256": "e64ecbc8d589c971925bb9b5bb5db05064c5fac1aec20463a73eb70e420e310b",
+      "bytes": 2260
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_backward_83.41/ir_post_fusion.txt",
+      "sha256": "af3beacf5057bc9bb8144a60200ede8210aff55f32383172e3abb97e02d35cd1",
+      "bytes": 11974
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_backward_83.41/ir_pre_fusion.txt",
+      "sha256": "a7bf3b9d6de3b7597e9959ed10508b375e1e146cb6a26bff21bc06467b277ddf",
+      "bytes": 10250
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_backward_83.41/output_code.py",
+      "sha256": "b5387f1ac82e7b4a75279edeec28343b27ef4e4704db69544ca1a1ed563e3306",
+      "bytes": 22635
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_forward_81.40/fx_graph_readable.py",
+      "sha256": "9822946d7af762376045efc1682f534b717b0665e5ade2013f047698ebd5d510",
+      "bytes": 1388
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_forward_81.40/fx_graph_transformed.py",
+      "sha256": "e1afaf35d8597efe92af11c3b3d5d375340258631d1d470d14c3d3d769f2e3c8",
+      "bytes": 1397
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_forward_81.40/ir_post_fusion.txt",
+      "sha256": "23091c473272b5dee9a3a3e7ea00ed59da566d119db3f56a6b31ee9c7f13f024",
+      "bytes": 6894
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_forward_81.40/ir_pre_fusion.txt",
+      "sha256": "e5e9bfab04cba72fc1a0da9c614a050b4f08d69e6a0a5ad7ae7df1fdd8b1c412",
+      "bytes": 7252
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__20_forward_81.40/output_code.py",
+      "sha256": "d18077e2443c9167c7e181d1c96d348d8bdc3c2a154ff9d30b1b8f23e1f0f75e",
+      "bytes": 30921
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_backward_87.43/fx_graph_readable.py",
+      "sha256": "934405fe22c3f08c6645981620d3bce60c5707f22a26579284c94fd02f4dbd55",
+      "bytes": 2245
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_backward_87.43/fx_graph_transformed.py",
+      "sha256": "2aa1fccc4166e1a4690bf8ed089efdce6aa5a9c6f8ea5210d9a24dd4fa7cf695",
+      "bytes": 2260
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_backward_87.43/ir_post_fusion.txt",
+      "sha256": "4a2a024d277612463355133dafc6018a27409ed9ff9027746f5caa9d5043efd8",
+      "bytes": 11974
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_backward_87.43/ir_pre_fusion.txt",
+      "sha256": "db50d42c89a6eba880c90e8a98e20b6781b9e828f96f70add3d91dd280345f56",
+      "bytes": 10250
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_backward_87.43/output_code.py",
+      "sha256": "ee0291f98205b4ccf0231b981504b3771d38aba6f99122824753a860cfb50752",
+      "bytes": 22635
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_forward_85.42/fx_graph_readable.py",
+      "sha256": "edfdc1af98f831fb0f753b18b004ccbba257c31cb2ed403266fd778ceae1a42d",
+      "bytes": 1388
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_forward_85.42/fx_graph_transformed.py",
+      "sha256": "99dcc6a1df53d2d3e42937fefa25b4f4afc56c43ebc8301ede5021b719c3e688",
+      "bytes": 1397
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_forward_85.42/ir_post_fusion.txt",
+      "sha256": "6eb05591a3b1f46b147c61ad4ebc8a0cfa3b4eb6bd6408b89c0d9d128efedc8d",
+      "bytes": 6894
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_forward_85.42/ir_pre_fusion.txt",
+      "sha256": "e14fdcc846acdf0ca00b1507cbaaa10f1be9f2de6f3ce7267af91a632358a1ad",
+      "bytes": 7252
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__21_forward_85.42/output_code.py",
+      "sha256": "21073f1c659e0655938345441f98104ca130cd701e5a280360d5fe072ce735f7",
+      "bytes": 30921
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_backward_91.45/fx_graph_readable.py",
+      "sha256": "b0a46184c790d9fbaedcb05e0de6824e85864414c9d68cf94f00f0e170406469",
+      "bytes": 2245
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_backward_91.45/fx_graph_transformed.py",
+      "sha256": "e64ecbc8d589c971925bb9b5bb5db05064c5fac1aec20463a73eb70e420e310b",
+      "bytes": 2260
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_backward_91.45/ir_post_fusion.txt",
+      "sha256": "af3beacf5057bc9bb8144a60200ede8210aff55f32383172e3abb97e02d35cd1",
+      "bytes": 11974
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_backward_91.45/ir_pre_fusion.txt",
+      "sha256": "a7bf3b9d6de3b7597e9959ed10508b375e1e146cb6a26bff21bc06467b277ddf",
+      "bytes": 10250
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_backward_91.45/output_code.py",
+      "sha256": "3cc2d21e289cbd90138be6ebccf0a08709d7944d07db022b3b0231f479b5945d",
+      "bytes": 22635
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_forward_89.44/fx_graph_readable.py",
+      "sha256": "9822946d7af762376045efc1682f534b717b0665e5ade2013f047698ebd5d510",
+      "bytes": 1388
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_forward_89.44/fx_graph_transformed.py",
+      "sha256": "e1afaf35d8597efe92af11c3b3d5d375340258631d1d470d14c3d3d769f2e3c8",
+      "bytes": 1397
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_forward_89.44/ir_post_fusion.txt",
+      "sha256": "23091c473272b5dee9a3a3e7ea00ed59da566d119db3f56a6b31ee9c7f13f024",
+      "bytes": 6894
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_forward_89.44/ir_pre_fusion.txt",
+      "sha256": "e5e9bfab04cba72fc1a0da9c614a050b4f08d69e6a0a5ad7ae7df1fdd8b1c412",
+      "bytes": 7252
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__22_forward_89.44/output_code.py",
+      "sha256": "4067c88f0b6e5560cf4c41a72c2f70339ca74740e9eaeafb339e7cdbfb841af7",
+      "bytes": 30921
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_backward_95.47/fx_graph_readable.py",
+      "sha256": "934405fe22c3f08c6645981620d3bce60c5707f22a26579284c94fd02f4dbd55",
+      "bytes": 2245
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_backward_95.47/fx_graph_transformed.py",
+      "sha256": "2aa1fccc4166e1a4690bf8ed089efdce6aa5a9c6f8ea5210d9a24dd4fa7cf695",
+      "bytes": 2260
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_backward_95.47/ir_post_fusion.txt",
+      "sha256": "4a2a024d277612463355133dafc6018a27409ed9ff9027746f5caa9d5043efd8",
+      "bytes": 11974
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_backward_95.47/ir_pre_fusion.txt",
+      "sha256": "db50d42c89a6eba880c90e8a98e20b6781b9e828f96f70add3d91dd280345f56",
+      "bytes": 10250
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_backward_95.47/output_code.py",
+      "sha256": "f7ed08945b4e4c3089d5a8c877928d771ee43e0f0167dd6bc28c2e846e50d23d",
+      "bytes": 22635
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_forward_93.46/fx_graph_readable.py",
+      "sha256": "edfdc1af98f831fb0f753b18b004ccbba257c31cb2ed403266fd778ceae1a42d",
+      "bytes": 1388
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_forward_93.46/fx_graph_transformed.py",
+      "sha256": "99dcc6a1df53d2d3e42937fefa25b4f4afc56c43ebc8301ede5021b719c3e688",
+      "bytes": 1397
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_forward_93.46/ir_post_fusion.txt",
+      "sha256": "6eb05591a3b1f46b147c61ad4ebc8a0cfa3b4eb6bd6408b89c0d9d128efedc8d",
+      "bytes": 6894
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_forward_93.46/ir_pre_fusion.txt",
+      "sha256": "e14fdcc846acdf0ca00b1507cbaaa10f1be9f2de6f3ce7267af91a632358a1ad",
+      "bytes": 7252
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__23_forward_93.46/output_code.py",
+      "sha256": "8630b5fe73ec819d4156081fbbf8b0a7331babf48a95d4588eab09a1061df6e1",
+      "bytes": 30921
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_backward_99.49/fx_graph_readable.py",
+      "sha256": "b2de75fffe173d53b44e508e5878a8dd42092170587d8ebc42975d617a7b93d8",
+      "bytes": 2311
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_backward_99.49/fx_graph_transformed.py",
+      "sha256": "787d7e14415f550240189e4dd3d9290dfdcbc677d6491057973a9ae056b7c023",
+      "bytes": 2326
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_backward_99.49/ir_post_fusion.txt",
+      "sha256": "cc8973666e471206cd9182d52c11edcf89f904169f24329e5c40aa8fbb5cb358",
+      "bytes": 12193
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_backward_99.49/ir_pre_fusion.txt",
+      "sha256": "f6ab5d13d0a0ddc31dccd22554cacc3bb39286d0e5663f3ea48e55d17c5c9d1a",
+      "bytes": 10521
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_backward_99.49/output_code.py",
+      "sha256": "17bf93160d669e20add88b0f01177097f0639e06709ef4631ad084b04ce41278",
+      "bytes": 22845
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_forward_97.48/fx_graph_readable.py",
+      "sha256": "eca597c36e16329681deb6198917e9aab0cc42443a26ea40af7d8647290ef635",
+      "bytes": 1427
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_forward_97.48/fx_graph_transformed.py",
+      "sha256": "2edc3e084b38540dc94a5893b66a2605bfc5ff7ed55f3e525943dd8e60eb4c2f",
+      "bytes": 1436
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_forward_97.48/ir_post_fusion.txt",
+      "sha256": "680cfa40bf5e9acbc3ac19c3e35abbccb8d3fc67eaacfd475978b33e20b9584a",
+      "bytes": 6987
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_forward_97.48/ir_pre_fusion.txt",
+      "sha256": "dce411a0cb96544433128746534757e40e83d7ad788c16a862f093afe13b1b1a",
+      "bytes": 7494
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__24_forward_97.48/output_code.py",
+      "sha256": "b256ea5e942161165b1ff7654592e8835366a3a07e2ba2c9bbc9a404d1caac42",
+      "bytes": 31162
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_backward_103.51/fx_graph_readable.py",
+      "sha256": "0db7c670ad314e01cf54eab6e5ff3e90dbbaad6d58ace7ce2448e5940ca37141",
+      "bytes": 2311
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_backward_103.51/fx_graph_transformed.py",
+      "sha256": "5d709ada6f0a97d681fe4358359dad5ec22d08d32f23661b35b33d6f6a2bab2e",
+      "bytes": 2326
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_backward_103.51/ir_post_fusion.txt",
+      "sha256": "8f71fc75c1b1c917315a7dc6dc06b1d52ca1c82f0f063f113d450c8eb25f209c",
+      "bytes": 12193
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_backward_103.51/ir_pre_fusion.txt",
+      "sha256": "7b2fb6c9614c9e322a73996bb5db21a01e9456378ba64686ca4238d084732cc4",
+      "bytes": 10521
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_backward_103.51/output_code.py",
+      "sha256": "6989d65f671a77bb5e4aa6c556f3d2d34290c16c3754192dc980d46a29a8cde9",
+      "bytes": 22845
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_forward_101.50/fx_graph_readable.py",
+      "sha256": "7ca49387f71753f199016cb7c9c196031d87b1e06d9e95dc229362673304925f",
+      "bytes": 1427
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_forward_101.50/fx_graph_transformed.py",
+      "sha256": "b6215a04cfe294f31e1759e5b29107c0880d9d4d1124df9064bcb84fc8e7184d",
+      "bytes": 1436
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_forward_101.50/ir_post_fusion.txt",
+      "sha256": "9c1a1abcbebc089b2e77c3624b81b8e1127540ca90565af5010f99f013a298d3",
+      "bytes": 6987
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_forward_101.50/ir_pre_fusion.txt",
+      "sha256": "fddfbeac3c2468d4a0c10dd594829b874ae2c43ca25095cd1f9fd7ef44d72229",
+      "bytes": 7494
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__25_forward_101.50/output_code.py",
+      "sha256": "c69b754b1a20a85599c1177bd59cfc7aa4c2579e580c3c7bb420e9eae4a69f64",
+      "bytes": 31162
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_backward_107.53/fx_graph_readable.py",
+      "sha256": "b2de75fffe173d53b44e508e5878a8dd42092170587d8ebc42975d617a7b93d8",
+      "bytes": 2311
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_backward_107.53/fx_graph_transformed.py",
+      "sha256": "787d7e14415f550240189e4dd3d9290dfdcbc677d6491057973a9ae056b7c023",
+      "bytes": 2326
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_backward_107.53/ir_post_fusion.txt",
+      "sha256": "cc8973666e471206cd9182d52c11edcf89f904169f24329e5c40aa8fbb5cb358",
+      "bytes": 12193
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_backward_107.53/ir_pre_fusion.txt",
+      "sha256": "f6ab5d13d0a0ddc31dccd22554cacc3bb39286d0e5663f3ea48e55d17c5c9d1a",
+      "bytes": 10521
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_backward_107.53/output_code.py",
+      "sha256": "c2215c485e1fb5cbf8eeddeeb82ccaf1817a8f3d688df919f10a5ebf28a6267c",
+      "bytes": 22845
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_forward_105.52/fx_graph_readable.py",
+      "sha256": "eca597c36e16329681deb6198917e9aab0cc42443a26ea40af7d8647290ef635",
+      "bytes": 1427
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_forward_105.52/fx_graph_transformed.py",
+      "sha256": "2edc3e084b38540dc94a5893b66a2605bfc5ff7ed55f3e525943dd8e60eb4c2f",
+      "bytes": 1436
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_forward_105.52/ir_post_fusion.txt",
+      "sha256": "680cfa40bf5e9acbc3ac19c3e35abbccb8d3fc67eaacfd475978b33e20b9584a",
+      "bytes": 6987
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_forward_105.52/ir_pre_fusion.txt",
+      "sha256": "dce411a0cb96544433128746534757e40e83d7ad788c16a862f093afe13b1b1a",
+      "bytes": 7494
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__26_forward_105.52/output_code.py",
+      "sha256": "fd1acd36684dda7891e31d28b823de6b0d6af7b417b98aaa50005ca46de80cdc",
+      "bytes": 31162
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_backward_111.55/fx_graph_readable.py",
+      "sha256": "0db7c670ad314e01cf54eab6e5ff3e90dbbaad6d58ace7ce2448e5940ca37141",
+      "bytes": 2311
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_backward_111.55/fx_graph_transformed.py",
+      "sha256": "5d709ada6f0a97d681fe4358359dad5ec22d08d32f23661b35b33d6f6a2bab2e",
+      "bytes": 2326
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_backward_111.55/ir_post_fusion.txt",
+      "sha256": "8f71fc75c1b1c917315a7dc6dc06b1d52ca1c82f0f063f113d450c8eb25f209c",
+      "bytes": 12193
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_backward_111.55/ir_pre_fusion.txt",
+      "sha256": "7b2fb6c9614c9e322a73996bb5db21a01e9456378ba64686ca4238d084732cc4",
+      "bytes": 10521
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_backward_111.55/output_code.py",
+      "sha256": "334bb30e439eb46d11aa489fe65bbe27e92919dbd61d565fb9bf077b5a77cc06",
+      "bytes": 22845
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_forward_109.54/fx_graph_readable.py",
+      "sha256": "7ca49387f71753f199016cb7c9c196031d87b1e06d9e95dc229362673304925f",
+      "bytes": 1427
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_forward_109.54/fx_graph_transformed.py",
+      "sha256": "b6215a04cfe294f31e1759e5b29107c0880d9d4d1124df9064bcb84fc8e7184d",
+      "bytes": 1436
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_forward_109.54/ir_post_fusion.txt",
+      "sha256": "9c1a1abcbebc089b2e77c3624b81b8e1127540ca90565af5010f99f013a298d3",
+      "bytes": 6987
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_forward_109.54/ir_pre_fusion.txt",
+      "sha256": "fddfbeac3c2468d4a0c10dd594829b874ae2c43ca25095cd1f9fd7ef44d72229",
+      "bytes": 7494
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__27_forward_109.54/output_code.py",
+      "sha256": "48a1850fbafcbd02df088ed5cc81c719bf3854fb26b125c520e577e1da4489dc",
+      "bytes": 31162
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_backward_115.57/fx_graph_readable.py",
+      "sha256": "e2a7e74ab339e5998b313ece1feafb135ecfd9554418a63dcde664d82af618d7",
+      "bytes": 2110
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_backward_115.57/fx_graph_transformed.py",
+      "sha256": "23323a8566e1ba174f62b2715db9d5e9e7f52ce532949fc537bf4e4bca99fe01",
+      "bytes": 2125
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_backward_115.57/ir_post_fusion.txt",
+      "sha256": "f125729df673116c865818b96b1fbfb28454a1b0569c59f5956f08abf224161f",
+      "bytes": 9949
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_backward_115.57/ir_pre_fusion.txt",
+      "sha256": "5710cebabbb8c66d3559cc54d789d3fbdf07dc6027724e1061eef625761b0d75",
+      "bytes": 8665
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_backward_115.57/output_code.py",
+      "sha256": "558a27fafd3a218e03bd4988c9611d1ab4027ea7cd2165276ea7f4275371c392",
+      "bytes": 25086
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_forward_113.56/fx_graph_readable.py",
+      "sha256": "38f046e277f91f29595333927e7479fea3467e955464f0a0cee130e529a30aa4",
+      "bytes": 1541
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_forward_113.56/fx_graph_transformed.py",
+      "sha256": "a9dc96ae2bfc2095d9450036d032aa9ee299e94576186c9eb83360336e278933",
+      "bytes": 1550
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_forward_113.56/ir_post_fusion.txt",
+      "sha256": "92df3e020048b20708923c5243ccc2078302cf5952d2ada84cc811eafbe1a76e",
+      "bytes": 5192
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_forward_113.56/ir_pre_fusion.txt",
+      "sha256": "fabad36c06dccd3654559654dfea903f62ddf3c95c1dc7e0222fba710dd06da6",
+      "bytes": 5263
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__28_forward_113.56/output_code.py",
+      "sha256": "d696f48886e3ca04b61e3af38a163eba765ba4b37ae677c4c96cfdde96140727",
+      "bytes": 22191
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_backward_119.59/fx_graph_readable.py",
+      "sha256": "481df1dc05224a6901cd8ad174cabcda6590872ddd4cb8c66cf79f368f3f8ab8",
+      "bytes": 2110
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_backward_119.59/fx_graph_transformed.py",
+      "sha256": "79051336632206a38ed8b65dfae8788ff61009d86fc000cd4f833a62bd4c5396",
+      "bytes": 2125
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_backward_119.59/ir_post_fusion.txt",
+      "sha256": "b7fc85428ca3bc9db2ee05123627dd2d3c70493fcb1d7b5617c72f8c762ab0c0",
+      "bytes": 9949
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_backward_119.59/ir_pre_fusion.txt",
+      "sha256": "28a03a5d5f7eed31ddb095f17848c52cbdf215fcf699862310a006bdb3ddc016",
+      "bytes": 8665
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_backward_119.59/output_code.py",
+      "sha256": "60ea9d8597f2175a6dca3bda5a87da561d83fb8fcb56e8d4e028b19fe62b4086",
+      "bytes": 25086
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_forward_117.58/fx_graph_readable.py",
+      "sha256": "9dbb9c9ab454becc91037d9f282f50b1c883c862c3b633ee76fff64823f9ce85",
+      "bytes": 1541
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_forward_117.58/fx_graph_transformed.py",
+      "sha256": "d343bb45f5a40549a590fcbf22a8416bb69f204a83b925f26c36b26366c37d2b",
+      "bytes": 1550
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_forward_117.58/ir_post_fusion.txt",
+      "sha256": "244c851e3948331ccaaf20236ed5f81cf0691e776aa848b988aa8aceef13a91a",
+      "bytes": 5192
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_forward_117.58/ir_pre_fusion.txt",
+      "sha256": "ac01883be6e000bfb1fa93ec6b137e879559585f55f4aff2da72e22ab186f096",
+      "bytes": 5263
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__29_forward_117.58/output_code.py",
+      "sha256": "ac8a72de6c0ee131aa8480271cfb5da7e3ba2e4bb59a33f52bbf37f60d81413b",
+      "bytes": 22191
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_backward_11.5/fx_graph_readable.py",
+      "sha256": "8f61d192d0e226a1f7079117922cf5d05f46e7f91faca64e8ce2add236d35110",
+      "bytes": 2109
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_backward_11.5/fx_graph_transformed.py",
+      "sha256": "c5cd2d4bcccf8597e67acb57421b43664c6c7f7b1d599c4f88fdb08a535ee28f",
+      "bytes": 2127
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_backward_11.5/ir_post_fusion.txt",
+      "sha256": "b8523561722af69d7ae19d5d4952c5364ce3470e13537b7b5632e5c23f58709e",
+      "bytes": 13547
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_backward_11.5/ir_pre_fusion.txt",
+      "sha256": "d2302c21acdb892b70243805b1ac1b1705173205bc21a51f5c9e2772349024fb",
+      "bytes": 11457
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_backward_11.5/output_code.py",
+      "sha256": "dcfa42cc28d95a2d3804693a9dc7199d3caf494ee30de2f2009c26f2b4607e83",
+      "bytes": 26332
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_forward_9.4/fx_graph_readable.py",
+      "sha256": "9d1a4aac06d648c1a0aefbd0808dd02400edb59aca0bde1f2d0f07fca537d742",
+      "bytes": 1373
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_forward_9.4/fx_graph_transformed.py",
+      "sha256": "c7f9e9e1d82fe5f1f3cd7bf0281d2804b80cb8f164261494df6245e9a06f75da",
+      "bytes": 1382
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_forward_9.4/ir_post_fusion.txt",
+      "sha256": "60c4399065627dd363cfd6e21fab81b4691243da444394e90ec7e0046a993a3d",
+      "bytes": 5357
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_forward_9.4/ir_pre_fusion.txt",
+      "sha256": "692ac870bc383dffd357065207580f7099736bb501ee54946dfd39c49ccfa594",
+      "bytes": 5428
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__2_forward_9.4/output_code.py",
+      "sha256": "b79feda029212015eb045064aca5de931c30650757400c0f4a60a3285cc75e52",
+      "bytes": 22082
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_backward_123.61/fx_graph_readable.py",
+      "sha256": "e2a7e74ab339e5998b313ece1feafb135ecfd9554418a63dcde664d82af618d7",
+      "bytes": 2110
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_backward_123.61/fx_graph_transformed.py",
+      "sha256": "23323a8566e1ba174f62b2715db9d5e9e7f52ce532949fc537bf4e4bca99fe01",
+      "bytes": 2125
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_backward_123.61/ir_post_fusion.txt",
+      "sha256": "f125729df673116c865818b96b1fbfb28454a1b0569c59f5956f08abf224161f",
+      "bytes": 9949
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_backward_123.61/ir_pre_fusion.txt",
+      "sha256": "5710cebabbb8c66d3559cc54d789d3fbdf07dc6027724e1061eef625761b0d75",
+      "bytes": 8665
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_backward_123.61/output_code.py",
+      "sha256": "119adc809500d6122e616a017a0f48dfd62fd97a7b7879fba4be797d4f952be5",
+      "bytes": 25086
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_forward_121.60/fx_graph_readable.py",
+      "sha256": "38f046e277f91f29595333927e7479fea3467e955464f0a0cee130e529a30aa4",
+      "bytes": 1541
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_forward_121.60/fx_graph_transformed.py",
+      "sha256": "a9dc96ae2bfc2095d9450036d032aa9ee299e94576186c9eb83360336e278933",
+      "bytes": 1550
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_forward_121.60/ir_post_fusion.txt",
+      "sha256": "92df3e020048b20708923c5243ccc2078302cf5952d2ada84cc811eafbe1a76e",
+      "bytes": 5192
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_forward_121.60/ir_pre_fusion.txt",
+      "sha256": "fabad36c06dccd3654559654dfea903f62ddf3c95c1dc7e0222fba710dd06da6",
+      "bytes": 5263
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__30_forward_121.60/output_code.py",
+      "sha256": "d0a5a941ba3846f2d998a61c6e088ab85a2fd334f28c6b3f047c9c9c7359b1db",
+      "bytes": 22191
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_backward_127.63/fx_graph_readable.py",
+      "sha256": "481df1dc05224a6901cd8ad174cabcda6590872ddd4cb8c66cf79f368f3f8ab8",
+      "bytes": 2110
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_backward_127.63/fx_graph_transformed.py",
+      "sha256": "79051336632206a38ed8b65dfae8788ff61009d86fc000cd4f833a62bd4c5396",
+      "bytes": 2125
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_backward_127.63/ir_post_fusion.txt",
+      "sha256": "b7fc85428ca3bc9db2ee05123627dd2d3c70493fcb1d7b5617c72f8c762ab0c0",
+      "bytes": 9949
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_backward_127.63/ir_pre_fusion.txt",
+      "sha256": "28a03a5d5f7eed31ddb095f17848c52cbdf215fcf699862310a006bdb3ddc016",
+      "bytes": 8665
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_backward_127.63/output_code.py",
+      "sha256": "6d08add5ea34c1102b821d71a56d058973fb78604ba5324d417fd4db40bbcb37",
+      "bytes": 25086
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_forward_125.62/fx_graph_readable.py",
+      "sha256": "9dbb9c9ab454becc91037d9f282f50b1c883c862c3b633ee76fff64823f9ce85",
+      "bytes": 1541
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_forward_125.62/fx_graph_transformed.py",
+      "sha256": "d343bb45f5a40549a590fcbf22a8416bb69f204a83b925f26c36b26366c37d2b",
+      "bytes": 1550
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_forward_125.62/ir_post_fusion.txt",
+      "sha256": "244c851e3948331ccaaf20236ed5f81cf0691e776aa848b988aa8aceef13a91a",
+      "bytes": 5192
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_forward_125.62/ir_pre_fusion.txt",
+      "sha256": "ac01883be6e000bfb1fa93ec6b137e879559585f55f4aff2da72e22ab186f096",
+      "bytes": 5263
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__31_forward_125.62/output_code.py",
+      "sha256": "95cec85b98fee22eb5665bc224f4058ea3c3c6609629a86d36cc447395f9273e",
+      "bytes": 22191
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_backward_131.65/fx_graph_readable.py",
+      "sha256": "a628c66140f82a98ae2050aa6049bdbd6c0a648ff0318749371c3e40f4566a08",
+      "bytes": 2180
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_backward_131.65/fx_graph_transformed.py",
+      "sha256": "58f0ef4bb35576d420b75bdef3991a0ee5c60e58042e15de9811d319f72fcc48",
+      "bytes": 2192
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_backward_131.65/ir_post_fusion.txt",
+      "sha256": "31a8ae641c1f647a15a18fdcea5747986ba631a2eb70e0a0fe2a9f52edf0cac2",
+      "bytes": 9271
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_backward_131.65/ir_pre_fusion.txt",
+      "sha256": "a70b448f7f99c3d06a560a8bb7c68b82d85b6b01f64184389f08b84eb03b5c00",
+      "bytes": 8101
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_backward_131.65/output_code.py",
+      "sha256": "00fdbf99bd54fb9665a1586399d6b1f86d250d9c99f52a8bfc368eb031d04535",
+      "bytes": 20184
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_forward_129.64/fx_graph_readable.py",
+      "sha256": "e92a99719f77f41509c0c035a20e296718c75db9cb7e9bf1bfdaa8fcede3f82f",
+      "bytes": 1520
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_forward_129.64/fx_graph_transformed.py",
+      "sha256": "85584693a9e402b120d3965468041b2da16255cd373eedb244221c40119bec7b",
+      "bytes": 1529
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_forward_129.64/ir_post_fusion.txt",
+      "sha256": "777f24292e73b28a6abc96fb9bfef9cbde27fee6f2167e0651b22b011b85757c",
+      "bytes": 6609
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_forward_129.64/ir_pre_fusion.txt",
+      "sha256": "e76a97814113e57481e765cd70f43433124cb6386b2e422ce62aef24e6198fae",
+      "bytes": 6842
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__32_forward_129.64/output_code.py",
+      "sha256": "fd0f6b01147ad95eb28a12c3cef2b00f02e464d5565f50d64a0739c93543566a",
+      "bytes": 30465
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_backward_135.67/fx_graph_readable.py",
+      "sha256": "46dfb6ef4de9dd2cfc472cb6d91bd2f6de912e2a8d6518eba4825448635616be",
+      "bytes": 2180
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_backward_135.67/fx_graph_transformed.py",
+      "sha256": "1ded6899394aa8c702466bbe720ae3088474bbf5715dbd8b760d0ba580368b29",
+      "bytes": 2192
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_backward_135.67/ir_post_fusion.txt",
+      "sha256": "6c77bae845f62bdb517c771f8078e2832ca89407059ef947939b4e41959dc52b",
+      "bytes": 9271
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_backward_135.67/ir_pre_fusion.txt",
+      "sha256": "b2eb7f2263516b820d0aa0fc2c6d06afa7bd883688e9bea06123184e44cef7ba",
+      "bytes": 8101
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_backward_135.67/output_code.py",
+      "sha256": "0ecc898923a99823443826207bfbe9e565bce5b19e176e7e3482459d88ea43e2",
+      "bytes": 20184
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_forward_133.66/fx_graph_readable.py",
+      "sha256": "d555bc3f5b5e65cfda4f37bd357a3d7b3361571dc2d1ba8f569f5dfaaf37e492",
+      "bytes": 1520
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_forward_133.66/fx_graph_transformed.py",
+      "sha256": "938d746727860d3d79b2987f1f947a8f9655e2b697b1765643a857b9af42fe5c",
+      "bytes": 1529
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_forward_133.66/ir_post_fusion.txt",
+      "sha256": "ea98812705f80b755964541be385d7eb211635816a3f1e953283352896787ee7",
+      "bytes": 6609
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_forward_133.66/ir_pre_fusion.txt",
+      "sha256": "e0361899ee769c2a6642ba543b46e793bf9308f957a36a9a273a0229bb2e2350",
+      "bytes": 6842
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__33_forward_133.66/output_code.py",
+      "sha256": "13b38fe5eaae4800476fb24e13d1dc8a4e40cad4284df0dfbdf11078c7d58354",
+      "bytes": 30465
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_backward_139.69/fx_graph_readable.py",
+      "sha256": "a628c66140f82a98ae2050aa6049bdbd6c0a648ff0318749371c3e40f4566a08",
+      "bytes": 2180
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_backward_139.69/fx_graph_transformed.py",
+      "sha256": "58f0ef4bb35576d420b75bdef3991a0ee5c60e58042e15de9811d319f72fcc48",
+      "bytes": 2192
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_backward_139.69/ir_post_fusion.txt",
+      "sha256": "31a8ae641c1f647a15a18fdcea5747986ba631a2eb70e0a0fe2a9f52edf0cac2",
+      "bytes": 9271
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_backward_139.69/ir_pre_fusion.txt",
+      "sha256": "a70b448f7f99c3d06a560a8bb7c68b82d85b6b01f64184389f08b84eb03b5c00",
+      "bytes": 8101
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_backward_139.69/output_code.py",
+      "sha256": "311b543a7785c8894cdf89c67a951b3c33849190c02d33c66b43bb0621900f47",
+      "bytes": 20184
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_forward_137.68/fx_graph_readable.py",
+      "sha256": "e92a99719f77f41509c0c035a20e296718c75db9cb7e9bf1bfdaa8fcede3f82f",
+      "bytes": 1520
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_forward_137.68/fx_graph_transformed.py",
+      "sha256": "85584693a9e402b120d3965468041b2da16255cd373eedb244221c40119bec7b",
+      "bytes": 1529
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_forward_137.68/ir_post_fusion.txt",
+      "sha256": "777f24292e73b28a6abc96fb9bfef9cbde27fee6f2167e0651b22b011b85757c",
+      "bytes": 6609
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_forward_137.68/ir_pre_fusion.txt",
+      "sha256": "e76a97814113e57481e765cd70f43433124cb6386b2e422ce62aef24e6198fae",
+      "bytes": 6842
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__34_forward_137.68/output_code.py",
+      "sha256": "4e81fabb983d992e7dccd2c18c101b0cb6677e60415a5142b1757e1e67b1d00d",
+      "bytes": 30465
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__35_forward_141.70/fx_graph_readable.py",
+      "sha256": "d555bc3f5b5e65cfda4f37bd357a3d7b3361571dc2d1ba8f569f5dfaaf37e492",
+      "bytes": 1520
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__35_forward_141.70/fx_graph_transformed.py",
+      "sha256": "938d746727860d3d79b2987f1f947a8f9655e2b697b1765643a857b9af42fe5c",
+      "bytes": 1529
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__35_forward_141.70/ir_post_fusion.txt",
+      "sha256": "ea98812705f80b755964541be385d7eb211635816a3f1e953283352896787ee7",
+      "bytes": 6609
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__35_forward_141.70/ir_pre_fusion.txt",
+      "sha256": "e0361899ee769c2a6642ba543b46e793bf9308f957a36a9a273a0229bb2e2350",
+      "bytes": 6842
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__35_forward_141.70/output_code.py",
+      "sha256": "61f4013f9712111803ff8d4573e1711f13a4f9f6aa6a4e3209598d31b5a957f2",
+      "bytes": 30465
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_backward_15.7/fx_graph_readable.py",
+      "sha256": "11955971a157e82c8fc8064f846f9e36610653cad16ca85c9e1606187e740cd2",
+      "bytes": 2109
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_backward_15.7/fx_graph_transformed.py",
+      "sha256": "5a34395833ec1d6fc379eb65bb6bf29bd57c6119f18072c2651135dfa94dfa87",
+      "bytes": 2127
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_backward_15.7/ir_post_fusion.txt",
+      "sha256": "b3a4eb8d218cb3195cfa7f4fcc58159d842963e005c710a80f7d2077f6fbd219",
+      "bytes": 13547
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_backward_15.7/ir_pre_fusion.txt",
+      "sha256": "a05f62892d11e8330bd3ddfb33c9141b5c7132436725eba052e7d06947c9a25e",
+      "bytes": 11457
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_backward_15.7/output_code.py",
+      "sha256": "68da8b4d6387647b6e223c8dfee34e365528ae5dd119e8fc9c2b017d389c598f",
+      "bytes": 26332
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_forward_13.6/fx_graph_readable.py",
+      "sha256": "466fc76fc118ad2a9c713165f7caf146a707d1ced860d3586f5ebb24826f3729",
+      "bytes": 1373
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_forward_13.6/fx_graph_transformed.py",
+      "sha256": "f1abc417e8b07bce44982ad1763f35aaa14c941d18c46f17fb75d45d34999e43",
+      "bytes": 1382
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_forward_13.6/ir_post_fusion.txt",
+      "sha256": "40847b298ecef7c9a0283f67401db2d2d45ef02c670bc01329cf220469f190ec",
+      "bytes": 5357
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_forward_13.6/ir_pre_fusion.txt",
+      "sha256": "51ce59c18c6818a61a03ee6c8c008acf73c087c9663ef61b24995ba91d112166",
+      "bytes": 5428
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__3_forward_13.6/output_code.py",
+      "sha256": "2ed2d36cce4d01a3a5338633db997703f5e2a61c8c552c370f49047149c5867a",
+      "bytes": 22082
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_backward_19.9/fx_graph_readable.py",
+      "sha256": "a8ec268054c255b93c09682e5ae456c927370f41da4ca8e00a8f930f8d9918dc",
+      "bytes": 2182
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_backward_19.9/fx_graph_transformed.py",
+      "sha256": "8f1f76268ebb5548248932b6efa4432573cb2107097eebcd04708fc04f05508a",
+      "bytes": 2197
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_backward_19.9/ir_post_fusion.txt",
+      "sha256": "daecfbbe034de76286c5b65dc06a570c2b37bfab6a37f5906c02cc7c61129a7c",
+      "bytes": 11497
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_backward_19.9/ir_pre_fusion.txt",
+      "sha256": "c826f1e1c18a3b3ba3c0207a4c329128f791eb74b6cc246ffe3a245d5b42c28c",
+      "bytes": 9936
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_backward_19.9/output_code.py",
+      "sha256": "bb15117fe10b67541173e0de3381759f25fc33c4aedbfda6d852339fc4d28aaa",
+      "bytes": 20823
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_forward_17.8/fx_graph_readable.py",
+      "sha256": "9817eedda1953e907ce0a837724ca4d1227f47fcd2318241a503b3a3bd656fa3",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_forward_17.8/fx_graph_transformed.py",
+      "sha256": "56cfad63caa0343171142faae79e6320e919e5b0d4e8fbe82e4c71e9c746d4b0",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_forward_17.8/ir_post_fusion.txt",
+      "sha256": "5fdfee50fd043281c63c04d0364a2255268062a1cf367667c7d7fe91802c1c53",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_forward_17.8/ir_pre_fusion.txt",
+      "sha256": "7a65ce6d1a0b32b5b2210e74aa533543c4dbc4857a04f82f0bcad5a9d01ac313",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__4_forward_17.8/output_code.py",
+      "sha256": "2a0f97afd90cd2e1d43f6f6900ee38ed149d33daf129000145f047ffdde22c14",
+      "bytes": 30032
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_backward_23.11/fx_graph_readable.py",
+      "sha256": "65f4985214fb83a30267834c8d5f66a4c1266c053957141bd2530055d0406c6a",
+      "bytes": 2182
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_backward_23.11/fx_graph_transformed.py",
+      "sha256": "8465750b794add05ab07349624e0b02802e98e77fbfef3b1c381879d089cfe33",
+      "bytes": 2197
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_backward_23.11/ir_post_fusion.txt",
+      "sha256": "32018b8fb1569e8020f6c7363365af8965118033f11868228fe68c74ca719391",
+      "bytes": 11497
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_backward_23.11/ir_pre_fusion.txt",
+      "sha256": "84c9f253aa5411088f5136a6362f3e9b0827faef85cb27e3b0d13dcf1e18e47a",
+      "bytes": 9936
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_backward_23.11/output_code.py",
+      "sha256": "be028c36f581c5172a3c483b993ff4345bda8336c1281a156b32126d36213169",
+      "bytes": 20823
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_forward_21.10/fx_graph_readable.py",
+      "sha256": "34d45ea162f39baa20f36ef7882d6fc801e13124e9d489d95002cda773a68a19",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_forward_21.10/fx_graph_transformed.py",
+      "sha256": "3d60682ac906897b5a1d7527d82eeb39e88c909a53776ea78d7cc5786db13ada",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_forward_21.10/ir_post_fusion.txt",
+      "sha256": "c245df65b4c05c34d576392d7b0ed9a9cc6251e304a90f27273efeb3f3c5ba20",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_forward_21.10/ir_pre_fusion.txt",
+      "sha256": "868119bfdfec0170bbad31578f546913374d978f77da289f59e52d231665b823",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__5_forward_21.10/output_code.py",
+      "sha256": "9dbe065dc1e3cb55785431a5106c9f0e3299ca3d273f471fe8a6d2a964f9d9c6",
+      "bytes": 30032
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_backward_27.13/fx_graph_readable.py",
+      "sha256": "a8ec268054c255b93c09682e5ae456c927370f41da4ca8e00a8f930f8d9918dc",
+      "bytes": 2182
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_backward_27.13/fx_graph_transformed.py",
+      "sha256": "8f1f76268ebb5548248932b6efa4432573cb2107097eebcd04708fc04f05508a",
+      "bytes": 2197
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_backward_27.13/ir_post_fusion.txt",
+      "sha256": "daecfbbe034de76286c5b65dc06a570c2b37bfab6a37f5906c02cc7c61129a7c",
+      "bytes": 11497
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_backward_27.13/ir_pre_fusion.txt",
+      "sha256": "c826f1e1c18a3b3ba3c0207a4c329128f791eb74b6cc246ffe3a245d5b42c28c",
+      "bytes": 9936
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_backward_27.13/output_code.py",
+      "sha256": "3ebe53ca6871228e3da66a90b32e7f28132a8fbe18bcdbb58d263cf448e947df",
+      "bytes": 20823
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_forward_25.12/fx_graph_readable.py",
+      "sha256": "9817eedda1953e907ce0a837724ca4d1227f47fcd2318241a503b3a3bd656fa3",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_forward_25.12/fx_graph_transformed.py",
+      "sha256": "56cfad63caa0343171142faae79e6320e919e5b0d4e8fbe82e4c71e9c746d4b0",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_forward_25.12/ir_post_fusion.txt",
+      "sha256": "5fdfee50fd043281c63c04d0364a2255268062a1cf367667c7d7fe91802c1c53",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_forward_25.12/ir_pre_fusion.txt",
+      "sha256": "7a65ce6d1a0b32b5b2210e74aa533543c4dbc4857a04f82f0bcad5a9d01ac313",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__6_forward_25.12/output_code.py",
+      "sha256": "a92a07774baf2ce123ca44a640e10cfb782971cd7dec08417edb456f6fb6d1f8",
+      "bytes": 30032
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_backward_31.15/fx_graph_readable.py",
+      "sha256": "65f4985214fb83a30267834c8d5f66a4c1266c053957141bd2530055d0406c6a",
+      "bytes": 2182
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_backward_31.15/fx_graph_transformed.py",
+      "sha256": "8465750b794add05ab07349624e0b02802e98e77fbfef3b1c381879d089cfe33",
+      "bytes": 2197
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_backward_31.15/ir_post_fusion.txt",
+      "sha256": "32018b8fb1569e8020f6c7363365af8965118033f11868228fe68c74ca719391",
+      "bytes": 11497
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_backward_31.15/ir_pre_fusion.txt",
+      "sha256": "84c9f253aa5411088f5136a6362f3e9b0827faef85cb27e3b0d13dcf1e18e47a",
+      "bytes": 9936
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_backward_31.15/output_code.py",
+      "sha256": "3713b33fa69306c2d2b8c459884f7d7b1b97ff87693319fa5bb7b57a557808a6",
+      "bytes": 20823
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_forward_29.14/fx_graph_readable.py",
+      "sha256": "34d45ea162f39baa20f36ef7882d6fc801e13124e9d489d95002cda773a68a19",
+      "bytes": 1352
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_forward_29.14/fx_graph_transformed.py",
+      "sha256": "3d60682ac906897b5a1d7527d82eeb39e88c909a53776ea78d7cc5786db13ada",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_forward_29.14/ir_post_fusion.txt",
+      "sha256": "c245df65b4c05c34d576392d7b0ed9a9cc6251e304a90f27273efeb3f3c5ba20",
+      "bytes": 6774
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_forward_29.14/ir_pre_fusion.txt",
+      "sha256": "868119bfdfec0170bbad31578f546913374d978f77da289f59e52d231665b823",
+      "bytes": 7007
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__7_forward_29.14/output_code.py",
+      "sha256": "71f99370f34e86de1f9b6a47b544395cc8b9b1819ec6daae4b3fa7da99cf26df",
+      "bytes": 30032
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_backward_35.17/fx_graph_readable.py",
+      "sha256": "f9565671a672e551bab0315a776fd48eb94e365d05e8367a01a11913745eef33",
+      "bytes": 2250
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_backward_35.17/fx_graph_transformed.py",
+      "sha256": "3cd80fd5c23bad45bf353679d7064210d8bcfcfb6fb8fb396669ad8db8dc219a",
+      "bytes": 2265
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_backward_35.17/ir_post_fusion.txt",
+      "sha256": "be21d63734c0f354df797ecaf5eb306f2f85eca3572351aebf8bb71ef3465680",
+      "bytes": 11704
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_backward_35.17/ir_pre_fusion.txt",
+      "sha256": "29691af2eec44ba2e1f2a5710577988484865cffe90f2d018cc8981897c9de3d",
+      "bytes": 10201
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_backward_35.17/output_code.py",
+      "sha256": "a91e25fc6d3dccb5f2d19b52af88dc47d82f3c84a0dc2104015fb005ddbabc28",
+      "bytes": 20981
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_forward_33.16/fx_graph_readable.py",
+      "sha256": "96631080734e237853b35af0737ed4266e3cc7890aa0977c2d87226e4bd41689",
+      "bytes": 1393
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_forward_33.16/fx_graph_transformed.py",
+      "sha256": "d2f07cae3ad56bece16f2c1051d1e302ee725daad9bdaeada206176ca48ae09b",
+      "bytes": 1402
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_forward_33.16/ir_post_fusion.txt",
+      "sha256": "8fb0ae0a567e22eed541d8d32313ebddb1d3e28e8e9151cea2bf64062f2d8723",
+      "bytes": 6876
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_forward_33.16/ir_pre_fusion.txt",
+      "sha256": "a12732afa5d54f9d2fdbff7d530edeeeff42469d5497a66b8f7d9367d34b3bd0",
+      "bytes": 7258
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__8_forward_33.16/output_code.py",
+      "sha256": "129589e497b024c337a1b89de9efe502adda6347612a37a5b9735410c6e793ac",
+      "bytes": 30283
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_backward_39.19/fx_graph_readable.py",
+      "sha256": "2d5a2c7011e476d88d58c147d9cf5bcf598ab7c2bfe106047532844592f7a75d",
+      "bytes": 2250
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_backward_39.19/fx_graph_transformed.py",
+      "sha256": "52b3936c7f0ffb4a303c0a24dd1306d8f76ae3f7347abd6001363598150a9e9a",
+      "bytes": 2265
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_backward_39.19/ir_post_fusion.txt",
+      "sha256": "46fb81b64461101b61fd514cfb8eb0e1442f04dbb3b0fff8cb431d0f433a6196",
+      "bytes": 11704
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_backward_39.19/ir_pre_fusion.txt",
+      "sha256": "3cd06d876ab8a23ab8ed34c53884caafdaf27af21fcbf59f4a61aa64ba9b4acf",
+      "bytes": 10201
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_backward_39.19/output_code.py",
+      "sha256": "e92e799b8f890a69d6f544fbb5f1ada12ce952c2cf4da161de484eb33d10ff90",
+      "bytes": 20982
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_forward_37.18/fx_graph_readable.py",
+      "sha256": "334500d967b4535e1df98a5c9a4cbf7e06af74182b23bf33e4cdb48186d80d07",
+      "bytes": 1393
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_forward_37.18/fx_graph_transformed.py",
+      "sha256": "54afa07cde2cb5462b554054227f7c79bcf4d39f287346f7b3d3626c9e4830ca",
+      "bytes": 1402
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_forward_37.18/ir_post_fusion.txt",
+      "sha256": "82557521a9bb5a8dbdfcca288013932da6a3fac7c87de045f12a628567062bc8",
+      "bytes": 6876
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_forward_37.18/ir_pre_fusion.txt",
+      "sha256": "18c408403fae704b14b2a518d960183f1ec9541fabda9bcfcd294c1377e043db",
+      "bytes": 7258
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/debug/torch_compile_debug/run_2026_09_14_21_29_29_443538-pid_2759201/torchinductor/model__9_forward_37.18/output_code.py",
+      "sha256": "b5781e0bdd3cb17b937a2d164b4ee0ae42e5d49ccff85613d0c2423ecd5c3384",
+      "bytes": 30283
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/harness_source.py",
+      "sha256": "2d6e6c2ca4288eeef9f9638ab2f5a2794fce1c134a23805ed58116ba90a1e8ff",
+      "bytes": 7441
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/progress.json",
+      "sha256": "7babaf7b717aa6d6b8a071e96b0dd29c5064cd8074ff40fb0f9c7278a7e8a026",
+      "bytes": 483
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-0-after.txt",
+      "sha256": "0f690af09de73be9c88999ddb6c82cabc3153c43f4b9fffb1204d91ca8835444",
+      "bytes": 1620
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-0-before.txt",
+      "sha256": "8367102b92cee4e8726411a339c6c0a228910163001b2ce90b7f0ff3ffc5e8fc",
+      "bytes": 1581
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-1-after.txt",
+      "sha256": "bc7e96095f820bde1b62b824291177b18b7524fccbfc6a69551a9816db32c021",
+      "bytes": 1543
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-1-before.txt",
+      "sha256": "b8c50e81cf2ed1214ed0a1a96818be9f155c3e581ed5ef3ecd64636454235e6c",
+      "bytes": 1560
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-10-after.txt",
+      "sha256": "497420274ef749eee5a7c3b47c65bef71a8fc79d1b9a24f07d7b098eacb54f93",
+      "bytes": 1676
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-10-before.txt",
+      "sha256": "e9f670f4da29e69e5a25b5bb1c7d7bdc332a17b7c57f02ebbe204e7a46ad4797",
+      "bytes": 1601
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-11-after.txt",
+      "sha256": "08f9749f65d8ce691754d7c69451c9b53ad2394fe0a67b69a078897c6799fd71",
+      "bytes": 1550
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-11-before.txt",
+      "sha256": "84cc5a526b965fdae0ba7e13d9928d1e406669d662a15502cd0d085a74ad5592",
+      "bytes": 1568
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-12-after.txt",
+      "sha256": "8f9ebfe9707a7afe3987288d7dccca2842e4582a7612f7409f70c11148b606a0",
+      "bytes": 1685
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-12-before.txt",
+      "sha256": "08489d1b6cc478d7bc65cf1114c4dbc8894358a040c288abb30936ad3436025c",
+      "bytes": 1610
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-13-after.txt",
+      "sha256": "44012150c150a0131412e3e9ac445a6c72b03187fb46cbebfda66c28820e4dfd",
+      "bytes": 1553
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-13-before.txt",
+      "sha256": "766b213f6c4b2de2a6faac4e338b51d618a011e9f34ea75e00b1b6a3dc8e298f",
+      "bytes": 1571
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-14-after.txt",
+      "sha256": "8f9ebfe9707a7afe3987288d7dccca2842e4582a7612f7409f70c11148b606a0",
+      "bytes": 1685
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-14-before.txt",
+      "sha256": "08489d1b6cc478d7bc65cf1114c4dbc8894358a040c288abb30936ad3436025c",
+      "bytes": 1610
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-15-after.txt",
+      "sha256": "44012150c150a0131412e3e9ac445a6c72b03187fb46cbebfda66c28820e4dfd",
+      "bytes": 1553
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-15-before.txt",
+      "sha256": "766b213f6c4b2de2a6faac4e338b51d618a011e9f34ea75e00b1b6a3dc8e298f",
+      "bytes": 1571
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-16-after.txt",
+      "sha256": "385c64897491c1c750008e704ce79f996fddb36508d71a98205d91cb1e802d0f",
+      "bytes": 1686
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-16-before.txt",
+      "sha256": "a0da33cbded53c405d063294be865f8e7893b78f85569f2d3e7b56fad851643f",
+      "bytes": 1641
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-17-after.txt",
+      "sha256": "5d0692fa6e5ecfc786817eaf92ee0f63682cc757d9513f16cfe782aec9d17c7b",
+      "bytes": 1557
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-17-before.txt",
+      "sha256": "c870ce8cfe7266fcb7a0848137fdbfb7f58a77afa135ce135b3c4cfffec7383f",
+      "bytes": 1605
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-18-after.txt",
+      "sha256": "385c64897491c1c750008e704ce79f996fddb36508d71a98205d91cb1e802d0f",
+      "bytes": 1686
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-18-before.txt",
+      "sha256": "a0da33cbded53c405d063294be865f8e7893b78f85569f2d3e7b56fad851643f",
+      "bytes": 1641
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-19-after.txt",
+      "sha256": "5d0692fa6e5ecfc786817eaf92ee0f63682cc757d9513f16cfe782aec9d17c7b",
+      "bytes": 1557
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-19-before.txt",
+      "sha256": "c870ce8cfe7266fcb7a0848137fdbfb7f58a77afa135ce135b3c4cfffec7383f",
+      "bytes": 1605
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-2-after.txt",
+      "sha256": "0f690af09de73be9c88999ddb6c82cabc3153c43f4b9fffb1204d91ca8835444",
+      "bytes": 1620
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-2-before.txt",
+      "sha256": "8367102b92cee4e8726411a339c6c0a228910163001b2ce90b7f0ff3ffc5e8fc",
+      "bytes": 1581
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-20-after.txt",
+      "sha256": "b92f371d4fcc2743064fc223e48e4f9cef8d2ea35fed6ba201d07c23b0bbe374",
+      "bytes": 1694
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-20-before.txt",
+      "sha256": "2249811d26314a908e3f50a271023b3a3ffd04086912f4c27a5d3ce14e410144",
+      "bytes": 1649
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-21-after.txt",
+      "sha256": "f35da32d58ba24df3cecdf81e5bad69596cd454aec9d2decfd2c6df2fb8d48ab",
+      "bytes": 1558
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-21-before.txt",
+      "sha256": "d3948527812040230a19d80d0fdcac3a755ec7a3b0689a5fa4eaa693e14fe8b8",
+      "bytes": 1600
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-22-after.txt",
+      "sha256": "b92f371d4fcc2743064fc223e48e4f9cef8d2ea35fed6ba201d07c23b0bbe374",
+      "bytes": 1694
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-22-before.txt",
+      "sha256": "2249811d26314a908e3f50a271023b3a3ffd04086912f4c27a5d3ce14e410144",
+      "bytes": 1649
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-23-after.txt",
+      "sha256": "f35da32d58ba24df3cecdf81e5bad69596cd454aec9d2decfd2c6df2fb8d48ab",
+      "bytes": 1558
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-23-before.txt",
+      "sha256": "d3948527812040230a19d80d0fdcac3a755ec7a3b0689a5fa4eaa693e14fe8b8",
+      "bytes": 1600
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-24-after.txt",
+      "sha256": "1793b3e7edcfabb9ac8b634cab1c14a4f781d6c3cba63968daddc401039b0d5e",
+      "bytes": 1706
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-24-before.txt",
+      "sha256": "91140b65c0637bff9315746f568a04a206a7e48857cd26d1480a34e5bc91baca",
+      "bytes": 1661
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-25-after.txt",
+      "sha256": "e879c2b14e0665d49227980c55abdc8c9723aba6584ef7b314e3ca98de908dc6",
+      "bytes": 1561
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-25-before.txt",
+      "sha256": "eed67901d42b8320b11a20326e3eca080aeb350acb71a8528326443dd8d64fad",
+      "bytes": 1603
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-26-after.txt",
+      "sha256": "1793b3e7edcfabb9ac8b634cab1c14a4f781d6c3cba63968daddc401039b0d5e",
+      "bytes": 1706
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-26-before.txt",
+      "sha256": "91140b65c0637bff9315746f568a04a206a7e48857cd26d1480a34e5bc91baca",
+      "bytes": 1661
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-27-after.txt",
+      "sha256": "e879c2b14e0665d49227980c55abdc8c9723aba6584ef7b314e3ca98de908dc6",
+      "bytes": 1561
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-27-before.txt",
+      "sha256": "eed67901d42b8320b11a20326e3eca080aeb350acb71a8528326443dd8d64fad",
+      "bytes": 1603
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-28-after.txt",
+      "sha256": "40e5b07973384a9dff0e856f2b1b100deb03012f727c983b18f7419622191fe3",
+      "bytes": 1400
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-28-before.txt",
+      "sha256": "5ca1fb81ff7964ed645e599d6d604155953c01b7626723454462a2cd2e14c7bf",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-29-after.txt",
+      "sha256": "c350d941986af236f5a660257c529a329e9ea82aa8971de2f369806220a4b3e0",
+      "bytes": 1333
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-29-before.txt",
+      "sha256": "ebcbd2f8e07c0310413ed8cb6f86659d779553f783d5e852623733d4e2f31a3d",
+      "bytes": 1344
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-3-after.txt",
+      "sha256": "bc7e96095f820bde1b62b824291177b18b7524fccbfc6a69551a9816db32c021",
+      "bytes": 1543
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-3-before.txt",
+      "sha256": "b8c50e81cf2ed1214ed0a1a96818be9f155c3e581ed5ef3ecd64636454235e6c",
+      "bytes": 1560
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-30-after.txt",
+      "sha256": "40e5b07973384a9dff0e856f2b1b100deb03012f727c983b18f7419622191fe3",
+      "bytes": 1400
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-30-before.txt",
+      "sha256": "5ca1fb81ff7964ed645e599d6d604155953c01b7626723454462a2cd2e14c7bf",
+      "bytes": 1361
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-31-after.txt",
+      "sha256": "c350d941986af236f5a660257c529a329e9ea82aa8971de2f369806220a4b3e0",
+      "bytes": 1333
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-31-before.txt",
+      "sha256": "ebcbd2f8e07c0310413ed8cb6f86659d779553f783d5e852623733d4e2f31a3d",
+      "bytes": 1344
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-32-after.txt",
+      "sha256": "e75250c97e129270897e4dfb29454f0e05222a578af09e19ffdbcb9615bf0704",
+      "bytes": 1450
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-32-before.txt",
+      "sha256": "2b3b1811cb7c5f7d1ce31f65caf2106a3fb3cf98a0cbc08503bcdedd2d4b6b47",
+      "bytes": 1375
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-33-after.txt",
+      "sha256": "fdc15d9798ff21affe117d2c4f644be7cacfe722dca0b7987e9ec8b0375d4fdf",
+      "bytes": 1337
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-33-before.txt",
+      "sha256": "71a598faccbd5757e3e0e052c351c9229ad0c7037c3f8a6ebfe5eac3fa130a3d",
+      "bytes": 1355
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-34-after.txt",
+      "sha256": "e75250c97e129270897e4dfb29454f0e05222a578af09e19ffdbcb9615bf0704",
+      "bytes": 1450
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-34-before.txt",
+      "sha256": "2b3b1811cb7c5f7d1ce31f65caf2106a3fb3cf98a0cbc08503bcdedd2d4b6b47",
+      "bytes": 1375
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-35-after.txt",
+      "sha256": "fdc15d9798ff21affe117d2c4f644be7cacfe722dca0b7987e9ec8b0375d4fdf",
+      "bytes": 1337
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-35-before.txt",
+      "sha256": "71a598faccbd5757e3e0e052c351c9229ad0c7037c3f8a6ebfe5eac3fa130a3d",
+      "bytes": 1355
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-4-after.txt",
+      "sha256": "4f3c1b72ef09f70a367b98dbe091b9ed7f16f0f1ab3c41348986e8312f95a3c6",
+      "bytes": 1670
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-4-before.txt",
+      "sha256": "56c3095320bc065a137dbf2b534fa6acc50ce6c5792ad26c4ba39bbc24fbb529",
+      "bytes": 1595
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-5-after.txt",
+      "sha256": "0463ace9d87f3a63ecb754381b9a55b89206c99addac77d7ec411a228cb585df",
+      "bytes": 1547
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-5-before.txt",
+      "sha256": "dbd548a487b55572f8da97edf7765a95b74da134c30f132d95d99583e49ee905",
+      "bytes": 1565
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-6-after.txt",
+      "sha256": "4f3c1b72ef09f70a367b98dbe091b9ed7f16f0f1ab3c41348986e8312f95a3c6",
+      "bytes": 1670
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-6-before.txt",
+      "sha256": "56c3095320bc065a137dbf2b534fa6acc50ce6c5792ad26c4ba39bbc24fbb529",
+      "bytes": 1595
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-7-after.txt",
+      "sha256": "0463ace9d87f3a63ecb754381b9a55b89206c99addac77d7ec411a228cb585df",
+      "bytes": 1547
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-7-before.txt",
+      "sha256": "dbd548a487b55572f8da97edf7765a95b74da134c30f132d95d99583e49ee905",
+      "bytes": 1565
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-8-after.txt",
+      "sha256": "497420274ef749eee5a7c3b47c65bef71a8fc79d1b9a24f07d7b098eacb54f93",
+      "bytes": 1676
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-8-before.txt",
+      "sha256": "e9f670f4da29e69e5a25b5bb1c7d7bdc332a17b7c57f02ebbe204e7a46ad4797",
+      "bytes": 1601
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-9-after.txt",
+      "sha256": "08f9749f65d8ce691754d7c69451c9b53ad2394fe0a67b69a078897c6799fd71",
+      "bytes": 1550
+    },
+    {
+      "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/target-9-before.txt",
+      "sha256": "84cc5a526b965fdae0ba7e13d9928d1e406669d662a15502cd0d085a74ad5592",
+      "bytes": 1568
+    }
+  ],
+  "generated_output_code_present": true
+}

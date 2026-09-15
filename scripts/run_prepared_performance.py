@@ -20,8 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 ORDER = ("off1", "on1", "on2", "off2", "off3", "on3")
 
 
-def run_arm(command, work, out, err, timeout=3600):
-    process = subprocess.Popen(command, cwd=work, stdout=out, stderr=err, start_new_session=True)
+def run_arm(command, work, out, err, timeout=3600, env=None):
+    process = subprocess.Popen(command, cwd=work, stdout=out, stderr=err, start_new_session=True, env=env)
     try:
         return process.wait(timeout=timeout)
     except (subprocess.TimeoutExpired, KeyboardInterrupt):

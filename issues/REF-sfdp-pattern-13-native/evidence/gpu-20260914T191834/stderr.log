@@ -1,0 +1,16 @@
+test_sdpa_rewriter_13_gpu (__main__.SDPAPatternRewriterGpuTests.test_sdpa_rewriter_13_gpu)
+partial(func, *args, **keywords) - new function with partial application ... /data/z50063656/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 19:19:40.570000 1670285 torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /data/z50063656/tmp/t104-reference-results/reference-20260914T191834+0800-0x3nqs19/cases/REF-sfdp-pattern-13-native/debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0
+/home/z00824525/miniconda3/lib/python3.12/contextlib.py:144: ResourceWarning: unclosed file <_io.TextIOWrapper name='/data/z50063656/tmp/t104-reference-results/reference-20260914T191834+0800-0x3nqs19/cases/REF-sfdp-pattern-13-native/debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/aot_model___0_debug.log' mode='a' encoding='UTF-8'>
+  next(self.gen)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/z00824525/miniconda3/lib/python3.12/contextlib.py:618: ResourceWarning: unclosed file <_io.TextIOWrapper name='/data/z50063656/tmp/t104-reference-results/reference-20260914T191834+0800-0x3nqs19/cases/REF-sfdp-pattern-13-native/debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchdynamo/debug.log' mode='a' encoding='UTF-8'>
+  self.__exit__(None, None, None)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 6.091s
+
+OK

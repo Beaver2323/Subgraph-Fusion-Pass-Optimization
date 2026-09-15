@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-11 18:44 CST（UTC+08:00）
+> 索引更新时间：2026-09-15 01:37 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -8,7 +8,20 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
-| [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 当前逐 acceptance-unit 状态入口 | 71个ID/70独立单元，40个reference冻结、40个NPU/comparison、40项性能处置 |
+| [剩余任务与专项入口](remaining_work_20260915.md) | 17/15去重源码证明、16/29针对性GPU补测、22设备边界与T-098全量实测状态 | 71个ID/69独立合同，47闭环、22剩余；不把候选和排队任务算完成 |
+| [当前不依赖GPU的执行进度](unblocked_work_20260914.md) | T-091/T-100及attention验收、T-098精度模式诊断，附学习入口 | T-091 MIXED、T-100 IMPROVED、T-104 pattern13 REGRESSED；其余仍按真实阶段记录 |
+| [T-104 pattern13结果与讲解](../results/current/T-104/pattern-13_讲解.md) | pattern意图、社区/派生测例合同、真实GPU/NPU代码、六臂性能 | 功能通过；微图回退约4%～8%，不调整默认配置 |
+| [T-105 pattern18讲解](../results/current/T-105/pattern-18_讲解.md) / [T-106 pattern23讲解](../results/current/T-106/pattern-23_讲解.md) | 布尔mask/零加性mask、多输出K/V、原例与派生性能域、六臂真实代码与样本 | 两项PERF_IMPROVED，仅限各自微图；不是整个attention批次或模型收益 |
+| [T-106 pattern22数值失败分析](../issues/REF-sfdp-pattern-22-native/数值失败分析.md) | 原始失败栈、实际输出代码和逐kernel定位 | 首处分歧在行最大值kernel，未部署修复 |
+| [T-106 pattern22修复候选验证](../issues/REF-sfdp-pattern-22-native/修复候选验证报告.md) | 修复前后代码、原例及三个邻接、源码指纹与边界 | 21次Tensor比较/9次改写通过；隔离候选未部署，不签性能gate |
+| [T-105 pattern19讲解](../results/current/T-105/pattern-19_讲解.md) | FP32社区/派生输入、数学SDPA实际代码、六臂样本 | PERF_REGRESSED / PARTIAL_ALIGNED；half混合mask编译缺口仍保留 |
+| [T-104 pattern15性能OFF失败](../issues/REF-sfdp-pattern-15-native/性能OFF数值失败.md) | 入口标量适配之后的新NaN、实际调用栈及代码线索 | 未计时，待逐kernel因果验证；不直接归为22号同根因 |
+| [历史日志与T-078补证复核](history_logs_and_t078_extension_review_20260914.md) | 新历史日志24/24重解析；FP16 value=1正确单例与NPU修复原件对照 | 日志缺口已清零；严格历史再认证仍pending，不能混为全量完成 |
+| [Attention性能阶段复核](attention_performance_contract_review_20260914.md) | inference的dropout置零/去重风险、极低非零dropout设计的社区来源、训练前向测量边界 | 13/18/19/23/24有逐例实测，其余仍需各自目标/数值门禁，不整体宣称收益 |
+| [pattern 13真实GPU/NPU代码对照](../issues/REF-sfdp-pattern-13-native/GPU与NPU代码对照.md) / [14代码断言适配](../issues/REF-sfdp-pattern-14-native/代码断言适配分析.md) / [18容器观察器](../issues/REF-sfdp-pattern-18-native/数值观察器修正说明.md) | Flash/FA/math展开区别、误判边界、原社区tuple数值比较及最小适配 | 逐例实证，不把测试适配修正当产品修复或性能收益 |
+| [最新 GPU 精确归因](gpu_observer_review_20260914.md) / [16/17/29映射解释](gpu_target_mapping_16_17_29_20260914.md) | 7批28原例、114个具名观察、1370份正文；逐编号判定与源码讲解 | 25个归因确认，16/17/29命中别的编号；T-091后续验收见上一行 |
+| [current_acceptance_unit_matrix.md](current_acceptance_unit_matrix.md) / [CSV](current_acceptance_unit_matrix.csv) | 当前逐 acceptance-unit 状态入口 | 71个ID/69独立单元，47个reference冻结、47个NPU/comparison、47项性能处置；不等于严格历史再认证通过 |
+| [T-106 pattern24讲解](../results/current/T-106/pattern-24_讲解.md) | reshape+BMM链、混合dtype mask、SDPA数学展开、六臂真实代码 | PARTIAL_ALIGNED / PERF_REGRESSED，保留代码断言适配与产品路径差异 |
 | [非补证阻塞工作完成报告](t087_t096_unblocked_completion_20260911.md) | 七个单元闭环、逐pattern讲解；T-087/T-096安装态修复与原失败/候选分列 | 3改善、1中性、1混合、1免测、1回退；E8M0默认开启是正确性修复，额外NPU边界部分对齐 |
 | [T-087安装态修复验证](../issues/REF-respecialize-current-device-native/修复验证报告.md) / [T-096安装态修复验证](../issues/REF-e8m0-log2-pattern-native/修复验证报告.md) | 原例、必要调用栈、源码patch、备份、近邻和前后FX/IR/output_code | 原例1/1+近邻4/4；原例3/3+功能对照7/7+域检查+六臂性能，均部署Pass未社区合入 |
 | [本轮 GPU 包复核](gpu_incoming_review_20260911.md) | 13批40 cases、T-102完整收件、目标归因/数值边界和T-112去重 | 1226份正文可恢复；28个合同目标归因仍待补 |
@@ -27,10 +40,10 @@
 | [t077_gpu_reference_20260902.md](t077_gpu_reference_20260902.md) | T-077 GPU 文本 handoff 的 11/11 case、17/17 variant、环境、哈希与 1.3 FX 正文复核 | reference 已冻结；68 份关键正文可恢复 |
 | [t077_npu_completion_20260902.md](t077_npu_completion_20260902.md) | T-077 五单元 NPU/comparison 闭环与 MM lowering 修复验证 | 正式闭环 5/5；候选尚未合入 |
 | [T-077 small-MM 根因分析](../issues/REF-decompose-mm-native/根因分析.md) / [修复验证](../issues/REF-decompose-mm-native/修复验证报告.md) | 触发代码、必要调用栈、首个 lowering 分歧、修复代码与六变体复验 | 候选 `dfbcc25` 已验证、尚未合入 |
-| [T-078 FP16 value=1 根因](../issues/REF-addcdiv-fma-codegen-native/根因分析.md) / [精度修复](../issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md) | 不重融合合同、NPU quotient 舍入根因、修复前/后 FX、IR、output_code 和六进程验证 | NPU 已修复并真机通过；待 GPU 邻接 reference |
+| [T-078 FP16 value=1 根因](../issues/REF-addcdiv-fma-codegen-native/根因分析.md) / [精度修复](../issues/REF-addcdiv-fma-codegen-native/FP16精度修复报告.md) / [GPU补证代码对照](../issues/REF-addcdiv-fma-fp16-value1-derived/GPU补证与NPU修复对照.md) | 不重融合合同、NPU quotient 舍入根因、修复前后FX/IR/codegen及正确GPU派生单例 | 9月14日GPU邻接已补齐；各自eager位级正确，保留PARTIAL_ALIGNED |
 | [t077_pattern_gpu_npu_guide_20260902.md](t077_pattern_gpu_npu_guide_20260902.md) | T-077 pattern 意图、源码块、GPU/NPU 对照和修复代码 | 17/17 variant 已解释 |
 | [t078_mapping_review_20260903.md](t078_mapping_review_20260903.md) | 第三批四单元的人工映射修正、源码意图和 GPU 合同 | 12 direct cases/20 variants 已准备，等待 reference |
-| [t078_npu_completion_20260906.md](t078_npu_completion_20260906.md) | 第三批原冻结范围及 addcdiv 低精度后续 | 原12/12 GPU cases、4/4 NPU comparison有效；FP16 value=1已在NPU修复，待GPU邻接reference |
+| [t078_npu_completion_20260906.md](t078_npu_completion_20260906.md) | 第三批原冻结范围及 addcdiv 低精度历史 | 原12/12 GPU cases、4/4 NPU comparison有效；FP16 value=1当前补证闭环见上方9月14日对照报告 |
 | [t079_t080_mapping_review_20260904.md](t079_t080_mapping_review_20260904.md) | 第四/五批七单元的人工映射、源码意图、性能来源与后端边界 | 17 direct cases/27 variants 已准备，等待 reference |
 | [T-078 功能/性能 guide](../docs/T078_FUNCTION_PERFORMANCE_GUIDE.md) | 四单元功能 case、GPU/NPU 行为、修复与派生 benchmark 的源码化讲解 | 20/20 variants 已解释，含正式动态 verdict |
 | [t079_gpu_reference_review_20260907.md](t079_gpu_reference_review_20260907.md) | T-079 1.3 review 的完整性、逐 case FX 与冻结边界 | GPU 复核时点 4/4 cases、14/14 variants 已冻结；后续状态见下一行 guide |

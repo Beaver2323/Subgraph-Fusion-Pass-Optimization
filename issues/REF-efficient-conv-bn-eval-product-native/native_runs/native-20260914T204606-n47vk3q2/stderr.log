@@ -1,0 +1,15 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/utils/storage.py:55: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+EfficientConvBNEvalGpuTests (unittest.loader._FailedTest.EfficientConvBNEvalGpuTests) ... ERROR
+
+======================================================================
+ERROR: EfficientConvBNEvalGpuTests (unittest.loader._FailedTest.EfficientConvBNEvalGpuTests)
+----------------------------------------------------------------------
+AttributeError: module '__main__' has no attribute 'EfficientConvBNEvalGpuTests'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

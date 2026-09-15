@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "task_id": "T-091",
-  "generated_at": "2026-09-10T21:38:54+08:00",
-  "status": "prepared-awaiting-gpu-and-npu-functional-gates",
+  "generated_at": "2026-09-14T21:32:00+08:00",
+  "status": "performance-disposition-complete",
   "implementation": {
-    "status": "implemented-awaiting-runtime-validation",
+    "status": "implemented-runtime-validated",
     "entrypoint": "runners/t091_t100_performance_worker.py",
     "launcher": "scripts/run_t091_t100_performance.py"
   },
@@ -67,8 +67,9 @@
     {
       "acceptance_unit_id": "AU-split-cat-normalize-stack-default",
       "worker_unit": "stack-normalization",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_MIXED",
+      "result_path": "results/current/T-091/performance_summary.json",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -85,7 +86,7 @@
           "measurement_scope": "单个compiled stack图，不含数据加载或完整模型"
         }
       ],
-      "off_on_control": "只切换pre_grad_fusion_options中normalization_pass；每臂新进程。",
+      "off_on_control": "两臂都保留normalization_pass；OFF只移除normalize_stack_default注册，其他handler不变；每臂新进程。",
       "artifacts": [
         "GPU/NPU功能原件",
         "FX before/after",

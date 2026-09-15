@@ -1,0 +1,14 @@
+
+
+
+def forward(self, L_arg0_1_ : torch.Tensor, L_self_buffers_tensor_constant0_ : torch.Tensor, L_self_buffers_tensor_constant1_ : torch.Tensor, L_self_parameters_param_constant0_ : torch.nn.parameter.Parameter, L_self_parameters_param_constant1_ : torch.nn.parameter.Parameter, L_self_parameters_param_constant2_ : torch.nn.parameter.Parameter, L_self_parameters_param_constant3_ : torch.nn.parameter.Parameter):
+    l_arg0_1_ = L_arg0_1_
+    l_self_buffers_tensor_constant0_ = L_self_buffers_tensor_constant0_
+    l_self_buffers_tensor_constant1_ = L_self_buffers_tensor_constant1_
+    l_self_parameters_param_constant0_ = L_self_parameters_param_constant0_
+    l_self_parameters_param_constant1_ = L_self_parameters_param_constant1_
+    l_self_parameters_param_constant2_ = L_self_parameters_param_constant2_
+    l_self_parameters_param_constant3_ = L_self_parameters_param_constant3_
+    efficient_conv_bn_eval = torch__inductor_fx_passes_efficient_conv_bn_eval_efficient_conv_bn_eval_decomposed(l_self_parameters_param_constant2_, l_self_parameters_param_constant3_, l_self_buffers_tensor_constant0_, l_self_buffers_tensor_constant1_, 1e-05, torch.ops.aten.conv_transpose3d.input, l_self_parameters_param_constant0_, l_self_parameters_param_constant1_, l_arg0_1_, ([2, 2, 2],));  l_self_parameters_param_constant2_ = l_self_parameters_param_constant3_ = l_self_buffers_tensor_constant0_ = l_self_buffers_tensor_constant1_ = l_self_parameters_param_constant0_ = l_self_parameters_param_constant1_ = l_arg0_1_ = None
+    return (efficient_conv_bn_eval,)
+    

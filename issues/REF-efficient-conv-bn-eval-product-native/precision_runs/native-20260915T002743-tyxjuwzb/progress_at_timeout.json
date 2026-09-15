@@ -1,0 +1,32 @@
+{
+  "generated_at": "2026-09-15T03:57:03.012242+08:00",
+  "status": "running-not-a-verdict",
+  "task_id": "T-098",
+  "passed_tensor_assertions": 169,
+  "passed_integer_assertions": 84,
+  "target_handler_returns": 172,
+  "last_tensor": {
+    "shape": [
+      4,
+      32
+    ],
+    "dtype": "torch.float32",
+    "actual_device": "npu:0",
+    "expected_device": "npu:0",
+    "tolerance": {},
+    "passed": true
+  },
+  "precision_mode": "off",
+  "full_contract_passed": false,
+  "completed_combinations": 84,
+  "expected_combinations": 112,
+  "current_combination": {
+    "test_class": "MultiUserConvOp",
+    "module": "Linear",
+    "use_bias": false,
+    "sync_bn": false,
+    "decompose_nn_module": false
+  },
+  "pid": 1271025,
+  "physical_npu": "5"
+}

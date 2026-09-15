@@ -9,26 +9,38 @@ from pathlib import Path
 import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
-NAMES = {'result.json','fx_graph_readable.py','fx_graph_transformed.py','ir_pre_fusion.txt','ir_post_fusion.txt','output_code.py'}
+NAMES = {'result.json','fx_graph_readable.py','fx_graph_transformed.py','ir_pre_fusion.txt','ir_post_fusion.txt','output_code.py','contract_observation.json',
+         'harness_source.py','candidate_source.py','installed_triton_source.py','progress.json'}
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--run-dir',type=Path,required=True)
+    p.add_argument('--keep-reports', action='store_true', help='保留已人工编写的复现/适配报告，不套用早期 split-cat 模板')
+    p.add_argument('--evidence-only', action='store_true', help='只归档失败/隔离候选工件，不生成安装态PASS或阶段进度')
     args=p.parse_args()
     source=args.run_dir.resolve()
     record=json.loads((source/'result.json').read_text())
-    if record['status']!='community-contract-passed' or record['backend']!='triton_experimental' or record['tests_ran']!=1 or record['tests_skipped']!=0:
+    if record['backend'] != 'triton_experimental':
+        raise ValueError('只接收固定experimental后端原件')
+    if not args.evidence_only and (record['status']!='community-contract-passed' or record['tests_ran']!=1 or record['tests_skipped']!=0
+                                   or record.get('isolated_registration_candidate') or record.get('isolated_codegen_candidate')):
         raise ValueError('只归档经过原生断言和目标正负判据验证的单例')
     case=record['case_id'];task=record['task_id'];unit=record['acceptance_unit_id']
     case_root=ROOT/'issues'/case
     dest=case_root/'evidence'/source.parent.name/source.name
     inventory=[]
     for path in sorted(source.rglob('*')):
-        if not path.is_file() or not (path.name in NAMES or path.name.startswith('target-')):
+        # 真正的编译debug工件与target边界保留；不再重复归档编译缓存中的同名副本。
+        if any(part in {'inductor-cache','triton-cache','compile-cache','__pycache__'}
+               for part in path.relative_to(source).parts):
+            continue
+        if not path.is_file() or not (path.name in NAMES or path.name.startswith(('target-','before-_maybe_','after-_maybe_'))):
             continue
         target=dest/path.relative_to(source)
         target.parent.mkdir(parents=True,exist_ok=True)
+        if target.exists() and target.read_bytes() != path.read_bytes():
+            raise ValueError(f'拒绝覆盖不同历史工件：{target}')
         shutil.copy2(path,target)
         inventory.append({'path':str(target.relative_to(ROOT)),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
     # 首例手动启动时 stdout/stderr 位于 run-dir 旁，仍随证据归档。
@@ -40,6 +52,16 @@ def main():
             inventory.append({'path': str(target.relative_to(ROOT)), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
     if not any(Path(x['path']).name=='output_code.py' for x in inventory):
         raise ValueError('缺少真实生成代码，不能记录设备合同通过')
+    if args.evidence_only:
+        index = dest/'evidence_inventory.json'
+        payload = dict(task_id=task,case_id=case,artifacts=inventory,
+                       archive_scope='evidence-only-not-installed-pass',source_run_dir=str(source))
+        text = json.dumps(payload,ensure_ascii=False,indent=2)+'\n'
+        if index.exists() and index.read_text() != text:
+            raise ValueError('拒绝覆盖历史证据目录索引')
+        index.write_text(text)
+        print(task,case,'evidence-only',len(inventory),str(dest))
+        return
     current=datetime.now().astimezone()
     now=current.isoformat()
     display_time=current.strftime('%Y-%m-%d %H:%M')+' CST（UTC+08:00）'
@@ -55,6 +77,9 @@ def main():
                 fallback_review='manual-review-pending',performance_gate_issued=False)
     progress['updated_at']=now
     progress_path.write_text(json.dumps(progress,ensure_ascii=False,indent=2)+'\n')
+    if args.keep_reports:
+        print(task,case,'archived',data['contract_complete'],len(inventory))
+        return
     report=f'''# {task} {case} 最小适配与复现
 
 > 更新时间：{display_time}

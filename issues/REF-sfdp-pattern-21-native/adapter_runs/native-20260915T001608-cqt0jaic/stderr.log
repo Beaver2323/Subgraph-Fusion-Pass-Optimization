@@ -1,0 +1,17 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_sdpa_rewriter_21_gpu (attention_community_npu.main.<locals>.NpuCase.test_sdpa_rewriter_21_gpu)
+partial(func, *args, **keywords) - new function with partial application ... [W915 00:16:20.968882570 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 00:16:21.913000 1108481 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1806] [0/0] Not enough SMs to use max_autotune_gemm mode
+W0915 00:18:26.384000 1108481 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t106-native-i2427mng/adapter/debug/torch_compile_debug/run_2026_09_15_00_16_20_664704-pid_1108481/torchinductor/model__0_inference_0.0
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 00:19:57.424000 1108481 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_inference_1 debug trace: /home/z50063656/tmp/t106-native-i2427mng/adapter/debug/torch_compile_debug/run_2026_09_15_00_16_20_664704-pid_1108481/torchinductor/model__1_inference_1.1
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 217.645s
+
+OK

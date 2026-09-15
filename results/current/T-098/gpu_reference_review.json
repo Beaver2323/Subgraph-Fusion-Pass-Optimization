@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-098",
+  "reviewed_at": "2026-09-14T20:48:32.967292+08:00",
+  "run_id": "reference-20260911T100136+0800-7mip1lr_",
+  "status": "gpu-contract-reviewed-awaiting-npu",
+  "reference_backend": "inductor-default",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "input": "results/incoming/T-098/manifest.json",
+  "input_sha256": "92cd6c60ff0b0234b820e77157d914bcefafdc1c5009936c437e2961b7640332",
+  "payload_sha256": "25f90a2580075561ceda52af10246601f266f4a06a9134d2647e0d93445aed80",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "native_cases_passed": 1,
+  "tests_skipped": 0,
+  "restored_text_files": 2250,
+  "acceptance_units": [
+    "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined"
+  ],
+  "cases": [
+    {
+      "case_id": "REF-efficient-conv-bn-eval-product-native",
+      "acceptance_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined",
+      "source_test": "test/inductor/test_efficient_conv_bn_eval.py::EfficientConvBNEvalGpuTests.test_basic_cuda",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_efficient_conv_bn_eval.py",
+        "-v",
+        "EfficientConvBNEvalGpuTests.test_basic_cuda"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "0287fd870608a0fab481129f7e7abae294812c5b91039a4824adf35307329088"
+    }
+  ],
+  "review_boundary": "GPU 合同通过，不代表 NPU 功能、产品合入或性能通过。",
+  "npu_execution_in_this_review": false,
+  "denominator_frozen_by_this_review": false,
+  "independent_unit_contribution": 1,
+  "report": "report/unblocked_work_20260914.md"
+}

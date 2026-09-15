@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-105",
-  "generated_at": "2026-09-10T22:55:21+08:00",
+  "generated_at": "2026-09-15T00:27:55.921087+08:00",
   "status": "prepared-awaiting-gpu-and-npu-functional-gates",
   "implementation": {
     "status": "implemented-awaiting-runtime-validation",
@@ -89,7 +89,7 @@
           "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
         }
       ],
-      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
       "artifacts": [
         "GPU原生FX/计数",
         "NPU OFF/ON功能原件",
@@ -105,8 +105,11 @@
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-17",
       "worker_unit": "pattern-17",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "duplicate-contract-not-independently-measured",
+      "verdict": "canonical-pending",
+      "canonical_acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-15",
+      "canonical_task_id": "T-104",
+      "registration_review": "results/current/T-105/pattern17_alias_review/review.json",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -114,7 +117,7 @@
         ],
         "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
       },
-      "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_17 counter>=1；数值正确且无break/fallback。",
+      "functional_gate": "17为15的推理去重别名，不要求独立17命中，不单独签性能gate；复用canonical 15的正式结论，当前15仍有OFF数值阻断。以下workload仅保留旧计划来源，不执行。",
       "workloads": [
         {
           "workload_id": "sfdp-pattern-17-registered-half-inference",
@@ -123,7 +126,7 @@
           "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
         }
       ],
-      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
       "artifacts": [
         "GPU原生FX/计数",
         "NPU OFF/ON功能原件",
@@ -139,8 +142,8 @@
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-18",
       "worker_unit": "pattern-18",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -157,7 +160,7 @@
           "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
         }
       ],
-      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
       "artifacts": [
         "GPU原生FX/计数",
         "NPU OFF/ON功能原件",
@@ -168,30 +171,32 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-105/attention_bundles/pattern-18.json"
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-19",
       "worker_unit": "pattern-19",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_REGRESSED",
+      "functional_precheck_report": "issues/REF-sfdp-pattern-19-native/性能精度域缺口.md",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
           "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_19_gpu"
         ],
-        "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
+        "reason": "社区SDPA benchmark不能隔离FX rewrite；19号选择与原方法相同FP32域的本编号inference注册输入，保留shape/stride/scalar。额外half+FP32 mask编译失败单列，不用FP32结果替它销项。"
       },
       "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_19 counter>=1；数值正确且无break/fallback。",
       "workloads": [
         {
-          "workload_id": "sfdp-pattern-19-registered-half-inference",
+          "workload_id": "sfdp-pattern-19-registered-fp32-inference",
           "role": "target-level-derived",
-          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half inference首个非bs1候选并把完整shape/stride/dtype写入结果",
+          "shape_contract": "19号按原社区FP32域选择同编号float inference，仍用注册shape/stride；额外half+FP32 mask失败原件独立保留，不能消除该域缺口",
           "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
         }
       ],
-      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
       "artifacts": [
         "GPU原生FX/计数",
         "NPU OFF/ON功能原件",
@@ -202,13 +207,15 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-105/attention_bundles/pattern-19.json"
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-20",
       "worker_unit": "pattern-20",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "functional-precheck-blocked-off-numerical-failure",
+      "verdict": "NOT_MEASURED",
+      "functional_precheck_report": "issues/REF-sfdp-pattern-20-native/性能OFF数值失败.md",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -225,7 +232,7 @@
           "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
         }
       ],
-      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
       "artifacts": [
         "GPU原生FX/计数",
         "NPU OFF/ON功能原件",

@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-09-14T22:11:00+08:00",
+  "reason": "当前完整112组合复验已运行约42分钟，只完成34组合；预计无法在原3600秒限额内完成。主动终止本轮自有子进程组，保留部分原件，改为先完成其他安装态基线后用更长限额重跑全量。",
+  "classification": "execution-budget-interrupted-not-a-numerical-verdict",
+  "owned_child_process_group": 2759201,
+  "source_progress": "/home/z50063656/tmp/t098-native-doq0hsal/adapter/progress.json",
+  "observed_completed_combinations_at_decision": 34,
+  "observed_passed_tensor_assertions_at_decision": 68,
+  "final_snapshot_reviewed_at": "2026-09-14T22:31:00+08:00",
+  "final_completed_combinations": 35,
+  "final_passed_tensor_assertions": 70,
+  "final_progress_archive": "issues/REF-efficient-conv-bn-eval-product-native/evidence/hf32-off-partial-interrupted-20260914/adapter/progress.json",
+  "final_progress_sha256": "7babaf7b717aa6d6b8a071e96b0dd29c5064cd8074ff40fb0f9c7278a7e8a026",
+  "full_contract_passed": false,
+  "performance_gate_issued": false,
+  "note": "最后进度以原 progress.json 为准；run_result 中信号导致的非零退出不能当作新增数值失败。默认HF32的先前真实数值失败仍独立保留。"
+}

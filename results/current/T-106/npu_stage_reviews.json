@@ -1,0 +1,158 @@
+{
+  "task_id": "T-106",
+  "units": {
+    "AU-fuse-attention-sfdp-pattern-21": {
+      "generated_at": "2026-09-14T22:58:45.599716+08:00",
+      "task_id": "T-106",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-21",
+      "case_id": "REF-sfdp-pattern-21-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-sfdp-pattern-21-native/evidence/t106-native-etfwqegi/adapter/result.json",
+        "sha256": "631fc2e877688ca2ee5ca5cd3108afa2af2224a173499d6a025fdaa1c21e1681"
+      },
+      "candidate_verified": false,
+      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=2；本编号精确改写=2；原社区合同通过，仍待逐项图/性能审核",
+      "repair_status": "awaiting-code-and-performance-review",
+      "community_alignment_status": "PARTIAL_ALIGNED",
+      "reason": "数值、精确目标及训练/推理范围以本例原断言和实际观测为准；不由总counter推导完整对齐。",
+      "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+      "performance_gate_issued": false,
+      "report": "issues/REF-sfdp-pattern-21-native/安装态基线复核.md",
+      "gpu_review": {
+        "path": "results/current/T-106/gpu_reference_review.json",
+        "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+      },
+      "parent_run": {
+        "path": "issues/REF-sfdp-pattern-21-native/adapter_runs/native-20260914T225519-v12zsftv/run_result.json",
+        "sha256": "ae8af95ce387ad7c39dc47de7616446201f144ad7e92c2d01feee53acbeea343"
+      }
+    },
+    "AU-fuse-attention-sfdp-pattern-22": {
+      "generated_at": "2026-09-15T00:23:29.710963+08:00",
+      "task_id": "T-106",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-22",
+      "case_id": "REF-sfdp-pattern-22-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-xtdt3xs0/adapter/result.json",
+        "sha256": "2015f6e58e5788695d0e1d0fd0e60bcfc96a2dd1709bdb857940606ebd791596"
+      },
+      "candidate_verified": true,
+      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=0；本编号精确改写=1；原合同未通过；后续分支不计覆盖；没有数值比较证据，不计精度PASS",
+      "repair_status": "isolated-codegen-candidate-verified-not-deployed",
+      "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
+      "reason": "原例4组/12个Tensor及近邻21/23/24全部通过；仅进程内候选，安装态原数值失败保留。",
+      "next_action": "补独立设备边界回归并评审部署；部署后重新验证原例和邻接，之前不得签安装态性能gate。",
+      "performance_gate_issued": false,
+      "report": "issues/REF-sfdp-pattern-22-native/修复候选验证报告.md",
+      "gpu_review": {
+        "path": "results/current/T-106/gpu_reference_review.json",
+        "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+      },
+      "parent_run": {
+        "path": "issues/REF-sfdp-pattern-22-native/adapter_runs/native-20260914T225851-pu1y93tc/run_result.json",
+        "sha256": "7f36ab9c0c89b9f1abde7a5d6a5dfb284132112d5fd012f78bfb9cf922fac661"
+      },
+      "failure_layer": "numerical-contract",
+      "candidate": {
+        "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-nzmb_etp/adapter/result.json",
+        "sha256": "5b183fa97583c483b9ade4cf7922693662db1f01a51222bbeb88ea26d0da2e67",
+        "parent_run": {
+          "path": "issues/REF-sfdp-pattern-22-native/adapter_runs/native-20260914T235538-hylgfr0n/run_result.json",
+          "sha256": "f1137df64f543d2d9bcb2a4606bf48d8d021e9c27da14f894d2dbc1afc2e8d8a"
+        },
+        "tensor_comparisons": 12,
+        "exact_rewrites": 4
+      },
+      "candidate_kind": "codegen",
+      "neighbor_candidates": {
+        "21": {
+          "path": "issues/REF-sfdp-pattern-21-native/evidence/t106-native-i2427mng/adapter/result.json",
+          "sha256": "677530069692e1911f20671b06110f385ab4e67537ce22160b70e97ca483211f",
+          "parent_run": {
+            "path": "issues/REF-sfdp-pattern-21-native/adapter_runs/native-20260915T001608-cqt0jaic/run_result.json",
+            "sha256": "39437180b3b868b23f710cc5fca58c3d2f316a6431c3bf7f3bae64788bde1e55"
+          },
+          "tensor_comparisons": 2,
+          "exact_rewrites": 2
+        },
+        "23": {
+          "path": "issues/REF-sfdp-pattern-23-native/evidence/t106-native-td3h2aoy/adapter/result.json",
+          "sha256": "c2116c0132df965f9fd38d71371184c49b28da17bfe0077006b1052744c1f34a",
+          "parent_run": {
+            "path": "issues/REF-sfdp-pattern-23-native/adapter_runs/native-20260915T002005-2mrysez8/run_result.json",
+            "sha256": "c538be3570039b9316f69c3e91e1ae355bb9560c6508a80845a60f7c472685ef"
+          },
+          "tensor_comparisons": 6,
+          "exact_rewrites": 2
+        },
+        "24": {
+          "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/result.json",
+          "sha256": "7eb2de9937b4de26a2a223153c48ac53ba129e7372ca555fcc424f3e3707e7ef",
+          "parent_run": {
+            "path": "issues/REF-sfdp-pattern-24-native/adapter_runs/native-20260915T002041-8njno3ge/run_result.json",
+            "sha256": "fd531755a04f75d8fbc158ce24bec3a5f213753dae872c4e28878fe175f6538f"
+          },
+          "tensor_comparisons": 1,
+          "exact_rewrites": 1
+        }
+      }
+    },
+    "AU-fuse-attention-sfdp-pattern-23": {
+      "generated_at": "2026-09-14T22:44:28.321194+08:00",
+      "task_id": "T-106",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-23",
+      "case_id": "REF-sfdp-pattern-23-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-sfdp-pattern-23-native/evidence/t106-native-sbfr4_j_/adapter/result.json",
+        "sha256": "a13a6ec67cf5a7aba1b342f0a93382df788f13e0c8466d25ea5c12ea3adc439b"
+      },
+      "candidate_verified": false,
+      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=6；本编号精确改写=2；原社区合同通过，仍待逐项图/性能审核",
+      "repair_status": "awaiting-code-and-performance-review",
+      "community_alignment_status": "PARTIAL_ALIGNED",
+      "reason": "数值、精确目标及训练/推理范围以本例原断言和实际观测为准；不由总counter推导完整对齐。",
+      "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+      "performance_gate_issued": false,
+      "report": "issues/REF-sfdp-pattern-23-native/安装态基线复核.md",
+      "gpu_review": {
+        "path": "results/current/T-106/gpu_reference_review.json",
+        "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+      },
+      "parent_run": {
+        "path": "issues/REF-sfdp-pattern-23-native/adapter_runs/native-20260914T224358-uv5wqppn/run_result.json",
+        "sha256": "00c1ff0e09c5288993b7c63301df762e9c7f8703342758d3bf023f4e8101e0be"
+      }
+    },
+    "AU-fuse-attention-sfdp-pattern-24": {
+      "generated_at": "2026-09-14T23:02:26.341857+08:00",
+      "task_id": "T-106",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-24",
+      "case_id": "REF-sfdp-pattern-24-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-uvnnjcrx/adapter/result.json",
+        "sha256": "421ab5786553b51495ea2545af7d88d8552c691ea3b6b2381994b2484c551afc"
+      },
+      "candidate_verified": false,
+      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=1；本编号精确改写=1；原社区合同通过，仍待逐项图/性能审核",
+      "repair_status": "awaiting-code-and-performance-review",
+      "community_alignment_status": "PARTIAL_ALIGNED",
+      "reason": "数值、精确目标及训练/推理范围以本例原断言和实际观测为准；不由总counter推导完整对齐。",
+      "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+      "performance_gate_issued": false,
+      "report": "issues/REF-sfdp-pattern-24-native/安装态基线复核.md",
+      "gpu_review": {
+        "path": "results/current/T-106/gpu_reference_review.json",
+        "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+      },
+      "parent_run": {
+        "path": "issues/REF-sfdp-pattern-24-native/adapter_runs/native-20260914T230107-99h9av9w/run_result.json",
+        "sha256": "a33928c5b22bdefaba9e7fabcf3a2bc5088333de39e3d3065dd524daabae596a"
+      }
+    }
+  },
+  "generated_at": "2026-09-15T00:23:29.710963+08:00"
+}

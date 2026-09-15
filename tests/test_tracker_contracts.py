@@ -127,17 +127,18 @@ class ReferenceTests(unittest.TestCase):
             for item in manifest["acceptance_units"]
             if item["acceptance_unit_id"] == "AU-post-grad-fuse-addcdiv-to-fma"
         )
-        self.assertEqual(len(unit["variants"]), 5)
-        self.assertEqual(len(unit["pending_variants"]), 1)
-        pending = unit["pending_variants"][0]
-        self.assertEqual(pending["variant_id"], "fp16-value1-bitwise-regression")
-        self.assertEqual(pending["expected_counter"], "GPU/NPU addcdiv_fma_fused=0")
+        self.assertEqual(len(unit["variants"]), 6)
+        self.assertEqual(len(unit["pending_variants"]), 0)
+        value_one = next(v for v in unit["variants"] if v["variant_id"] == "fp16-value1-bitwise-regression")
+        self.assertEqual(value_one["expected_counter"], "GPU/NPU addcdiv_fma_fused=0")
         self.assertEqual(
-            pending["npu_status"],
-            "fixed-on-device-20260909-bitwise-counter0",
+            value_one["npu_status"],
+            "fixed-on-device-20260909-bitwise-counter0-reference-reviewed-20260914",
         )
-        self.assertEqual(pending["extension_evidence"]["mismatch_count"], 0)
-        self.assertEqual(pending["extension_evidence"]["actual_counter"], 0)
+        extension = value_one["extension_evidence"]
+        self.assertEqual(extension["expected_counter"], 0)
+        self.assertEqual(value_one["reference_status"], "valid-derived-reference")
+        self.assertEqual(extension["result_path"], "results/current/T-078/fp16_value_one_review_20260914.json")
         fp16 = next(
             variant
             for variant in unit["variants"]

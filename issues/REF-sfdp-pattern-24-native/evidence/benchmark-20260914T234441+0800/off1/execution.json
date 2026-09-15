@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/t102_t107_attention_performance_worker.py",
+    "--pattern",
+    "24",
+    "--mode",
+    "off",
+    "--device",
+    "npu",
+    "--phase",
+    "benchmark",
+    "--output",
+    "/home/z50063656/tmp/attention-performance-20260914/benchmark-20260914T234441+0800/pattern-24/off1",
+    "--warmup",
+    "10",
+    "--runs",
+    "100",
+    "--gate",
+    "/home/z50063656/tmp/attention-performance-gates-20260914/T-106/pattern-24.json"
+  ],
+  "return_code": 0,
+  "generated_at": "2026-09-14T23:50:50.937851+08:00",
+  "cooperative_performance_lock": true
+}

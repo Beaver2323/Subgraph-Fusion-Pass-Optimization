@@ -1,18 +1,18 @@
 {
   "schema_version": "1.0",
   "task_id": "T-106",
-  "reviewed_at": "2026-09-11T12:24:13.289276+08:00",
-  "run_id": "reference-20260911T102012+0800-50immds5",
-  "status": "native-passed-target-attribution-pending",
+  "reviewed_at": "2026-09-14T20:02:23.677996+08:00",
+  "run_id": "reference-20260914T192235+0800-9mrcrc2y",
+  "status": "gpu-contract-reviewed-awaiting-npu",
   "reference_backend": "inductor-default",
   "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
-  "input": "results/incoming/T-106/manifest.json",
-  "input_sha256": "8517dec6d53836748e558c78e96abb02c61c61e9dd2d8d9e07747cf3b8b4d656",
-  "payload_sha256": "bded76d6db7fcbf697ca9e1b2b00962bebcdeafc1cb8db3b54a2998b97e3c26f",
-  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "input": "results/incoming/T-106/text-handoff.json",
+  "input_sha256": "e4f3203817c2a7f9d2ee8c8387b61b95595084305a6ce9cb031df3127702db12",
+  "payload_sha256": "13a7f1d13aef9d665646fcf379e9aecfb8fb196995257e457996d4ad5b01cb26",
+  "environment_fingerprint": "8530f74e1e3e53ac418b5c7e750c0c33cf10dd5587e569c829506fc3dd062b26",
   "native_cases_passed": 4,
   "tests_skipped": 0,
-  "restored_text_files": 79,
+  "restored_text_files": 106,
   "acceptance_units": [
     "AU-fuse-attention-sfdp-pattern-21",
     "AU-fuse-attention-sfdp-pattern-22",
@@ -26,13 +26,65 @@
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_21_gpu",
       "command": [
         "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/native_contract_observer.py",
+        "--source",
         "/data/z50063656/src/pytorch/test/inductor/test_fused_attention.py",
-        "-v",
+        "--",
         "SDPAPatternRewriterGpuTests.test_sdpa_rewriter_21_gpu"
       ],
       "tests_ran": 1,
       "tests_skipped": 0,
-      "reference_result_sha256": "54bfb73c2fcc2874baefed39a8a820e09937ac0851c8fb9c8998b49f59d764dc"
+      "reference_result_sha256": "dab87456319c372e38200b04a16e09e3fc5cbc4947f26e2db38009ddd9590917",
+      "target_review": {
+        "status": "gpu-contract-reviewed-awaiting-npu",
+        "expected_target": "_sfdp_pattern_21",
+        "exact_target_observations": 2,
+        "observed_targets": [
+          "_sfdp_pattern_21_bs1_inference",
+          "_sfdp_pattern_21_inference"
+        ],
+        "observations": [
+          {
+            "target": "_sfdp_pattern_21_inference",
+            "expected_target": true,
+            "graph_changed": true,
+            "files": [
+              {
+                "path": "cases/REF-sfdp-pattern-21-native/debug/native_contract_observer/1683150-ReplacementPatternEntry-0001/contract_observation.json",
+                "sha256": "7a1fde66bb37b6b6e496d871b1fadb0d505be0270b291a97bf71d0fa25602c8f"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-21-native/debug/native_contract_observer/1683150-ReplacementPatternEntry-0001/fx_graph_readable.py",
+                "sha256": "feb2e1622b51caac91f477de99ed0bf5ae7e1178747cd1ce593782ea46e1aadc"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-21-native/debug/native_contract_observer/1683150-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+                "sha256": "c059e17ad993bac91df71c79946c7031306c7fabfc804310b3915485602ec4c5"
+              }
+            ]
+          },
+          {
+            "target": "_sfdp_pattern_21_bs1_inference",
+            "expected_target": true,
+            "graph_changed": true,
+            "files": [
+              {
+                "path": "cases/REF-sfdp-pattern-21-native/debug/native_contract_observer/1683150-ReplacementPatternEntry-0002/contract_observation.json",
+                "sha256": "fac68dd886145c673bc9d3ec70370f1af56f949aa7ff3d2c019333172481766d"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-21-native/debug/native_contract_observer/1683150-ReplacementPatternEntry-0002/fx_graph_readable.py",
+                "sha256": "bee3de4aaf8939da760d2349ba3fc2f59482b6a6cf0257989e5f767b2472bde9"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-21-native/debug/native_contract_observer/1683150-ReplacementPatternEntry-0002/fx_graph_transformed.py",
+                "sha256": "9dc4d5d2494d70a15c76f23a330bebcc59870e66ee5d309518b9fd94c94eebc3"
+              }
+            ]
+          }
+        ],
+        "semantic_boundary": "仅所观测编号/训练推理分支；数值与梯度范围仍以社区原断言为准。"
+      }
     },
     {
       "case_id": "REF-sfdp-pattern-22-native",
@@ -40,13 +92,103 @@
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_22_gpu",
       "command": [
         "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/native_contract_observer.py",
+        "--source",
         "/data/z50063656/src/pytorch/test/inductor/test_fused_attention.py",
-        "-v",
+        "--",
         "SDPAPatternRewriterGpuTests.test_sdpa_rewriter_22_gpu"
       ],
       "tests_ran": 1,
       "tests_skipped": 0,
-      "reference_result_sha256": "8fd6201062f2f0fa3c45fd8ee2b7beaa00197c4275758dc0bec06c8387f7522a"
+      "reference_result_sha256": "b1310b94b4f8f5990a6de7548f20433ed5c394ff969864bfbda392e4e28ab4e4",
+      "target_review": {
+        "status": "gpu-contract-reviewed-awaiting-npu",
+        "expected_target": "_sfdp_pattern_22",
+        "exact_target_observations": 4,
+        "observed_targets": [
+          "_sfdp_pattern_22_bs1_inference",
+          "_sfdp_pattern_22_inference"
+        ],
+        "observations": [
+          {
+            "target": "_sfdp_pattern_22_inference",
+            "expected_target": true,
+            "graph_changed": true,
+            "files": [
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0001/contract_observation.json",
+                "sha256": "ea8d20c182dbfc2aa80f153a76198121f6a75029b8dc2e1ba1d6e21375c94008"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0001/fx_graph_readable.py",
+                "sha256": "6e38b16777a665cde53bfa6067c3db5219e6ac03f26ae6b2edd56fffe0e54ee4"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+                "sha256": "b7f8fe0e64f51746f5000029fbb2793c521e8689115f529d588aaf671f3144bb"
+              }
+            ]
+          },
+          {
+            "target": "_sfdp_pattern_22_inference",
+            "expected_target": true,
+            "graph_changed": true,
+            "files": [
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0002/contract_observation.json",
+                "sha256": "ea8d20c182dbfc2aa80f153a76198121f6a75029b8dc2e1ba1d6e21375c94008"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0002/fx_graph_readable.py",
+                "sha256": "6e38b16777a665cde53bfa6067c3db5219e6ac03f26ae6b2edd56fffe0e54ee4"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0002/fx_graph_transformed.py",
+                "sha256": "a7d9651c72a5a2a43b96b3bcffab46230a3ad56a20e20fc3e0169f9749e2a0d0"
+              }
+            ]
+          },
+          {
+            "target": "_sfdp_pattern_22_bs1_inference",
+            "expected_target": true,
+            "graph_changed": true,
+            "files": [
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0003/contract_observation.json",
+                "sha256": "4c8a54206d59616939ccc611c1ffc0dfec52ed719ffd3ccb1d030f1e8de2b7d2"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0003/fx_graph_readable.py",
+                "sha256": "e5b45fc78a850546c215cbe16ddfd08f2627353bfe301cb1f267d76d70da15cc"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0003/fx_graph_transformed.py",
+                "sha256": "64b085341acae241068edee2730759715bfbd5f74fbdd700f86d5f7b742bb8d2"
+              }
+            ]
+          },
+          {
+            "target": "_sfdp_pattern_22_bs1_inference",
+            "expected_target": true,
+            "graph_changed": true,
+            "files": [
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0004/contract_observation.json",
+                "sha256": "4c8a54206d59616939ccc611c1ffc0dfec52ed719ffd3ccb1d030f1e8de2b7d2"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0004/fx_graph_readable.py",
+                "sha256": "e5b45fc78a850546c215cbe16ddfd08f2627353bfe301cb1f267d76d70da15cc"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-22-native/debug/native_contract_observer/1684420-ReplacementPatternEntry-0004/fx_graph_transformed.py",
+                "sha256": "86b8f625f17a3f65a81b8246858bd7aab1ee56a3f3050777730f569799422dd2"
+              }
+            ]
+          }
+        ],
+        "semantic_boundary": "仅所观测编号/训练推理分支；数值与梯度范围仍以社区原断言为准。"
+      }
     },
     {
       "case_id": "REF-sfdp-pattern-23-native",
@@ -54,13 +196,65 @@
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_23_gpu",
       "command": [
         "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/native_contract_observer.py",
+        "--source",
         "/data/z50063656/src/pytorch/test/inductor/test_fused_attention.py",
-        "-v",
+        "--",
         "SDPAPatternRewriterGpuTests.test_sdpa_rewriter_23_gpu"
       ],
       "tests_ran": 1,
       "tests_skipped": 0,
-      "reference_result_sha256": "4446554f420fb04943570a0c6e9a6ca0cf40e365fa36846a6bcbc1b2e18af5a8"
+      "reference_result_sha256": "200cbe3a141f22488a69b7d9d0c9f36b859e320c477472e90d9033b8551361e0",
+      "target_review": {
+        "status": "gpu-contract-reviewed-awaiting-npu",
+        "expected_target": "_sfdp_pattern_23",
+        "exact_target_observations": 2,
+        "observed_targets": [
+          "_sfdp_pattern_23_bs1_inference",
+          "_sfdp_pattern_23_inference"
+        ],
+        "observations": [
+          {
+            "target": "_sfdp_pattern_23_inference",
+            "expected_target": true,
+            "graph_changed": true,
+            "files": [
+              {
+                "path": "cases/REF-sfdp-pattern-23-native/debug/native_contract_observer/1685890-ReplacementPatternEntry-0001/contract_observation.json",
+                "sha256": "55c365ce71cb6656a7db3af92947ed05d332eb3b902828369f38b422caefb96e"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-23-native/debug/native_contract_observer/1685890-ReplacementPatternEntry-0001/fx_graph_readable.py",
+                "sha256": "cb3d0d6c843dadabdd2659bfd9d86c7f4d615d2aaf4063dc2d2e55a5c29d7d5b"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-23-native/debug/native_contract_observer/1685890-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+                "sha256": "b81aeb9d57017b49e650cd2cc30497cae57f4c05cd0db6074bed333c6293d28c"
+              }
+            ]
+          },
+          {
+            "target": "_sfdp_pattern_23_bs1_inference",
+            "expected_target": true,
+            "graph_changed": true,
+            "files": [
+              {
+                "path": "cases/REF-sfdp-pattern-23-native/debug/native_contract_observer/1685890-ReplacementPatternEntry-0002/contract_observation.json",
+                "sha256": "07dbcc355267b3b6fd93491befcbd5f255d4d520253e7e012a26a8506d37e357"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-23-native/debug/native_contract_observer/1685890-ReplacementPatternEntry-0002/fx_graph_readable.py",
+                "sha256": "616d8feb7c06be92f6a352db1dffcc2d2891fab7aa90ce4ee51786989b2ef822"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-23-native/debug/native_contract_observer/1685890-ReplacementPatternEntry-0002/fx_graph_transformed.py",
+                "sha256": "b81aeb9d57017b49e650cd2cc30497cae57f4c05cd0db6074bed333c6293d28c"
+              }
+            ]
+          }
+        ],
+        "semantic_boundary": "仅所观测编号/训练推理分支；数值与梯度范围仍以社区原断言为准。"
+      }
     },
     {
       "case_id": "REF-sfdp-pattern-24-native",
@@ -68,18 +262,52 @@
       "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_24_gpu",
       "command": [
         "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/native_contract_observer.py",
+        "--source",
         "/data/z50063656/src/pytorch/test/inductor/test_fused_attention.py",
-        "-v",
+        "--",
         "SDPAPatternRewriterGpuTests.test_sdpa_rewriter_24_gpu"
       ],
       "tests_ran": 1,
       "tests_skipped": 0,
-      "reference_result_sha256": "698588abb416f0f8ff202c9d90ddd9bc91165c542b3129897b96b875b17a5dc4"
+      "reference_result_sha256": "43711a30ac30b75ac81344190da1c63bdad1cc36af7802998ad547916453a911",
+      "target_review": {
+        "status": "gpu-contract-reviewed-awaiting-npu",
+        "expected_target": "_sfdp_pattern_24",
+        "exact_target_observations": 1,
+        "observed_targets": [
+          "_sfdp_pattern_24_inference"
+        ],
+        "observations": [
+          {
+            "target": "_sfdp_pattern_24_inference",
+            "expected_target": true,
+            "graph_changed": true,
+            "files": [
+              {
+                "path": "cases/REF-sfdp-pattern-24-native/debug/native_contract_observer/1687093-ReplacementPatternEntry-0001/contract_observation.json",
+                "sha256": "812ca44416a20dbf838b4b88d52069decdf75affc8ad9e0c3f2888dd42894a85"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-24-native/debug/native_contract_observer/1687093-ReplacementPatternEntry-0001/fx_graph_readable.py",
+                "sha256": "d150384a860187fb1bec0ac80bc9ff13510a31b30a41c17948e768c6f39ce4aa"
+              },
+              {
+                "path": "cases/REF-sfdp-pattern-24-native/debug/native_contract_observer/1687093-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+                "sha256": "f79007ac19c9e9853e09cd7a582479b46d0d6ee54f1c46318f60d73612c8ef0b"
+              }
+            ]
+          }
+        ],
+        "semantic_boundary": "仅所观测编号/训练推理分支；数值与梯度范围仍以社区原断言为准。"
+      }
     }
   ],
-  "review_boundary": "通用 fuse_attention/晚于融合的 FX 不足以逐编号归因；12 training 有原生编号断言；dropout 数值范围按源码参数确认。",
+  "review_boundary": "逐 case 记录真实编号；不同目标不能充当本编号命中；handler/FX 观察不额外证明数值或梯度。",
   "npu_execution_in_this_review": false,
   "denominator_frozen_by_this_review": false,
   "independent_unit_contribution": 4,
-  "report": "report/gpu_incoming_review_20260911.md"
+  "report": "report/gpu_observer_review_20260914.md",
+  "previous_review": "results/history/T-106/reference-20260911T102012+0800-50immds5/gpu_reference_review.json",
+  "previous_input_git_revision": "d6889bb12ca1b74ef9172f184df03e3efecd1194"
 }

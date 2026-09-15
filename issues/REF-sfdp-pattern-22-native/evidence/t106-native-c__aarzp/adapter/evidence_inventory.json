@@ -1,0 +1,48 @@
+{
+  "task_id": "T-106",
+  "case_id": "REF-sfdp-pattern-22-native",
+  "artifacts": [
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/debug/torch_compile_debug/run_2026_09_14_22_41_55_159574-pid_3941260/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "2c6e838cfe6f8a059551c3eabdab7d6495d8e9d631f34af4168a870b3823d75c"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/debug/torch_compile_debug/run_2026_09_14_22_41_55_159574-pid_3941260/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "269c4fce2d65647b9ec6456360707e522b42c8f532737533e4bb6113e5a747b7"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/debug/torch_compile_debug/run_2026_09_14_22_41_55_159574-pid_3941260/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "994193395fc12df9b60bfb3be43cb99973427eab4bf83c38bda9028673d16cd9"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/debug/torch_compile_debug/run_2026_09_14_22_41_55_159574-pid_3941260/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "548d5ae2e3800713c0a82f6402dffab330a006e39d399b6d4a15ffea0c426a14"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/debug/torch_compile_debug/run_2026_09_14_22_41_55_159574-pid_3941260/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "8814b7c81717a6b564bfce668b51d766000634bc3641bec0f0969892f2838c01"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/harness_source.py",
+      "sha256": "949055e92875caf1163d13e7a12544a66ac239ea937adb4b4247df1cdb9e5008"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/result.json",
+      "sha256": "9ad70fcc2419f1e56df39bf54da1f21878a893f6ae5b00757ada65de68407227"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/target-observations/3941260-ReplacementPatternEntry-0001/contract_observation.json",
+      "sha256": "ea8d20c182dbfc2aa80f153a76198121f6a75029b8dc2e1ba1d6e21375c94008"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/target-observations/3941260-ReplacementPatternEntry-0001/fx_graph_readable.py",
+      "sha256": "f89882ef2cbd874044464187f3c6784f94ac777782666cb879d3c147a6efece3"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c__aarzp/adapter/target-observations/3941260-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+      "sha256": "9a2ee911d9cc6681781f8431f4c2dc2b48b4dbde90901306d1f9780c2eafb365"
+    }
+  ],
+  "archive_scope": "evidence-only-not-installed-pass",
+  "source_run_dir": "/home/z50063656/tmp/t106-native-c__aarzp/adapter"
+}

@@ -1,0 +1,97 @@
+[
+  {
+    "path": "benchmark.json",
+    "bytes": 184,
+    "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+  },
+  {
+    "path": "debug/native_contract_observer/1670285-ReplacementPatternEntry-0001/contract_observation.json",
+    "bytes": 384,
+    "sha256": "bae852955c86c48d64a2b7dbcf24a410eac9f358719cd52d587e331db9898bac"
+  },
+  {
+    "path": "debug/native_contract_observer/1670285-ReplacementPatternEntry-0001/fx_graph_readable.py",
+    "bytes": 920,
+    "sha256": "f00697193f7791a38bbb5031ae22f1026ff3318be1c5a3ce4e50f686e29abdff"
+  },
+  {
+    "path": "debug/native_contract_observer/1670285-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+    "bytes": 774,
+    "sha256": "6e3444f9c57d761aaba5bd6a1347abb3cc820615d85d5ec5afc8e1a0d899b466"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchdynamo/debug.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/aot_model___0_debug.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+    "bytes": 1183,
+    "sha256": "33248b170ef377872fa2f79f8f85eac1e4284699c31c73c0d493afd93c8d9372"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/fx_graph_runnable.py",
+    "bytes": 4940,
+    "sha256": "3ea7fcf0e3aef5eaa5d34755818a12b6212fbebea355295ceb5806a0c0155a8b"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+    "bytes": 1183,
+    "sha256": "33248b170ef377872fa2f79f8f85eac1e4284699c31c73c0d493afd93c8d9372"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/inductor_provenance_tracking_node_mappings.json",
+    "bytes": 678,
+    "sha256": "c3ab211f27dc8a60859e03b32389b7e4ff9d2efb2d5cd4a48f3fcb8c00617a62"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+    "bytes": 1132,
+    "sha256": "94e85145f851980a990b089a6e6d76ee3d88ab0f0f39e6b650c7f1e19b5838fe"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+    "bytes": 1132,
+    "sha256": "94e85145f851980a990b089a6e6d76ee3d88ab0f0f39e6b650c7f1e19b5838fe"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/output_code.py",
+    "bytes": 4194,
+    "sha256": "ccaec54848df6d6b132efdfccd5a8fd2e16dca5b28075d82da4fd5d8790e8285"
+  },
+  {
+    "path": "fx_after.txt",
+    "bytes": 2223,
+    "sha256": "9661f3b9fb0397f55b01ed777b2ba51d9ee0ed317a60f4cebd98976eb077adcf"
+  },
+  {
+    "path": "fx_before.txt",
+    "bytes": 2363,
+    "sha256": "86c1271c6c576e32fb91231d3ae98744543166594cf7e11bd3448185652b6cc3"
+  },
+  {
+    "path": "metadata.json",
+    "bytes": 708,
+    "sha256": "1ddfab5b7cbd73d5227237fe59fbeeb4c891870301b5b0866ffe084bc8d2a6f8"
+  },
+  {
+    "path": "stderr.log",
+    "bytes": 1663,
+    "sha256": "ed8b180d2e8e00f5f37e28d7b69095af82fe1cb936abd0c02f24d6549caf1656"
+  },
+  {
+    "path": "stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "structured_trace/dedicated_log_torch_trace_d08yav7y.log",
+    "bytes": 138953,
+    "sha256": "576fdfe1a13e1b7f279aa90f144663593007e5703f42e51b755cdc32bab68de7"
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-091",
+  "reviewed_at": "2026-09-11T12:24:13.289276+08:00",
+  "run_id": "reference-20260911T100027+0800-3kul9qx3",
+  "status": "native-passed-target-attribution-pending",
+  "reference_backend": "inductor-default",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "input": "results/incoming/T-091/text-handoff.json",
+  "input_sha256": "8543609885a5571a1c60dad17483928d1d1e5e37c6050fc9b020ed263b46989b",
+  "payload_sha256": "11215ba6f3b4adf658a86252ad328c90253d4b9b898c7be6be0bac527784937d",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "native_cases_passed": 1,
+  "tests_skipped": 0,
+  "restored_text_files": 15,
+  "acceptance_units": [
+    "AU-split-cat-normalize-stack-default"
+  ],
+  "cases": [
+    {
+      "case_id": "REF-stack-axis-normalization-native",
+      "acceptance_unit_id": "AU-split-cat-normalize-stack-default",
+      "source_test": "test/inductor/test_split_cat_fx_passes.py::TestSplitCatFxPasses.test_stack_normalization_axis_kwarg",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_split_cat_fx_passes.py",
+        "-v",
+        "TestSplitCatFxPasses.test_stack_normalization_axis_kwarg"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "38a394b20a8e7d2d5725cde9267331c32755e5abe755db9b2b825af0d2dc5888"
+    }
+  ],
+  "review_boundary": "原生仅数值断言，缺 pre-grad normalize_stack_default 精确命中/边界图。",
+  "npu_execution_in_this_review": false,
+  "denominator_frozen_by_this_review": false,
+  "independent_unit_contribution": 1,
+  "report": "report/gpu_incoming_review_20260911.md"
+}

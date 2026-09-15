@@ -1,10 +1,13 @@
 {
-  "rule_version": "2026-09-11.1",
-  "validator_version": "2.3.0",
-  "updated_at": "2026-09-11T12:32:00+08:00",
+  "rule_version": "2026-09-15.1",
+  "validator_version": "2.5.0",
+  "updated_at": "2026-09-15T01:30:00+08:00",
   "required_npu_backend": "triton_experimental",
   "history_tasks": ["T-076", "T-077"],
   "rules": {
+    "target_supplement": "只允许具名16/29的已审核输入扩展；源测试哈希和AST改动锚点固定，原guard/注册不改，复用社区数值helper并检查精确编号。独立derived原件，不自动回填历史variant。17由冻结注册等价证明归并15，不强加训练或移除canonical注册制造命中。",
+    "isolated_candidate": "安装态baseline与隔离candidate原件分别绑定哈希；候选通过不得成为安装态PASS，不自动写正式comparison/gate。必须保留原失败和前后FX/IR/output_code。",
+    "target_only_off": "单pattern收益的OFF仅删除目标注册，其他pass保持；不得关闭整轮joint/normalization冒充目标级对照。注册torch.empty只能trace，计时输入必须确定性初始化；旧gate绑定worker哈希后自动失效。",
     "target_attribution": "expected_assertions不是已执行断言；回读原生源码确认精确目标/数值/梯度覆盖。具名entry只读观察仅证明目标动作，不证明数值。正例应改图，负例可被尝试但必须不发生禁止改写。",
     "staged_progress": "带原件哈希、实际后端和正负合同的NPU阶段进度可单列，但不得自动冻结分母、生成正式comparison或签发性能gate。",
     "canonical_counting": "同一优化不同入口保留原ID/原件，以canonical_acceptance_unit_id归并，别名independent_unit_contribution=0；跟踪行数不等于独立能力数。",

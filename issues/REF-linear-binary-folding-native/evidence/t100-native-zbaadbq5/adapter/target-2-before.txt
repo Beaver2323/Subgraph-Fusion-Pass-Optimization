@@ -1,0 +1,10 @@
+
+
+
+def forward(self, arg2_1):
+    arg0_1 = self._frozen_param0
+    permute = self._frozen_param2
+    addmm = torch.ops.aten.addmm.default(arg0_1, arg2_1, permute);  arg0_1 = arg2_1 = permute = None
+    add = torch.ops.aten.add.Tensor(addmm, 2.0);  addmm = None
+    return (add,)
+    

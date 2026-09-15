@@ -1,0 +1,60 @@
+op0: SchedulerNode(ComputedBuffer)
+op0.writes = [MemoryDep('buf0', c0, {c0: 256})]
+op0.unmet_dependencies = []
+op0.met_dependencies = [MemoryDep('arg3_1', 4*c0 + c2, {c0: 2, c1: 32, c2: 4})]
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: ComputedBuffer
+    buf0.layout = FixedLayout('npu:0', torch.bool, size=[2, 8, 4, 4], stride=[128, 16, 4, 1])
+    buf0.users = [NodeUser(node=ExternKernelSchedulerNode(name='op1'), can_inplace=False, is_weak=False)]
+]
+op0.group.device = npu:0
+op0.group.iteration = (256, 1)
+op0.sizes = ((2, 32, 4), ())
+arg3_1_layout = FixedLayout('npu:0', torch.bool, size=[2, 1, 1, 4], stride=[4, 4, 4, 1])
+buf0_layout = FixedLayout('npu:0', torch.bool, size=[2, 8, 4, 4], stride=[128, 16, 4, 1])
+class op0_loop_body:
+    var_ranges = {p0: 2, p1: 32, p2: 4}
+    index0 = 4*p0 + p2
+    index1 = 128*p0 + 4*p1 + p2
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('arg3_1', get_index)
+        logical_not = ops.logical_not(load)
+        get_index_1 = self.get_index('index1')
+        store = ops.store('buf0', get_index_1, logical_not, None)
+        return store
+
+
+op1: ExternKernelSchedulerNode(FallbackKernel)
+op1.writes = [StarDep(name='buf1', mode=None)]
+op1.unmet_dependencies = [StarDep(name='buf0', mode=None)]
+op1.met_dependencies = 
+    [   StarDep(name='arg0_1', mode=None),
+        StarDep(name='arg1_1', mode=None),
+        StarDep(name='arg2_1', mode=None)]
+op1.min_input_distance = 1
+op1.max_input_distance = 1
+op1.outputs = [
+    buf1: FallbackKernel
+    buf1.layout = MultiOutputLayout(device=device(type='npu', index=0))
+    buf1.users = [NodeUser(node=ExternKernelSchedulerNode(name='op2'), can_inplace=False, is_weak=False)]
+]
+op1.node.kernel = torch.ops.npu.npu_fusion_attention_v3.default
+
+
+op2: ExternKernelSchedulerNode(MultiOutput)
+op2.writes = [MemoryDep('buf2', 512*d0 + 64*d1 + 16*d2 + d3, {d0: 2, d1: 8, d2: 4, d3: 16})]
+op2.unmet_dependencies = [StarDep(name='buf1', mode=None)]
+op2.met_dependencies = []
+op2.min_input_distance = 2
+op2.max_input_distance = 2
+op2.outputs = [
+    buf2: MultiOutput
+    buf2.layout = FixedLayout('npu:0', torch.float16, size=[2, 8, 4, 16], stride=[512, 64, 16, 1])
+    buf2.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op2.node.kernel = None
+
+

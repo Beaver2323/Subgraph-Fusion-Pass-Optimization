@@ -1,0 +1,277 @@
+{
+  "generated_at": "2026-09-14T21:17:23.524983+08:00",
+  "source_run": "/home/z50063656/tmp/t100-target-only-validation/benchmark-20260914T211300+0800",
+  "files": [
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/debug/torch_compile_debug/run_2026_09_14_21_13_10_386244-pid_2489392/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "d17cdf076a5b8444ed888fe26c5a9b15874bde9c906ca5f6978b8467198b56dd",
+      "bytes": 678
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/debug/torch_compile_debug/run_2026_09_14_21_13_10_386244-pid_2489392/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "950018c65d43ed9e636492d7738d32b4ad937a0f10fe1d2c49b6ed0853fb9164",
+      "bytes": 783
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/debug/torch_compile_debug/run_2026_09_14_21_13_10_386244-pid_2489392/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "33f90a364dd19673f7ef825e852cee861b3c0965a8da7ea6608ba14280a8f9fc",
+      "bytes": 2103
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/debug/torch_compile_debug/run_2026_09_14_21_13_10_386244-pid_2489392/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "a93050866c65d3176d47fdf081b5287ce76c363790323614533b130d08a30b82",
+      "bytes": 2131
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/debug/torch_compile_debug/run_2026_09_14_21_13_10_386244-pid_2489392/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "ceb4e5d86cbd52e9f251c9734d2ba0889dda9fe99b312c8c954c0ea5c8726179",
+      "bytes": 9569
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/execution.json",
+      "sha256": "5a3f9d5d5ad5a52a7c7cc09ec4f047eeeb2b76c1fb186ff1da20c5ad336db80d",
+      "bytes": 742
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/result.json",
+      "sha256": "23f6c7b7455f1a5277389651046bb72059b9620bc485d70379a1dd5ac9b2b572",
+      "bytes": 73143
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/stderr.log",
+      "sha256": "8e122705273ddc83945058e4677188a5e7da18f15e8f55512926306df71b7940",
+      "bytes": 1057
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/stdout.log",
+      "sha256": "fd0e48e34fe05a411931adaa07791576526a0e8e2f725091c85d8ff4c78d1fd0",
+      "bytes": 90
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/debug/torch_compile_debug/run_2026_09_14_21_14_52_613535-pid_2517400/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "d17cdf076a5b8444ed888fe26c5a9b15874bde9c906ca5f6978b8467198b56dd",
+      "bytes": 678
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/debug/torch_compile_debug/run_2026_09_14_21_14_52_613535-pid_2517400/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "950018c65d43ed9e636492d7738d32b4ad937a0f10fe1d2c49b6ed0853fb9164",
+      "bytes": 783
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/debug/torch_compile_debug/run_2026_09_14_21_14_52_613535-pid_2517400/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "33f90a364dd19673f7ef825e852cee861b3c0965a8da7ea6608ba14280a8f9fc",
+      "bytes": 2103
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/debug/torch_compile_debug/run_2026_09_14_21_14_52_613535-pid_2517400/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "a93050866c65d3176d47fdf081b5287ce76c363790323614533b130d08a30b82",
+      "bytes": 2131
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/debug/torch_compile_debug/run_2026_09_14_21_14_52_613535-pid_2517400/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "8e0f9328241fe8a21f5aad7cc7c6074f2f66a31b4ae853f0c0197ee8a6322d7e",
+      "bytes": 9569
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/execution.json",
+      "sha256": "a0a91923a3b16ca17453eb4df894aabdadfc72af089d7a073f47b6c75a077f56",
+      "bytes": 742
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/result.json",
+      "sha256": "fd9d60aa8d5192949ddb3c5979810a711bd893a68e1036bbf6f94a7a7fe746d4",
+      "bytes": 73171
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/stderr.log",
+      "sha256": "d3d4ec4d1d502815c807fd837d8c26eec51b66662977437f47bef89685895be9",
+      "bytes": 1057
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/stdout.log",
+      "sha256": "fd0e48e34fe05a411931adaa07791576526a0e8e2f725091c85d8ff4c78d1fd0",
+      "bytes": 90
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/debug/torch_compile_debug/run_2026_09_14_21_15_37_025708-pid_2528720/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "d17cdf076a5b8444ed888fe26c5a9b15874bde9c906ca5f6978b8467198b56dd",
+      "bytes": 678
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/debug/torch_compile_debug/run_2026_09_14_21_15_37_025708-pid_2528720/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "950018c65d43ed9e636492d7738d32b4ad937a0f10fe1d2c49b6ed0853fb9164",
+      "bytes": 783
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/debug/torch_compile_debug/run_2026_09_14_21_15_37_025708-pid_2528720/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "33f90a364dd19673f7ef825e852cee861b3c0965a8da7ea6608ba14280a8f9fc",
+      "bytes": 2103
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/debug/torch_compile_debug/run_2026_09_14_21_15_37_025708-pid_2528720/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "a93050866c65d3176d47fdf081b5287ce76c363790323614533b130d08a30b82",
+      "bytes": 2131
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/debug/torch_compile_debug/run_2026_09_14_21_15_37_025708-pid_2528720/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "4ae7c7952d7d1563108a745432a6ab7f11c5d93e91e78ae68ddee0970a96c05e",
+      "bytes": 9569
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/execution.json",
+      "sha256": "91443181ef0bebf546b2d5c451ef88aa8f547c0ce9714cd11f467adec28c22ff",
+      "bytes": 742
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/result.json",
+      "sha256": "e93618ce4f00a82506a0a314989b6111db82c13adabe147e895e1a1d3b5592b9",
+      "bytes": 73174
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/stderr.log",
+      "sha256": "f144e6441d9ab921f0425ac87e50478551b495b44eea0ff961a3872c77ad5351",
+      "bytes": 1057
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/stdout.log",
+      "sha256": "fd0e48e34fe05a411931adaa07791576526a0e8e2f725091c85d8ff4c78d1fd0",
+      "bytes": 90
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/debug/torch_compile_debug/run_2026_09_14_21_13_52_385149-pid_2501482/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "3a8040acbb7a8afe12ff9cf1fae05c2947ece2829592b005a7aca93df29b9cdf",
+      "bytes": 736
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/debug/torch_compile_debug/run_2026_09_14_21_13_52_385149-pid_2501482/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "3a8040acbb7a8afe12ff9cf1fae05c2947ece2829592b005a7aca93df29b9cdf",
+      "bytes": 736
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/debug/torch_compile_debug/run_2026_09_14_21_13_52_385149-pid_2501482/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "5dd89875fd152ad50e7d902afcb30a4c5bd43ad910c43286ec9ecee307faf9d0",
+      "bytes": 590
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/debug/torch_compile_debug/run_2026_09_14_21_13_52_385149-pid_2501482/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "5dd89875fd152ad50e7d902afcb30a4c5bd43ad910c43286ec9ecee307faf9d0",
+      "bytes": 590
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/debug/torch_compile_debug/run_2026_09_14_21_13_52_385149-pid_2501482/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "f264a4b12bbf63ae38cae92e54627657927ec9a5c87d870cbc865cfe77dc3a21",
+      "bytes": 3541
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/execution.json",
+      "sha256": "7764fd2edc36f178adb60e9c96087ee7a059be062064854772e400bc2c1e3330",
+      "bytes": 740
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/result.json",
+      "sha256": "7b3f8fad56a62b15208ca99c589e182401c5ad246aa9fd02a5816f39ca94ffb7",
+      "bytes": 72228
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/stderr.log",
+      "sha256": "274d98a4ba1953cd3dd776e3ba66fb4e3c40abc6e7871da6cb8b10dda056eb9c",
+      "bytes": 911
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/stdout.log",
+      "sha256": "ea7b5abf6b6f2c61ae2696fc1c3f13523daea60f1123db6fc07b4f290f499bb7",
+      "bytes": 89
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/debug/torch_compile_debug/run_2026_09_14_21_14_23_112328-pid_2509816/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "3a8040acbb7a8afe12ff9cf1fae05c2947ece2829592b005a7aca93df29b9cdf",
+      "bytes": 736
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/debug/torch_compile_debug/run_2026_09_14_21_14_23_112328-pid_2509816/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "3a8040acbb7a8afe12ff9cf1fae05c2947ece2829592b005a7aca93df29b9cdf",
+      "bytes": 736
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/debug/torch_compile_debug/run_2026_09_14_21_14_23_112328-pid_2509816/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "5dd89875fd152ad50e7d902afcb30a4c5bd43ad910c43286ec9ecee307faf9d0",
+      "bytes": 590
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/debug/torch_compile_debug/run_2026_09_14_21_14_23_112328-pid_2509816/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "5dd89875fd152ad50e7d902afcb30a4c5bd43ad910c43286ec9ecee307faf9d0",
+      "bytes": 590
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/debug/torch_compile_debug/run_2026_09_14_21_14_23_112328-pid_2509816/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "63c1634d06bc41365bc03124f991405e3cb00c3df93d551097f6d3a63a7b25d5",
+      "bytes": 3541
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/execution.json",
+      "sha256": "670519f0f5b3827e56a062848be0116cf4a1f13c52127e28a8d02f3ab0f1522d",
+      "bytes": 740
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/result.json",
+      "sha256": "f5a51780cb831daeadf888481c16aadeb9d5cebf0ca62a94dc47e8e498db20a0",
+      "bytes": 72232
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/stderr.log",
+      "sha256": "9dc0254a04ff6df15f2f2c5bbfba471dca157277a73698879ce78294241f7f68",
+      "bytes": 911
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/stdout.log",
+      "sha256": "ea7b5abf6b6f2c61ae2696fc1c3f13523daea60f1123db6fc07b4f290f499bb7",
+      "bytes": 89
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/debug/torch_compile_debug/run_2026_09_14_21_16_18_100264-pid_2541409/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "3a8040acbb7a8afe12ff9cf1fae05c2947ece2829592b005a7aca93df29b9cdf",
+      "bytes": 736
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/debug/torch_compile_debug/run_2026_09_14_21_16_18_100264-pid_2541409/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "3a8040acbb7a8afe12ff9cf1fae05c2947ece2829592b005a7aca93df29b9cdf",
+      "bytes": 736
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/debug/torch_compile_debug/run_2026_09_14_21_16_18_100264-pid_2541409/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "5dd89875fd152ad50e7d902afcb30a4c5bd43ad910c43286ec9ecee307faf9d0",
+      "bytes": 590
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/debug/torch_compile_debug/run_2026_09_14_21_16_18_100264-pid_2541409/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "5dd89875fd152ad50e7d902afcb30a4c5bd43ad910c43286ec9ecee307faf9d0",
+      "bytes": 590
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/debug/torch_compile_debug/run_2026_09_14_21_16_18_100264-pid_2541409/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "54a1ed81e39cf7075ad025b56aa58b009675314f6af18a14c74dd27ecebd7760",
+      "bytes": 3541
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/execution.json",
+      "sha256": "551ced833c69c66d24ccf55b24279e07040ac6ba330bf6436a436cd8851381da",
+      "bytes": 740
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/result.json",
+      "sha256": "bfdca6187aa5f52575417793c4c300fb35d9bd43830f720c8476080a3491608c",
+      "bytes": 72240
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/stderr.log",
+      "sha256": "b72909478d48475aa3e0dbb6c3a37a4f956b04d6eada1631234cd9642c679f90",
+      "bytes": 911
+    },
+    {
+      "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/stdout.log",
+      "sha256": "ea7b5abf6b6f2c61ae2696fc1c3f13523daea60f1123db6fc07b4f290f499bb7",
+      "bytes": 89
+    }
+  ],
+  "generated_output_code_present": true
+}

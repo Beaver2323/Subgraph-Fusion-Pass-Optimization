@@ -1,0 +1,116 @@
+{
+  "pattern": 24,
+  "task_id": "T-106",
+  "executed_gate": {
+    "path": "results/current/T-106/performance_gates/pattern-24-executed.json",
+    "sha256": "daa3d2ac30fc1d4bf69fee85cb94c2437b2b2295c88b9d50489c587bdc57a524"
+  },
+  "reviewer": "Codex：逐图及原样本复核",
+  "review_note": "逐臂读取六份Runner.call：三OFF均FP16 NPU bmm两次及单个带FP32 mask的softmax kernel；三ON为Q/K/V提升FP32、两次FP32 NPU bmm、safe_softmax及aten.any、最终FP16输出，无fusion-attention kernel也无CPU搬运。精确24号OFF0/ON1及独立eager门禁通过；按数学路径差异保留PARTIAL_ALIGNED。",
+  "generated_at": "2026-09-14T23:56:23.597516+08:00",
+  "raw_results": {
+    "off": {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/off/result.json",
+      "sha256": "e7b4705f398416136852d98b71bd1b2d8a56e1754732470146bb6d22574eb41c"
+    },
+    "on": {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/on/result.json",
+      "sha256": "96bb74f8bf1afebdb3b2ad0c1dee6343a03bf9a7b36973f313befbe14c317d80"
+    },
+    "off1": {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/benchmark-20260914T234441+0800/off1/result.json",
+      "sha256": "1abfa86a370790720be3a18496ce553e6b7317b29e7936dcfbf8b4955e724e70"
+    },
+    "on1": {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/benchmark-20260914T234441+0800/on1/result.json",
+      "sha256": "6698ac9b62a42fe75adb8a7488b1ebfc90313a7a0b1d40a31316a16a90eaa447"
+    },
+    "on2": {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/benchmark-20260914T234441+0800/on2/result.json",
+      "sha256": "7a01771f0a5cb672a09eb1dbf4c0686fecdabaf96b4e864830887d935e5295a3"
+    },
+    "off2": {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/benchmark-20260914T234441+0800/off2/result.json",
+      "sha256": "e90c6693e1f6002a6b44295b56863a72d016495a2ecfdc1237a1b59da8931c49"
+    },
+    "off3": {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/benchmark-20260914T234441+0800/off3/result.json",
+      "sha256": "71d4f81f9c0e3aa768b367e251c7c2805ff2c38c70178b55628db93a6146cc37"
+    },
+    "on3": {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/benchmark-20260914T234441+0800/on3/result.json",
+      "sha256": "36d5c093f204d43c640662eac4b9a1b3a2b9cd86a6b27af22bc2624b2a6d1341"
+    }
+  },
+  "gpu_reference": {
+    "path": "results/current/T-106/gpu_reference_review.json",
+    "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+  },
+  "community_functional": {
+    "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-uvnnjcrx/adapter/result.json",
+    "sha256": "421ab5786553b51495ea2545af7d88d8552c691ea3b6b2381994b2484c551afc"
+  },
+  "worker_snapshot": {
+    "path": "issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/t102_t107_attention_performance_worker.py",
+    "sha256": "c72ed16c537f6ad8aee44e2086f663eeeca582c01c3fd9142fee56e14f0c65c1"
+  },
+  "target_control_snapshot": {
+    "path": "issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/target_entry_control.py",
+    "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+  },
+  "observer_snapshot": {
+    "path": "issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/native_contract_observer.py",
+    "sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae"
+  },
+  "inventories": [
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/functional-20260914T233202+0800/inventory.json",
+      "sha256": "ce3b29c7f77b5bf8fb090fdda1cfb7fb4afc31071990bcb61cb46c0bdc180b0c"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/benchmark-20260914T234441+0800/inventory.json",
+      "sha256": "34e19c5b88ec6d1cf18be074ce2fd6732d989850faa8f0907d978f62a7d71e94"
+    }
+  ],
+  "aggregate": {
+    "timing": {
+      "host_ms": {
+        "off": {
+          "p50": 0.4893599543720484,
+          "p99": 0.5451699020341071
+        },
+        "on": {
+          "p50": 0.7455151062458754,
+          "p99": 0.8109542215243007
+        }
+      },
+      "event_ms": {
+        "off": {
+          "p50": 0.3734699934720993,
+          "p99": 0.40343680649995806
+        },
+        "on": {
+          "p50": 0.6228100061416626,
+          "p99": 0.6632230204343796
+        }
+      }
+    },
+    "improvement_percent": {
+      "host_ms": {
+        "p50": -52.34493537635867,
+        "p99": -48.7525665849333
+      },
+      "event_ms": {
+        "p50": -66.76306451061393,
+        "p99": -64.39328532966874
+      }
+    },
+    "round_p50_spread_ratio": {
+      "host_ms_off": 1.0137768403124578,
+      "host_ms_on": 1.0543410461043439,
+      "event_ms_off": 1.0126961609654248,
+      "event_ms_on": 1.060869034582928
+    },
+    "verdict": "PERF_REGRESSED"
+  }
+}

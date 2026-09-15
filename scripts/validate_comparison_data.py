@@ -778,6 +778,19 @@ def validate_compact_functional_results(
     return closed
 
 
+def coverage_counts(units, recorded_ids, closed_ids):
+    """未声明扩展缺口不等于设备完成；仅在已有闭环记录范围内计算覆盖。"""
+    without_extension_gap = {
+        unit_id for unit_id, unit in units.items() if not unit.get('pending_variants')
+    }
+    return {
+        'fully_covered_units': len(closed_ids & without_extension_gap),
+        'units_without_declared_extension_gap': len(without_extension_gap),
+        'tracked_ids_without_current_comparison': len(set(units) - recorded_ids),
+        'recorded_open_or_inconclusive_units': len(recorded_ids - closed_ids),
+    }
+
+
 def validate(repo_root: Path) -> None:
     manifest_paths = [repo_root / "upstream/manifest.yaml", *sorted(
         (repo_root / "upstream").glob("t*_manifest.yaml")
@@ -809,6 +822,7 @@ def validate(repo_root: Path) -> None:
     formally_closed = 0
     variant_count = 0
     comparison_unit_ids: set[str] = set()
+    closed_unit_ids: set[str] = set()
     for comparison_path in comparison_paths:
         comparison = load_object(comparison_path)
         unit_id = comparison["acceptance_unit_id"]
@@ -828,12 +842,15 @@ def validate(repo_root: Path) -> None:
         )
         variant_count += len(comparison["variant_comparisons"])
         formally_closed += is_formally_closed(comparison)
+        if is_formally_closed(comparison):
+            closed_unit_ids.add(unit_id)
         comparison_unit_ids.add(unit_id)
 
     compact_closed = validate_compact_functional_results(
         repo_root, units, comparison_unit_ids
     )
     formally_closed += len(compact_closed)
+    closed_unit_ids.update(compact_closed)
 
     expected_closed = sum(
         manifest["counting_policy"]["current_formally_closed_units"]
@@ -856,10 +873,13 @@ def validate(repo_root: Path) -> None:
     print(f"compact_functional_closed_units={len(compact_closed)}")
     print(f"comparison_variants={variant_count}")
     print(f"formally_closed_units={formally_closed}")
-    print(f"fully_covered_units={len(units) - coverage_pending_units}")
+    for key, count in coverage_counts(
+        units, comparison_unit_ids | compact_closed, closed_unit_ids
+    ).items():
+        print(f"{key}={count}")
     print(f"coverage_pending_units={coverage_pending_units}")
     print(f"coverage_pending_variants={coverage_pending_variants}")
-    print(f"open_or_inconclusive_units={expected_closed - formally_closed}")
+    print("count_scope=recorded-comparisons; tracked_ids-include-noncounting-aliases")
     print("torch_imported=0")
 
 

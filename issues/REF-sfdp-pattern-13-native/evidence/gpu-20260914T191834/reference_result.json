@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T19:19:47+08:00",
+  "run_id": "reference-20260914T191834+0800-0x3nqs19",
+  "case": {
+    "case_id": "REF-sfdp-pattern-13-native",
+    "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-13",
+    "variant_ids": [
+      "pattern-13-community-product"
+    ],
+    "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_13_gpu",
+    "tracking_mode": "direct"
+  },
+  "source": {
+    "pytorch_root": "/data/z50063656/src/pytorch",
+    "expected_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "environment_fingerprint_ref": "../../environment.json",
+  "execution": {
+    "status": "passed",
+    "success": true,
+    "return_code": 0,
+    "duration_seconds": 21.492302,
+    "command": [
+      "/data/z50063656/envs/PassGPURef/bin/python",
+      "/data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/native_contract_observer.py",
+      "--source",
+      "/data/z50063656/src/pytorch/test/inductor/test_fused_attention.py",
+      "--",
+      "SDPAPatternRewriterGpuTests.test_sdpa_rewriter_13_gpu"
+    ],
+    "working_directory": "/data/z50063656/tmp",
+    "timeout_seconds": 7200,
+    "tests_ran": 1,
+    "tests_skipped": 0,
+    "tests_expected": 1,
+    "tests_expected_failures": 0,
+    "tests_unexpected_successes": 0,
+    "skip_reason": null
+  },
+  "match": {
+    "expected": true,
+    "expected_assertions": [
+      "真实CUDA torch.compile且零skip",
+      "人工FX/per-pattern counter确认编号13命中",
+      "输出及社区要求的梯度与eager一致"
+    ],
+    "assertion_status": "passed-inside-community-test",
+    "observed_count": null,
+    "evidence_method": "原生 community test 内部实际存在的 counter/FileCheck/correctness 断言；runner 不伪造未打印的原始计数"
+  },
+  "fx": {
+    "before": {
+      "captured": true,
+      "count": 2,
+      "combined_path": "fx_before.txt",
+      "files": [
+        {
+          "path": "debug/native_contract_observer/1670285-ReplacementPatternEntry-0001/fx_graph_readable.py",
+          "bytes": 920,
+          "sha256": "f00697193f7791a38bbb5031ae22f1026ff3318be1c5a3ce4e50f686e29abdff",
+          "normalized_sha256": "f00697193f7791a38bbb5031ae22f1026ff3318be1c5a3ce4e50f686e29abdff"
+        },
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 1183,
+          "sha256": "33248b170ef377872fa2f79f8f85eac1e4284699c31c73c0d493afd93c8d9372",
+          "normalized_sha256": "cb20fd705039aa9b6ba23780c70fc613f5085e4d325f969d31d08ad8592372c9"
+        }
+      ],
+      "normalized_signature": "621e4bcda5ad9b96ad839a56810d4bf5c8ecf172a434af268c30447b69e637ae"
+    },
+    "after": {
+      "captured": true,
+      "count": 2,
+      "combined_path": "fx_after.txt",
+      "files": [
+        {
+          "path": "debug/native_contract_observer/1670285-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+          "bytes": 774,
+          "sha256": "6e3444f9c57d761aaba5bd6a1347abb3cc820615d85d5ec5afc8e1a0d899b466",
+          "normalized_sha256": "6e3444f9c57d761aaba5bd6a1347abb3cc820615d85d5ec5afc8e1a0d899b466"
+        },
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 1183,
+          "sha256": "33248b170ef377872fa2f79f8f85eac1e4284699c31c73c0d493afd93c8d9372",
+          "normalized_sha256": "cb20fd705039aa9b6ba23780c70fc613f5085e4d325f969d31d08ad8592372c9"
+        }
+      ],
+      "normalized_signature": "4f7a007c7866ea449e9f3af245f6bc8255624bedc146979ca1001cca8bf746c1"
+    },
+    "stable_signature": "295cbd3a686415e5c74c46c4645c746d00a5c8ac13624c0d23fb8fe266545ff6"
+  },
+  "correctness": {
+    "status": "community-assertion-passed",
+    "evidence_method": "原生 community test eager/compiled 断言"
+  },
+  "benchmark": {
+    "status": "not-configured",
+    "functional_gate": "passed",
+    "reason": "本轮仅建立原生 community functional baseline；独立性能方案与 worker 状态另行校验。"
+  },
+  "adapter_decision": "not-needed-direct-valid",
+  "reference_valid": true
+}

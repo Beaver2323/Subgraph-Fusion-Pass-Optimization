@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-100",
+  "generated_at": "2026-09-14T21:17:34.371059+08:00",
+  "backend": "triton_experimental",
+  "status": "performance-disposition-complete",
+  "acceptance_units": [
+    {
+      "acceptance_unit_id": "AU-binary-folding-folded-op",
+      "unit": "linear-binary-folding",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
+      "product_action": "不改变默认开关；局部收益不外推到完整模型",
+      "measurement_workload": "linear-binary-folding-community-shape",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.4390450194478035,
+            "p99": 0.5102425022050773
+          },
+          "on": {
+            "p50": 0.3935650456696749,
+            "p99": 0.4938537208363453
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.3306500017642975,
+            "p99": 0.3625944039225579
+          },
+          "on": {
+            "p50": 0.285630002617836,
+            "p99": 0.3195190083980563
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": 10.358840611682552,
+          "p99": 3.211959273856213
+        },
+        "event_ms": {
+          "p50": 13.615605294493182,
+          "p99": 11.879773945353422
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.1227114790270212,
+        "host_ms_on": 1.0919069721149388,
+        "event_ms_off": 1.1525839711521153,
+        "event_ms_on": 1.0977382908308837
+      },
+      "memory": {
+        "off1": {
+          "allocated": 5120,
+          "reserved": 2097152
+        },
+        "on1": {
+          "allocated": 5120,
+          "reserved": 2097152
+        },
+        "on2": {
+          "allocated": 5120,
+          "reserved": 2097152
+        },
+        "off2": {
+          "allocated": 5120,
+          "reserved": 2097152
+        },
+        "off3": {
+          "allocated": 5120,
+          "reserved": 2097152
+        },
+        "on3": {
+          "allocated": 5120,
+          "reserved": 2097152
+        }
+      },
+      "compile_ms": {
+        "off1": 24911.129230167717,
+        "on1": 14267.352380324155,
+        "on2": 14020.613039843738,
+        "off2": 28186.129479669034,
+        "off3": 25254.330049734563,
+        "on3": 14805.65482005477
+      },
+      "codegen_review": {
+        "off1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.mm": 1,
+            "triton_unk_fused_add_addmm_0.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "逐图人工复核：OFF为NPU extern mm加一个Triton fused-add核；ON为NPU extern addmm。没有CPU转移，原社区正负合同已通过。"
+        },
+        "on1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.addmm": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "逐图人工复核：OFF为NPU extern mm加一个Triton fused-add核；ON为NPU extern addmm。没有CPU转移，原社区正负合同已通过。"
+        },
+        "on2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.addmm": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "逐图人工复核：OFF为NPU extern mm加一个Triton fused-add核；ON为NPU extern addmm。没有CPU转移，原社区正负合同已通过。"
+        },
+        "off2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.mm": 1,
+            "triton_unk_fused_add_addmm_0.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "逐图人工复核：OFF为NPU extern mm加一个Triton fused-add核；ON为NPU extern addmm。没有CPU转移，原社区正负合同已通过。"
+        },
+        "off3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.mm": 1,
+            "triton_unk_fused_add_addmm_0.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "逐图人工复核：OFF为NPU extern mm加一个Triton fused-add核；ON为NPU extern addmm。没有CPU转移，原社区正负合同已通过。"
+        },
+        "on3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.addmm": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required",
+          "manual_review": "逐图人工复核：OFF为NPU extern mm加一个Triton fused-add核；ON为NPU extern addmm。没有CPU转移，原社区正负合同已通过。"
+        }
+      },
+      "raw_results": {
+        "off1": {
+          "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off1/result.json",
+          "sha256": "23f6c7b7455f1a5277389651046bb72059b9620bc485d70379a1dd5ac9b2b572"
+        },
+        "on1": {
+          "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on1/result.json",
+          "sha256": "7b3f8fad56a62b15208ca99c589e182401c5ad246aa9fd02a5816f39ca94ffb7"
+        },
+        "on2": {
+          "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on2/result.json",
+          "sha256": "f5a51780cb831daeadf888481c16aadeb9d5cebf0ca62a94dc47e8e498db20a0"
+        },
+        "off2": {
+          "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off2/result.json",
+          "sha256": "fd9d60aa8d5192949ddb3c5979810a711bd893a68e1036bbf6f94a7a7fe746d4"
+        },
+        "off3": {
+          "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/off3/result.json",
+          "sha256": "e93618ce4f00a82506a0a314989b6111db82c13adabe147e895e1a1d3b5592b9"
+        },
+        "on3": {
+          "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/linear-binary-folding/on3/result.json",
+          "sha256": "bfdca6187aa5f52575417793c4c300fb35d9bd43830f720c8476080a3491608c"
+        }
+      },
+      "inventories": [
+        {
+          "path": "issues/REF-linear-binary-folding-native/evidence/functional-20260914T211100/inventory.json",
+          "sha256": "fb77ce147f98044a5138087c1bbeececa291e092a7a8ed5693b3f76c7d0d6062"
+        },
+        {
+          "path": "issues/REF-linear-binary-folding-native/evidence/benchmark-20260914T211300/inventory.json",
+          "sha256": "e3ec1931110e9e2d4852093e1a213bbba96e7df5f6df93ae56a7f6791c271dff"
+        }
+      ],
+      "worker_source": {
+        "path": "issues/REF-linear-binary-folding-native/evidence/performance-worker-20cfd534.py",
+        "sha256": "20cfd534e0c66cb3ef668e0bea29366c0a235af0f20f750236efc4204d3abe7a"
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "scope": "社区功能图派生的compiled子图，不含编译/数据加载",
+        "model_e2e": false,
+        "aggregation": "三OFF/三ON各臂p50/p99的中位数；高波动或时钟方向冲突记MIXED"
+      }
+    }
+  ]
+}

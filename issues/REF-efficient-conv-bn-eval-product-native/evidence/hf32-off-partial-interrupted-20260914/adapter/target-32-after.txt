@@ -1,0 +1,13 @@
+
+
+
+def forward(self, L_self_modules_bn_buffers_running_mean_ : torch.Tensor, L_self_modules_bn_buffers_running_var_ : torch.Tensor, L_self_modules_bn_parameters_bias_ : torch.nn.parameter.Parameter, L_self_modules_bn_parameters_weight_ : torch.nn.parameter.Parameter, L_self_modules_conv_parameters_weight_ : torch.nn.parameter.Parameter, L_x_ : torch.Tensor):
+    l_self_modules_bn_buffers_running_mean_ = L_self_modules_bn_buffers_running_mean_
+    l_self_modules_bn_buffers_running_var_ = L_self_modules_bn_buffers_running_var_
+    l_self_modules_bn_parameters_bias_ = L_self_modules_bn_parameters_bias_
+    l_self_modules_bn_parameters_weight_ = L_self_modules_bn_parameters_weight_
+    l_self_modules_conv_parameters_weight_ = L_self_modules_conv_parameters_weight_
+    l_x_ = L_x_
+    efficient_conv_bn_eval = torch__inductor_fx_passes_efficient_conv_bn_eval_efficient_conv_bn_eval_decomposed(l_self_modules_bn_parameters_weight_, l_self_modules_bn_parameters_bias_, l_self_modules_bn_buffers_running_mean_, l_self_modules_bn_buffers_running_var_, 1e-05, <built-in method conv1d of type object at 0xffffa1d9c800>, l_self_modules_conv_parameters_weight_, None, l_x_, ((2,), (0,), (1,), 1));  l_self_modules_bn_parameters_weight_ = l_self_modules_bn_parameters_bias_ = l_self_modules_bn_buffers_running_mean_ = l_self_modules_bn_buffers_running_var_ = l_self_modules_conv_parameters_weight_ = l_x_ = None
+    return (efficient_conv_bn_eval,)
+    

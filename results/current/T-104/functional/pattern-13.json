@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T23:07:50.851385+08:00",
+  "task_id": "T-104",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-13",
+  "pattern": 13,
+  "pid": 130469,
+  "python_executable": "/home/z50063656/envs/Pass/bin/python",
+  "physical_device": "5",
+  "torch_version": "2.14.0a0+git8e86e0a",
+  "torch_npu_version": "2.14.0a0+git83cc452",
+  "mode": "on",
+  "phase": "functional",
+  "backend": "triton_experimental",
+  "backend_selected_before_import": true,
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "pytorch_worktree_status": "",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "registration_name": "_sfdp_pattern_13_half_inference",
+  "exact_pattern_counter": 1,
+  "general_fuse_attention_counter": 1,
+  "measurement_workload": "sfdp-pattern-13-registered-half-inference",
+  "measurement_stage": "inference-forward",
+  "dropout_p": 0.0,
+  "oracle_design": "同输入eager对照；原社区完整合同另外绑定gate",
+  "measurement_adapter": "torch._dynamo.dont_skip_tracing(search_fn); local-wrapper-only; fullgraph-retained",
+  "input_spec": [
+    {
+      "shape": [
+        1024,
+        128,
+        128
+      ],
+      "stride": [
+        16384,
+        128,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    },
+    {
+      "shape": [
+        1024,
+        128,
+        128
+      ],
+      "stride": [
+        16384,
+        128,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    },
+    {
+      "shape": [
+        1024,
+        128,
+        128
+      ],
+      "stride": [
+        16384,
+        128,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    }
+  ],
+  "off_control_scope": "remove-exact-pattern-entries-only; joint and neighboring passes stay enabled",
+  "target_control": {
+    "mode": "on",
+    "whole_pass_disabled": false
+  },
+  "input_initialization": "fixed-seed-normal-std0.25; preserve-shape-stride-dtype; preserve-scalar-constants",
+  "argument_initialization": [
+    "fixed-seed-normal-std0.25-or-original-scalar",
+    "fixed-seed-normal-std0.25-or-original-scalar",
+    "fixed-seed-normal-std0.25-or-original-scalar"
+  ],
+  "observations": [
+    {
+      "capture_scope": "pattern-entry-apply-after-extra-check",
+      "target": "_sfdp_pattern_13_half_inference",
+      "entry_type": "ReplacementPatternEntry",
+      "handler_returned": true,
+      "graph_changed": true,
+      "test_body_modified": false,
+      "device_modified": false,
+      "assertions_modified": false,
+      "product_gate_bypassed": false,
+      "numerical_correctness_proven_by_observer": false
+    }
+  ],
+  "compile_ms": 13898.22490978986,
+  "worker_sha256": "c72ed16c537f6ad8aee44e2086f663eeeca582c01c3fd9142fee56e14f0c65c1",
+  "target_control_sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+  "observer_sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae",
+  "source_snapshots": {
+    "t102_t107_attention_performance_worker.py": "c72ed16c537f6ad8aee44e2086f663eeeca582c01c3fd9142fee56e14f0c65c1",
+    "target_entry_control.py": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+    "native_contract_observer.py": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae"
+  },
+  "gate_sha256": null,
+  "unit": "pattern-13",
+  "source_evidence": {
+    "off": {
+      "path": "issues/REF-sfdp-pattern-13-native/evidence/functional-20260914T230539+0800/off/result.json",
+      "sha256": "a7751bb30bc172a5c499bf1b06e74f0e17084846d1c1555c435f13e64c8bc06b"
+    },
+    "on": {
+      "path": "issues/REF-sfdp-pattern-13-native/evidence/functional-20260914T230539+0800/on/result.json",
+      "sha256": "c214ea73657a69675d79cd4a45d6c12d6fbccb0ee41a069ccedd211a02ae6242"
+    }
+  },
+  "community_evidence": {
+    "path": "issues/REF-sfdp-pattern-13-native/evidence/t104-native-cw5by_le/adapter/result.json",
+    "sha256": "52381470848a60a323c0e3bdb6bac17578cad68c6a9697802cd804336857d208"
+  },
+  "codegen_review": {
+    "off": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__softmax_0.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    },
+    "on": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "torch.ops.npu.npu_fusion_attention_v3.default": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    }
+  },
+  "reviewer": "Codex：逐图及原样本复核",
+  "comparison_verdict": "BEHAVIOR_UNCHANGED",
+  "repair_status": "not-needed-product-unchanged",
+  "community_alignment": {
+    "status": "FULL_ALIGNED",
+    "aligned_scope": [
+      "原社区方法完整执行；记录1个Tensor比较；独立微图数值和精确OFF/ON通过"
+    ],
+    "divergent_scope": [],
+    "open_scope": [
+      "未覆盖的dtype/形状/梯度不外推"
+    ],
+    "disposition": "保留当前产品配置；局部时延不等于模型端到端收益"
+  }
+}

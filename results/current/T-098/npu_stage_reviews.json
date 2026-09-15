@@ -1,0 +1,24 @@
+{
+  "task_id": "T-098",
+  "units": {
+    "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined": {
+      "generated_at": "2026-09-14T21:15:00+08:00",
+      "task_id": "T-098",
+      "acceptance_unit_id": "AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined",
+      "case_id": "REF-efficient-conv-bn-eval-product-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-efficient-conv-bn-eval-product-native/evidence/t098-native-eh4e214v/adapter/result.json",
+        "sha256": "b307127a67b9b71ae77890d730b3b7aaa208ab0d300c50184e27675dea8f6543"
+      },
+      "candidate_verified": false,
+      "correctness_scope": "首四个Linear组合通过；首个FP32 Conv1d前向378/6016元素超过原容差，单精度模式完整112组合未完成",
+      "repair_status": "test-precision-mode-adaptation-pending",
+      "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
+      "reason": "目标改写后默认HF32不满足紧容差；三种子已确认eager折叠和compiled均受HF32影响，不是仅Triton错编",
+      "next_action": "用显式HF32=False对应社区TF32-OFF意图，复验完整原方法；保留默认失败，不放宽容差，不称默认产品已修复",
+      "performance_gate_issued": false,
+      "report": "issues/REF-efficient-conv-bn-eval-product-native/根因分析.md"
+    }
+  }
+}

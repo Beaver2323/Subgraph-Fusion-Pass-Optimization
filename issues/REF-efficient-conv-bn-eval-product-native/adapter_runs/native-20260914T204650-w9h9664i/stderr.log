@@ -1,0 +1,71 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_basic_cuda (module_folding_community_npu.main.<locals>.NpuCase.test_basic_cuda) ... [W914 20:47:03.623724080 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/utils/storage.py:55: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:47:51.543000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_forward_1 debug trace: /home/z50063656/tmp/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_forward_1.0
+W0914 20:47:52.205000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1806] [0/0] Not enough SMs to use max_autotune_gemm mode
+W0914 20:48:31.361000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_backward_3 debug trace: /home/z50063656/tmp/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__0_backward_3.1
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:49:05.586000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_forward_5 debug trace: /home/z50063656/tmp/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_forward_5.2
+W0914 20:49:38.343000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_backward_7 debug trace: /home/z50063656/tmp/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__1_backward_7.3
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:50:12.497000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__2_forward_9 debug trace: /home/z50063656/tmp/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_forward_9.4
+W0914 20:50:48.366000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__2_backward_11 debug trace: /home/z50063656/tmp/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__2_backward_11.5
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:51:21.070000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__3_forward_13 debug trace: /home/z50063656/tmp/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_forward_13.6
+W0914 20:51:54.074000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__3_backward_15 debug trace: /home/z50063656/tmp/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__3_backward_15.7
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 20:52:42.147000 2060793 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__4_forward_17 debug trace: /home/z50063656/tmp/t098-native-eh4e214v/adapter/debug/torch_compile_debug/run_2026_09_14_20_47_03_320211-pid_2060793/torchinductor/model__4_forward_17.8
+FAIL
+
+======================================================================
+FAIL: test_basic_cuda (module_folding_community_npu.main.<locals>.NpuCase.test_basic_cuda)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py", line 3829, in wrapper
+    method(*args, **kwargs)
+  File "/home/z50063656/Pass/src/pytorch/test/inductor/test_torchinductor.py", line 19451, in new_test
+    return value(self)
+           ^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_cuda.py", line 463, in wrapped
+    f(**kwargs)
+  File "/home/z50063656/envs/Pass/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/envs/Pass/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/test/inductor/test_efficient_conv_bn_eval.py", line 264, in test_basic
+    test_conv_bn_eval(
+  File "/home/z50063656/Pass/src/pytorch/test/inductor/test_efficient_conv_bn_eval.py", line 220, in test_conv_bn_eval
+    self.assertEqual(out_optimized, out_eager)
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/module_folding_community_npu.py", line 75, in assertEqual
+    ret = super().assertEqual(a,b,*pos,**kw)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_dynamo/test_case.py", line 127, in assertEqual
+    return super().assertEqual(x, y, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py", line 4879, in assertEqual
+    raise error_metas.pop()[0].to_error(  # type: ignore[index]
+AssertionError: Tensor-likes are not close!
+
+Mismatched elements: 378 / 6016 (6.3%)
+Greatest absolute difference: 6.02230429649353e-05 at index (3, 23, 1) (up to 1e-05 allowed)
+Greatest relative difference: 1.2419953346252441 at index (2, 30, 26) (up to 1.3e-06 allowed)
+
+To execute this test, run the following from the base repo dir:
+    python module_folding_community_npu.py NpuCase.test_basic_cuda
+
+This message can be suppressed by setting PYTORCH_PRINT_REPRO_ON_FAILURE=0
+
+----------------------------------------------------------------------
+Ran 1 test in 339.534s
+
+FAILED (failures=1)

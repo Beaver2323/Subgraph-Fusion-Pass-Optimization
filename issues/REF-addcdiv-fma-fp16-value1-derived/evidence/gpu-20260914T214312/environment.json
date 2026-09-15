@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T21:43:19+08:00",
+  "host": {
+    "hostname": "node-5-15",
+    "platform": "Linux-5.15.0-43-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "user": "f00913055",
+    "uid": 1035,
+    "effective_uid": 1035,
+    "working_directory": "/data/z50063656/tmp"
+  },
+  "source": {
+    "pytorch_root": "/data/z50063656/src/pytorch",
+    "expected_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "working_tree_state": "clean",
+    "working_tree_status": []
+  },
+  "runtime": {
+    "cuda_available": true,
+    "cuda_device_count": 1,
+    "cuda_driver_api": {
+      "error": null,
+      "init_return_code": 0,
+      "library_loaded": true,
+      "version": 12040,
+      "version_return_code": 0
+    },
+    "cudnn_version": 92501,
+    "devices": [
+      {
+        "index": 0,
+        "major": 8,
+        "minor": 0,
+        "multi_processor_count": 108,
+        "name": "NVIDIA A100-SXM4-80GB",
+        "total_memory": 84974239744
+      }
+    ],
+    "effective_uid": 1035,
+    "gpu_type": "cuda",
+    "has_gpu_and_triton": true,
+    "packages": {
+      "pytorch-triton": null,
+      "pytorch-triton-rocm": null,
+      "torch": "2.14.0a0+git8e86e0a",
+      "triton": "3.8.0+git675c5987"
+    },
+    "platform": "Linux-5.15.0-43-generic-x86_64-with-glibc2.35",
+    "python_executable": "/data/z50063656/envs/PassGPURef/bin/python",
+    "python_version": "3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]",
+    "selected_environment": {
+      "CONDA_PREFIX": null,
+      "CUDA_COMPAT_DIR": null,
+      "CUDA_HOME": "/data/z50063656/cuda-12.6",
+      "CUDA_VISIBLE_DEVICES": "2",
+      "HOME": "/data/z50063656",
+      "LD_LIBRARY_PATH": "/data/z50063656/envs/PassGPURef/lib/python3.12/site-packages/nvidia/cudnn/lib:/data/z50063656/cuda-12.6/lib64:/data/z50063656/cuda-12.6/lib64:/data/z50063656/envs/PassGPURef/lib/python3.12/site-packages/nvidia/cudnn/lib:/data/z50063656/cuda-12.6/lib64",
+      "PASS_GPU_COMPUTE_MODE": "DEFAULT",
+      "PASS_GPU_EXECUTION_MODE": "shared",
+      "PASS_GPU_MIN_FREE_MEMORY_MIB": "1024",
+      "PASS_GPU_PREFLIGHT_FREE_MEMORY_MIB": "80612",
+      "PATH": "/data/z50063656/cuda-12.6/bin:/data/z50063656/envs/PassGPURef/bin:/data/z50063656/envs/PassGPURef/bin:/data/z50063656/cuda-12.6/bin:/data/z50063656/envs/PassGPURef/bin:/data/z50063656/cuda-12.6/bin:/bin:/usr/local/bin:/usr/bin:/bin",
+      "PIP_CACHE_DIR": "/data/z50063656/pip-cache",
+      "TMPDIR": "/data/z50063656/tmp",
+      "TORCHINDUCTOR_CACHE_DIR": "/data/z50063656/inductor-cache",
+      "TORCH_EXTENSIONS_DIR": "/data/z50063656/torch-extensions",
+      "TRITON_CACHE_DIR": "/data/z50063656/triton-cache",
+      "VIRTUAL_ENV": "/data/z50063656/envs/PassGPURef",
+      "XDG_CACHE_HOME": "/data/z50063656/cache"
+    },
+    "torch_cuda_version": "12.6",
+    "torch_file": "/data/z50063656/src/pytorch/torch/__init__.py",
+    "torch_git_version": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "torch_version": "2.14.0a0+git8e86e0a",
+    "uid": 1035,
+    "user": "f00913055"
+  },
+  "nvidia_smi": {
+    "available": true,
+    "return_code": 0,
+    "stdout": "GPU 0: NVIDIA A100-SXM4-80GB (UUID: GPU-4222641e-5b3c-2d95-3038-ed9ff2fc1abd)\nGPU 1: NVIDIA A100-SXM4-80GB (UUID: GPU-1c9756fa-4985-3673-d4e7-92f03e5978d2)\nGPU 2: NVIDIA A100-SXM4-80GB (UUID: GPU-26c4ea92-705d-1754-761c-57fa432361b8)\nGPU 3: NVIDIA A100-SXM4-80GB (UUID: GPU-7d357952-8ec0-2ce3-13d8-3f6be9979cb3)\nGPU 4: NVIDIA A100-SXM4-80GB (UUID: GPU-280e7450-cf26-6ce4-cf01-3dd135bbcd3f)\nGPU 5: NVIDIA A100-SXM4-80GB (UUID: GPU-f09747b1-1200-e1f0-4301-338a23bd32a1)\nGPU 6: NVIDIA A100-SXM4-80GB (UUID: GPU-11e15b5e-eb6c-ccc0-8250-352f99ace8b2)\nGPU 7: NVIDIA A100-SXM4-80GB (UUID: GPU-67e1ca7a-cb22-e8bb-c5f8-eef856b4863e)",
+    "stderr": "",
+    "driver_query": {
+      "return_code": 0,
+      "stdout": "0, NVIDIA A100-SXM4-80GB, 550.54.15\n1, NVIDIA A100-SXM4-80GB, 550.54.15\n2, NVIDIA A100-SXM4-80GB, 550.54.15\n3, NVIDIA A100-SXM4-80GB, 550.54.15\n4, NVIDIA A100-SXM4-80GB, 550.54.15\n5, NVIDIA A100-SXM4-80GB, 550.54.15\n6, NVIDIA A100-SXM4-80GB, 550.54.15\n7, NVIDIA A100-SXM4-80GB, 550.54.15",
+      "stderr": ""
+    },
+    "version": {
+      "return_code": 0,
+      "stdout": "NVIDIA-SMI version  : 550.54.15\nNVML version        : 550.54\nDRIVER version      : 550.54.15\nCUDA Version        : 12.4",
+      "stderr": ""
+    }
+  },
+  "nvcc": {
+    "available": true,
+    "return_code": 0,
+    "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Tue_Oct_29_23:50:19_PDT_2024\nCuda compilation tools, release 12.6, V12.6.85\nBuild cuda_12.6.r12.6/compiler.35059454_0",
+    "stderr": ""
+  },
+  "fingerprint_sha256": "4a5581df7e4f6f2416e5241391855daad96d54d9659c081cfea4cb02276ff679"
+}

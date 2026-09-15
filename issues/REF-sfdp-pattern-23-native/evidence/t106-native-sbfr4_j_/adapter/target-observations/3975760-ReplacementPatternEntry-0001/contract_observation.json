@@ -1,0 +1,12 @@
+{
+  "capture_scope": "pattern-entry-apply-after-extra-check",
+  "target": "_sfdp_pattern_23_inference",
+  "entry_type": "ReplacementPatternEntry",
+  "handler_returned": true,
+  "graph_changed": true,
+  "test_body_modified": false,
+  "device_modified": false,
+  "assertions_modified": false,
+  "product_gate_bypassed": false,
+  "numerical_correctness_proven_by_observer": false
+}

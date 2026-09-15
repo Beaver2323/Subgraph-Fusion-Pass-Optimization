@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-10T22:55:21+08:00",
-  "status": "prepared-awaiting-gpu-reference",
+  "generated_at": "2026-09-14T23:56:23.597516+08:00",
+  "status": "partially-completed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -30,12 +30,12 @@
     "minimum_gpus": 1,
     "distributed_world_size": null,
     "scope": "原生CUDA编译、数值/梯度、目标编号或生成代码改写",
-    "suite_status": "pending-gpu-reference"
+    "suite_status": "partially-frozen-reference"
   },
   "counting_policy": {
     "current_manifest_units": 4,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0,
+    "current_frozen_denominator_units": 2,
+    "current_formally_closed_units": 2,
     "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结"
   },
   "acceptance_units": [
@@ -159,9 +159,9 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-23",
       "contract_name": "SDPA pattern 23：T5零mask消去且返回K/V",
       "stage": "joint_graph",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/fuse_attention.py",
@@ -184,8 +184,8 @@
           "expected_reference_match": true,
           "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；用attn_mask=None的SDPA",
           "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_23前缀>=1",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
         }
       ],
       "tracking": {
@@ -217,9 +217,9 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-24",
       "contract_name": "SDPA pattern 24：MBart/PLBart reshape+bmm与异dtype mask",
       "stage": "joint_graph",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/fuse_attention.py",
@@ -242,8 +242,8 @@
           "expected_reference_match": true,
           "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；恢复四维后以scale=1融合",
           "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_24前缀>=1",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
         }
       ],
       "tracking": {

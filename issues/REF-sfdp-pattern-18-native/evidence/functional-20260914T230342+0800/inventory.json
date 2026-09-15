@@ -1,0 +1,30 @@
+{
+  "source_run_dir": "/home/z50063656/tmp/attention-functional-20260914/functional-20260914T230342+0800/pattern-18",
+  "failed_precheck": true,
+  "files": [
+    {
+      "path": "issues/REF-sfdp-pattern-18-native/evidence/functional-20260914T230342+0800/off/execution.json",
+      "sha256": "b81e599fed6f54291c75c5efd9c1937a1aa981bd4293e02b8b7a050a0e261ca8"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-18-native/evidence/functional-20260914T230342+0800/off/snapshot-native_contract_observer.py",
+      "sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-18-native/evidence/functional-20260914T230342+0800/off/snapshot-t102_t107_attention_performance_worker.py",
+      "sha256": "d3ab808f1114158f0d3ab80ce091d00ab25d6c92defe0f01eb1effb1ea399df2"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-18-native/evidence/functional-20260914T230342+0800/off/snapshot-target_entry_control.py",
+      "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-18-native/evidence/functional-20260914T230342+0800/off/stderr.log",
+      "sha256": "0326de672a7c86b7682033ff8a43e331cfe68bc8b9896f29659ce42b9b42f1e1"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-18-native/evidence/functional-20260914T230342+0800/off/stdout.log",
+      "sha256": "7c02e60675caaefe00c5795813a68608d1678bdf036edaa0d1df07b3b275284f"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py",
+    "--pattern",
+    "18",
+    "--mode",
+    "off",
+    "--device",
+    "npu",
+    "--phase",
+    "functional",
+    "--output",
+    "/home/z50063656/tmp/attention-functional-20260914/functional-20260914T230342+0800/pattern-18/off",
+    "--warmup",
+    "10",
+    "--runs",
+    "100"
+  ],
+  "return_code": 1,
+  "generated_at": "2026-09-14T23:03:56.811035+08:00",
+  "cooperative_performance_lock": false
+}

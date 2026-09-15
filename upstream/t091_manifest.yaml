@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-10T21:38:54+08:00",
-  "status": "prepared-awaiting-gpu-reference",
+  "generated_at": "2026-09-14T21:07:00+08:00",
+  "status": "completed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -27,22 +27,22 @@
     "minimum_gpus": 1,
     "distributed_world_size": null,
     "scope": "原生CUDA编译、数值、目标命中/改写与必要梯度合同",
-    "suite_status": "pending-gpu-reference"
+    "suite_status": "valid-reference-suite"
   },
   "counting_policy": {
     "current_manifest_units": 1,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0,
+    "current_frozen_denominator_units": 1,
+    "current_formally_closed_units": 1,
     "denominator_rule": "原生GPU suite有效、零skip并完成人工FX复核后冻结"
   },
   "acceptance_units": [
     {
       "acceptance_unit_id": "AU-split-cat-normalize-stack-default",
-      "contract_name": "stack axis关键字规范化为dim",
+      "contract_name": "stack调用规范化与重建（axis在捕获阶段已转为dim）",
       "stage": "pre_grad",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/split_cat.py",
@@ -63,10 +63,10 @@
           "variant_id": "axis-kwarg-positive",
           "kind": "positive",
           "expected_reference_match": true,
-          "expected_behavior": "torch.stack(axis=1)改写为规范dim关键字且输出不变",
+          "expected_behavior": "原torch.stack(axis=1)合同输出不变；精确handler重建节点，观察边界前后均已为dim=1",
           "expected_counter": "人工FX复核确认目标节点变化",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
         }
       ],
       "tracking": {
@@ -82,12 +82,12 @@
       },
       "npu_control": {
         "config": "pre_grad_fusion_options.normalization_pass",
-        "off": {},
+        "off": "只移除normalize_stack_default注册，保留normalization_pass其他11条注册",
         "on": {
           "normalization_pass": {}
         },
-        "status": "prepared",
-        "next_action": "GPU FX确认后在NPU真机验证精确handler、图改写和数值，再签性能门禁"
+        "status": "measured",
+        "next_action": "本合同功能通过；PERF_MIXED，保持产品配置，不宣称稳定收益"
       }
     }
   ],

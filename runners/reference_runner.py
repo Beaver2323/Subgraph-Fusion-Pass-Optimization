@@ -25,6 +25,28 @@ from typing import Any
 SCHEMA_VERSION = "1.0"
 
 
+def validate_target_derivation(task_id, case):
+    """只开放两条已评审输入扩展；不能把任意改图伪装为 dtype 派生。"""
+    contracts = {
+        'REF-sfdp-pattern-16-dropout-target-derived': (
+            'T-105', 16, ['training-mode', 'dropout-probability'],
+            'SDPAPatternRewriterGpuTests.test_sdpa_rewriter_16_inference_gpu'),
+        'REF-sfdp-pattern-29-nonzero-mask-target-derived': (
+            'T-107', 29, ['mask-values', 'mask-input-origin'],
+            'SDPAPatternRewriterGpuTests.test_sdpa_rewriter_29_gpu'),
+    }
+    contract = contracts.get(case['case_id'])
+    if contract is None:
+        raise ValueError('未审核的目标输入扩展')
+    task, pattern, dimensions, method = contract
+    if (task_id != task or case['acceptance_unit_id'] != f'AU-fuse-attention-sfdp-pattern-{pattern}'
+            or case['source_test'] != 'test/inductor/test_fused_attention.py::' + method
+            or case['entrypoint'] != 'runners/attention_target_supplement.py'
+            or case.get('entrypoint_args') != ['--pattern', str(pattern)]
+            or case['derivation']['changed_dimensions'] != dimensions):
+        raise ValueError('目标输入扩展与审核的任务/编号/来源/入口/维度不符')
+
+
 def timestamp() -> str:
     return datetime.now().astimezone().isoformat(timespec="seconds")
 
@@ -365,9 +387,11 @@ def validate_contract(
             required = {"basis", "changed_dimensions", "preserved_contract"}
             if not isinstance(derivation, dict) or required - derivation.keys():
                 raise ValueError(f"{case_id} derived case 的 derivation 字段不完整")
-            if derivation["basis"] != "community-test-dtype-extension":
+            if derivation["basis"] == "community-test-target-input-extension":
+                validate_target_derivation(plan['task_id'], case)
+            elif derivation["basis"] != "community-test-dtype-extension":
                 raise ValueError(f"{case_id} derived case 只允许已审核的 dtype 扩展")
-            if derivation["changed_dimensions"] != ["dtype"]:
+            elif derivation["changed_dimensions"] != ["dtype"]:
                 raise ValueError(f"{case_id} derived case 只能改变 dtype")
             if not derivation["preserved_contract"]:
                 raise ValueError(f"{case_id} derived case 必须声明保持的社区合同")

@@ -1,0 +1,13 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+SDPAPatternRewriterGpuTests (unittest.loader._FailedTest.SDPAPatternRewriterGpuTests) ... ERROR
+
+======================================================================
+ERROR: SDPAPatternRewriterGpuTests (unittest.loader._FailedTest.SDPAPatternRewriterGpuTests)
+----------------------------------------------------------------------
+AttributeError: module '__main__' has no attribute 'SDPAPatternRewriterGpuTests'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

@@ -1,0 +1,277 @@
+{
+  "generated_at": "2026-09-14T21:04:38.436968+08:00",
+  "source_run": "/home/z50063656/tmp/t091-target-only-validation/benchmark-20260914T210110+0800",
+  "files": [
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/debug/torch_compile_debug/run_2026_09_14_21_01_19_856599-pid_2291082/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1b425c8c1315ab269d64e7092c1d14d2ba11000db1473784e14520e7665b577d",
+      "bytes": 475
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/debug/torch_compile_debug/run_2026_09_14_21_01_19_856599-pid_2291082/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "dc9f4c093e44aedec2b666c31d3e0d300b08e0f045c9b246d698eab14742c7ac",
+      "bytes": 478
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/debug/torch_compile_debug/run_2026_09_14_21_01_19_856599-pid_2291082/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/debug/torch_compile_debug/run_2026_09_14_21_01_19_856599-pid_2291082/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/debug/torch_compile_debug/run_2026_09_14_21_01_19_856599-pid_2291082/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "71397be663cd0f5e88994f3d4f79e652527bcedce0496c7f25d29e6e965adee3",
+      "bytes": 3310
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/execution.json",
+      "sha256": "72cc99fd56e691d24d0bb4347a410d6c14b6f483ec54790a8c32c81497e545d4",
+      "bytes": 736
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/result.json",
+      "sha256": "d2431747fd8483f4c47142908219744c4aa775d06cb8e3dbcf7121d3fa73602b",
+      "bytes": 71862
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/stderr.log",
+      "sha256": "71b65c5a1878112eba04a1147e15d398e5f317fe1088cbcb170be5844de9e648",
+      "bytes": 910
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off1/stdout.log",
+      "sha256": "5bb7df1800a338e2f794d9fac74ef44883b3e99385802d2366277c23cddc660c",
+      "bytes": 88
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/debug/torch_compile_debug/run_2026_09_14_21_02_48_394495-pid_2313254/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1b425c8c1315ab269d64e7092c1d14d2ba11000db1473784e14520e7665b577d",
+      "bytes": 475
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/debug/torch_compile_debug/run_2026_09_14_21_02_48_394495-pid_2313254/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "dc9f4c093e44aedec2b666c31d3e0d300b08e0f045c9b246d698eab14742c7ac",
+      "bytes": 478
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/debug/torch_compile_debug/run_2026_09_14_21_02_48_394495-pid_2313254/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/debug/torch_compile_debug/run_2026_09_14_21_02_48_394495-pid_2313254/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/debug/torch_compile_debug/run_2026_09_14_21_02_48_394495-pid_2313254/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "71397be663cd0f5e88994f3d4f79e652527bcedce0496c7f25d29e6e965adee3",
+      "bytes": 3310
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/execution.json",
+      "sha256": "2a3ccfa21f20ddf6c77759fff7a0ad622b15746cc96c61ff6edd1edb02609a8f",
+      "bytes": 736
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/result.json",
+      "sha256": "a94f6007520b1357322e89cdfce9ad01e0935668760216b7988b48d3a984ae66",
+      "bytes": 71860
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/stderr.log",
+      "sha256": "eb49e4e3d732f64eb0d386f27d4f83b7aa0328975f1397df20cd5dc7fbaa0bda",
+      "bytes": 910
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off2/stdout.log",
+      "sha256": "5bb7df1800a338e2f794d9fac74ef44883b3e99385802d2366277c23cddc660c",
+      "bytes": 88
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/debug/torch_compile_debug/run_2026_09_14_21_03_18_398069-pid_2319820/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1b425c8c1315ab269d64e7092c1d14d2ba11000db1473784e14520e7665b577d",
+      "bytes": 475
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/debug/torch_compile_debug/run_2026_09_14_21_03_18_398069-pid_2319820/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "dc9f4c093e44aedec2b666c31d3e0d300b08e0f045c9b246d698eab14742c7ac",
+      "bytes": 478
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/debug/torch_compile_debug/run_2026_09_14_21_03_18_398069-pid_2319820/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/debug/torch_compile_debug/run_2026_09_14_21_03_18_398069-pid_2319820/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/debug/torch_compile_debug/run_2026_09_14_21_03_18_398069-pid_2319820/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "71397be663cd0f5e88994f3d4f79e652527bcedce0496c7f25d29e6e965adee3",
+      "bytes": 3310
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/execution.json",
+      "sha256": "2673656e36e5ae5a14a35e3c1fbb55d08fbeeccb88dea9582d5346284cffa447",
+      "bytes": 736
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/result.json",
+      "sha256": "0774127748e5d5c9c8c863db75aa229ac6991485addef132cfe5a27ae88abe13",
+      "bytes": 71856
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/stderr.log",
+      "sha256": "962090a8a3b137fda5f8c3a9aa37dfa0a4cbe0cac142a3c6d6367810fb93c9d0",
+      "bytes": 910
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/off3/stdout.log",
+      "sha256": "5bb7df1800a338e2f794d9fac74ef44883b3e99385802d2366277c23cddc660c",
+      "bytes": 88
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/debug/torch_compile_debug/run_2026_09_14_21_01_48_777431-pid_2298144/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1b425c8c1315ab269d64e7092c1d14d2ba11000db1473784e14520e7665b577d",
+      "bytes": 475
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/debug/torch_compile_debug/run_2026_09_14_21_01_48_777431-pid_2298144/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "dc9f4c093e44aedec2b666c31d3e0d300b08e0f045c9b246d698eab14742c7ac",
+      "bytes": 478
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/debug/torch_compile_debug/run_2026_09_14_21_01_48_777431-pid_2298144/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/debug/torch_compile_debug/run_2026_09_14_21_01_48_777431-pid_2298144/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/debug/torch_compile_debug/run_2026_09_14_21_01_48_777431-pid_2298144/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "ac71945a0f37ee49706ef94b2aff9c6aa0e2f589edc6255edde3b47c290b4c41",
+      "bytes": 3312
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/execution.json",
+      "sha256": "55c4ff54ea6743b809173be397db88afa158d7e9c789fb775f29ed9dd85327bd",
+      "bytes": 734
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/result.json",
+      "sha256": "c0f17caa3bb1ad72aabe4af5e28b76f9186493fb0ad7b636a21d9f20090e0a0c",
+      "bytes": 71765
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/stderr.log",
+      "sha256": "d4d7292dc83eb704137932820a67b277f8f5b79e42af4323cd622833145802ae",
+      "bytes": 909
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on1/stdout.log",
+      "sha256": "da9032622b727e769503f5289d0bd8ebe7393ca6f8c5d9d85d09e57992377887",
+      "bytes": 87
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/debug/torch_compile_debug/run_2026_09_14_21_02_18_656252-pid_2306335/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1b425c8c1315ab269d64e7092c1d14d2ba11000db1473784e14520e7665b577d",
+      "bytes": 475
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/debug/torch_compile_debug/run_2026_09_14_21_02_18_656252-pid_2306335/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "dc9f4c093e44aedec2b666c31d3e0d300b08e0f045c9b246d698eab14742c7ac",
+      "bytes": 478
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/debug/torch_compile_debug/run_2026_09_14_21_02_18_656252-pid_2306335/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/debug/torch_compile_debug/run_2026_09_14_21_02_18_656252-pid_2306335/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/debug/torch_compile_debug/run_2026_09_14_21_02_18_656252-pid_2306335/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "ac71945a0f37ee49706ef94b2aff9c6aa0e2f589edc6255edde3b47c290b4c41",
+      "bytes": 3312
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/execution.json",
+      "sha256": "c67f214297bfce3a401e86f2300597f3fb6bbb4a82bf2bea33ac8320f718aa5b",
+      "bytes": 734
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/result.json",
+      "sha256": "24ea818fafa78b326a848ab2bbd3131c73660ac90098106713871df5c027d1f5",
+      "bytes": 71757
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/stderr.log",
+      "sha256": "481c49e00a3ea4cf15309af5c7f5fec8fce9cf94a4c986f4b8c6f50da9313edb",
+      "bytes": 909
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on2/stdout.log",
+      "sha256": "da9032622b727e769503f5289d0bd8ebe7393ca6f8c5d9d85d09e57992377887",
+      "bytes": 87
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/debug/torch_compile_debug/run_2026_09_14_21_03_48_051218-pid_2326889/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1b425c8c1315ab269d64e7092c1d14d2ba11000db1473784e14520e7665b577d",
+      "bytes": 475
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/debug/torch_compile_debug/run_2026_09_14_21_03_48_051218-pid_2326889/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "dc9f4c093e44aedec2b666c31d3e0d300b08e0f045c9b246d698eab14742c7ac",
+      "bytes": 478
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/debug/torch_compile_debug/run_2026_09_14_21_03_48_051218-pid_2326889/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/debug/torch_compile_debug/run_2026_09_14_21_03_48_051218-pid_2326889/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/debug/torch_compile_debug/run_2026_09_14_21_03_48_051218-pid_2326889/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "ac71945a0f37ee49706ef94b2aff9c6aa0e2f589edc6255edde3b47c290b4c41",
+      "bytes": 3312
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/execution.json",
+      "sha256": "184ee312bf3b961505007622ab1d8c89113040b30421ecb652dfe9f551478a39",
+      "bytes": 734
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/result.json",
+      "sha256": "dc8e5233195c9320505d30f4016a771bf152f7c83afffc078b8f0e0f2fe47200",
+      "bytes": 71764
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/stderr.log",
+      "sha256": "93677a82b916b5329a904309ff84c53d14700e3e87fd7626c810b0391379d6be",
+      "bytes": 909
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/benchmark-20260914T210110/stack-normalization/on3/stdout.log",
+      "sha256": "da9032622b727e769503f5289d0bd8ebe7393ca6f8c5d9d85d09e57992377887",
+      "bytes": 87
+    }
+  ],
+  "generated_output_code_present": true
+}

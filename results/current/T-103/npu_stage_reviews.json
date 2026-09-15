@@ -1,0 +1,140 @@
+{
+  "task_id": "T-103",
+  "units": {
+    "AU-fuse-attention-sfdp-pattern-6": {
+      "generated_at": "2026-09-14T22:20:50.606752+08:00",
+      "task_id": "T-103",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-6",
+      "case_id": "REF-sfdp-pattern-6-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-sfdp-pattern-6-native/evidence/t103-native-i0cyo9qi/adapter/result.json",
+        "sha256": "ca8edb3000deea520f811a3f3080540da404cd6894fa7d5236d3caa0ba41c603"
+      },
+      "candidate_verified": false,
+      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=0；本编号精确改写=0；原合同未通过；后续分支不计覆盖；没有数值比较证据，不计精度PASS",
+      "repair_status": "baseline-failed-diagnosis-pending",
+      "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
+      "reason": "数值、精确目标及训练/推理范围以本例原断言和实际观测为准；不由总counter推导完整对齐。",
+      "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+      "performance_gate_issued": false,
+      "report": "issues/REF-sfdp-pattern-6-native/安装态基线复核.md",
+      "gpu_review": {
+        "path": "results/current/T-103/gpu_reference_review.json",
+        "sha256": "cc4102f3e3f4a57e0601c01030b2ed44819896845ba4e509144cb5324c8f2c55"
+      },
+      "parent_run": {
+        "path": "issues/REF-sfdp-pattern-6-native/adapter_runs/native-20260914T221839-ux5pws78/run_result.json",
+        "sha256": "a853fbbb0dbdcceeae37456c9c51e83ed02486019cd1f11f244c86892143d8c0"
+      }
+    },
+    "AU-fuse-attention-sfdp-pattern-7": {
+      "generated_at": "2026-09-14T22:22:19.355356+08:00",
+      "task_id": "T-103",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-7",
+      "case_id": "REF-sfdp-pattern-7-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-sfdp-pattern-7-native/evidence/t103-native-f5t1tvik/adapter/result.json",
+        "sha256": "d66b568f4f8a417859ce6124593dbac0dae4ae61bd6418da4cb553a5729ad305"
+      },
+      "candidate_verified": false,
+      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=1；本编号精确改写=1；原合同未通过；后续分支不计覆盖",
+      "repair_status": "baseline-failed-diagnosis-pending",
+      "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
+      "reason": "数值、精确目标及训练/推理范围以本例原断言和实际观测为准；不由总counter推导完整对齐。",
+      "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+      "performance_gate_issued": false,
+      "report": "issues/REF-sfdp-pattern-7-native/安装态基线复核.md",
+      "gpu_review": {
+        "path": "results/current/T-103/gpu_reference_review.json",
+        "sha256": "cc4102f3e3f4a57e0601c01030b2ed44819896845ba4e509144cb5324c8f2c55"
+      },
+      "parent_run": {
+        "path": "issues/REF-sfdp-pattern-7-native/adapter_runs/native-20260914T222054-p7z2m15n/run_result.json",
+        "sha256": "c5414b664475c1ed964556f48bdab172dcd0ad8bf1487e08b898674218064c7e"
+      }
+    },
+    "AU-fuse-attention-sfdp-pattern-8": {
+      "generated_at": "2026-09-14T22:23:40.221476+08:00",
+      "task_id": "T-103",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-8",
+      "case_id": "REF-sfdp-pattern-8-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-sfdp-pattern-8-native/evidence/t103-native-wv7gd85d/adapter/result.json",
+        "sha256": "84760cb344f29ab04e99aba87146757b5eb6eca51e9be3f658f0d63974e15605"
+      },
+      "candidate_verified": false,
+      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=1；本编号精确改写=0；原合同未通过；后续分支不计覆盖",
+      "repair_status": "baseline-failed-diagnosis-pending",
+      "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
+      "reason": "数值、精确目标及训练/推理范围以本例原断言和实际观测为准；不由总counter推导完整对齐。",
+      "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+      "performance_gate_issued": false,
+      "report": "issues/REF-sfdp-pattern-8-native/安装态基线复核.md",
+      "gpu_review": {
+        "path": "results/current/T-103/gpu_reference_review.json",
+        "sha256": "cc4102f3e3f4a57e0601c01030b2ed44819896845ba4e509144cb5324c8f2c55"
+      },
+      "parent_run": {
+        "path": "issues/REF-sfdp-pattern-8-native/adapter_runs/native-20260914T222224-n87dujuu/run_result.json",
+        "sha256": "f98b27aedb11cb851b88a0bc854962594aa0adad649a6c866be8741f93daa3db"
+      }
+    },
+    "AU-fuse-attention-sfdp-pattern-9": {
+      "generated_at": "2026-09-14T22:25:08.397075+08:00",
+      "task_id": "T-103",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-9",
+      "case_id": "REF-sfdp-pattern-9-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-sfdp-pattern-9-native/evidence/t103-native-8_4pt9ve/adapter/result.json",
+        "sha256": "2ee5a2a0c5d08ae39efcd2aa3153abe0661a8f412a88244657791722e2ad8194"
+      },
+      "candidate_verified": false,
+      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=1；本编号精确改写=1；原合同未通过；后续分支不计覆盖",
+      "repair_status": "baseline-failed-diagnosis-pending",
+      "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
+      "reason": "数值、精确目标及训练/推理范围以本例原断言和实际观测为准；不由总counter推导完整对齐。",
+      "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+      "performance_gate_issued": false,
+      "report": "issues/REF-sfdp-pattern-9-native/安装态基线复核.md",
+      "gpu_review": {
+        "path": "results/current/T-103/gpu_reference_review.json",
+        "sha256": "cc4102f3e3f4a57e0601c01030b2ed44819896845ba4e509144cb5324c8f2c55"
+      },
+      "parent_run": {
+        "path": "issues/REF-sfdp-pattern-9-native/adapter_runs/native-20260914T222345-ctgfxqd4/run_result.json",
+        "sha256": "6e43703b12eb989c0d1da82004206b4a789a122d4c3a5d373dba3d12f4c0b47f"
+      }
+    },
+    "AU-fuse-attention-sfdp-pattern-10": {
+      "generated_at": "2026-09-14T22:26:26.671960+08:00",
+      "task_id": "T-103",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-10",
+      "case_id": "REF-sfdp-pattern-10-native",
+      "backend": "triton_experimental",
+      "baseline": {
+        "path": "issues/REF-sfdp-pattern-10-native/evidence/t103-native-30vrt51j/adapter/result.json",
+        "sha256": "013bed90c5ec96a5cf13992dc9d71d8b9eea32e634fdeab40701e1cefb04aa97"
+      },
+      "candidate_verified": false,
+      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=1；本编号精确改写=0；原合同未通过；后续分支不计覆盖",
+      "repair_status": "baseline-failed-diagnosis-pending",
+      "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
+      "reason": "数值、精确目标及训练/推理范围以本例原断言和实际观测为准；不由总counter推导完整对齐。",
+      "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+      "performance_gate_issued": false,
+      "report": "issues/REF-sfdp-pattern-10-native/安装态基线复核.md",
+      "gpu_review": {
+        "path": "results/current/T-103/gpu_reference_review.json",
+        "sha256": "cc4102f3e3f4a57e0601c01030b2ed44819896845ba4e509144cb5324c8f2c55"
+      },
+      "parent_run": {
+        "path": "issues/REF-sfdp-pattern-10-native/adapter_runs/native-20260914T222513-apelwq0b/run_result.json",
+        "sha256": "570d51351d09856c7e75c6738ef0243fa9570409f181a3c3a76520df324e2944"
+      }
+    }
+  }
+}

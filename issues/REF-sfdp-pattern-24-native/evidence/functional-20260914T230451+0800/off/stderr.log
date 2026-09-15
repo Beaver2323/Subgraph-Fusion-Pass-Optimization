@@ -1,0 +1,28 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+[W914 23:04:59.148909990 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+Traceback (most recent call last):
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py", line 429, in <module>
+    main()
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py", line 319, in main
+    actual = compiled(*inputs)
+             ^^^^^^^^^^^^^^^^^
+  File "/home/z50063656/Pass/src/pytorch/torch/_dynamo/eval_frame.py", line 1272, in compile_wrapper
+    raise e.with_traceback(
+torch._dynamo.exc.Unsupported: Attempted to call function marked as skipped
+  Explanation: Dynamo developers have intentionally marked that the function `_sfdp_pattern_24` in file `/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/fuse_attention.py` should not be traced.
+  Hint: Avoid calling the function `_sfdp_pattern_24`.
+  Hint: Apply `@torch._dynamo.dont_skip_tracing` to the function `_sfdp_pattern_24` to force tracing into the function. More graph breaks may occur as a result of attempting to trace into the function.
+  Hint: Please file an issue to PyTorch.
+
+  Developer debug context: module: torch._inductor.fx_passes.fuse_attention, qualname: _sfdp_pattern_24, skip reason: file matches MOD_SKIPLIST (/home/z50063656/Pass/src/pytorch/torch/_inductor)
+
+ For more details about this graph break, please visit: https://meta-pytorch.github.io/compile-graph-break-site/gb/gb0007.html
+
+from user code:
+   File "/home/z50063656/Pass/src/pytorch/torch/_dynamo/external_utils.py", line 69, in inner
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"
+

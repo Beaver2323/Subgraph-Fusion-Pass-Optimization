@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T20:58:09.182078+08:00",
+  "pid": 2240094,
+  "python_executable": "/home/z50063656/envs/Pass/bin/python",
+  "physical_device": "5",
+  "torch_version": "2.14.0a0+git8e86e0a",
+  "torch_npu_version": "2.14.0a0+git83cc452",
+  "triton_version": "3.2.0",
+  "task_id": "T-091",
+  "acceptance_unit_id": "AU-split-cat-normalize-stack-default",
+  "unit": "stack-normalization",
+  "mode": "on",
+  "phase": "functional",
+  "backend": "triton_experimental",
+  "backend_selected_before_import": true,
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "pytorch_worktree_status": "",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "stack-normalization-community-shape",
+  "input_spec": [
+    {
+      "shape": [
+        4,
+        4
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "shape": [
+        4,
+        4
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "state": {
+    "handler_calls": 1,
+    "graph_changes": 1,
+    "registered_handlers": 1,
+    "target_counter": 1,
+    "counter_name": "normalization_pass"
+  },
+  "target_control": {
+    "mode": "on",
+    "whole_pass_disabled": false
+  },
+  "compile_ms": 14305.46176014468,
+  "samples": null,
+  "memory": null,
+  "timing": null,
+  "worker_sha256": "2509ad203fce7242f964002e683e779d51db712fe2df79d280a5a6f05443bfe2",
+  "target_control_sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+  "gate_sha256": null,
+  "reviewed_at": "2026-09-14T21:01:00+08:00",
+  "reviewer": "Codex/source-and-generated-code-review",
+  "gpu_reference": {
+    "path": "../gpu_reference_review.json",
+    "sha256": "b98ff64a51a31d473d715eb1e14acf26f96dec513d70dda3401c2da4a8bbc8ff"
+  },
+  "target_functional": {
+    "path": "../../../../issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/result.json",
+    "sha256": "09cab8d207bb37a60c3f5157575d71de22b3966f9b7228d86d39bf7c38b4c4d9"
+  },
+  "off_functional": {
+    "path": "../../../../issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/result.json",
+    "sha256": "4ace4d45f158570c3ae70bc20236161f80dcaee055b24379b12a9ad2131a35cc"
+  },
+  "community_functional": {
+    "path": "../../../../issues/REF-stack-axis-normalization-native/evidence/t091-native-y2vojco3/adapter/result.json",
+    "sha256": "069d218f83d9430ec030b1b64d950e2f2f768b6bdf9ad4663d22a13f640270be"
+  },
+  "review_note": "完整社区1/1；目标OFF保留其他11条注册；ON真实handler/FX变化；两臂均为NPU aten.cat，未见CPU转移或图断裂。此处fallbacks指CPU fallback，不把合法NPU ATen路径记成Triton kernel。",
+  "executed_gate": {
+    "path": "stack-normalization-executed.json",
+    "sha256": "9846f86cfc18cc1f9affe68355da56d72de191822d0d89fde959b4506ba13d43"
+  }
+}

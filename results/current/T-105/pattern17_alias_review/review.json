@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-09-15T01:30:00+08:00",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "status": "duplicate-inference-contract-not-independent-trigger",
+  "sources": {
+    "fuse_attention.py": {
+      "upstream_path": "torch/_inductor/fx_passes/fuse_attention.py",
+      "sha256": "4615d969da6484beb55a4a9ceb805ab0b9102556ce440d8f82d40551f8f66fac"
+    },
+    "pattern_matcher.py": {
+      "upstream_path": "torch/_inductor/pattern_matcher.py",
+      "sha256": "f3adcef339d1195dceb8ced943c1354006982462d940f50842f358706a91cf9b"
+    },
+    "serialized15.py": {
+      "upstream_path": "torch/_inductor/fx_passes/serialized_patterns/_sfdp_pattern_15.py",
+      "sha256": "100b9e5b73d780f4fa33cdb3102f3dfb49982a23b5613d91ba2ef9d82cd624c5"
+    },
+    "serialized17.py": {
+      "upstream_path": "torch/_inductor/fx_passes/serialized_patterns/_sfdp_pattern_17.py",
+      "sha256": "85b40dde4180dbeac4304341599f3b0ed47ddced2a6d1f519128d3d5db974421"
+    }
+  },
+  "proof": {
+    "inference_only": true,
+    "serialized_patterns_equal": true,
+    "replacement_equal_at_zero_dropout": true,
+    "same_examples_and_extra_check": true,
+    "earlier_canonical": 15,
+    "duplicate_policy": "precompiled-pattern-graph-none-skip-duplicates"
+  },
+  "canonical_acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-15",
+  "device_execution": false,
+  "independent_unit_contribution": 0,
+  "boundary": "只适用于冻结版本默认推理注册；不声明非零dropout训练支持，不回填原GPU/NPU verdict"
+}

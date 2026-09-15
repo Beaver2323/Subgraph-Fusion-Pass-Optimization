@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t091_t100_performance_worker.py",
+    "--unit",
+    "linear-binary-folding",
+    "--mode",
+    "on",
+    "--device",
+    "npu",
+    "--phase",
+    "benchmark",
+    "--output",
+    "/home/z50063656/tmp/t100-target-only-validation/benchmark-20260914T211300+0800/linear-binary-folding/on2",
+    "--warmup",
+    "10",
+    "--runs",
+    "100",
+    "--gate",
+    "/home/z50063656/tmp/t091-t100-performance-gates/T-100/linear-binary-folding.json"
+  ],
+  "return_code": 0,
+  "cwd": "/home/z50063656/tmp",
+  "backend": "triton_experimental",
+  "physical_npu": "5",
+  "generated_at": "2026-09-14T21:14:43.757919+08:00"
+}

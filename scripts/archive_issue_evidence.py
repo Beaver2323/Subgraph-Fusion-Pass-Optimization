@@ -10,6 +10,9 @@ import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 NAMES = {"result.json", "stdout.log", "stderr.log", "execution.json", "run_result.json", "adapted_test.py",
+         "reference_result.json", "artifact_inventory.json", "metadata.json", "environment.json",
+         "reference_summary.json", "fx_before.txt", "fx_after.txt",
+         "harness_source.py", "candidate_source.py", "diagnostic_source.py", "generated_source.py", "original_generated_source.py", "progress.json",
          "fx_graph_readable.py", "fx_graph_transformed.py", "ir_pre_fusion.txt", "ir_post_fusion.txt", "output_code.py"}
 
 

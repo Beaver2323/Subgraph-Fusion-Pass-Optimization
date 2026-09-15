@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-100",
+  "reviewed_at": "2026-09-14T20:48:33.483112+08:00",
+  "run_id": "reference-20260911T101110+0800-txchnvg2",
+  "status": "gpu-contract-reviewed-awaiting-npu",
+  "reference_backend": "inductor-default",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "input": "results/incoming/T-100/manifest.json",
+  "input_sha256": "f4cd4115445859cab7a7543e34ba311a16d0fd14d0f3ef0c9562d1933d1b74ce",
+  "payload_sha256": "3070e5ecad4cd93ef710c70e18b8379ed2886ee035d90298609ef0c620a7cb10",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "native_cases_passed": 1,
+  "tests_skipped": 0,
+  "restored_text_files": 890,
+  "acceptance_units": [
+    "AU-binary-folding-folded-op"
+  ],
+  "cases": [
+    {
+      "case_id": "REF-linear-binary-folding-native",
+      "acceptance_unit_id": "AU-binary-folding-folded-op",
+      "source_test": "test/inductor/test_binary_folding.py::FreezingGpuTests.test_linear_binary_folding_cuda",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_binary_folding.py",
+        "-v",
+        "FreezingGpuTests.test_linear_binary_folding_cuda"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "7fafca4cb4b33a6be0e6be9bc0e7471b5a55d033ab3727eadfcaac691563c593"
+    }
+  ],
+  "review_boundary": "GPU 合同通过，不代表 NPU 功能、产品合入或性能通过。",
+  "npu_execution_in_this_review": false,
+  "denominator_frozen_by_this_review": false,
+  "independent_unit_contribution": 1,
+  "report": "report/unblocked_work_20260914.md"
+}

@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T22:09:00+08:00",
+  "task_id": "T-078",
+  "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+  "variant_id": "fp16-value1-bitwise-regression",
+  "status": "passed",
+  "backend": "triton_experimental",
+  "dtype": "float16",
+  "value": 1.0,
+  "bitwise_equal": true,
+  "max_abs_error": 0.0,
+  "expected_addcdiv_fma_fused": 0,
+  "actual_addcdiv_fma_fused": 0,
+  "guard_preserved": true,
+  "guard_scope": "value=1 不计 FMA pattern 命中；不是新增全 guard 覆盖",
+  "gpu_reference": {
+    "input": "results/incoming/T-078/FP16-value1-text-handoff.json",
+    "input_sha256": "756cbd1d086078ed0e93dd5817022057686be3b5b7fff655c22b6287310f666b",
+    "payload_sha256": "799d5acb6e9a63e2b7db24d2a070fef3865d3735a8fc3d8b86c85dfae5d8d6cf",
+    "run_id": "reference-20260914T214312+0800-jqft26ak",
+    "case_id": "REF-addcdiv-fma-fp16-value1-derived",
+    "case_status": "valid-derived-reference",
+    "suite_complete": false,
+    "tests_ran": 1,
+    "tests_skipped": 0,
+    "unittest_reparse": {
+      "status": "passed",
+      "success": true,
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "tests_expected": 1,
+      "tests_expected_failures": 0,
+      "tests_unexpected_successes": 0,
+      "skip_reason": null
+    },
+    "evidence_sha256": {
+      "cases/REF-addcdiv-fma-fp16-value1-derived/artifact_inventory.json": "de565c88dc14bd7a5a0537fcb0da6ea8f0881d07f160e84805b7f813d8facd9a",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/benchmark.json": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/debug/torch_compile_debug/run_2026_09_14_21_43_23_534976-pid_2123823/torchinductor/model__0_inference_0.0/fx_graph_readable.py": "92c52c4235e36c2c3663b521cd5c741d5d43f0a5cab57fa716713fcfec7771a7",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/debug/torch_compile_debug/run_2026_09_14_21_43_23_534976-pid_2123823/torchinductor/model__0_inference_0.0/fx_graph_transformed.py": "92c52c4235e36c2c3663b521cd5c741d5d43f0a5cab57fa716713fcfec7771a7",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/debug/torch_compile_debug/run_2026_09_14_21_43_23_534976-pid_2123823/torchinductor/model__0_inference_0.0/ir_post_fusion.txt": "df6df4b43e034c108642a24702be7cc17c7b55cfde446b1853ca9e99a8912c13",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/debug/torch_compile_debug/run_2026_09_14_21_43_23_534976-pid_2123823/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt": "ba84f00fb2f157dcc92360b98a18dbcb193432898cb0e6a6a3c99d952057a9fb",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/debug/torch_compile_debug/run_2026_09_14_21_43_23_534976-pid_2123823/torchinductor/model__0_inference_0.0/output_code.py": "00dfdfe1efbe57e4bfa82d3f90fd9fc1f74a9b99e262055083e029e6e1dfc023",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/fx_after.txt": "774d35da13a1f4342e592d1097df5a2dd2cb80d73715b089b85b4e8150b096d2",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/fx_before.txt": "7eac7b4f2a38ca8ef507a65aff75542af2cbeb3a73c27ff74b2ecaaec3b63118",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/metadata.json": "036c72e47c3a33ad84487efb851844f3838862b104f2b0b055d6cc140235a625",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/reference_result.json": "0604ec6b8a995013eaacaae5cf85104cebfff3a3d1be201b4fedfc087e877cca",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/stderr.log": "8c0b7f813d3deefa3cc0ba52126045e34c926890a32f2996936c312e688f830e",
+      "cases/REF-addcdiv-fma-fp16-value1-derived/stdout.log": "9ab5bee02fdc804dd019af9fc1d2fdabc7082f2735196741492d4607b23d9e47",
+      "environment.json": "b99f767be71923783064acb54498f6cab0e1528236704c9f970733ca0a279604",
+      "reference_summary.json": "02b78e58b9aa6033a56d5e7ae9d5ec2d959d859bd8329e7b156115cdb8a66a98"
+    },
+    "counter_evidence": "原派生入口内 counter=0 断言通过；FX/生成代码交叉核验。原输出未单独打印 counter。",
+    "runner_snapshot_in_original_run": false
+  },
+  "npu_evidence": [
+    {
+      "path": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/value-one/arm_result.json",
+      "sha256": "2846bba5a4847f353a07dd15600b6ef6b51454beda86d2d6ca378fbc7fedaef6"
+    },
+    {
+      "path": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/value-one/fx_graph_readable.py",
+      "sha256": "2531b318287bbc759fe404c4e498e342d06e650a709df6c7bc1738d9f8c8d510"
+    },
+    {
+      "path": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/value-one/fx_graph_transformed.py",
+      "sha256": "2531b318287bbc759fe404c4e498e342d06e650a709df6c7bc1738d9f8c8d510"
+    },
+    {
+      "path": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/value-one/generated_code.py",
+      "sha256": "3bffc3c806ca1366adb46f11cd4ab08334e6b885047eac4c1f6ca9826162e812"
+    },
+    {
+      "path": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/value-one/ir_post_fusion.txt",
+      "sha256": "9590dc2dd5d5aa6e48ac4b26c9c5a22c9d896f5fa6e9331e362eaff1fe5862b6"
+    },
+    {
+      "path": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/value-one/ir_pre_fusion.txt",
+      "sha256": "f813f5d813eced5eb9a824fd82d56b0deed17a00b3f2634acdd5ca37d07154fd"
+    },
+    {
+      "path": "issues/REF-addcdiv-fma-codegen-native/evidence/FP16精度修复/20260909-fixed/value-one/output_code.py",
+      "sha256": "3bffc3c806ca1366adb46f11cd4ab08334e6b885047eac4c1f6ca9826162e812"
+    }
+  ],
+  "community_alignment": "PARTIAL_ALIGNED",
+  "alignment_boundary": "两端各自 compiled/eager 位级一致、普通 div+add、不命中 FMA；NPU 有显式 FP16 quotient 舍入，CUDA 本例没有该边界。不是跨设备逐位相等承诺。",
+  "performance_status": "not-applicable-negative-neighbor",
+  "new_device_execution": false,
+  "product_modified_this_review": false,
+  "counting_boundary": "仅关闭已登记 FP16 value=1 邻接缺口；不增加 acceptance-unit/性能分母，不把单例回传当完整 suite 重跑。"
+}

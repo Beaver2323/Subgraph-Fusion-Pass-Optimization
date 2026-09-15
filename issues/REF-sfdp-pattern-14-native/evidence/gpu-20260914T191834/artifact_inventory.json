@@ -1,0 +1,182 @@
+[
+  {
+    "path": "benchmark.json",
+    "bytes": 184,
+    "sha256": "38741c6e5411eaa040264563636dc4a3a9cac9fc5cab82b223f077dbbe3b9c5f"
+  },
+  {
+    "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0001/contract_observation.json",
+    "bytes": 379,
+    "sha256": "3b87d234f5e1a4774469a7ccf8d1d5975d4dfddc76f6c476a51f153bcfdcad30"
+  },
+  {
+    "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0001/fx_graph_readable.py",
+    "bytes": 3383,
+    "sha256": "5c6f1dea9b288d989a4b198ef040132007aba2a3acdddd33de796a48bd6fd776"
+  },
+  {
+    "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+    "bytes": 2478,
+    "sha256": "5598f40781f4bd103dc365d4747b97b715efbd1e57a9000e6db5513bb5d07359"
+  },
+  {
+    "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0002/contract_observation.json",
+    "bytes": 378,
+    "sha256": "c8928c916da782b3d1b0dca0fc4b4de715d8e08bec901023daa15f9762ca0e58"
+  },
+  {
+    "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0002/fx_graph_readable.py",
+    "bytes": 5330,
+    "sha256": "1e393f62f788419154de49d0ad14c920c167a05376f5b2d3e9ec3f3aecdac373"
+  },
+  {
+    "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0002/fx_graph_transformed.py",
+    "bytes": 3861,
+    "sha256": "d251395bd0f16d069f78496ab0e8f51664c6c8cef2cb879a6d0bbd4e9791bc19"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchdynamo/debug.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/aot_model___0_debug.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/aot_model___1_debug.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+    "bytes": 3688,
+    "sha256": "6a9e8df2acebdc4f9ee688fa9c9604a0861be99e9edc246d2d2ff2ff654e39a7"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/fx_graph_runnable.py",
+    "bytes": 6574,
+    "sha256": "4d86bad16b4613620b43b486fa5cba08abdd07a2ae6053ddd00c16e8ac1f6b18"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+    "bytes": 3874,
+    "sha256": "fd0c1a2a1c0d43f128cb9758ce6cdc88026e606075ac9149f25380dbea6a1d32"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/inductor_provenance_tracking_node_mappings.json",
+    "bytes": 5984,
+    "sha256": "45939b74103c487e6473f3f0dac6b9114cfa327c06b3d481182b070469193d91"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+    "bytes": 5350,
+    "sha256": "76f43e0a111773f5b9bb33ef5cddb3e10854933710f0a78f2551fb091d6ebf25"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+    "bytes": 5399,
+    "sha256": "b8f219ed27f5be7c5fcb2242b2b053c496b3c28f86311a068eae567f810138a0"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/output_code.py",
+    "bytes": 17025,
+    "sha256": "7d706f52d4946ae093810209ff950335a828ebc9f8767f1fa09391413e1ee3f2"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/fx_graph_readable.py",
+    "bytes": 2305,
+    "sha256": "e59a0fc8081c2ee6c94dd7f676099ddbda42c715733f7fd46ae7bb91f18d9a87"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/fx_graph_runnable.py",
+    "bytes": 6535,
+    "sha256": "8291193247171206429a9cd2417ec1203c1ff92cf8c9dff702dff48ccceef9e5"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/fx_graph_transformed.py",
+    "bytes": 2305,
+    "sha256": "e59a0fc8081c2ee6c94dd7f676099ddbda42c715733f7fd46ae7bb91f18d9a87"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/ir_post_fusion.txt",
+    "bytes": 2734,
+    "sha256": "8b28f97d1636375efd93022b3d8a899229ff049eea0e01dd579ab5f48c0a3fe8"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/ir_pre_fusion.txt",
+    "bytes": 2734,
+    "sha256": "8b28f97d1636375efd93022b3d8a899229ff049eea0e01dd579ab5f48c0a3fe8"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/output_code.py",
+    "bytes": 6189,
+    "sha256": "76aeec181b5c239d074efd3c0cc7e4e8dd92540c6b1b00599210d2583b241605"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/fx_graph_readable.py",
+    "bytes": 3866,
+    "sha256": "6b78bf36ac07da25ce3bd9e0d45d46a01e92b2bb60b290c6a212137266f5bb45"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/fx_graph_runnable.py",
+    "bytes": 6776,
+    "sha256": "b68f3af1727f5a45a03281d435e897c14c6994dce98929d8862dfbe5da9e0f01"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/fx_graph_transformed.py",
+    "bytes": 3866,
+    "sha256": "6b78bf36ac07da25ce3bd9e0d45d46a01e92b2bb60b290c6a212137266f5bb45"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/inductor_provenance_tracking_node_mappings.json",
+    "bytes": 3783,
+    "sha256": "252c1f959bf8aff5f9c3bc662775e2d4abdbf8d19cf8b804b8391408e119b13b"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/ir_post_fusion.txt",
+    "bytes": 5876,
+    "sha256": "ebeb5908d1ff6ed81d2c68980410268d17b7bd0a1efbd0c6366d62d0f5cb783d"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/ir_pre_fusion.txt",
+    "bytes": 5889,
+    "sha256": "3fffb01d4768181c6aaa615692660e50d8d0a44359cada760974c5a50e4cce55"
+  },
+  {
+    "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/output_code.py",
+    "bytes": 12491,
+    "sha256": "6813e6164f27111b994488ee4d64bcb5414a5da5ee77cbefe4264f7426fdb0ff"
+  },
+  {
+    "path": "fx_after.txt",
+    "bytes": 17065,
+    "sha256": "dac486b61eda1661c6284954962455c8446cab5b4c6018d4cb0f7f8d12c91c96"
+  },
+  {
+    "path": "fx_before.txt",
+    "bytes": 19238,
+    "sha256": "0a1d9e3bff03b25c838cc39ddebdb6a0dc1b0d82577dbb13a5862f8bcb668629"
+  },
+  {
+    "path": "metadata.json",
+    "bytes": 708,
+    "sha256": "6bba3ff6ecd7c2d1fe6ac81cc2efba0fe1f99fd38346827a44c68734f1edb454"
+  },
+  {
+    "path": "stderr.log",
+    "bytes": 3374,
+    "sha256": "3d940a54f993a9f6d6d83e50aeb65610ba12c35c43cbec33210efd4ff329bdba"
+  },
+  {
+    "path": "stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "structured_trace/dedicated_log_torch_trace_winnc9rm.log",
+    "bytes": 504929,
+    "sha256": "3cdbcd1a70fa81a30a6ceaaa4ca666272448023703ee40e9e8711c4d6ac8e538"
+  }
+]

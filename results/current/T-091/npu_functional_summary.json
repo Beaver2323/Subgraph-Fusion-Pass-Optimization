@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-091",
+  "generated_at": "2026-09-14T21:07:22.072710+08:00",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "stack-normalization",
+      "acceptance_unit_id": "AU-split-cat-normalize-stack-default",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-091/functional/stack-normalization.json",
+      "gate": "results/current/T-091/performance_gates/stack-normalization.json"
+    }
+  ]
+}

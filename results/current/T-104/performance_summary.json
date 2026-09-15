@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-104",
+  "backend": "triton_experimental",
+  "status": "performance-disposition-complete-for-listed-units",
+  "acceptance_units": [
+    {
+      "unit": "pattern-13",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-13",
+      "performance_status": "measured",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.45254011638462543,
+            "p99": 0.4935425147414233
+          },
+          "on": {
+            "p50": 0.48318016342818737,
+            "p99": 0.5308250850066545
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.33883000910282135,
+            "p99": 0.3653486049175263
+          },
+          "on": {
+            "p50": 0.3578300029039383,
+            "p99": 0.38051480114460007
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": -6.770680859930689,
+          "p99": -7.554074705147595
+        },
+        "event_ms": {
+          "p50": -5.60752982046262,
+          "p99": -4.151157558271601
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.0115911507670379,
+        "host_ms_on": 1.0031317730326574,
+        "event_ms_off": 1.0252774648378606,
+        "event_ms_on": 1.0075504179933183
+      },
+      "verdict": "PERF_REGRESSED",
+      "product_action": "不改变默认开关；非完整模型",
+      "raw_results": {
+        "off1": {
+          "path": "issues/REF-sfdp-pattern-13-native/evidence/benchmark-20260914T230901+0800/off1/result.json",
+          "sha256": "7ac02bf0c0382a6ec91bc0b1c3570b1f982bd4316755310259aece7dbd2b956c"
+        },
+        "on1": {
+          "path": "issues/REF-sfdp-pattern-13-native/evidence/benchmark-20260914T230901+0800/on1/result.json",
+          "sha256": "c69ccd0c6003718b2fcad2d913f192e50bccdf969f1c7f8798622f29d774f18b"
+        },
+        "on2": {
+          "path": "issues/REF-sfdp-pattern-13-native/evidence/benchmark-20260914T230901+0800/on2/result.json",
+          "sha256": "b25fe006ec436c7a344681cd2743806ede29d0ecd701334ac92783ce61fc87a6"
+        },
+        "off2": {
+          "path": "issues/REF-sfdp-pattern-13-native/evidence/benchmark-20260914T230901+0800/off2/result.json",
+          "sha256": "e4d3fab992286ab4ba82b836a86fa370f9b948023db433bc82dd99a6f09aa884"
+        },
+        "off3": {
+          "path": "issues/REF-sfdp-pattern-13-native/evidence/benchmark-20260914T230901+0800/off3/result.json",
+          "sha256": "6592e94411f1730f396a550d53aa901f0cb165d5c10dcc4b9b1d92868eb4fe59"
+        },
+        "on3": {
+          "path": "issues/REF-sfdp-pattern-13-native/evidence/benchmark-20260914T230901+0800/on3/result.json",
+          "sha256": "d7118a48b3d5a32d3331a7814d72296af5df3059e52b8f9ebecccc4ec05eb718"
+        }
+      },
+      "measurement_workload": "sfdp-pattern-13-registered-half-inference",
+      "input_spec": [
+        {
+          "shape": [
+            1024,
+            128,
+            128
+          ],
+          "stride": [
+            16384,
+            128,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": false
+        },
+        {
+          "shape": [
+            1024,
+            128,
+            128
+          ],
+          "stride": [
+            16384,
+            128,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": false
+        },
+        {
+          "shape": [
+            1024,
+            128,
+            128
+          ],
+          "stride": [
+            16384,
+            128,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": false
+        }
+      ],
+      "memory": {
+        "off1": {
+          "allocated": 536877568,
+          "reserved": 1061158912
+        },
+        "on1": {
+          "allocated": 543891968,
+          "reserved": 580911104
+        },
+        "on2": {
+          "allocated": 543891968,
+          "reserved": 580911104
+        },
+        "off2": {
+          "allocated": 536877568,
+          "reserved": 1061158912
+        },
+        "off3": {
+          "allocated": 536877568,
+          "reserved": 1061158912
+        },
+        "on3": {
+          "allocated": 543891968,
+          "reserved": 580911104
+        }
+      },
+      "compile_ms": {
+        "off1": 92516.62715990096,
+        "on1": 13932.407579850405,
+        "on2": 13860.321000218391,
+        "off2": 92667.40859020501,
+        "off3": 93860.35184003413,
+        "on3": 15466.094949748367
+      },
+      "codegen_review": {
+        "off1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__softmax_0.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__softmax_0.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__softmax_0.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        }
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "model_e2e": false,
+        "scope": "inference-forward",
+        "aggregation": "三OFF/三ON各臂p50/p99中位数；高波动或时钟冲突记MIXED"
+      },
+      "bundle": "results/current/T-104/attention_bundles/pattern-13.json"
+    }
+  ],
+  "generated_at": "2026-09-14T23:16:45.643775+08:00"
+}

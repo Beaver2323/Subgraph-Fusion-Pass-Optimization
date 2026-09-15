@@ -1,0 +1,506 @@
+{
+  "generated_at": "2026-09-14T23:36:33.642495+08:00",
+  "status": "instrumented-codegen-replay-not-community-verdict",
+  "backend": "triton_experimental",
+  "pid": 524984,
+  "physical_npu": "5",
+  "python_executable": "/home/z50063656/envs/Pass/bin/python",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "torch_npu_version": "2.14.0a0+git83cc452",
+  "source_path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-22-native/evidence/t106-native-xtdt3xs0/adapter/debug/torch_compile_debug/run_2026_09_14_22_59_03_658879-pid_5397/torchinductor/model__0_inference_0.0/output_code.py",
+  "generated_source_sha256": "d92fe32c77e0b0ca24d83e69e998eb734b519f1a14b3de9328c0ca6c66d0e5e9",
+  "diagnostic_source_sha256": "e7848d14c04a2796431ac1f0a2c88c108af0a1bb3cecf9b9dff05c1f4447894f",
+  "candidate": "mask-broadcast-extract-shape-only",
+  "executed_generated_source_sha256": "312c4ef1ea6b51e8890f496cd80068682a37fed5cb8ed6fa5f6bcca137f38eec",
+  "events": [
+    {
+      "seed": 20260914,
+      "kernel": "triton_unk_fused_matmul_mul_permute_0",
+      "shape": [
+        4,
+        16,
+        2,
+        32
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 4096,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260914,
+      "kernel": "triton_unk_fused_matmul_mul_transpose_1",
+      "shape": [
+        4,
+        16,
+        32,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 4096,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260914,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_2",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.bool",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260914,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_3",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260914,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_4",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260914,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_5",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.bool",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260914,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_6",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260914,
+      "kernel": "triton_unk_fused_matmul_transpose_7",
+      "shape": [
+        4,
+        16,
+        2,
+        32
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 4096,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260915,
+      "kernel": "triton_unk_fused_matmul_mul_permute_0",
+      "shape": [
+        4,
+        16,
+        2,
+        32
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 4096,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260915,
+      "kernel": "triton_unk_fused_matmul_mul_transpose_1",
+      "shape": [
+        4,
+        16,
+        32,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 4096,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260915,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_2",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.bool",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260915,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_3",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260915,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_4",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260915,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_5",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.bool",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260915,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_6",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260915,
+      "kernel": "triton_unk_fused_matmul_transpose_7",
+      "shape": [
+        4,
+        16,
+        2,
+        32
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 4096,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260916,
+      "kernel": "triton_unk_fused_matmul_mul_permute_0",
+      "shape": [
+        4,
+        16,
+        2,
+        32
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 4096,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260916,
+      "kernel": "triton_unk_fused_matmul_mul_transpose_1",
+      "shape": [
+        4,
+        16,
+        32,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 4096,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260916,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_2",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.bool",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260916,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_3",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260916,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_4",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260916,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_5",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.bool",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260916,
+      "kernel": "triton_unk_fused__safe_softmax_add_matmul_6",
+      "shape": [
+        4,
+        16,
+        2,
+        2
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 256,
+      "max_abs_error": 0.0
+    },
+    {
+      "seed": 20260916,
+      "kernel": "triton_unk_fused_matmul_transpose_7",
+      "shape": [
+        4,
+        16,
+        2,
+        32
+      ],
+      "dtype": "torch.float32",
+      "finite": true,
+      "mismatch": 0,
+      "numel": 4096,
+      "max_abs_error": 0.0
+    }
+  ],
+  "summaries": [
+    {
+      "seed": 20260914,
+      "output": {
+        "shape": [
+          4,
+          16,
+          2,
+          32
+        ],
+        "dtype": "torch.float32",
+        "finite": true,
+        "mismatch": 0,
+        "numel": 4096,
+        "max_abs_error": 0.0
+      },
+      "key": {
+        "shape": [
+          4,
+          16,
+          2,
+          32
+        ],
+        "dtype": "torch.float32",
+        "finite": true,
+        "mismatch": 0,
+        "numel": 4096,
+        "max_abs_error": 0.0
+      },
+      "value": {
+        "shape": [
+          4,
+          16,
+          2,
+          32
+        ],
+        "dtype": "torch.float32",
+        "finite": true,
+        "mismatch": 0,
+        "numel": 4096,
+        "max_abs_error": 0.0
+      }
+    },
+    {
+      "seed": 20260915,
+      "output": {
+        "shape": [
+          4,
+          16,
+          2,
+          32
+        ],
+        "dtype": "torch.float32",
+        "finite": true,
+        "mismatch": 0,
+        "numel": 4096,
+        "max_abs_error": 0.0
+      },
+      "key": {
+        "shape": [
+          4,
+          16,
+          2,
+          32
+        ],
+        "dtype": "torch.float32",
+        "finite": true,
+        "mismatch": 0,
+        "numel": 4096,
+        "max_abs_error": 0.0
+      },
+      "value": {
+        "shape": [
+          4,
+          16,
+          2,
+          32
+        ],
+        "dtype": "torch.float32",
+        "finite": true,
+        "mismatch": 0,
+        "numel": 4096,
+        "max_abs_error": 0.0
+      }
+    },
+    {
+      "seed": 20260916,
+      "output": {
+        "shape": [
+          4,
+          16,
+          2,
+          32
+        ],
+        "dtype": "torch.float32",
+        "finite": true,
+        "mismatch": 0,
+        "numel": 4096,
+        "max_abs_error": 0.0
+      },
+      "key": {
+        "shape": [
+          4,
+          16,
+          2,
+          32
+        ],
+        "dtype": "torch.float32",
+        "finite": true,
+        "mismatch": 0,
+        "numel": 4096,
+        "max_abs_error": 0.0
+      },
+      "value": {
+        "shape": [
+          4,
+          16,
+          2,
+          32
+        ],
+        "dtype": "torch.float32",
+        "finite": true,
+        "mismatch": 0,
+        "numel": 4096,
+        "max_abs_error": 0.0
+      }
+    }
+  ],
+  "caveat": "逐kernel额外同步和eager对照会改变时序；不改原kernel，不是原例复验或性能测量"
+}

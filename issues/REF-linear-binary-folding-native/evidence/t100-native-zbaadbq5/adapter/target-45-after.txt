@@ -1,0 +1,11 @@
+
+
+
+def forward(self, arg2_1):
+    arg1_1 = self._frozen_param1
+    permute = self._frozen_param2
+    reshape_default = torch.ops.aten.reshape.default(arg1_1, (32,));  arg1_1 = None
+    sub_tensor = torch.ops.aten.sub.Tensor(0, reshape_default);  reshape_default = None
+    addmm_default = torch.ops.aten.addmm.default(sub_tensor, arg2_1, permute);  sub_tensor = arg2_1 = permute = None
+    return (addmm_default,)
+    

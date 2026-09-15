@@ -1,7 +1,11 @@
 # T-100 功能与性能测例讲解
 
-> 更新时间：2026-09-10 21:38:54 CST（UTC+08:00）
-> 状态：1 个GPU-ready单元，0 个候选明确延期。
+> 更新时间：2026-09-14 21:32 CST（UTC+08:00）
+> 状态：本合同GPU、NPU完整原方法、独立OFF/ON及六臂性能已完成，PERF_IMPROVED；没有修改默认配置。
+
+实际176次Tensor比较、160正例/16负例及生成代码/计时讲解见
+[最终功能与性能结果](../results/current/T-100/linear-binary-folding_讲解.md)。
+原测试的use_bias循环变量未传入Linear，因此实际只覆盖bias=True；不能宣称无bias分支已验证。
 
 NPU 功能、修复验证和性能统一使用 `triton_experimental`，并在导入 `torch`/`torch_npu` 前选后端；OFF/ON 每臂使用新进程。
 

@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t091_t100_performance_worker.py",
+    "--unit",
+    "stack-normalization",
+    "--mode",
+    "on",
+    "--device",
+    "npu",
+    "--phase",
+    "functional",
+    "--output",
+    "/home/z50063656/tmp/t091-target-only-validation/functional-20260914T205716+0800/stack-normalization/on",
+    "--warmup",
+    "10",
+    "--runs",
+    "100"
+  ],
+  "return_code": 0,
+  "cwd": "/home/z50063656/tmp",
+  "backend": "triton_experimental",
+  "physical_npu": "5",
+  "generated_at": "2026-09-14T20:58:15.705347+08:00"
+}

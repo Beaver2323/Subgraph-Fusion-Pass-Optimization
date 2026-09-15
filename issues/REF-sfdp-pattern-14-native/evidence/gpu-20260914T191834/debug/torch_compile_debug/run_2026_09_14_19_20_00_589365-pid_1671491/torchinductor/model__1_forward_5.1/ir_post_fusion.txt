@@ -1,0 +1,147 @@
+op0: SchedulerNode(ComputedBuffer)
+op0.writes = [MemoryDep('buf0', c0, {c0: 16})]
+op0.unmet_dependencies = []
+op0.met_dependencies = []
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: ComputedBuffer
+    buf0.layout = FixedLayout('cuda:0', torch.float32, size=[2, 8], stride=[8, 1])
+    buf0.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op1'), can_inplace=False, is_weak=False),
+        NodeUser(node=OUTPUT, can_inplace=False, is_weak=False),
+    ]
+]
+op0.group.device = cuda:0
+op0.group.iteration = (16, 1)
+op0.sizes = ((2, 8), ())
+buf0_layout = FixedLayout('cuda:0', torch.float32, size=[2, 8], stride=[8, 1])
+class op0_loop_body:
+    var_ranges = {p0: 2, p1: 8}
+    index0 = p1
+    index1 = -p0 + ((p1))
+    index2 = 8*p0 + p1
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        index_expr = ops.index_expr(get_index, torch.int64)
+        constant = ops.constant(0, torch.int64)
+        ge = ops.ge(index_expr, constant)
+        get_index_1 = self.get_index('index0')
+        index_expr_1 = ops.index_expr(get_index_1, torch.int64)
+        constant_1 = ops.constant(2, torch.int64)
+        lt = ops.lt(index_expr_1, constant_1)
+        masked_subblock1 = self.masked_subblock1(lt, 0.0)
+        get_index_2 = self.get_index('index0')
+        index_expr_2 = ops.index_expr(get_index_2, torch.int64)
+        constant_2 = ops.constant(2, torch.int64)
+        ge_1 = ops.ge(index_expr_2, constant_2)
+        get_index_3 = self.get_index('index0')
+        index_expr_3 = ops.index_expr(get_index_3, torch.int64)
+        constant_3 = ops.constant(8, torch.int64)
+        lt_1 = ops.lt(index_expr_3, constant_3)
+        masked_subblock2 = self.masked_subblock2(ge_1, 0.0)
+        where = ops.where(lt, masked_subblock1, masked_subblock2)
+        get_index_4 = self.get_index('index2')
+        store = ops.store('buf0', get_index_4, where, None)
+        return store
+    def masked_subblock1(self, ops):
+        get_index = self.get_index('index1')
+        index_expr = ops.index_expr(get_index, torch.int64)
+        constant = ops.constant(0, torch.int64)
+        le = ops.le(index_expr, constant)
+        constant_1 = ops.constant(True, torch.bool)
+        logical_and = ops.logical_and(le, constant_1)
+        logical_not = ops.logical_not(logical_and)
+        get_index_1 = self.get_index('index1')
+        index_expr_1 = ops.index_expr(get_index_1, torch.int64)
+        constant_2 = ops.constant(0, torch.int64)
+        le_1 = ops.le(index_expr_1, constant_2)
+        constant_3 = ops.constant(True, torch.bool)
+        logical_and_1 = ops.logical_and(le_1, constant_3)
+        constant_4 = ops.constant(True, torch.bool)
+        where = ops.where(logical_not, constant_4, logical_and_1)
+        to_dtype = ops.to_dtype(where, torch.float32, src_dtype = torch.bool, use_compute_types = True)
+        return to_dtype
+    def masked_subblock2(self, ops):
+        constant = ops.constant(0.0, torch.float32)
+        return constant
+
+
+op1: ExternKernelSchedulerNode(FallbackKernel)
+op1.writes = [StarDep(name='buf1', mode=None)]
+op1.unmet_dependencies = [StarDep(name='buf0', mode=None)]
+op1.met_dependencies = 
+    [   StarDep(name='primals_1', mode=None),
+        StarDep(name='primals_2', mode=None),
+        StarDep(name='primals_3', mode=None)]
+op1.min_input_distance = 1
+op1.max_input_distance = 1
+op1.outputs = [
+    buf1: FallbackKernel
+    buf1.layout = MultiOutputLayout(device=device(type='cuda', index=0))
+    buf1.users = [
+        NodeUser(node=ExternKernelSchedulerNode(name='op2'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op3'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op4'), can_inplace=False, is_weak=False),
+        NodeUser(node=ExternKernelSchedulerNode(name='op5'), can_inplace=False, is_weak=False),
+    ]
+]
+op1.node.kernel = torch.ops.aten._scaled_dot_product_efficient_attention.default
+
+
+op2: ExternKernelSchedulerNode(MultiOutput)
+op2.writes = [   MemoryDep('buf2', 1024*d0 + 32*d1 + 512*d2 + d3, {d0: 4, d1: 16, d2: 2, d3: 32})]
+op2.unmet_dependencies = [StarDep(name='buf1', mode=None)]
+op2.met_dependencies = []
+op2.min_input_distance = 2
+op2.max_input_distance = 2
+op2.outputs = [
+    buf2: MultiOutput
+    buf2.layout = FixedLayout('cuda:0', torch.float32, size=[4, 16, 2, 32], stride=[1024, 32, 512, 1])
+    buf2.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op2.node.kernel = None
+
+
+op3: ExternKernelSchedulerNode(MultiOutput)
+op3.writes = [MemoryDep('buf3', 512*d0 + 32*d1 + d2, {d0: 4, d1: 16, d2: 32})]
+op3.unmet_dependencies = [StarDep(name='buf1', mode=None)]
+op3.met_dependencies = []
+op3.min_input_distance = 2
+op3.max_input_distance = 2
+op3.outputs = [
+    buf3: MultiOutput
+    buf3.layout = FixedLayout('cuda:0', torch.float32, size=[4, 16, 32], stride=[512, 32, 1])
+    buf3.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op3.node.kernel = None
+
+
+op4: ExternKernelSchedulerNode(MultiOutput)
+op4.writes = [MemoryDep('buf4', 0, {})]
+op4.unmet_dependencies = [StarDep(name='buf1', mode=None)]
+op4.met_dependencies = []
+op4.min_input_distance = 2
+op4.max_input_distance = 2
+op4.outputs = [
+    buf4: MultiOutput
+    buf4.layout = FixedLayout('cuda:0', torch.int64, size=[], stride=[])
+    buf4.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op4.node.kernel = None
+
+
+op5: ExternKernelSchedulerNode(MultiOutput)
+op5.writes = [MemoryDep('buf5', 0, {})]
+op5.unmet_dependencies = [StarDep(name='buf1', mode=None)]
+op5.met_dependencies = []
+op5.min_input_distance = 2
+op5.max_input_distance = 2
+op5.outputs = [
+    buf5: MultiOutput
+    buf5.layout = FixedLayout('cuda:0', torch.int64, size=[], stride=[])
+    buf5.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op5.node.kernel = None
+
+

@@ -1,0 +1,31 @@
+===== graph 1: debug/native_contract_observer/1670285-ReplacementPatternEntry-0001/fx_graph_readable.py =====
+
+
+
+def forward(self, arg0_1, arg1_1, arg2_1):
+    permute = torch.ops.aten.permute.default(arg0_1, [0, 2, 1]);  arg0_1 = None
+    bmm = torch.ops.aten.bmm.default(arg1_1, permute);  arg1_1 = permute = None
+    convert_element_type_2 = torch.ops.prims.convert_element_type.default(bmm, torch.float32);  bmm = None
+    amax = torch.ops.aten.amax.default(convert_element_type_2, [-1], True)
+    sub = torch.ops.aten.sub.Tensor(convert_element_type_2, amax);  convert_element_type_2 = amax = None
+    exp = torch.ops.aten.exp.default(sub);  sub = None
+    sum_1 = torch.ops.aten.sum.dim_IntList(exp, [-1], True)
+    div = torch.ops.aten.div.Tensor(exp, sum_1);  exp = sum_1 = None
+    convert_element_type_3 = torch.ops.prims.convert_element_type.default(div, torch.float16);  div = None
+    bmm_1 = torch.ops.aten.bmm.default(convert_element_type_3, arg2_1);  convert_element_type_3 = arg2_1 = None
+    return (bmm_1,)
+    
+===== graph 2: debug/torch_compile_debug/run_2026_09_14_19_19_38_952140-pid_1670285/torchinductor/model__0_inference_0.0/fx_graph_readable.py =====
+class <lambda>(torch.nn.Module):
+    def forward(self, arg0_1: "f16[4, 8, 16]", arg1_1: "f16[4, 8, 16]", arg2_1: "f16[4, 8, 16]"):
+        # No stacktrace found for following nodes
+        unsqueeze_default: "f16[1, 4, 8, 16]" = torch.ops.aten.unsqueeze.default(arg1_1, 0);  arg1_1 = None
+        unsqueeze_default_1: "f16[1, 4, 8, 16]" = torch.ops.aten.unsqueeze.default(arg0_1, 0);  arg0_1 = None
+        unsqueeze_default_2: "f16[1, 4, 8, 16]" = torch.ops.aten.unsqueeze.default(arg2_1, 0);  arg2_1 = None
+        _scaled_dot_product_flash_attention_default = torch.ops.aten._scaled_dot_product_flash_attention.default(unsqueeze_default, unsqueeze_default_1, unsqueeze_default_2, scale = 1.0);  unsqueeze_default = unsqueeze_default_1 = unsqueeze_default_2 = None
+        getitem: "f16[1, 4, 8, 16]" = _scaled_dot_product_flash_attention_default[0];  _scaled_dot_product_flash_attention_default = None
+
+        # File: /data/z50063656/src/pytorch/test/inductor/test_fused_attention.py:897 in dot_prod_attention, code: return torch.bmm(attn_weight, value)
+        squeeze_dim: "f16[4, 8, 16]" = torch.ops.aten.squeeze.dim(getitem, 0);  getitem = None
+        return (squeeze_dim,)
+

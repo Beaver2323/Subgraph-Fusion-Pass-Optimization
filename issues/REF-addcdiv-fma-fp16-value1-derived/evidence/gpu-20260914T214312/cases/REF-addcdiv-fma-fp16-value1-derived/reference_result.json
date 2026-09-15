@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T21:43:29+08:00",
+  "run_id": "reference-20260914T214312+0800-jqft26ak",
+  "case": {
+    "case_id": "REF-addcdiv-fma-fp16-value1-derived",
+    "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+    "variant_ids": [
+      "fp16-value1-bitwise-regression"
+    ],
+    "source_test": "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda",
+    "tracking_mode": "derived",
+    "derivation": {
+      "basis": "community-test-dtype-extension",
+      "changed_dimensions": [
+        "dtype"
+      ],
+      "preserved_contract": [
+        "shape=64x64",
+        "value=1社区既有子分支",
+        "eager/compiled bitwise equal",
+        "addcdiv_fma_fused=0"
+      ]
+    }
+  },
+  "source": {
+    "pytorch_root": "/data/z50063656/src/pytorch",
+    "expected_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "environment_fingerprint_ref": "../../environment.json",
+  "execution": {
+    "status": "passed",
+    "success": true,
+    "return_code": 0,
+    "duration_seconds": 10.327954,
+    "command": [
+      "/data/z50063656/envs/PassGPURef/bin/python",
+      "/data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t078_addcdiv_dtype_reference.py",
+      "--source-test",
+      "test/inductor/test_torchinductor.py::GPUTests.test_addcdiv_fma_bitwise_equal_cuda",
+      "--dtype",
+      "float16",
+      "--value",
+      "1"
+    ],
+    "working_directory": "/data/z50063656/tmp",
+    "timeout_seconds": 3600,
+    "tests_ran": 1,
+    "tests_skipped": 0,
+    "tests_expected": 1,
+    "tests_expected_failures": 0,
+    "tests_unexpected_successes": 0,
+    "skip_reason": null
+  },
+  "match": {
+    "expected": false,
+    "expected_assertions": [
+      "FP16 compiled/eager 位级一致",
+      "addcdiv_fma_fused=0",
+      "不得通过FMA重融合掩盖普通div+add精度问题"
+    ],
+    "assertion_status": "passed-inside-community-test",
+    "observed_count": null,
+    "evidence_method": "社区合同派生入口内显式执行 correctness/counter/codegen 断言"
+  },
+  "fx": {
+    "before": {
+      "captured": true,
+      "count": 1,
+      "combined_path": "fx_before.txt",
+      "files": [
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_21_43_23_534976-pid_2123823/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 510,
+          "sha256": "92c52c4235e36c2c3663b521cd5c741d5d43f0a5cab57fa716713fcfec7771a7",
+          "normalized_sha256": "92c52c4235e36c2c3663b521cd5c741d5d43f0a5cab57fa716713fcfec7771a7"
+        }
+      ],
+      "normalized_signature": "e6d530ec1bd58758cefb83bdcd9f4dc481c4624c3af21f9f13de76ac23f7c28f"
+    },
+    "after": {
+      "captured": true,
+      "count": 1,
+      "combined_path": "fx_after.txt",
+      "files": [
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_21_43_23_534976-pid_2123823/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 510,
+          "sha256": "92c52c4235e36c2c3663b521cd5c741d5d43f0a5cab57fa716713fcfec7771a7",
+          "normalized_sha256": "92c52c4235e36c2c3663b521cd5c741d5d43f0a5cab57fa716713fcfec7771a7"
+        }
+      ],
+      "normalized_signature": "e6d530ec1bd58758cefb83bdcd9f4dc481c4624c3af21f9f13de76ac23f7c28f"
+    },
+    "stable_signature": "1078726469d463bfe4dbef8146849711c4307f6814ab7d97a06d53c27f4c6127"
+  },
+  "correctness": {
+    "status": "derived-assertion-passed",
+    "evidence_method": "社区合同派生 dtype 测例的 eager/compiled 与 codegen 断言"
+  },
+  "benchmark": {
+    "status": "not-configured",
+    "functional_gate": "passed",
+    "reason": "本轮仅建立原生 community functional baseline；独立性能方案与 worker 状态另行校验。"
+  },
+  "adapter_decision": "derived-valid-after-community-contract",
+  "reference_valid": true
+}

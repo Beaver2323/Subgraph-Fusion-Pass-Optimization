@@ -13,6 +13,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from run_prepared_performance import run_arm
 
 ROOT = Path(__file__).resolve().parents[1]
 WORK = Path('/home/z50063656/tmp')
@@ -58,6 +59,10 @@ def main() -> int:
     parser.add_argument('--adapter', action='store_true')
     parser.add_argument('--candidate-device', type=Path, help='T-087 独立源码 device.py，只在子进程加载，不修改安装态')
     parser.add_argument('--e8m0-candidate', action='store_true')
+    parser.add_argument('--attention-registration-candidate', action='store_true')
+    parser.add_argument('--attention-select-slice-candidate', action='store_true')
+    parser.add_argument('--attention-math-codegen', action='store_true')
+    parser.add_argument('--conv-hf32', choices=('default','off'), default='default')
     args = parser.parse_args()
     if Path.cwd().resolve() != WORK:
         parser.error(f'必须从 {WORK} 启动')
@@ -68,6 +73,22 @@ def main() -> int:
         parser.error('候选只允许用于 T-087 设备解析的原 adapter')
     if args.e8m0_candidate and (not args.adapter or args.task != 'T-096'):
         parser.error('E8M0 候选只允许用于 T-096 原 adapter')
+    reviewed_math_cases = {
+        'REF-sfdp-pattern-14-native': 'T-104',
+        **{f'REF-sfdp-pattern-{n}-native': 'T-106' for n in (21,22,24)},
+    }
+    if args.attention_math_codegen and (not args.adapter
+                                      or reviewed_math_cases.get(args.case) != args.task):
+        parser.error('数学展开代码断言适配仅允许已逐例审查的pattern 14/21/22/24')
+    if args.attention_registration_candidate and (not args.adapter or args.task not in
+            {'T-102','T-103','T-104','T-105','T-106','T-107'}):
+        parser.error('attention 注册候选只允许用于 T-102～T-107 原 adapter')
+    if args.attention_select_slice_candidate and (not args.adapter or args.task != 'T-106'
+            or args.case not in {f'REF-sfdp-pattern-{n}-native' for n in (21,22,23,24)}
+            or args.attention_registration_candidate):
+        parser.error('select-slice候选仅用于T-106的22及近邻21/23/24，禁止混合注册候选')
+    if args.conv_hf32!='default' and (not args.adapter or args.task!='T-098'):
+        parser.error('HF32精度模式适配仅用于T-098 adapter，不能改变其他case')
     suffix = args.task.lower().replace('-', '')
     plan = json.loads((ROOT / f'upstream/{suffix}_reference_plan.yaml').read_text())
     selected = [c for c in plan['cases'] if c['case_id'] == args.case]
@@ -94,7 +115,9 @@ def main() -> int:
                              and record.get('status') in {'failed', 'skipped-or-xfail', 'no-tests'}]
         if not adapter.is_file() or not matching_blockers:
             parser.error('最小适配前必须有本 case 原生记录及 case adapter')
-    base = case_root / ('candidate_runs' if args.candidate_device or args.e8m0_candidate else ('adapter_runs' if args.adapter else 'native_runs'))
+    base = case_root / ('precision_runs' if args.conv_hf32!='default' else
+                       'candidate_runs' if args.candidate_device or args.e8m0_candidate or args.attention_registration_candidate
+                       else ('adapter_runs' if args.adapter else 'native_runs'))
     base.mkdir(parents=True, exist_ok=True)
     run = Path(tempfile.mkdtemp(prefix='native-' + datetime.now().strftime('%Y%m%dT%H%M%S') + '-', dir=base))
     cache = Path(tempfile.mkdtemp(prefix=suffix + '-native-', dir=WORK))
@@ -105,6 +128,14 @@ def main() -> int:
             command.extend(['--candidate-device', str(args.candidate_device.resolve(strict=True))])
         if args.e8m0_candidate:
             command.append('--e8m0-candidate')
+        if args.attention_registration_candidate:
+            command.append('--registration-candidate')
+        if args.attention_select_slice_candidate:
+            command.append('--select-slice-candidate')
+        if args.attention_math_codegen:
+            command.append('--allow-reviewed-sdpa-math')
+        if args.conv_hf32!='default':
+            command.extend(['--conv-hf32',args.conv_hf32])
     env = dict(os.environ, ASCEND_RT_VISIBLE_DEVICES=str(args.npu), SET_NPU_DEVICE='0',
                TORCHINDUCTOR_NPU_BACKEND='triton_experimental', TORCH_DEVICE_BACKEND_AUTOLOAD='1',
                TORCHINDUCTOR_FORCE_DISABLE_CACHES='1', TORCHINDUCTOR_COMPILE_THREADS='1',
@@ -117,15 +148,18 @@ def main() -> int:
                       '## 环境\n\nPass 环境；后端在导入前选择 triton_experimental；cwd 为临时工作目录。\n\n'
                       '## 结果\n\n执行中，未判定 PASS。\n\n## 下游处理\n\n等待日志与合同复核。\n', encoding='utf-8')
     installed_before = installed_product_snapshot()
+    adapter_source_sha256 = hashlib.sha256(adapter.read_bytes()).hexdigest() if args.adapter else None
     with (run/'stdout.log').open('w') as out, (run/'stderr.log').open('w') as err:
         try:
-            code = subprocess.run(command, cwd=WORK, env=env, stdout=out, stderr=err, timeout=args.timeout).returncode
+            code = run_arm(command, WORK, out, err, timeout=args.timeout, env=env)
         except subprocess.TimeoutExpired:
             code = 124
     log = (run/'stdout.log').read_text(errors='replace') + '\n' + (run/'stderr.log').read_text(errors='replace')
     status, tests, skips = classify(code, log)
     if args.adapter and status == 'native-test-passed-awaiting-contract-review':
         status = 'adapted-test-passed-awaiting-contract-review'
+    adapter_record_path = cache/'adapter/result.json'
+    adapter_record = json.loads(adapter_record_path.read_text()) if adapter_record_path.is_file() else {}
     result = dict(task_id=args.task, case_id=args.case, generated_at=timestamp,
                   status=status, tests_ran=tests, tests_skipped=skips, return_code=code,
                   mode='adapter' if args.adapter else 'native',
@@ -133,11 +167,17 @@ def main() -> int:
                   installed_product_before=installed_before,
                   installed_product_after=installed_product_snapshot(),
                   e8m0_candidate=args.e8m0_candidate,
+                  attention_registration_candidate=args.attention_registration_candidate,
+                  attention_select_slice_candidate=args.attention_select_slice_candidate,
+                  attention_math_codegen_adaptation=args.attention_math_codegen,
+                  precision_mode_adaptation=args.conv_hf32,
                   test_body_execution_proven=tests > skips and '_FailedTest' not in log and code == 0,
                   command=command, working_directory=str(WORK), physical_npu=args.npu,
-                  backend_requested='triton_experimental', backend_verified=False,
+                  backend_requested='triton_experimental', backend_verified=adapter_record.get('backend') == 'triton_experimental',
                   contract_review_required=True, source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
-                  raw_artifact_dir=str(cache), product_gate_bypassed=False, body_or_assertions_modified=False)
+                  raw_artifact_dir=str(cache), product_gate_bypassed=adapter_record.get('product_gate_bypassed',False),
+                  adapter_source_sha256=adapter_source_sha256,
+                  body_or_assertions_modified=adapter_record.get('body_or_assertions_modified',False))
     (run/'run_result.json').write_text(json.dumps(result, ensure_ascii=False, indent=2)+'\n')
     with report.open('a', encoding='utf-8') as f:
         f.write(f'\n## 执行完成\n\n状态 `{status}`；返回码 {code}；tests={tests}；skip={skips}。\n'

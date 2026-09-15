@@ -1,0 +1,12 @@
+
+
+
+def forward(self, arg2_1):
+    arg0_1 = self._frozen_param0
+    view = torch.ops.aten.reshape.default(arg2_1, [8, 3]);  arg2_1 = None
+    permute = self._frozen_param2
+    addmm = torch.ops.aten.addmm.default(arg0_1, view, permute);  arg0_1 = view = permute = None
+    view_1 = torch.ops.aten.reshape.default(addmm, [2, 4, 32]);  addmm = None
+    div = torch.ops.aten.div.Tensor(view_1, 2.0);  view_1 = None
+    return (div,)
+    

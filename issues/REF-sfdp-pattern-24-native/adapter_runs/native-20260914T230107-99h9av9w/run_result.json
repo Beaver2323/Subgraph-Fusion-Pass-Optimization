@@ -1,0 +1,77 @@
+{
+  "task_id": "T-106",
+  "case_id": "REF-sfdp-pattern-24-native",
+  "generated_at": "2026-09-14T23:01:07.219808+08:00",
+  "status": "adapted-test-passed-awaiting-contract-review",
+  "tests_ran": 1,
+  "tests_skipped": 0,
+  "return_code": 0,
+  "mode": "adapter",
+  "product_candidate": null,
+  "installed_product_before": {
+    "_inductor/triton_experimental/device.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/device.py",
+      "sha256": "2f3ea97ea780d01a505cf788555c01c2aebb9721c15d76613e65ca5728730835"
+    },
+    "_inductor/triton_experimental/codegen/triton.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/codegen/triton.py",
+      "sha256": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381"
+    },
+    "_inductor/triton_experimental/__init__.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/__init__.py",
+      "sha256": "d11e1c9a3da36633e0a8d4d7baecc119140b8b3fff2b11a09b0947056cbc3538"
+    },
+    "_inductor/triton_experimental/config.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/config.py",
+      "sha256": "fbc285361432ecef6ba2064f7c83f6ef45840e09c382479bb625d4ac229c5bf0"
+    },
+    "_inductor/triton_experimental/e8m0.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/e8m0.py",
+      "sha256": "96a19913e9817b003c5e4aa3a33eefbc4f311ac794a8ec793ceed819d928370d"
+    }
+  },
+  "installed_product_after": {
+    "_inductor/triton_experimental/device.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/device.py",
+      "sha256": "2f3ea97ea780d01a505cf788555c01c2aebb9721c15d76613e65ca5728730835"
+    },
+    "_inductor/triton_experimental/codegen/triton.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/codegen/triton.py",
+      "sha256": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381"
+    },
+    "_inductor/triton_experimental/__init__.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/__init__.py",
+      "sha256": "d11e1c9a3da36633e0a8d4d7baecc119140b8b3fff2b11a09b0947056cbc3538"
+    },
+    "_inductor/triton_experimental/config.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/config.py",
+      "sha256": "fbc285361432ecef6ba2064f7c83f6ef45840e09c382479bb625d4ac229c5bf0"
+    },
+    "_inductor/triton_experimental/e8m0.py": {
+      "path": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/e8m0.py",
+      "sha256": "96a19913e9817b003c5e4aa3a33eefbc4f311ac794a8ec793ceed819d928370d"
+    }
+  },
+  "e8m0_candidate": false,
+  "attention_registration_candidate": false,
+  "attention_math_codegen_adaptation": true,
+  "precision_mode_adaptation": "default",
+  "test_body_execution_proven": true,
+  "command": [
+    "/home/z50063656/envs/Pass/bin/python",
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-24-native/npu_adapter.py",
+    "--artifact-dir",
+    "/home/z50063656/tmp/t106-native-uvnnjcrx/adapter",
+    "--allow-reviewed-sdpa-math"
+  ],
+  "working_directory": "/home/z50063656/tmp",
+  "physical_npu": 5,
+  "backend_requested": "triton_experimental",
+  "backend_verified": true,
+  "contract_review_required": true,
+  "source_sha256": "56b2d52db32bf9df7e2cef2a9ad6fc898d0f5882204b8a105fb5c5aa84ff966f",
+  "raw_artifact_dir": "/home/z50063656/tmp/t106-native-uvnnjcrx",
+  "product_gate_bypassed": false,
+  "adapter_source_sha256": "7dcfe6b36e2f99367b591afd3062659c25477b881cf933063a262c5739929946",
+  "body_or_assertions_modified": true
+}

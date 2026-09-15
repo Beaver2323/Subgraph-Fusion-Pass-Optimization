@@ -1,0 +1,9 @@
+test_dtype_extension (__main__.main.<locals>.AddcdivDtypeReference.test_dtype_extension) ... /data/z50063656/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 21:43:25.354000 2123823 torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /data/z50063656/tmp/t078-reference-results/reference-20260914T214312+0800-jqft26ak/cases/REF-addcdiv-fma-fp16-value1-derived/debug/torch_compile_debug/run_2026_09_14_21_43_23_534976-pid_2123823/torchinductor/model__0_inference_0.0
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 4.871s
+
+OK

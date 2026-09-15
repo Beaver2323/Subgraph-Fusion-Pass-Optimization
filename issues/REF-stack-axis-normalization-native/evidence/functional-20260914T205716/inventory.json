@@ -1,0 +1,97 @@
+{
+  "generated_at": "2026-09-14T21:04:38.346593+08:00",
+  "source_run": "/home/z50063656/tmp/t091-target-only-validation/functional-20260914T205716+0800",
+  "files": [
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/debug/torch_compile_debug/run_2026_09_14_20_57_25_742860-pid_2233267/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1b425c8c1315ab269d64e7092c1d14d2ba11000db1473784e14520e7665b577d",
+      "bytes": 475
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/debug/torch_compile_debug/run_2026_09_14_20_57_25_742860-pid_2233267/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "dc9f4c093e44aedec2b666c31d3e0d300b08e0f045c9b246d698eab14742c7ac",
+      "bytes": 478
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/debug/torch_compile_debug/run_2026_09_14_20_57_25_742860-pid_2233267/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/debug/torch_compile_debug/run_2026_09_14_20_57_25_742860-pid_2233267/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/debug/torch_compile_debug/run_2026_09_14_20_57_25_742860-pid_2233267/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "71397be663cd0f5e88994f3d4f79e652527bcedce0496c7f25d29e6e965adee3",
+      "bytes": 3310
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/execution.json",
+      "sha256": "317760dbc52772f2be860cd59265bd3378fdef76aa966a9892857af73c4d7c44",
+      "bytes": 637
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/result.json",
+      "sha256": "4ace4d45f158570c3ae70bc20236161f80dcaee055b24379b12a9ad2131a35cc",
+      "bytes": 66239
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/stderr.log",
+      "sha256": "2b8462ccf045c2f64e145f1b514c8d211e6fbd8b8cd5536099489a7a5bf013c5",
+      "bytes": 910
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/off/stdout.log",
+      "sha256": "b5acc76a3afa3b430b951543db0b161216709fedba47598e7db2beec3a1ae9c4",
+      "bytes": 89
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/debug/torch_compile_debug/run_2026_09_14_20_57_55_085911-pid_2240094/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "1b425c8c1315ab269d64e7092c1d14d2ba11000db1473784e14520e7665b577d",
+      "bytes": 475
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/debug/torch_compile_debug/run_2026_09_14_20_57_55_085911-pid_2240094/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "dc9f4c093e44aedec2b666c31d3e0d300b08e0f045c9b246d698eab14742c7ac",
+      "bytes": 478
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/debug/torch_compile_debug/run_2026_09_14_20_57_55_085911-pid_2240094/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/debug/torch_compile_debug/run_2026_09_14_20_57_55_085911-pid_2240094/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "c65fabfd9f0a7c6e6a12a9d072aee25e5b42b5d0c4313265a326afc05af8e7e2",
+      "bytes": 517
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/debug/torch_compile_debug/run_2026_09_14_20_57_55_085911-pid_2240094/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "ac71945a0f37ee49706ef94b2aff9c6aa0e2f589edc6255edde3b47c290b4c41",
+      "bytes": 3312
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/execution.json",
+      "sha256": "34d19e6338124e209994d63ec29fba772e998edc4ac35480910d85d254267572",
+      "bytes": 635
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/result.json",
+      "sha256": "09cab8d207bb37a60c3f5157575d71de22b3966f9b7228d86d39bf7c38b4c4d9",
+      "bytes": 66145
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/stderr.log",
+      "sha256": "8faffbc676466ada3829c9632c40f0a270c714b10219642294c27dfa3d5b4e9b",
+      "bytes": 909
+    },
+    {
+      "path": "issues/REF-stack-axis-normalization-native/evidence/functional-20260914T205716/stack-normalization/on/stdout.log",
+      "sha256": "82df40e9dc7be0221dcde7ff9dd8f3f1e5703e5b2cc1b3722363de229addcdf7",
+      "bytes": 88
+    }
+  ],
+  "generated_output_code_present": true
+}

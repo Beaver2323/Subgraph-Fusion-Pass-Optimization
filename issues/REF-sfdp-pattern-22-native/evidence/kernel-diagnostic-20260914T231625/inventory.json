@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-09-14T23:20:20.806692+08:00",
+  "source_run": "/home/z50063656/tmp/attention22-diagnostic-20260914T231625",
+  "files": [
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/kernel-diagnostic-20260914T231625/diagnostic_source.py",
+      "sha256": "12b226996181576c2c2439c1981586c5a6c182f13ce7329a37400de1c33181c5",
+      "bytes": 6125
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/kernel-diagnostic-20260914T231625/generated_source.py",
+      "sha256": "d92fe32c77e0b0ca24d83e69e998eb734b519f1a14b3de9328c0ca6c66d0e5e9",
+      "bytes": 62409
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/kernel-diagnostic-20260914T231625/result.json",
+      "sha256": "5f3095fcbe6ea12d5b553b241b083f81c5e4610ee73eb91ee9a9351d8048c2fc",
+      "bytes": 10344
+    }
+  ],
+  "generated_output_code_present": false
+}

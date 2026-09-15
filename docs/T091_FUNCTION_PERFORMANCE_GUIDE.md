@@ -1,7 +1,11 @@
 # T-091 功能与性能测例讲解
 
-> 更新时间：2026-09-10 21:38:54 CST（UTC+08:00）
-> 状态：1 个GPU-ready单元，4 个候选明确延期。
+> 更新时间：2026-09-14 21:32 CST（UTC+08:00）
+> 状态：GPU 精确 handler、NPU 社区功能、精确目标 OFF/ON、六臂性能已完成；PERF_MIXED，4 个候选保持延期。
+
+本轮真实目标图前后均为 `dim=1`，handler 重建 stack 节点，不表示首次 axis→dim 或新数学优化。
+GPU/NPU代码、原生测试体未执行、最小适配及实际 NPU extern cat+view 路径见
+[最终功能/性能讲解](../results/current/T-091/stack-normalization_讲解.md)。没有稳定性能收益，不外推模型端到端。
 
 NPU 功能、修复验证和性能统一使用 `triton_experimental`，并在导入 `torch`/`torch_npu` 前选后端；OFF/ON 每臂使用新进程。
 
@@ -29,7 +33,7 @@ new_node = graph.call_function(node.target, args=(tensors,), kwargs={"dim": dim}
 counters[backend]["normalization_pass"] += 1
 ```
 
-功能测例用两个 `[4,4]` GPU 张量执行 `torch.stack(axis=1)`；意图是把 numpy 兼容关键字和负维统一成规范 FX 形式。GPU/NPU都需证明数值一致和实际改写。性能测例复用相同图，唯一变量是 `normalization_pass` OFF/ON；它是微图，不是模型端到端。
+功能测例用两个 `[4,4]` GPU 张量执行 `torch.stack(axis=1)`；意图是把 numpy 兼容关键字和负维统一成规范 FX 形式。GPU/NPU都需证明数值一致和实际改写。性能测例复用相同图；2026-09-14 20:49 CST校正为两臂保留normalization_pass，OFF仅删除normalize_stack_default注册。它是微图，不是模型端到端。
 
 ## 延期候选
 

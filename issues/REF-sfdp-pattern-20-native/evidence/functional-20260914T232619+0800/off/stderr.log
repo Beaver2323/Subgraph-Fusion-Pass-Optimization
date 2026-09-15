@@ -1,0 +1,21 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+[W914 23:26:28.544038910 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 23:26:29.441000 407910 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1806] [0/0] Not enough SMs to use max_autotune_gemm mode
+W0914 23:27:54.214000 407910 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/attention-functional-20260914-unskip/functional-20260914T232619+0800/pattern-20/off/debug/torch_compile_debug/run_2026_09_14_23_26_28_821249-pid_407910/torchinductor/model__0_inference_0.0
+Traceback (most recent call last):
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py", line 433, in <module>
+    main()
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py", line 325, in main
+    assert_close(torch, actual, expected)
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py", line 87, in assert_close
+    torch.testing.assert_close(actual, expected, rtol=0.2, atol=2e-3)
+  File "/home/z50063656/Pass/src/pytorch/torch/testing/_comparison.py", line 1689, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: Tensor-likes are not close!
+
+Mismatched elements: 544 / 1024 (53.1%)
+Greatest absolute difference: nan at index (0, 0, 1, 0) (up to 0.002 allowed)
+Greatest relative difference: nan at index (0, 0, 1, 0) (up to 0.2 allowed)

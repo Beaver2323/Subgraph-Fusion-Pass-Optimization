@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T19:20:08+08:00",
+  "run_id": "reference-20260914T191834+0800-0x3nqs19",
+  "case": {
+    "case_id": "REF-sfdp-pattern-14-native",
+    "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-14",
+    "variant_ids": [
+      "pattern-14-community-product"
+    ],
+    "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_14_gpu",
+    "tracking_mode": "direct"
+  },
+  "source": {
+    "pytorch_root": "/data/z50063656/src/pytorch",
+    "expected_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+    "actual_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b"
+  },
+  "environment_fingerprint_ref": "../../environment.json",
+  "execution": {
+    "status": "passed",
+    "success": true,
+    "return_code": 0,
+    "duration_seconds": 21.492549,
+    "command": [
+      "/data/z50063656/envs/PassGPURef/bin/python",
+      "/data/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/native_contract_observer.py",
+      "--source",
+      "/data/z50063656/src/pytorch/test/inductor/test_fused_attention.py",
+      "--",
+      "SDPAPatternRewriterGpuTests.test_sdpa_rewriter_14_gpu"
+    ],
+    "working_directory": "/data/z50063656/tmp",
+    "timeout_seconds": 7200,
+    "tests_ran": 1,
+    "tests_skipped": 0,
+    "tests_expected": 1,
+    "tests_expected_failures": 0,
+    "tests_unexpected_successes": 0,
+    "skip_reason": null
+  },
+  "match": {
+    "expected": true,
+    "expected_assertions": [
+      "真实CUDA torch.compile且零skip",
+      "人工FX/per-pattern counter确认编号14命中",
+      "输出及社区要求的梯度与eager一致"
+    ],
+    "assertion_status": "passed-inside-community-test",
+    "observed_count": null,
+    "evidence_method": "原生 community test 内部实际存在的 counter/FileCheck/correctness 断言；runner 不伪造未打印的原始计数"
+  },
+  "fx": {
+    "before": {
+      "captured": true,
+      "count": 5,
+      "combined_path": "fx_before.txt",
+      "files": [
+        {
+          "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0001/fx_graph_readable.py",
+          "bytes": 3383,
+          "sha256": "5c6f1dea9b288d989a4b198ef040132007aba2a3acdddd33de796a48bd6fd776",
+          "normalized_sha256": "5c6f1dea9b288d989a4b198ef040132007aba2a3acdddd33de796a48bd6fd776"
+        },
+        {
+          "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0002/fx_graph_readable.py",
+          "bytes": 5330,
+          "sha256": "1e393f62f788419154de49d0ad14c920c167a05376f5b2d3e9ec3f3aecdac373",
+          "normalized_sha256": "1e393f62f788419154de49d0ad14c920c167a05376f5b2d3e9ec3f3aecdac373"
+        },
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+          "bytes": 3688,
+          "sha256": "6a9e8df2acebdc4f9ee688fa9c9604a0861be99e9edc246d2d2ff2ff654e39a7",
+          "normalized_sha256": "ad84d57c65a53cd957651ba0579d7d3a5558d77f8c746696b045a96329358361"
+        },
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/fx_graph_readable.py",
+          "bytes": 2305,
+          "sha256": "e59a0fc8081c2ee6c94dd7f676099ddbda42c715733f7fd46ae7bb91f18d9a87",
+          "normalized_sha256": "e4737cbecd14acb4b82165f17d923d4efdd3c7b44529d4035ff7eabd66e683c4"
+        },
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/fx_graph_readable.py",
+          "bytes": 3866,
+          "sha256": "6b78bf36ac07da25ce3bd9e0d45d46a01e92b2bb60b290c6a212137266f5bb45",
+          "normalized_sha256": "8c62a3c822793d71a16b764e2bbd6266f91915c33eced521bf1f326493054a25"
+        }
+      ],
+      "normalized_signature": "bc53fee28b53d6c313cfc7061c4414c95759205711bd073ba02e3e50a894cc20"
+    },
+    "after": {
+      "captured": true,
+      "count": 5,
+      "combined_path": "fx_after.txt",
+      "files": [
+        {
+          "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+          "bytes": 2478,
+          "sha256": "5598f40781f4bd103dc365d4747b97b715efbd1e57a9000e6db5513bb5d07359",
+          "normalized_sha256": "5598f40781f4bd103dc365d4747b97b715efbd1e57a9000e6db5513bb5d07359"
+        },
+        {
+          "path": "debug/native_contract_observer/1671491-ReplacementPatternEntry-0002/fx_graph_transformed.py",
+          "bytes": 3861,
+          "sha256": "d251395bd0f16d069f78496ab0e8f51664c6c8cef2cb879a6d0bbd4e9791bc19",
+          "normalized_sha256": "d251395bd0f16d069f78496ab0e8f51664c6c8cef2cb879a6d0bbd4e9791bc19"
+        },
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+          "bytes": 3874,
+          "sha256": "fd0c1a2a1c0d43f128cb9758ce6cdc88026e606075ac9149f25380dbea6a1d32",
+          "normalized_sha256": "48e3a710a8f4e64ae2887d0c5fee91d21e2dc08e8029a36e5aba570fa558b9ce"
+        },
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_backward_7.2/fx_graph_transformed.py",
+          "bytes": 2305,
+          "sha256": "e59a0fc8081c2ee6c94dd7f676099ddbda42c715733f7fd46ae7bb91f18d9a87",
+          "normalized_sha256": "e4737cbecd14acb4b82165f17d923d4efdd3c7b44529d4035ff7eabd66e683c4"
+        },
+        {
+          "path": "debug/torch_compile_debug/run_2026_09_14_19_20_00_589365-pid_1671491/torchinductor/model__1_forward_5.1/fx_graph_transformed.py",
+          "bytes": 3866,
+          "sha256": "6b78bf36ac07da25ce3bd9e0d45d46a01e92b2bb60b290c6a212137266f5bb45",
+          "normalized_sha256": "8c62a3c822793d71a16b764e2bbd6266f91915c33eced521bf1f326493054a25"
+        }
+      ],
+      "normalized_signature": "597d00b4f483227b42cfc941ae5930a91b36cb075276ee61cce3acc69c7a2361"
+    },
+    "stable_signature": "b557d7c17d1cd9ce1ab55ecf17fed9b19aaa65009b1bcf9d7c0398ab27d151eb"
+  },
+  "correctness": {
+    "status": "community-assertion-passed",
+    "evidence_method": "原生 community test eager/compiled 断言"
+  },
+  "benchmark": {
+    "status": "not-configured",
+    "functional_gate": "passed",
+    "reason": "本轮仅建立原生 community functional baseline；独立性能方案与 worker 状态另行校验。"
+  },
+  "adapter_decision": "not-needed-direct-valid",
+  "reference_valid": true
+}

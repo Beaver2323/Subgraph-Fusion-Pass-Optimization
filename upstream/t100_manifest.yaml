@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-10T21:38:54+08:00",
-  "status": "prepared-awaiting-gpu-reference",
+  "generated_at": "2026-09-14T21:18:00+08:00",
+  "status": "completed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -27,12 +27,12 @@
     "minimum_gpus": 1,
     "distributed_world_size": null,
     "scope": "原生CUDA编译、数值、目标命中/改写与必要梯度合同",
-    "suite_status": "pending-gpu-reference"
+    "suite_status": "valid-reference-suite"
   },
   "counting_policy": {
     "current_manifest_units": 1,
-    "current_frozen_denominator_units": 0,
-    "current_formally_closed_units": 0,
+    "current_frozen_denominator_units": 1,
+    "current_formally_closed_units": 1,
     "denominator_rule": "原生GPU suite有效、零skip并完成人工FX复核后冻结"
   },
   "acceptance_units": [
@@ -40,9 +40,9 @@
       "acceptance_unit_id": "AU-binary-folding-folded-op",
       "contract_name": "冻结期Linear后常量二元运算折入权重/偏置",
       "stage": "freezing",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/binary_folding.py",
@@ -65,8 +65,8 @@
           "expected_reference_match": true,
           "expected_behavior": "合法常量binary折入Linear参数且counter=1",
           "expected_counter": "binary_folding=1",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
         },
         {
           "variant_id": "broadcast-shape-negative",
@@ -74,8 +74,8 @@
           "expected_reference_match": false,
           "expected_behavior": "输出相关不合法广播shape保持未融合",
           "expected_counter": "binary_folding=0",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
         }
       ],
       "tracking": {

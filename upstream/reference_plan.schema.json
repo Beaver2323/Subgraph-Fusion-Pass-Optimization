@@ -165,9 +165,9 @@
       "type": "object",
       "required": ["basis", "changed_dimensions", "preserved_contract"],
       "properties": {
-        "basis": {"const": "community-test-dtype-extension"},
+        "basis": {"enum": ["community-test-dtype-extension", "community-test-target-input-extension"]},
         "changed_dimensions": {
-          "const": ["dtype"]
+          "enum": [["dtype"], ["training-mode", "dropout-probability"], ["mask-values", "mask-input-origin"]]
         },
         "preserved_contract": {
           "type": "array",

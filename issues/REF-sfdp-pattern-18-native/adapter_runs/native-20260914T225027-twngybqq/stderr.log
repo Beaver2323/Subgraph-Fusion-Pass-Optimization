@@ -1,0 +1,22 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_sdpa_rewriter_18_gpu (attention_community_npu.main.<locals>.NpuCase.test_sdpa_rewriter_18_gpu)
+partial(func, *args, **keywords) - new function with partial application ... [W914 22:50:39.631102450 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:50:58.561000 4069984 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/t105-native-txicdlw5/adapter/debug/torch_compile_debug/run_2026_09_14_22_50_39_333385-pid_4069984/torchinductor/model__0_inference_0.0
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:51:04.128000 4069984 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_inference_1 debug trace: /home/z50063656/tmp/t105-native-txicdlw5/adapter/debug/torch_compile_debug/run_2026_09_14_22_50_39_333385-pid_4069984/torchinductor/model__1_inference_1.1
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:51:09.236000 4069984 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__2_inference_2 debug trace: /home/z50063656/tmp/t105-native-txicdlw5/adapter/debug/torch_compile_debug/run_2026_09_14_22_50_39_333385-pid_4069984/torchinductor/model__2_inference_2.2
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0914 22:51:14.513000 4069984 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__3_inference_3 debug trace: /home/z50063656/tmp/t105-native-txicdlw5/adapter/debug/torch_compile_debug/run_2026_09_14_22_50_39_333385-pid_4069984/torchinductor/model__3_inference_3.3
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 35.440s
+
+OK

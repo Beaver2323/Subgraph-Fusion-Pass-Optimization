@@ -1,0 +1,15 @@
+
+
+
+def forward(self, L_self_modules_bn_buffers_running_mean_ : torch.Tensor, L_self_modules_bn_buffers_running_var_ : torch.Tensor, L_self_modules_bn_parameters_bias_ : torch.nn.parameter.Parameter, L_self_modules_bn_parameters_weight_ : torch.nn.parameter.Parameter, L_self_modules_conv_parameters_bias_ : torch.nn.parameter.Parameter, L_self_modules_conv_parameters_weight_ : torch.nn.parameter.Parameter, L_x_ : torch.Tensor):
+    l_self_modules_bn_buffers_running_mean_ = L_self_modules_bn_buffers_running_mean_
+    l_self_modules_bn_buffers_running_var_ = L_self_modules_bn_buffers_running_var_
+    l_self_modules_bn_parameters_bias_ = L_self_modules_bn_parameters_bias_
+    l_self_modules_bn_parameters_weight_ = L_self_modules_bn_parameters_weight_
+    l_self_modules_conv_parameters_bias_ = L_self_modules_conv_parameters_bias_
+    l_self_modules_conv_parameters_weight_ = L_self_modules_conv_parameters_weight_
+    l_x_ = L_x_
+    linear = torch._C._nn.linear(l_x_, l_self_modules_conv_parameters_weight_, l_self_modules_conv_parameters_bias_);  l_x_ = l_self_modules_conv_parameters_weight_ = l_self_modules_conv_parameters_bias_ = None
+    batch_norm = torch.nn.functional.batch_norm(linear, l_self_modules_bn_buffers_running_mean_, l_self_modules_bn_buffers_running_var_, l_self_modules_bn_parameters_weight_, l_self_modules_bn_parameters_bias_, False, 0.1, 1e-05);  linear = l_self_modules_bn_buffers_running_mean_ = l_self_modules_bn_buffers_running_var_ = l_self_modules_bn_parameters_weight_ = l_self_modules_bn_parameters_bias_ = None
+    return (batch_norm,)
+    

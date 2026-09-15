@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-09-14T22:11:19.500515+08:00",
+  "status": "running-not-a-verdict",
+  "task_id": "T-098",
+  "passed_tensor_assertions": 70,
+  "passed_integer_assertions": 35,
+  "target_handler_returns": 35,
+  "last_tensor": {
+    "shape": [
+      4,
+      32,
+      47
+    ],
+    "dtype": "torch.float32",
+    "actual_device": "npu:0",
+    "expected_device": "npu:0",
+    "tolerance": {},
+    "passed": true
+  },
+  "precision_mode": "off",
+  "full_contract_passed": false
+}

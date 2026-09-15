@@ -83,6 +83,10 @@ REVIEW_CASE_FILES = frozenset(
 REVIEW_AUDIT_BASENAMES = frozenset(
     (
         "contract_observation.json",
+        "supplement_result.json",
+        "original_function.py",
+        "adapted_function.py",
+        "runner_source.py",
         "fx_graph_readable.py",
         "fx_graph_transformed.py",
         "ir_post_fusion.txt",

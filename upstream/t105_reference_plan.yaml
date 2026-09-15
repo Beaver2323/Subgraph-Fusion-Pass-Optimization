@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-105",
-  "generated_at": "2026-09-11T12:12:00+08:00",
+  "generated_at": "2026-09-15T01:25:00+08:00",
   "status": "gpu-ready-awaiting-native-execution",
   "performance_plan": {
     "path": "upstream/t105_performance_plan.yaml",
@@ -131,6 +131,42 @@
         "fx-after"
       ],
       "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-sfdp-pattern-16-dropout-target-derived",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-16",
+      "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_16_inference_gpu",
+      "tracking_mode": "derived",
+      "entrypoint": "runners/attention_target_supplement.py",
+      "entrypoint_args": [
+        "--pattern",
+        "16"
+      ],
+      "variant_ids": [],
+      "expected_match": true,
+      "expected_assertions": [
+        "真实CUDA、原guard及默认注册不改",
+        "batch4/1精确16训练编号与边界FX",
+        "社区helper输出与Q/K/V梯度比较；不宣称p=0.4统计等价"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "forbidden-until-gpu-and-npu-correctness-close",
+      "evidence_scope": "待GPU实测的补充入口，不回写原生run或自动冻结原variant",
+      "derivation": {
+        "basis": "community-test-target-input-extension",
+        "changed_dimensions": [
+          "training-mode",
+          "dropout-probability"
+        ],
+        "preserved_contract": [
+          "冻结原社区函数AST，只将p=0.4改为1e-12；推理外增加训练验证",
+          "原FP32 shape、mask、scale及_check_common容差保持",
+          "不覆盖CUDA显式关闭的half/fp32-mask变体；CUDA数学replacement允许保留数学链"
+        ]
+      }
     }
   ],
   "non_executed_variants": []

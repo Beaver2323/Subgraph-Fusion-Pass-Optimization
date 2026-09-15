@@ -1,0 +1,125 @@
+{
+  "task_id": "T-106",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-23",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "sfdp-pattern-23-registered-half-inference",
+  "worker_sha256": "c72ed16c537f6ad8aee44e2086f663eeeca582c01c3fd9142fee56e14f0c65c1",
+  "target_control_sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+  "observer_sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae",
+  "input_spec": [
+    {
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    },
+    {
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    },
+    {
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    }
+  ],
+  "registration_name": "_sfdp_pattern_23_half_inference",
+  "dropout_p": 0.0,
+  "reviewed_at": "2026-09-14T23:33:15.812758+08:00",
+  "reviewer": "Codex：原社区合同及目标OFF/ON生成代码逐图复核",
+  "manual_codegen_review": "逐图审查目标前后FX、完整FX/IR及Runner.call：OFF两个NPU extern bmm和Triton重排/FP32 softmax后回转FP16，ON实际NPU Fusion Attention v3，scale=1，keep_prob=1；返回K/V保留原转置视图。OFF精确及通用0，ON本编号1；原社区6个Tensor叶子比较及独立FP16注册微图对eager通过。未见CPU转移，IR FallbackKernel为图内NPU extern而非CPU或图外fallback，不外推反向。",
+  "community_oracle_scope": "原社区已执行的数值断言及独立性能输入比较",
+  "codegen_review": {
+    "off": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "triton_unk_fused_matmul_permute_0.run": 2,
+        "triton_unk_fused_matmul_permute_1.run": 1,
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__softmax__to_copy_matmul_2.run": 1,
+        "triton_unk_fused__softmax__to_copy_matmul_3.run": 1,
+        "triton_unk_fused__softmax__to_copy_matmul_4.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    },
+    "on": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "torch.ops.npu.npu_fusion_attention_v3.default": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    }
+  },
+  "gpu_reference": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-106/gpu_reference_review.json",
+    "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+  },
+  "community_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-23-native/evidence/t106-native-sbfr4_j_/adapter/result.json",
+    "sha256": "a13a6ec67cf5a7aba1b342f0a93382df788f13e0c8466d25ea5c12ea3adc439b"
+  },
+  "off_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-23-native/evidence/functional-20260914T233011+0800/off/result.json",
+    "sha256": "32cdebb71ef1ac796b4f986c216abd9d912ffee9d3bc311a2d5576cd76237519"
+  },
+  "target_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-23-native/evidence/functional-20260914T233011+0800/on/result.json",
+    "sha256": "06e9c0ee57e2a5f9f573f758ffb68c7edee29698c1788a74328a725bc77c34cd"
+  },
+  "worker_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-23-native/evidence/functional-20260914T233011+0800/t102_t107_attention_performance_worker.py",
+    "sha256": "c72ed16c537f6ad8aee44e2086f663eeeca582c01c3fd9142fee56e14f0c65c1"
+  },
+  "target_control_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-23-native/evidence/functional-20260914T233011+0800/target_entry_control.py",
+    "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+  },
+  "observer_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-23-native/evidence/functional-20260914T233011+0800/native_contract_observer.py",
+    "sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae"
+  }
+}

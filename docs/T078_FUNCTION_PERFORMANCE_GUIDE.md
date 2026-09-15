@@ -244,6 +244,13 @@ def unfuse_bias_baddbmm_to_pointwise(...):
 
 ## 6. 2026-09-08 addcdiv 低精度增量
 
+2026-09-14 22:13 CST 更新：FP16 value=1 GPU 派生邻接已补齐，1/1零skip、bitwise=True，
+两端FX均为div+add，counter=0；与9月9日NPU真机修复原件对照通过。已登记覆盖扩展无待补项，
+但NPU FP16舍入与CUDA不同，仍保留PARTIAL_ALIGNED。详见
+[逐行生成代码、测试来源和复核命令](../issues/REF-addcdiv-fma-fp16-value1-derived/GPU补证与NPU修复对照.md)。
+
+以下保留9月8日低精度问题与后续修复背景：
+
 GPU 侧只改变社区 `64×64/value=2` 的 dtype：FP16/BF16 都位级一致并命中 FMA。NPU 侧必须分开看：
 
 - BF16 的 OFF、显式分解、重融合和 eager 位级一致，正式产品 counter=1；三轮性能中 Event p50

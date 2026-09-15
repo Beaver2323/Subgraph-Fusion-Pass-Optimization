@@ -1,0 +1,15 @@
+
+
+
+def forward(self, L_arg0_1_ : torch.Tensor, L_self_buffers_tensor_constant0_ : torch.Tensor, L_self_buffers_tensor_constant1_ : torch.Tensor, L_self_parameters_param_constant0_ : torch.nn.parameter.Parameter, L_self_parameters_param_constant1_ : torch.nn.parameter.Parameter, L_self_parameters_param_constant2_ : torch.nn.parameter.Parameter, L_self_parameters_param_constant3_ : torch.nn.parameter.Parameter):
+    l_arg0_1_ = L_arg0_1_
+    l_self_buffers_tensor_constant0_ = L_self_buffers_tensor_constant0_
+    l_self_buffers_tensor_constant1_ = L_self_buffers_tensor_constant1_
+    l_self_parameters_param_constant0_ = L_self_parameters_param_constant0_
+    l_self_parameters_param_constant1_ = L_self_parameters_param_constant1_
+    l_self_parameters_param_constant2_ = L_self_parameters_param_constant2_
+    l_self_parameters_param_constant3_ = L_self_parameters_param_constant3_
+    conv3d_default = torch.ops.aten.conv3d.default(l_arg0_1_, l_self_parameters_param_constant0_, l_self_parameters_param_constant1_, [2, 2, 2]);  l_arg0_1_ = l_self_parameters_param_constant0_ = l_self_parameters_param_constant1_ = None
+    batch_norm_default = torch.ops.aten.batch_norm.default(conv3d_default, l_self_parameters_param_constant2_, l_self_parameters_param_constant3_, l_self_buffers_tensor_constant0_, l_self_buffers_tensor_constant1_, False, 0.1, 1e-05, True);  conv3d_default = l_self_parameters_param_constant2_ = l_self_parameters_param_constant3_ = l_self_buffers_tensor_constant0_ = l_self_buffers_tensor_constant1_ = None
+    return (batch_norm_default,)
+    

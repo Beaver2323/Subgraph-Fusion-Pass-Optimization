@@ -1,0 +1,1 @@
+worker_status=passed unit=stack-normalization mode=on phase=benchmark target_counter=1

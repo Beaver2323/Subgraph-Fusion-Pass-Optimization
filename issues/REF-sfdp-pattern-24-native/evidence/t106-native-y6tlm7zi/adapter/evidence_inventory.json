@@ -1,0 +1,72 @@
+{
+  "task_id": "T-106",
+  "case_id": "REF-sfdp-pattern-24-native",
+  "artifacts": [
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/codegen-candidate/after-_maybe_record_select_lane_load.py",
+      "sha256": "fa7e81ccb4c189603b1a421a0e786b17c1224aa6ccdf8fe013acf2267133725e"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/codegen-candidate/after-_maybe_rewrite_select_lane_load.py",
+      "sha256": "5a09a2cf920d8fc42173abdd49968a294cf4401f263100522a190ce470cc623d"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/codegen-candidate/before-_maybe_record_select_lane_load.py",
+      "sha256": "1c555fde55f38c4b4fc810acc6330bcbd44cabdb3360c80530a2c9c112f28395"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/codegen-candidate/before-_maybe_rewrite_select_lane_load.py",
+      "sha256": "e746364a5583b22969ae033221ef7b4e93dc13a05c05bbfa42c4c277628b2c03"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/codegen-candidate/candidate_source.py",
+      "sha256": "6222c9e872f94d4366db4b5dc88f659c54723cfa5bdcc67321c4d14f62650c1e"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/codegen-candidate/installed_triton_source.py",
+      "sha256": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/debug/torch_compile_debug/run_2026_09_15_00_20_54_316855-pid_1173875/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "20a2148ec7177a9b435ad6419017e295cbb3202886c1d1a644eb23a6e97d4145"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/debug/torch_compile_debug/run_2026_09_15_00_20_54_316855-pid_1173875/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "ba24b25ed972b169e08e96d9b1eb6d41d4c49a7077ebafb34c9cba0c65f2939a"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/debug/torch_compile_debug/run_2026_09_15_00_20_54_316855-pid_1173875/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "1a7f6fd0c40c221cf53d46e766907168cb82837062c9f9989f1cd180a64ef891"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/debug/torch_compile_debug/run_2026_09_15_00_20_54_316855-pid_1173875/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "30e33a3927964f852c92de3da067def846574f5a1f6e1557a104568a7ecfe1ad"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/debug/torch_compile_debug/run_2026_09_15_00_20_54_316855-pid_1173875/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "0a7fc9b545410761eec6e66f1906a5a74701b74b70c17c0fc754a3b3a60c2c44"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/harness_source.py",
+      "sha256": "a12f373e645f38ecb09b2f6bb21dab28f7aef808d5cef763b1be25c08d7b8e22"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/result.json",
+      "sha256": "7eb2de9937b4de26a2a223153c48ac53ba129e7372ca555fcc424f3e3707e7ef"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/target-observations/1173875-ReplacementPatternEntry-0001/contract_observation.json",
+      "sha256": "812ca44416a20dbf838b4b88d52069decdf75affc8ad9e0c3f2888dd42894a85"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/target-observations/1173875-ReplacementPatternEntry-0001/fx_graph_readable.py",
+      "sha256": "d150384a860187fb1bec0ac80bc9ff13510a31b30a41c17948e768c6f39ce4aa"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-y6tlm7zi/adapter/target-observations/1173875-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+      "sha256": "890ff7f257b1b0c7dcd17d070ce06683d526ed8de0311f0082fc8b2b9c559797"
+    }
+  ],
+  "archive_scope": "evidence-only-not-installed-pass",
+  "source_run_dir": "/home/z50063656/tmp/t106-native-y6tlm7zi/adapter"
+}

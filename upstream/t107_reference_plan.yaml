@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-107",
-  "generated_at": "2026-09-11T12:12:00+08:00",
+  "generated_at": "2026-09-15T01:25:00+08:00",
   "status": "gpu-ready-awaiting-native-execution",
   "performance_plan": {
     "path": "upstream/t107_performance_plan.yaml",
@@ -89,6 +89,42 @@
         "fx-after"
       ],
       "benchmark": "not-configured-functional-reference"
+    },
+    {
+      "case_id": "REF-sfdp-pattern-29-nonzero-mask-target-derived",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-29",
+      "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_29_gpu",
+      "tracking_mode": "derived",
+      "entrypoint": "runners/attention_target_supplement.py",
+      "entrypoint_args": [
+        "--pattern",
+        "29"
+      ],
+      "variant_ids": [],
+      "expected_match": true,
+      "expected_assertions": [
+        "真实CUDA、原guard及默认注册不改",
+        "FP16/FP32、batch2训练推理和batch1推理均观察精确29",
+        "原_check_common逐输出与Q/K/V梯度对齐"
+      ],
+      "required_artifacts": [
+        "fx-before",
+        "fx-after"
+      ],
+      "benchmark": "forbidden-until-gpu-and-npu-correctness-close",
+      "evidence_scope": "待GPU实测的非零mask补充，不替代原全零mask结果",
+      "derivation": {
+        "basis": "community-test-target-input-extension",
+        "changed_dimensions": [
+          "mask-values",
+          "mask-input-origin"
+        ],
+        "preserved_contract": [
+          "冻结原函数AST，只将内部zeros改为捕获的非零mask张量",
+          "相同mask shape/dtype、Q/K双scale、safe_softmax、batch/dtype/训练组合",
+          "复用社区helper原数值与输入梯度容差，不添加mask梯度要求"
+        ]
+      }
     }
   ],
   "non_executed_variants": []

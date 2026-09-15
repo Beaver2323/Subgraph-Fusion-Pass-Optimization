@@ -1,0 +1,239 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-14T21:43:29+08:00",
+  "run_id": "reference-20260914T214312+0800-jqft26ak",
+  "status": "valid-partial-reference-selection",
+  "suite_valid": false,
+  "suite_complete": false,
+  "selection_valid": true,
+  "environment_fingerprint": "4a5581df7e4f6f2416e5241391855daad96d54d9659c081cfea4cb02276ff679",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "selected_case_count": 1,
+  "case_counts": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "timed-out": 0,
+    "no-tests": 0,
+    "reference_valid": 1
+  },
+  "cases": [
+    {
+      "case_id": "REF-addcdiv-fma-fp16-value1-derived",
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "status": "passed",
+      "reference_valid": true,
+      "result": "cases/REF-addcdiv-fma-fp16-value1-derived/reference_result.json"
+    }
+  ],
+  "variants": [
+    {
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "variant_id": "value-one-bitwise-positive",
+      "case_ids": [
+        "REF-addcdiv-fma-bitwise-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "variant_id": "scaled-value-bitwise-positive",
+      "case_ids": [
+        "REF-addcdiv-fma-bitwise-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "variant_id": "fma-div-rn-codegen-positive",
+      "case_ids": [
+        "REF-addcdiv-fma-codegen-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "variant_id": "bfloat16-value2-fma-positive",
+      "case_ids": [
+        "REF-addcdiv-fma-bfloat16-derived"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "variant_id": "fp16-value2-fma-positive",
+      "case_ids": [
+        "REF-addcdiv-fma-fp16-derived"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-fuse-addcdiv-to-fma",
+      "variant_id": "fp16-value1-bitwise-regression",
+      "case_ids": [
+        "REF-addcdiv-fma-fp16-value1-derived"
+      ],
+      "status": "valid-reference",
+      "reason": "所有关联社区合同派生测例与必需 artifacts 均有效。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "variant_id": "amax-amax-large-positive",
+      "case_ids": [
+        "REF-partial-reuse-positive-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "variant_id": "amin-min-large-positive",
+      "case_ids": [
+        "REF-partial-reuse-positive-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "variant_id": "amax-max-large-positive",
+      "case_ids": [
+        "REF-partial-reuse-positive-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "variant_id": "small-numel-negative",
+      "case_ids": [
+        "REF-partial-reuse-negative-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-reuse-partial",
+      "variant_id": "dynamic-input-negative",
+      "case_ids": [
+        "REF-partial-reuse-negative-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "variant_id": "gelu-consumer-positive",
+      "case_ids": [
+        "REF-unfuse-addmm-core-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "variant_id": "view-gelu-consumer-positive",
+      "case_ids": [
+        "REF-unfuse-addmm-core-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "variant_id": "no-pointwise-consumer-negative",
+      "case_ids": [
+        "REF-unfuse-addmm-core-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "variant_id": "computed-accumulator-negative",
+      "case_ids": [
+        "REF-unfuse-addmm-accumulator-negative-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "variant_id": "same-shape-leaf-positive",
+      "case_ids": [
+        "REF-unfuse-addmm-leaf-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "variant_id": "expanded-bias-positive",
+      "case_ids": [
+        "REF-unfuse-addmm-expanded-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "variant_id": "half-dtype-preserve-negative",
+      "case_ids": [
+        "REF-unfuse-addmm-half-preserve-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-add-to-pointwise",
+      "variant_id": "half-dtype-gate-disabled-positive",
+      "case_ids": [
+        "REF-unfuse-addmm-half-enabled-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+      "variant_id": "broadcast-gelu-positive",
+      "case_ids": [
+        "REF-unfuse-baddbmm-core-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+      "variant_id": "expanded-bias-relu-positive",
+      "case_ids": [
+        "REF-unfuse-baddbmm-core-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+      "variant_id": "alpha-beta-positive",
+      "case_ids": [
+        "REF-unfuse-baddbmm-alpha-beta-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    },
+    {
+      "acceptance_unit_id": "AU-post-grad-unfuse-bias-baddbmm-to-pointwise",
+      "variant_id": "no-pointwise-consumer-negative",
+      "case_ids": [
+        "REF-unfuse-baddbmm-core-native"
+      ],
+      "status": "not-selected",
+      "reason": "本轮只执行了 reference plan 子集。"
+    }
+  ],
+  "next_action": "选定 case 有效；保留为重跑证据，但完整 suite 未执行，不能冻结 denominator。"
+}

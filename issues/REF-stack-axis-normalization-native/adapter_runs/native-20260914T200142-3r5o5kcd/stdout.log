@@ -1,0 +1,1 @@
+{"status": "community-contract-passed", "tests_ran": 1, "tests_skipped": 0, "numerical_execution": true, "tensor_assertions": [{"shape": [4, 2, 4], "dtype": "torch.float32", "actual_device": "npu:0", "expected_device": "npu:0", "passed": true}]}

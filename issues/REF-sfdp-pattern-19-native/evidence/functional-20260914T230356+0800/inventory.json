@@ -1,0 +1,30 @@
+{
+  "source_run_dir": "/home/z50063656/tmp/attention-functional-20260914/functional-20260914T230356+0800/pattern-19",
+  "failed_precheck": true,
+  "files": [
+    {
+      "path": "issues/REF-sfdp-pattern-19-native/evidence/functional-20260914T230356+0800/off/execution.json",
+      "sha256": "ba322e751dc53bc092028f3e2a3085714495649704c0bba528b162d61b41463d"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-19-native/evidence/functional-20260914T230356+0800/off/snapshot-native_contract_observer.py",
+      "sha256": "d6b45e8559f0db12c66c3f9aacf85669311d77c3b4b1279e46db7c962634bdae"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-19-native/evidence/functional-20260914T230356+0800/off/snapshot-t102_t107_attention_performance_worker.py",
+      "sha256": "d3ab808f1114158f0d3ab80ce091d00ab25d6c92defe0f01eb1effb1ea399df2"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-19-native/evidence/functional-20260914T230356+0800/off/snapshot-target_entry_control.py",
+      "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-19-native/evidence/functional-20260914T230356+0800/off/stderr.log",
+      "sha256": "2b98fede50519d84ff4118b167dc74f771299e4dc3fbf486ddd67f3bda331e95"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-19-native/evidence/functional-20260914T230356+0800/off/stdout.log",
+      "sha256": "47f509a56400647b80dd5a8e4a7070811c88ad74b5a18c798927cf3e0bfc427a"
+    }
+  ]
+}

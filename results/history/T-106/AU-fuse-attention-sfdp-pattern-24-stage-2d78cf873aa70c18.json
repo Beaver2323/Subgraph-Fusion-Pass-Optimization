@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-09-14T22:45:53.459771+08:00",
+  "task_id": "T-106",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-24",
+  "case_id": "REF-sfdp-pattern-24-native",
+  "backend": "triton_experimental",
+  "baseline": {
+    "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-kfb_8jxu/adapter/result.json",
+    "sha256": "d4dffb346cf367592cdb3a1d6bf6528258316c2dc4cc0579831248cf5824ab68"
+  },
+  "candidate_verified": false,
+  "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=0；本编号精确改写=1；原合同未通过；后续分支不计覆盖；没有数值比较证据，不计精度PASS",
+  "repair_status": "codegen-assertion-adaptation-review-pending",
+  "community_alignment_status": "CODEGEN_DIFFERENCE_NUMERICS_NOT_YET_REACHED",
+  "reason": "目标已改图；失败在适配器对融合kernel符号的过窄要求。数值断言尚未执行，不能据此判产品精度缺陷。",
+  "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+  "performance_gate_issued": false,
+  "report": "issues/REF-sfdp-pattern-24-native/安装态基线复核.md",
+  "gpu_review": {
+    "path": "results/current/T-106/gpu_reference_review.json",
+    "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+  },
+  "parent_run": {
+    "path": "issues/REF-sfdp-pattern-24-native/adapter_runs/native-20260914T224434-foapjlyy/run_result.json",
+    "sha256": "0a3c340bb359a3b0fae5b63d6161407fa8a39368f63f140e7292490c3021f082"
+  },
+  "failure_layer": "test-adapter"
+}

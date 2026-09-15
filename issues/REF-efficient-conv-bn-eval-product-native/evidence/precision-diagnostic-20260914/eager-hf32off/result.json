@@ -1,0 +1,64 @@
+{
+  "generated_at": "2026-09-14T21:00:02.569609+08:00",
+  "experiment": "conv1d-forward-precision-diagnostic-not-community-full-contract",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "device_execution": true,
+  "pid": 2266311,
+  "physical_npu": "5",
+  "initial_conv_hf32": true,
+  "effective_conv_hf32": false,
+  "matmul_hf32": false,
+  "compile_enabled": false,
+  "mode": "on",
+  "input_shape": [
+    4,
+    3,
+    96
+  ],
+  "dtype": "float32",
+  "samples": [
+    {
+      "seed": 20260914,
+      "eager_folded_vs_eager": {
+        "passed": true,
+        "mismatch": 0,
+        "numel": 6016,
+        "max_abs": 1.1920928955078125e-07,
+        "atol": 1e-05,
+        "rtol": 1.3e-06
+      }
+    },
+    {
+      "seed": 20260915,
+      "eager_folded_vs_eager": {
+        "passed": true,
+        "mismatch": 0,
+        "numel": 6016,
+        "max_abs": 1.1920928955078125e-07,
+        "atol": 1e-05,
+        "rtol": 1.3e-06
+      }
+    },
+    {
+      "seed": 20260916,
+      "eager_folded_vs_eager": {
+        "passed": true,
+        "mismatch": 0,
+        "numel": 6016,
+        "max_abs": 1.1920928955078125e-07,
+        "atol": 1e-05,
+        "rtol": 1.3e-06
+      }
+    }
+  ],
+  "product_gate_bypassed": false,
+  "full_community_contract_passed": false,
+  "performance_gate_issued": false,
+  "source_sha256": {
+    "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/conv_bn_precision_diagnostic.py": "b350e731e0db9dac38c4870b0503ce7de3bc1713303a50df28e973870f0cf1ac",
+    "/home/z50063656/Pass/src/pytorch/test/inductor/test_efficient_conv_bn_eval.py": "29661e120bb3039921e1a578ed03f590c4cbf41cfba02186ec39bbfceb468b1c",
+    "/home/z50063656/Pass/src/pytorch/torch/_inductor/fx_passes/efficient_conv_bn_eval.py": "05ecd1be8013f7088e80fc1d1ac5f8a42c14c206dea07c3f282834b3a1418fd6",
+    "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/npu/npu_config.py": "54d996c86df2814b13c65ce45baaccab7c2368044bf423866e573013a0993087"
+  }
+}

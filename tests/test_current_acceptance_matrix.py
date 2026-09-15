@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections import Counter
 import importlib.util
 from pathlib import Path
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -24,6 +26,14 @@ matrix = load_generator()
 
 
 class CurrentAcceptanceMatrixTests(unittest.TestCase):
+    def test_generator_import_works_without_other_tests_sys_path(self):
+        code = ("import importlib.util,sys; "
+                f"s=importlib.util.spec_from_file_location('standalone_matrix',{str(ROOT / 'scripts/generate_current_acceptance_matrix.py')!r}); "
+                "m=importlib.util.module_from_spec(s); s.loader.exec_module(m); "
+                "assert len(m.build_rows('2026-09-14T22:25:00+08:00'))==71; "
+                "assert 'torch' not in sys.modules")
+        subprocess.run([sys.executable,'-I','-c',code],check=True,cwd='/home/z50063656/tmp')
+
     def test_progress_rejects_foreign_backend_and_fake_completion(self):
         original = matrix.read_json
         for field, value in (("backend", "default"), ("contract_complete", False)):
@@ -77,7 +87,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             }),
         )
         self.assertEqual(len({row["acceptance_unit_id"] for row in rows}), 71)
-        self.assertEqual(sum(row["independent_unit_contribution"] for row in rows), 70)
+        self.assertEqual(sum(row["independent_unit_contribution"] for row in rows), 69)
         alias = next(row for row in rows if row["task_id"] == "T-112")
         self.assertEqual(alias["canonical_acceptance_unit_id"], "AU-post-grad-dedup-reduce-scatters")
         self.assertEqual(alias["independent_unit_contribution"], 0)
@@ -97,29 +107,37 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
 
     def test_dynamic_and_pending_evidence_are_not_conflated(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 40)
+        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 47)
         self.assertEqual(
-            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 40
+            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 47
         )
         self.assertEqual(
-            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 2
+            sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 0
         )
-        self.assertEqual(
-            sum(row["current_phase"] == "awaiting-npu" for row in rows), 0
-        )
+        # 安装态基线逐例推进，未完成单元只能在这四个真实阶段之间移动；
+        # 不能因为原例执行完就自动增加comparison/性能计数。
+        pending_phases = {'awaiting-npu','npu-regression-open',
+                          'npu-candidate-verified-awaiting-product-review','npu-contract-review','npu-adapter-review'}
+        self.assertEqual(sum(row['current_phase'] in pending_phases for row in rows), 20)
         progress = [row for row in rows if row["npu_progress_path"]]
-        self.assertEqual(len(progress), 0)
+        progress_tasks = {r['task_id'] for r in progress}
+        self.assertTrue({'T-098','T-102'} <= progress_tasks)
+        self.assertTrue(progress_tasks <= {'T-098','T-102','T-103','T-104','T-105','T-106','T-107'})
+        candidate = next(r for r in progress if r['acceptance_unit_id']=='AU-fuse-attention-sfdp-pattern-1')
+        self.assertEqual(candidate['repair_status'],'isolated-candidate-verified-not-deployed')
+        self.assertEqual(candidate['npu_execution_status'],'failed')
+        self.assertTrue(all(not r['comparison_result_path'] for r in progress))
         installed = [row for row in rows if row["repair_status"] == "installed-fix-verified-not-upstream-merged"]
         self.assertEqual(len(installed), 2)
         self.assertTrue(all(row["comparison_verdict"] == "NEWLY_SUPPORTED" for row in installed))
         self.assertTrue(all(row["comparison_result_path"] for row in installed))
-        self.assertEqual(sum(row["current_phase"] == "gpu-target-attribution-pending" for row in rows), 28)
+        self.assertEqual(sum(row["current_phase"] == "gpu-target-attribution-pending" for row in rows), 2)
         self.assertEqual(
             sum(row["current_phase"] == "functional-comparison-closed" for row in rows),
-            27,
+            28,
         )
         self.assertEqual(
-            sum(row["current_phase"] == "formally-closed" for row in rows), 12
+            sum(row["current_phase"] == "formally-closed" for row in rows), 19
         )
         self.assertEqual(
             sum(
@@ -127,7 +145,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                 == "coverage-extension-gpu-reference-pending"
                 for row in rows
             ),
-            1,
+            0,
         )
         self.assertEqual(
             sum(
@@ -142,8 +160,38 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                 row["performance_evidence_path"].startswith("results/current/")
                 for row in rows
             ),
-            40,
+            47,
         )
+
+    def test_mixed_task_keeps_per_pattern_gpu_verdict(self):
+        rows = matrix.build_rows("2026-09-14T20:04:00+08:00")
+        by_unit = {r['acceptance_unit_id']:r for r in rows}
+        for number in (16,29):
+            row = by_unit[f'AU-fuse-attention-sfdp-pattern-{number}']
+            self.assertEqual(row['reference_status'], 'native-passed-different-target-observed')
+            self.assertEqual(row['current_phase'], 'gpu-target-attribution-pending')
+        alias = by_unit['AU-fuse-attention-sfdp-pattern-17']
+        self.assertEqual(alias['canonical_acceptance_unit_id'], 'AU-fuse-attention-sfdp-pattern-15')
+        self.assertEqual(alias['independent_unit_contribution'], 0)
+        self.assertEqual(alias['current_phase'], 'duplicate-evidence-retained-not-counting')
+        self.assertFalse(alias['comparison_result_path'])
+        for number in (18,19,20,28,30):
+            row = by_unit[f'AU-fuse-attention-sfdp-pattern-{number}']
+            expected = ('valid-reference-frozen' if row['denominator_eligible'] == 'yes-frozen'
+                        else 'gpu-contract-reviewed-awaiting-npu')
+            self.assertEqual(row['reference_status'], expected)
+            self.assertIn(row['current_phase'], {
+                'awaiting-npu', 'npu-contract-review', 'npu-regression-open', 'npu-adapter-review',
+                'npu-candidate-verified-awaiting-product-review', 'functional-comparison-closed', 'formally-closed',
+            })
+
+    def test_unclosed_base_contract_is_not_fully_covered(self):
+        rows = matrix.build_rows("2026-09-14T23:52:00+08:00")
+        for row in rows:
+            if not row['comparison_result_path']:
+                self.assertNotEqual(row['coverage_status'], 'fully-covered')
+        alias = next(row for row in rows if row['task_id'] == 'T-112')
+        self.assertEqual(alias['coverage_status'], 'duplicate-noncounting')
 
     def test_t084_t086_bind_explicit_alignment_and_performance(self):
         rows = matrix.build_rows("2026-09-10T06:55:00+08:00")
@@ -158,7 +206,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             {"PERF_IMPROVED", "PERF_MIXED", "PERF_REGRESSED"},
         )
 
-    def test_t078_addcdiv_lowp_value_one_fix_and_gpu_pending_are_visible(self):
+    def test_t078_value_one_extension_closed_but_rounding_divergence_visible(self):
         rows = matrix.build_rows("2026-09-08T06:07:40+08:00")
         row = next(
             item
@@ -167,18 +215,17 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             == "AU-post-grad-fuse-addcdiv-to-fma"
         )
         self.assertEqual(row["variant_count"], 6)
-        self.assertEqual(row["verified_variant_count"], 5)
-        self.assertEqual(row["pending_variant_count"], 1)
-        self.assertIn("fp16-value1-bitwise-regression", row["coverage_status"])
-        self.assertIn("fixed-on-device", row["coverage_status"])
+        self.assertEqual(row["verified_variant_count"], 6)
+        self.assertEqual(row["pending_variant_count"], 0)
         self.assertEqual(
             row["current_phase"],
-            "coverage-extension-gpu-reference-pending",
+            "functional-comparison-closed",
         )
         self.assertEqual(row["community_alignment_status"], "PARTIAL_ALIGNED")
         self.assertEqual(row["community_alignment_source"], "explicit")
         self.assertIn("NPU FP16", row["community_divergent_scope"])
-        self.assertIn("FP16 value=1", row["community_open_scope"])
+        self.assertEqual(row["community_open_scope"], "")
+        self.assertIn("FP16 value=1", row["community_aligned_scope"])
 
     def test_legacy_results_are_not_inferred_as_fully_aligned(self):
         rows = matrix.build_rows("2026-09-08T21:10:00+08:00")
@@ -205,22 +252,17 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             if row["acceptance_unit_id"] == "AU-fuse-attention-sfdp-pattern-16"
         )
         self.assertEqual(
-            pattern_1["community_alignment_status"], "pending-device-comparison"
+            pattern_1["community_alignment_status"], "NOT_ALIGNED_REPAIR_REQUIRED"
         )
         self.assertEqual(
             pattern_16["community_alignment_status"],
             "backend-specific-partial-alignment",
         )
-        for row in (pattern_1, pattern_16):
-            self.assertEqual(
-                row["community_alignment_source"],
-                "manifest-preparation-contract",
-            )
-            self.assertFalse(row["comparison_result_path"])
-            self.assertIn(
-                "设备行为尚未形成结论",
-                row["community_alignment_disposition"],
-            )
+        self.assertEqual(pattern_1["community_alignment_source"], "explicit-stage-review")
+        self.assertEqual(pattern_16["community_alignment_source"], "manifest-preparation-contract")
+        self.assertFalse(pattern_1["comparison_result_path"])
+        self.assertFalse(pattern_16["comparison_result_path"])
+        self.assertIn("设备行为尚未形成结论", pattern_16["community_alignment_disposition"])
 
     def test_t081_t083_results_bind_backend_and_learning_evidence(self):
         rows = matrix.build_rows("2026-09-08T03:17:00+08:00")

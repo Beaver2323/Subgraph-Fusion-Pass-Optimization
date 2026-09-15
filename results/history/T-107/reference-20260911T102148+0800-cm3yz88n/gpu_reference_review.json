@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-107",
+  "reviewed_at": "2026-09-11T12:24:13.289276+08:00",
+  "run_id": "reference-20260911T102148+0800-cm3yz88n",
+  "status": "native-passed-target-attribution-pending",
+  "reference_backend": "inductor-default",
+  "expected_pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "input": "results/incoming/T-107/manifest.json",
+  "input_sha256": "7499743c956dc7f7ad24b443d41574dea0e21c038fac85a11d9ad58628ea68e4",
+  "payload_sha256": "137555b69849a846188ff3eddd1835f4771bb752bd3e71e795585349d998b29c",
+  "environment_fingerprint": "ad8df1e2357e5e0351014dc7c3dd578f8ae640b4726d1138bc991cc30da10dc3",
+  "native_cases_passed": 3,
+  "tests_skipped": 0,
+  "restored_text_files": 121,
+  "acceptance_units": [
+    "AU-fuse-attention-sfdp-pattern-28",
+    "AU-fuse-attention-sfdp-pattern-29",
+    "AU-fuse-attention-sfdp-pattern-30"
+  ],
+  "cases": [
+    {
+      "case_id": "REF-sfdp-pattern-28-native",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-28",
+      "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_28_gpu",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_fused_attention.py",
+        "-v",
+        "SDPAPatternRewriterGpuTests.test_sdpa_rewriter_28_gpu"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "56e6afcbf5a0775e491b7862493723c5049535dca87b5cd1c591bfa485613589"
+    },
+    {
+      "case_id": "REF-sfdp-pattern-29-native",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-29",
+      "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_29_gpu",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_fused_attention.py",
+        "-v",
+        "SDPAPatternRewriterGpuTests.test_sdpa_rewriter_29_gpu"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "0f292689e0aa56f248db7516ef6c357366b6b95e0746adf6b72d1d4bfa9a93b1"
+    },
+    {
+      "case_id": "REF-sfdp-pattern-30-native",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-30",
+      "source_test": "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_30_gpu",
+      "command": [
+        "/data/z50063656/envs/PassGPURef/bin/python",
+        "/data/z50063656/src/pytorch/test/inductor/test_fused_attention.py",
+        "-v",
+        "SDPAPatternRewriterGpuTests.test_sdpa_rewriter_30_gpu"
+      ],
+      "tests_ran": 1,
+      "tests_skipped": 0,
+      "reference_result_sha256": "ced10b2631077829973481d77935c73c0fb7485c109c4cf770c00a6b286d436b"
+    }
+  ],
+  "review_boundary": "通用 fuse_attention/晚于融合的 FX 不足以逐编号归因；12 training 有原生编号断言；dropout 数值范围按源码参数确认。",
+  "npu_execution_in_this_review": false,
+  "denominator_frozen_by_this_review": false,
+  "independent_unit_contribution": 3,
+  "report": "report/gpu_incoming_review_20260911.md"
+}

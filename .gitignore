@@ -11,6 +11,11 @@ results/current/*/*
 !results/current/T-*/functional/*.json
 !results/current/T-*/performance_gates/
 !results/current/T-*/performance_gates/*.json
+!results/current/T-*/attention_bundles/
+!results/current/T-*/attention_bundles/*.json
+!results/current/T-105/pattern17_alias_review/
+!results/current/T-105/pattern17_alias_review/*.json
+!results/current/T-105/pattern17_alias_review/*.py
 !results/audits/
 results/audits/*
 !results/audits/latest.json
@@ -25,5 +30,15 @@ results/incoming/*
 results/incoming/T-*/*
 !results/incoming/T-*/.gitkeep
 !results/incoming/T-*/README.md
+!results/incoming/T-105/target-supplement/
+!results/incoming/T-107/target-supplement/
+!results/history/
+results/history/*
+!results/history/T-*/
+results/history/T-*/*
+!results/history/T-*/*.json
+!results/history/T-*/reference-*/
+results/history/T-*/reference-*/*
+!results/history/T-*/reference-*/gpu_reference_review.json
 *.tar.gz
 *.tar.gz.sha256

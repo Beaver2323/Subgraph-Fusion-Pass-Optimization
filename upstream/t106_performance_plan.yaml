@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-106",
-  "generated_at": "2026-09-10T22:55:21+08:00",
+  "generated_at": "2026-09-14T23:56:23.597516+08:00",
   "status": "prepared-awaiting-gpu-and-npu-functional-gates",
   "implementation": {
     "status": "implemented-awaiting-runtime-validation",
@@ -70,8 +70,9 @@
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-21",
       "worker_unit": "pattern-21",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "functional-precheck-blocked-off-neighbor-takeover",
+      "verdict": "NOT_MEASURED",
+      "functional_precheck_report": "issues/REF-sfdp-pattern-21-native/性能归因阻断.md",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -88,7 +89,7 @@
           "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
         }
       ],
-      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
       "artifacts": [
         "GPU原生FX/计数",
         "NPU OFF/ON功能原件",
@@ -122,7 +123,7 @@
           "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
         }
       ],
-      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
       "artifacts": [
         "GPU原生FX/计数",
         "NPU OFF/ON功能原件",
@@ -138,8 +139,8 @@
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-23",
       "worker_unit": "pattern-23",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -156,7 +157,7 @@
           "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
         }
       ],
-      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
       "artifacts": [
         "GPU原生FX/计数",
         "NPU OFF/ON功能原件",
@@ -167,13 +168,14 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-106/attention_bundles/pattern-23.json"
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-24",
       "worker_unit": "pattern-24",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_REGRESSED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -190,7 +192,7 @@
           "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
         }
       ],
-      "off_on_control": "目标隔离图中只切use_joint_graph_passes false/true；每臂fresh process，并以精确编号counter排除错误归属。",
+      "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
       "artifacts": [
         "GPU原生FX/计数",
         "NPU OFF/ON功能原件",
@@ -201,7 +203,8 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-106/attention_bundles/pattern-24.json"
     }
   ]
 }

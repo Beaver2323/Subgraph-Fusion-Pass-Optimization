@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-105",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "pattern-18",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-18",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-105/functional/pattern-18.json",
+      "gate": "results/current/T-105/performance_gates/pattern-18-executed.json"
+    },
+    {
+      "unit": "pattern-19",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-19",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-105/functional/pattern-19.json",
+      "gate": "results/current/T-105/performance_gates/pattern-19-executed.json"
+    }
+  ],
+  "generated_at": "2026-09-15T00:27:55.990324+08:00"
+}

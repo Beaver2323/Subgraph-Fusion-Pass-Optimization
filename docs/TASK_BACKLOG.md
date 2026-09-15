@@ -1,6 +1,6 @@
 # 后续批次与覆盖边界
 
-> 更新时间：2026-09-06T02:15:00+08:00
+> 更新时间：2026-09-15T01:37:00+08:00
 
 机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。
 
@@ -21,7 +21,7 @@ T-081～T-113全部完成准备/延期审核，保留原批次和旧ID，不重�
 | T-088 | `split_cat` | 5 | 已闭环2，延期3 |
 | T-089 | `split_cat` | 5 | 已闭环1，延期4 |
 | T-090 | `split_cat` | 5 | 已闭环1，延期4 |
-| T-091 | `split_cat` | 5 | 已准备1，延期4；等GPU/补证 |
+| T-091 | `split_cat` | 5 | 已闭环1，延期4 |
 | T-092 | `split_cat` | 5 | 已审核0个GPU-ready，延期5；禁止空跑 |
 | T-093 | `split_cat` | 3 | 已审核0个GPU-ready，延期3；禁止空跑 |
 | T-094 | `pre_grad` | 5 | 已审核0个GPU-ready，延期5；禁止空跑 |
@@ -30,7 +30,7 @@ T-081～T-113全部完成准备/延期审核，保留原批次和旧ID，不重�
 | T-097 | `replace_random` | 4 | 已审核0个GPU-ready，延期4；禁止空跑 |
 | T-098 | `efficient_conv_bn_eval` | 3 | 已准备1，延期2；等GPU/补证 |
 | T-099 | `freezing_patterns` | 5 | 已审核0个GPU-ready，延期5；禁止空跑 |
-| T-100 | `binary_folding` | 1 | 已准备1，延期0；等GPU/补证 |
+| T-100 | `binary_folding` | 1 | 已闭环1，延期0 |
 | T-101 | `reduced_atomic_contention` | 1 | 已审核0个GPU-ready，延期1；禁止空跑 |
 | T-102 | `fuse_attention` | 5 | 已准备5，延期0；等GPU/补证 |
 | T-103 | `fuse_attention` | 5 | 已准备5，延期0；等GPU/补证 |
