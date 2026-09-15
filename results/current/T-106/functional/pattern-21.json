@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-15T17:20:08.167333+08:00",
+  "task_id": "T-106",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-21",
+  "backend": "triton_experimental",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "comparison_verdict": "BEHAVIOR_UNCHANGED",
+  "repair_status": "not-needed",
+  "performance_status": "accepted-not-independently-attributable",
+  "performance_verdict": "PERF_NOT_INDEPENDENTLY_ATTRIBUTABLE",
+  "performance_measured": false,
+  "benefit_counted": false,
+  "default_disabled_exempt": false,
+  "performance_gate_issued": false,
+  "approval": {
+    "path": "issues/REF-sfdp-pattern-21-native/最终处置确认.md",
+    "sha256": "6434f83ac9f9c794128d1d80f67eecc3ce7b8adc5db4ac5d6ef32f5c4e0b666d"
+  },
+  "community_evidence": {
+    "path": "issues/REF-sfdp-pattern-21-native/evidence/t106-native-6t1pel2i/adapter/result.json",
+    "sha256": "b7deee04c9982c62799ec1be6d38cdb064b2af7fb5abe5e3bedf18719675c87d"
+  },
+  "gpu_reference": {
+    "path": "results/current/T-106/gpu_reference_review.json",
+    "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+  },
+  "off_execution": {
+    "path": "issues/REF-sfdp-pattern-21-native/evidence/functional-20260915T112553+0800/off/execution.json",
+    "sha256": "e0050a42e9ff2fb5631ef4612a6a44d625c80e16e8ce00054468ca844686e4fb"
+  },
+  "inventories": [
+    {
+      "path": "issues/REF-sfdp-pattern-21-native/evidence/t106-native-6t1pel2i/adapter/evidence_inventory.json",
+      "sha256": "0f325fea9c2520e631dbf88aea7549cb14d5287c6eabb93f12669fa142aba676"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-21-native/evidence/functional-20260915T112553+0800/inventory.json",
+      "sha256": "3431ad8da9ee281a6a50d93aecc4727c3d58e1687977ade54fab6167ea2bbf57"
+    }
+  ],
+  "community_alignment": {
+    "status": "PARTIAL_ALIGNED",
+    "aligned_scope": [
+      "完整原社区数值与本编号改写通过"
+    ],
+    "divergent_scope": [
+      "NPU数学展开与CUDA融合kernel不同；已选输入OFF被22接替，不能独立归因"
+    ],
+    "open_scope": [
+      "未覆盖dtype/形状/梯度不外推；不证明所有输入均无法独立归因"
+    ],
+    "disposition": "用户接受归因限制结项，不计收益、不计默认关闭免测、不更改产品配置"
+  }
+}

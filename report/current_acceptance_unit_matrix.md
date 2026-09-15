@@ -1,15 +1,16 @@
 # 当前 Acceptance Unit 兼容性矩阵
 
-> 生成时间：2026-09-15T11:55:53+08:00
+> 生成时间：2026-09-15T17:20:20+08:00
 > 数据源：`upstream/*manifest.yaml`、`results/current/` 与逐任务性能计划/汇总。
 > 后端边界：GPU reference 固定为 `inductor-default`；NPU 动态验证、比较、修复验证与性能固定为 `triton_experimental`。
 > 历史 251 行 registration 矩阵不参与本表 verdict；其用途与边界见 `report/archive/legacy-20260820-0828/pass_src_20260820/README.md`。
 
 ## 状态摘要
 
-- 跟踪记录：**71**；去重后独立 acceptance units：**69**；已冻结 reference：**48**；存在覆盖扩展未闭环：**0**。
+- 跟踪记录：**71**；去重后独立 acceptance units：**69**；已冻结 reference：**49**；存在覆盖扩展未闭环：**0**。
 - T-112 是 T-084 的同合同补证，独立分母贡献为 0，保留记录但不重复计数。
-- 已形成 NPU/comparison：**48**；已有正式性能处置：**48**；其余为性能计划态。
+- 已形成 NPU/comparison：**49**；已有正式性能处置：**49**；其余为性能计划态。
+- 性能无法独立归因、经用户接受结项：**1**；计入最终处置，不计实测、收益或默认关闭免测。
 - `comparison`/性能处置数量只说明已登记 variants；存在 pending extension 的单元必须以“覆盖”和“当前阶段”列为准，不能外推为全域闭环。
 - 没有正式comparison的原合同显示`base-contract-not-yet-closed`；不能因为未声明扩展缺口就写fully-covered。
 - 当前 NPU 结果实际观测 backend：`triton_experimental`。
@@ -86,7 +87,7 @@
 | T-105 | AU-fuse-attention-sfdp-pattern-18 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed-product-unchanged | FULL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益 | measured / PERF_IMPROVED | formally-closed |
 | T-105 | AU-fuse-attention-sfdp-pattern-19 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed-product-unchanged | PARTIAL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益；half域缺口见issues/REF-sfdp-pattern-19-native/性能精度域缺口.md，需独立修复评审 | measured / PERF_REGRESSED | formally-closed |
 | T-105 | AU-fuse-attention-sfdp-pattern-20 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | community-contract-passed-not-final | 原方法 tests=1/skip=0；已通过Tensor比较=0；本编号精确改写=1；原社区合同通过，仍待逐项图/性能审核；没有数值比较证据，不计精度PASS | not-run | awaiting-code-and-performance-review | PARTIAL_ALIGNED / 人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。 | functional-precheck-blocked-off-numerical-failure / NOT_MEASURED | npu-contract-review |
-| T-106 | AU-fuse-attention-sfdp-pattern-21 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | community-contract-passed-not-final | 原方法 tests=1/skip=0；已通过Tensor比较=2；本编号精确改写=2；原社区合同通过，仍待逐项图/性能审核 | not-run | awaiting-code-and-performance-review | PARTIAL_ALIGNED / 人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。 | functional-precheck-blocked-off-neighbor-takeover / NOT_MEASURED | npu-contract-review |
+| T-106 | AU-fuse-attention-sfdp-pattern-21 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | PARTIAL_ALIGNED / 用户接受归因限制结项，不计收益、不计默认关闭免测、不更改产品配置 | accepted-not-independently-attributable / PERF_NOT_INDEPENDENTLY_ATTRIBUTABLE | formally-closed |
 | T-106 | AU-fuse-attention-sfdp-pattern-22 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | installed-original-neighbors-boundary-verified | PARTIAL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益 | measured / PERF_REGRESSED | formally-closed |
 | T-106 | AU-fuse-attention-sfdp-pattern-23 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed-product-unchanged | FULL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益 | measured / PERF_IMPROVED | formally-closed |
 | T-106 | AU-fuse-attention-sfdp-pattern-24 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed-product-unchanged | PARTIAL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益 | measured / PERF_REGRESSED | formally-closed |

@@ -107,9 +107,9 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
 
     def test_dynamic_and_pending_evidence_are_not_conflated(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 48)
+        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 49)
         self.assertEqual(
-            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 48
+            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 49
         )
         self.assertEqual(
             sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 0
@@ -120,7 +120,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                           'npu-candidate-verified-awaiting-product-review','npu-contract-review','npu-adapter-review',
                           'npu-installed-repair-verification-running',
                           'npu-installed-repair-verified-awaiting-performance'}
-        self.assertEqual(sum(row['current_phase'] in pending_phases for row in rows), 19)
+        self.assertEqual(sum(row['current_phase'] in pending_phases for row in rows), 18)
         progress = [row for row in rows if row["npu_progress_path"]]
         progress_tasks = {r['task_id'] for r in progress}
         self.assertTrue({'T-098','T-102'} <= progress_tasks)
@@ -139,7 +139,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             28,
         )
         self.assertEqual(
-            sum(row["current_phase"] == "formally-closed" for row in rows), 20
+            sum(row["current_phase"] == "formally-closed" for row in rows), 21
         )
         self.assertEqual(
             sum(
@@ -162,13 +162,17 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                 row["performance_evidence_path"].startswith("results/current/")
                 for row in rows
             ),
-            48,
+            49,
         )
 
         repaired = next(r for r in rows if r['acceptance_unit_id']=='AU-fuse-attention-sfdp-pattern-22')
         self.assertEqual(repaired['current_phase'], 'formally-closed')
         self.assertEqual(repaired['repair_status'], 'installed-original-neighbors-boundary-verified')
         self.assertTrue(repaired['comparison_result_path'])
+        limited = next(r for r in rows if r['acceptance_unit_id']=='AU-fuse-attention-sfdp-pattern-21')
+        self.assertEqual(limited['performance_verdict'], 'PERF_NOT_INDEPENDENTLY_ATTRIBUTABLE')
+        self.assertEqual(limited['performance_status'], 'accepted-not-independently-attributable')
+        self.assertEqual(limited['current_phase'], 'formally-closed')
 
     def test_mixed_task_keeps_per_pattern_gpu_verdict(self):
         rows = matrix.build_rows("2026-09-14T20:04:00+08:00")

@@ -1,6 +1,6 @@
 # 实验报告与数据索引
 
-> 索引更新时间：2026-09-15 11:56 CST（UTC+08:00）
+> 索引更新时间：2026-09-15 17:21 CST（UTC+08:00）
 > 原则：报告保存当时环境和结论，不因主线变化回写历史；当前任务状态以
 > `../docs/CURRENT_STATUS.md` 为准。
 
@@ -8,9 +8,9 @@
 
 | 文件 | 作用 | 当前边界 |
 | --- | --- | --- |
-| [Pattern 22部署与边界回归](../issues/REF-sfdp-pattern-22-native/部署与边界回归报告.md) / [功能性能讲解](../results/current/T-106/pattern-22_讲解.md) / [修复验证](../issues/REF-sfdp-pattern-22-native/修复验证报告.md) | 条件授权、前后代码及调用栈、实际FX/IR/codegen、原件与六臂样本 | 已部署Pass并验证，PERF_REGRESSED；T-106为3/4，21号归因阻塞仍保留 |
+| [T-106 21号归因处置](../results/current/T-106/pattern-21_讲解.md) / [22号功能性能讲解](../results/current/T-106/pattern-22_讲解.md) / [修复验证](../issues/REF-sfdp-pattern-22-native/修复验证报告.md) | 用户确认、前后代码及调用栈、实际FX/IR/codegen、六臂样本 | T-106为4/4已处置：3项实测、21号1项归因受限；后者不计收益或关闭免测 |
 | [Pattern 2注册候选验证](../issues/REF-sfdp-pattern-2-native/注册候选验证报告.md) | 原失败调用栈、NPU训练分解、具体代码和完整原方法复验 | 10次Tensor比较、4次精确改写通过；未部署、未计性能 |
-| [剩余任务与专项入口](remaining_work_20260915.md) | 17/15去重源码证明、16/29针对性GPU补测、22设备边界与T-098全量实测状态 | 71个ID/69独立合同，48闭环、21剩余；不把候选和排队任务算完成 |
+| [剩余任务与专项入口](remaining_work_20260915.md) | 17/15去重源码证明、16/29针对性GPU补测、22设备边界与T-098全量实测状态 | 71个ID/69独立合同，49闭环、20剩余；其中1项归因受限而非性能实测 |
 | [当前不依赖GPU的执行进度](unblocked_work_20260914.md) | T-091/T-100及attention验收、T-098精度模式诊断，附学习入口 | T-091 MIXED、T-100 IMPROVED、T-104 pattern13 REGRESSED；其余仍按真实阶段记录 |
 | [T-104 pattern13结果与讲解](../results/current/T-104/pattern-13_讲解.md) | pattern意图、社区/派生测例合同、真实GPU/NPU代码、六臂性能 | 功能通过；微图回退约4%～8%，不调整默认配置 |
 | [T-105 pattern18讲解](../results/current/T-105/pattern-18_讲解.md) / [T-106 pattern23讲解](../results/current/T-106/pattern-23_讲解.md) | 布尔mask/零加性mask、多输出K/V、原例与派生性能域、六臂真实代码与样本 | 两项PERF_IMPROVED，仅限各自微图；不是整个attention批次或模型收益 |

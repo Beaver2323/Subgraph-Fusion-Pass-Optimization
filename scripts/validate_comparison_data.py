@@ -742,7 +742,8 @@ def validate_compact_functional_results(
         summary = load_object(summary_path)
         if summary.get("backend") != REQUIRED_NPU_BACKEND:
             raise ValueError(f"{summary_path} backend 必须为 {REQUIRED_NPU_BACKEND}")
-        if summary.get("status") != "functional-passed-performance-gates-signed":
+        if summary.get("status") not in {"functional-passed-performance-gates-signed",
+                                         "functional-passed-performance-disposition-complete"}:
             raise ValueError(f"{summary_path} 尚未完成正式功能复核")
         records = summary.get("units")
         if not isinstance(records, list) or not records:
@@ -753,6 +754,36 @@ def validate_compact_functional_results(
                 raise ValueError(f"{summary_path} unit 不在 manifest: {unit_id}")
             if unit_id in comparison_unit_ids or unit_id in closed:
                 raise ValueError(f"正式功能结果重复覆盖 acceptance unit: {unit_id}")
+            if record.get("status") == "functional-passed-attribution-disposition-accepted":
+                from review_t106_attribution_disposition import verify, STATUS, VERDICT
+                if 'gate' in record:
+                    raise ValueError('归因受限处置不得伪造计时gate')
+                evidence_path = repo_root / record.get('functional_evidence', '')
+                evidence = load_object(evidence_path)
+                if evidence.get('acceptance_unit_id') != unit_id:
+                    raise ValueError('归因受限处置单元绑定不一致')
+                verify(repo_root, evidence)
+                performance = load_object(summary_path.parent/'performance_summary.json')
+                expected_counts = {
+                    'completed': len(performance['acceptance_units']),
+                    'measured': sum(p['performance_status'] == 'measured' for p in performance['acceptance_units']),
+                    'attribution_limited': sum(p['verdict'] == VERDICT for p in performance['acceptance_units']),
+                    'improved': sum(p['verdict'] == 'PERF_IMPROVED' for p in performance['acceptance_units']),
+                    'regressed': sum(p['verdict'] == 'PERF_REGRESSED' for p in performance['acceptance_units']),
+                    'default_disabled_exempt': sum(p.get('default_disabled_exempt') is True for p in performance['acceptance_units']),
+                }
+                if performance.get('disposition_counts') != expected_counts:
+                    raise ValueError('归因受限批次的处置/实测/收益/免测统计不一致')
+                items = [p for p in performance['acceptance_units'] if p['acceptance_unit_id'] == unit_id]
+                if (len(items) != 1 or items[0].get('performance_status') != STATUS
+                        or items[0].get('verdict') != VERDICT
+                        or items[0].get('disposition_evidence') != record['functional_evidence']
+                        or any(items[0].get(k) is not False for k in
+                               ('performance_measured','benefit_counted','default_disabled_exempt'))
+                        or any(k in items[0] for k in ('timing','samples','improvement_percent'))):
+                    raise ValueError('归因受限汇总不得计为实测/收益/默认关闭免测')
+                closed.add(unit_id)
+                continue
             if record.get("status") != "functional-passed-performance-gate-signed":
                 raise ValueError(f"{summary_path} unit 尚未签发性能门禁: {unit_id}")
             evidence_path = repo_root / record.get("functional_evidence", "")

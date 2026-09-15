@@ -1,6 +1,14 @@
 {
   "schema_version": "1.0",
   "task_id": "T-106",
+  "disposition_counts": {
+    "completed": 4,
+    "measured": 3,
+    "attribution_limited": 1,
+    "improved": 1,
+    "regressed": 2,
+    "default_disabled_exempt": 0
+  },
   "backend": "triton_experimental",
   "status": "performance-disposition-complete-for-listed-units",
   "acceptance_units": [
@@ -816,7 +824,18 @@
         "aggregation": "三OFF/三ON各臂p50/p99中位数；高波动或时钟冲突记MIXED"
       },
       "bundle": "results/current/T-106/attention_bundles/pattern-22.json"
+    },
+    {
+      "unit": "pattern-21",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-21",
+      "performance_status": "accepted-not-independently-attributable",
+      "verdict": "PERF_NOT_INDEPENDENTLY_ATTRIBUTABLE",
+      "performance_measured": false,
+      "benefit_counted": false,
+      "default_disabled_exempt": false,
+      "disposition_evidence": "results/current/T-106/functional/pattern-21.json",
+      "product_action": "不改默认开关；不制造ON/OFF；不计收益或默认关闭免测"
     }
   ],
-  "generated_at": "2026-09-15T11:54:51.445041+08:00"
+  "generated_at": "2026-09-15T17:20:08.167333+08:00"
 }

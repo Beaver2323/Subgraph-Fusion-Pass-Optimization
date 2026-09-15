@@ -1,6 +1,6 @@
 # Triton Experimental 原生优化持续兼容性跟踪 TODO
 
-> 更新时间：2026-09-15 11:56 CST（UTC+08:00）
+> 更新时间：2026-09-15 17:21 CST（UTC+08:00）
 > 状态：T-076～T-086 原冻结范围共33个acceptance units有效；T-078 addcdiv 的 FP16
 > `value=1` 普通 div+add 精度回归已修复并通过 NPU 真机验证，9月14日正确的GPU
 > dtype/value邻接reference已补齐并复核；旧误命名CUDA codegen包保留历史，登记覆盖扩展已无待补项。
@@ -10,7 +10,7 @@
 > T-101～T-113已完成全部准备：52个候选中28个GPU-ready合同/28 cases/28 variants，
 > 24个合并或延期；2026-09-11确认T-112与T-084同合同，28个ID实际贡献27个独立单元。
 > 2026-09-15再确认pattern17与15同合同：上述28个ID现贡献26个独立单元；新增16/29专项各1个derived case，不增加单元分母。
-> 本轮13批40个GPU cases及后续观察器、T-098/T-100补包已复核；15个新单元功能/comparison/性能处置完成，总数各48。T-106为3/4，21号仍有性能归因阻塞。
+> 本轮13批40个GPU cases及后续观察器、T-098/T-100补包已复核；16个新单元功能/comparison/最终性能处置完成，总数各49。T-106为4/4：3项实测、1项用户接受的归因受限，后者不计收益或默认关闭免测。
 > T-087设备解析、T-096精度修复已部署Pass回归；T-102 pattern 1/2只有隔离候选通过，不能并入安装态完成数。
 > 没有剩余草案批次。产品改动仍待独立产品仓评审/合入。
 > 约束：只在原生入口真实阻断后创建 case-specific adapter，不新增大规模 pass 测例。
@@ -22,8 +22,8 @@
 - acceptance unit 是跟踪、比较和 verdict 的基本单位；
 - 一个 registration 可以展开多个 pattern/variant，也可能与其他 registration 共同服务一个 contract；
 - 只有人工审核并冻结的 acceptance unit 才能进入完成率分母；
-- T-074 当前 188/158 均为 provisional；原33个冻结单元保留历史结论，本轮新增15个GPU冻结reference，
-  新增15个NPU/comparison及15项性能处置，当前分别为48、48、48；产品改动合入及严格再认证单列。
+- T-074 当前 188/158 均为 provisional；原33个冻结单元保留历史结论，本轮新增16个GPU冻结reference，
+  新增16个NPU/comparison及16项性能处置，当前分别为49、49、49；其中1项为归因受限而非性能实测。产品改动合入及严格再认证单列。
 
 ## 当前门禁补强与历史复核
 
@@ -48,11 +48,11 @@
 - [x] T-104 pattern13原社区合同、精确OFF/ON、六臂性能与离线归档重算：PERF_REGRESSED，不调整默认配置。
 - [x] 18/23/24独立OFF/ON、六臂计时及归档完成；18/23为PERF_IMPROVED，24为PERF_REGRESSED，不改默认配置。
 - [x] 19号FP32独立OFF/ON及六臂计时：PERF_REGRESSED；保留half编译缺口和原例无数值oracle，PARTIAL_ALIGNED。
-- [ ] 15标量适配后新OFF NaN与20 OFF数值失败分别定位；21邻接接替仍不能签有效性能归因。
+- [ ] 15标量适配后新OFF NaN与20 OFF数值失败分别定位。
 - [x] 22号通用codegen候选原例4组/12次Tensor、近邻21/23/24全部通过，源码/实际FX/IR/codegen已归档；隔离状态入表。
 - [x] 22号已备份窄部署两个方法，无候选安装态原例及21/23/24邻接全部通过（21次Tensor/9次改写）；安装态边界22场景/23执行通过。
 - [x] 22号新安装态同NPU5原例12次Tensor/4改写、独立OFF/ON及六臂计时验签完成：PERF_REGRESSED，host/Event p50时延增加22.94%/29.19%，不改默认开关、不撤正确性修复。详见[完整讲解](results/current/T-106/pattern-22_讲解.md)。
-- [ ] 21号新安装态OFF再次被22接替；原例功能通过，不能签独立性能门禁，不按默认关闭免测处理。
+- [x] 21号新安装态OFF再次被22接替；用户接受归因受限最终处置，功能通过，不签计时门禁、不计收益、不计默认关闭免测。原失败保留，见[处置讲解](results/current/T-106/pattern-21_讲解.md)。
 - 本轮进度与代码讲解见 [不依赖GPU的工作](report/unblocked_work_20260914.md)；不是新增25个全流程完成单元。
 
 - [x] 补 T-076/T-077 逐单元历史复核清单，不改写原证据；

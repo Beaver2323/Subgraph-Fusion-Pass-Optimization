@@ -38,6 +38,7 @@ def commands(root, pytorch_root):
     yield "t091_t100_archives", [python, str(root / "scripts/review_t091_t100_completion.py"), "--check-current"]
     yield "t078_value_one_archive", [python, str(root / "scripts/review_t078_value_one.py"), "--check-current"]
     yield "attention_archives", [python, str(root / "scripts/review_attention_completion.py"), "--check-current"]
+    yield "attention_attribution_disposition", [python, str(root / "scripts/review_t106_attribution_disposition.py")]
     yield "attention_codegen_candidate", [python, str(root / "scripts/record_attention_codegen_candidate.py"), "--check-current"]
     yield "attention17_alias", [python, str(root / "scripts/review_attention_17_alias.py"), "--check-current"]
     yield "current_acceptance_matrix", [

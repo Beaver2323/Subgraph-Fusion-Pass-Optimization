@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-106",
-  "generated_at": "2026-09-15T11:54:50.905386+08:00",
+  "generated_at": "2026-09-15T17:20:08.167333+08:00",
   "status": "prepared-awaiting-gpu-and-npu-functional-gates",
   "implementation": {
     "status": "implemented-awaiting-runtime-validation",
@@ -70,8 +70,8 @@
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-21",
       "worker_unit": "pattern-21",
-      "performance_status": "functional-precheck-blocked-off-neighbor-takeover",
-      "verdict": "NOT_MEASURED",
+      "performance_status": "accepted-not-independently-attributable",
+      "verdict": "PERF_NOT_INDEPENDENTLY_ATTRIBUTABLE",
       "functional_precheck_report": "issues/REF-sfdp-pattern-21-native/性能归因阻断.md",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
@@ -100,7 +100,8 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "disposition_evidence": "results/current/T-106/functional/pattern-21.json"
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-22",

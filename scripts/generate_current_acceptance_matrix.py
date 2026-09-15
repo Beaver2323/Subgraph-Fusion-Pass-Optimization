@@ -780,6 +780,7 @@ def render_markdown(rows: list[dict], generated_at: str) -> str:
         f"- 跟踪记录：**{len(rows)}**；去重后独立 acceptance units：**{independent}**；已冻结 reference：**{frozen}**；存在覆盖扩展未闭环：**{pending}**。",
         "- T-112 是 T-084 的同合同补证，独立分母贡献为 0，保留记录但不重复计数。",
         f"- 已形成 NPU/comparison：**{compared}**；已有正式性能处置：**{measured_or_disposed}**；其余为性能计划态。",
+        f"- 性能无法独立归因、经用户接受结项：**{sum(r['performance_verdict'] == 'PERF_NOT_INDEPENDENTLY_ATTRIBUTABLE' for r in rows)}**；计入最终处置，不计实测、收益或默认关闭免测。",
         "- `comparison`/性能处置数量只说明已登记 variants；存在 pending extension 的单元必须以“覆盖”和“当前阶段”列为准，不能外推为全域闭环。",
         "- 没有正式comparison的原合同显示`base-contract-not-yet-closed`；不能因为未声明扩展缺口就写fully-covered。",
         f"- 当前 NPU 结果实际观测 backend：`{', '.join(observed) if observed else '无'}`。",

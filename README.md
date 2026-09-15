@@ -1,6 +1,6 @@
 # PyTorch Inductor Pass NPU 持续兼容性跟踪器
 
-> 文档更新时间：2026-09-15 11:56 CST（UTC+08:00）
+> 文档更新时间：2026-09-15 17:21 CST（UTC+08:00）
 > 当前主线：PyTorch 社区原生 Inductor 优化契约在 NPU
 > `triton_experimental` 后端上的持续兼容性验证。
 
@@ -16,7 +16,8 @@
 
 当前计数以[活动单元矩阵](report/current_acceptance_unit_matrix.md)和
 [最新状态](docs/CURRENT_STATUS.md)为准；逐单元是否完成、部分对齐与性能回退均独立记录。
-截至本次更新，71个跟踪ID对应69个独立单元，正式闭环48/69；T-106为3/4。
+截至本次更新，71个跟踪ID对应69个独立单元，正式闭环49/69；T-106为4/4已处置，
+其中3项性能实测、1项用户接受的归因受限（不计收益或默认关闭免测），不是4项性能实测。
 T-106 pattern 22 的修复、实际生成代码及性能解释见
 [学习报告](results/current/T-106/pattern-22_讲解.md)。
 

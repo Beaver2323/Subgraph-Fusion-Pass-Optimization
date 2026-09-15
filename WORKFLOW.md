@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-15 11:56 CST（UTC+08:00）
+> 更新时间：2026-09-15 17:21 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -36,6 +36,11 @@ eager 重参数化和 compiled 图，以新进程记录实际精度开关。精�
 历史邻接性能不自动迁移到新安装态；本轮只重跑邻接功能时必须明确说明。若OFF被其他pattern接替，
 保留实际目标边界FX和失败栈，不删除邻接来制造归因、不按默认关闭免测；最终豁免/合同合并须另行评审。
 正确性修复通过而微图性能回退时，分别记录修复PASS和PERF_REGRESSED，不据此恢复错误数值路径。
+
+2026-09-15 17:21补充：用户明确接受T-106 pattern21以“功能通过、单pattern性能无法独立归因”最终处置。
+此类处置必须保留用户确认、原例数值与精确目标、OFF邻接接替的原始退出码/FX/IR/codegen，
+使用`PERF_NOT_INDEPENDENTLY_ATTRIBUTABLE`单列统计：计入功能/comparison及最终处置数，
+不计性能实测、收益或默认关闭免测；不签计时门禁、不能伪造p50/p99。此批准不自动扩展至其他单元。
 
 若公式假设正正规值，而metadata只能证明dtype/device，则部署前必须补数值域评审与边界控制。新增NPU域保护未有CUDA实测时，矩阵必须标PARTIAL_ALIGNED及未验范围；数学修复后的局部性能回退也须单独列出，不因正确性通过改为PERF_IMPROVED，亦不因微基准慢自动恢复已知错误路径。
 `validate_installed_repairs.py`接入统一门禁，以可移植的仓库原件验证候选/安装态分离、无skip、部署/功能/性能链与六臂数据；不要求复核机器安装原Pass环境。文档必须同时给适配、根因、修复验证、产品差异和未执行的社区合入状态。

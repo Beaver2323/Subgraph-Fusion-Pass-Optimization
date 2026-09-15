@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-15T11:54:50.905386+08:00",
-  "status": "partially-completed",
+  "generated_at": "2026-09-15T17:20:08.167333+08:00",
+  "status": "completed",
   "source_baselines": {
     "pytorch": {
       "commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
@@ -30,12 +30,12 @@
     "minimum_gpus": 1,
     "distributed_world_size": null,
     "scope": "原生CUDA编译、数值/梯度、目标编号或生成代码改写",
-    "suite_status": "partially-frozen-reference"
+    "suite_status": "valid-reference-suite"
   },
   "counting_policy": {
     "current_manifest_units": 4,
-    "current_frozen_denominator_units": 3,
-    "current_formally_closed_units": 3,
+    "current_frozen_denominator_units": 4,
+    "current_formally_closed_units": 4,
     "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结"
   },
   "acceptance_units": [
@@ -43,9 +43,9 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-21",
       "contract_name": "SDPA pattern 21：T5加法mask与FP32 softmax",
       "stage": "joint_graph",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/fuse_attention.py",
@@ -68,8 +68,8 @@
           "expected_reference_match": true,
           "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；融合为无缩放SDPA",
           "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_21前缀>=1",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
         }
       ],
       "tracking": {
