@@ -1,0 +1,136 @@
+{
+  "task_id": "T-102",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-1",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "sfdp-pattern-1-registered-half-training-forward",
+  "worker_sha256": "65d772122a6e0214b46fca20b0dfc219c8cf22ac1b4f9b52b8bb132c9403992f",
+  "target_control_sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+  "observer_sha256": "31f01c5f2ab802a26d9aea61468b8107d4f4c6c86028460269bac0cb97038618",
+  "input_spec": [
+    {
+      "parameter": "query",
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": true
+    },
+    {
+      "parameter": "key",
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": true
+    },
+    {
+      "parameter": "value",
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": true
+    },
+    {
+      "parameter": "inv_scale",
+      "kind": "python-scalar",
+      "python_type": "float",
+      "value": 2.0
+    }
+  ],
+  "registration_name": "_sfdp_pattern_1_half_training",
+  "dropout_p": 0.0,
+  "reviewed_at": "2026-09-15T19:44:01.632075+08:00",
+  "reviewer": "Codex：原社区合同及目标OFF/ON生成代码逐图复核",
+  "manual_codegen_review": "逐图复核training-forward：OFF保留两个NPU bmm与softmax Triton核、无attention改写；ON精确1号改写并调用npu_fusion_attention_v3，输入requires_grad保留。原安装例20次Tensor与8次本编号改写绑定部署；微图仅前向数值，不外推反向性能。未见CPU转移。",
+  "community_oracle_scope": "原社区已执行的数值断言及独立性能输入比较",
+  "codegen_review": {
+    "off": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__to_copy_all_div_isfinite_matmul_0.run": 1,
+        "torch.ops.aten.any.dims": 1,
+        "triton_unk_fused__softmax__to_copy_all_amax_div_matmul_mul_sub_1.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    },
+    "on": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "torch.ops.npu.npu_fusion_attention_v3.default": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    }
+  },
+  "gpu_reference": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-102/gpu_reference_review.json",
+    "sha256": "54eeb28d2a80f0a783b9e57df9dffb8b63f0ef4fc154dd9ccde68fe99f569dba"
+  },
+  "community_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-1-native/evidence/t102-native-9ebqlhu3/adapter/result.json",
+    "sha256": "f5e2f993f603bb6f7fcf2b23c611d83e95c432bb8f5a8c875e6220ecf3941bf4"
+  },
+  "off_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T194132+0800/off/result.json",
+    "sha256": "cadc781556bb7f9b02e5001a4e8290f9fa6b240ae3cc71718b421ca26a62780c"
+  },
+  "target_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T194132+0800/on/result.json",
+    "sha256": "c94a444d016bdf6cc39bbe1209eeab0d1438f6f78fcb0c1222744d79ecc40e35"
+  },
+  "installed_deployment": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-1-native/deployment-20260915-training/deployment.json",
+    "sha256": "b1338ccf237115c8a6912fd4bb2cf30b3aa96c9baa7d7c6c98c11d1059d6c6f9"
+  },
+  "worker_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T194132+0800/t102_t107_attention_performance_worker.py",
+    "sha256": "65d772122a6e0214b46fca20b0dfc219c8cf22ac1b4f9b52b8bb132c9403992f"
+  },
+  "target_control_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T194132+0800/target_entry_control.py",
+    "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+  },
+  "observer_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T194132+0800/native_contract_observer.py",
+    "sha256": "31f01c5f2ab802a26d9aea61468b8107d4f4c6c86028460269bac0cb97038618"
+  }
+}

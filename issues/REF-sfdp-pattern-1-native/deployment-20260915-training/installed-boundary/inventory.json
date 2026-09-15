@@ -1,0 +1,294 @@
+{
+  "source_run_dir": "/home/z50063656/tmp/t102-training-boundary-installed-20260915",
+  "failed_precheck": false,
+  "files": [
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/candidate_source.py",
+      "sha256": "7feb336e69df3dfd2a0d376ae8b9e2c26e1b1363b26580fa5c8839a67b3e588a"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_backward_36.1/fx_graph_readable.py",
+      "sha256": "be51d25e2f19db8531b2e43d02a5cf9e682b95e3437354a83196798d1876e588"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_backward_36.1/fx_graph_transformed.py",
+      "sha256": "be51d25e2f19db8531b2e43d02a5cf9e682b95e3437354a83196798d1876e588"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_backward_36.1/ir_post_fusion.txt",
+      "sha256": "a5747c0e87d115d65d338fca43a35cc8181561bf761e0318ce568eb7f21c4c29"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_backward_36.1/ir_pre_fusion.txt",
+      "sha256": "a5747c0e87d115d65d338fca43a35cc8181561bf761e0318ce568eb7f21c4c29"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_backward_36.1/output_code.py",
+      "sha256": "e4bbb72f25fe188def0d2673948a7468827a3b7ca99c6a79fc7a8527ee639590"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_forward_34.0/fx_graph_readable.py",
+      "sha256": "65e7bf967fc4f9d56d69bd91c8efddcb86df9c57199ebdbf995feb0a6824745d"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_forward_34.0/fx_graph_transformed.py",
+      "sha256": "65e7bf967fc4f9d56d69bd91c8efddcb86df9c57199ebdbf995feb0a6824745d"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_forward_34.0/ir_post_fusion.txt",
+      "sha256": "4c288b7887b03be03f57a1811cdeae6b8dd109a2dfc7cdc9ede61bc6c9007304"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_forward_34.0/ir_pre_fusion.txt",
+      "sha256": "4c288b7887b03be03f57a1811cdeae6b8dd109a2dfc7cdc9ede61bc6c9007304"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__0_forward_34.0/output_code.py",
+      "sha256": "d6c18b9fc5ee19935b24fdbe2dadb151ca6d561a1e1346afca06db1adbb01bcf"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_backward_43.3/fx_graph_readable.py",
+      "sha256": "3ab6992970347a5bf60dca11996541957fd3b4ba35d3ff040f198a446eb594c2"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_backward_43.3/fx_graph_transformed.py",
+      "sha256": "3ab6992970347a5bf60dca11996541957fd3b4ba35d3ff040f198a446eb594c2"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_backward_43.3/ir_post_fusion.txt",
+      "sha256": "a0f41e949287aa3aac26bfca0fa50fa374ce7b3c55d14a5d8a9113a84ed0c6c3"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_backward_43.3/ir_pre_fusion.txt",
+      "sha256": "a0f41e949287aa3aac26bfca0fa50fa374ce7b3c55d14a5d8a9113a84ed0c6c3"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_backward_43.3/output_code.py",
+      "sha256": "b810c6eeade517b6c377c1ac5005efdaf2b8703c04a912ab31b157159cc91690"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_forward_41.2/fx_graph_readable.py",
+      "sha256": "f9ec338e1c19ec8ea57608d0f7dff314e220f27d817350c8b7ec82ba0aea8ec3"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_forward_41.2/fx_graph_transformed.py",
+      "sha256": "f9ec338e1c19ec8ea57608d0f7dff314e220f27d817350c8b7ec82ba0aea8ec3"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_forward_41.2/ir_post_fusion.txt",
+      "sha256": "0bce4ea64f9b140d2f19bbbeab3709ce6b5bea6bc28420dc3760997e840d5b53"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_forward_41.2/ir_pre_fusion.txt",
+      "sha256": "0bce4ea64f9b140d2f19bbbeab3709ce6b5bea6bc28420dc3760997e840d5b53"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__12_forward_41.2/output_code.py",
+      "sha256": "74d1207a738a7d177b32801a76bde29332de109fdd688093eebffb4dfafb0496"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_backward_47.5/fx_graph_readable.py",
+      "sha256": "7d8bfe49b2748999d4c7d4f070cb672511786e81877dee6d872317acff9e2cd6"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_backward_47.5/fx_graph_transformed.py",
+      "sha256": "7d8bfe49b2748999d4c7d4f070cb672511786e81877dee6d872317acff9e2cd6"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_backward_47.5/ir_post_fusion.txt",
+      "sha256": "35bd56b9d0398c9c0715f8a2359ef7bb8f59d4a407cf8650ed0d84cb6eddcc21"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_backward_47.5/ir_pre_fusion.txt",
+      "sha256": "fdf41d3867de1db17343b1029f316d83dbd8d3f3d662c046b93de3dedb2a37d9"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_backward_47.5/output_code.py",
+      "sha256": "0235987b88ffc398fa0941cf6d48830ba731d36b567ade4231104d54656be839"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_forward_45.4/fx_graph_readable.py",
+      "sha256": "854619b39e970790120bbe086b993dadaaa404f591d8254572c4b885de6bb78c"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_forward_45.4/fx_graph_transformed.py",
+      "sha256": "5e38e777e6a6911786260035aa39723caca2098e0d5512f7e4e7498e314e1a09"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_forward_45.4/ir_post_fusion.txt",
+      "sha256": "e65d3cf5512e7d526e63c2cf057c1bfadeb07a5a7e852edcb464dec740d189c4"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_forward_45.4/ir_pre_fusion.txt",
+      "sha256": "5a62c6ecde1d375dcb0e4df69bfbda3cf6a565653adb19cb20aa42577a84ae7a"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__14_forward_45.4/output_code.py",
+      "sha256": "b85594e623b0a9773e06130ee9b6408d4a590ce0d49bc99eb332a1a8c187c961"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_backward_51.7/fx_graph_readable.py",
+      "sha256": "09eb23929ec96919f1f8ad485cbf3c548516b50f7221933ab91916069532954a"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_backward_51.7/fx_graph_transformed.py",
+      "sha256": "09eb23929ec96919f1f8ad485cbf3c548516b50f7221933ab91916069532954a"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_backward_51.7/ir_post_fusion.txt",
+      "sha256": "9d55fa76bef9d7daca5b1615b082fe1725d79e0b3169af430b80fe287d970c79"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_backward_51.7/ir_pre_fusion.txt",
+      "sha256": "72e7603125538c535004009c044429103a96e55bd61e4195261704aba14d32c8"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_backward_51.7/output_code.py",
+      "sha256": "1e6398137f1e14d62a82488443cbe567f3e58e67184fcc0ed1d72e00895bbc75"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_forward_49.6/fx_graph_readable.py",
+      "sha256": "83bd822aaaa99c1b516f4ddc33134941241061e8a95818e08e1ad5cc47b14fb2"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_forward_49.6/fx_graph_transformed.py",
+      "sha256": "c45fc07d0048e707548d7e4369cc6869d1d50040c196d505daa283c1b5747003"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_forward_49.6/ir_post_fusion.txt",
+      "sha256": "a6d49f37028ca511a1138503706b66013d82b1cb2d3867f85d220002083320cb"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_forward_49.6/ir_pre_fusion.txt",
+      "sha256": "d44c5a51c5ebe0f07d43cf2d13f39c9407b6f7458cc10f6d1f34bc7b9cc395b8"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__15_forward_49.6/output_code.py",
+      "sha256": "891747155b766267bd586749a3e7a666c1477f29071ee83314710c12ff7ced8b"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_backward_58.9/fx_graph_readable.py",
+      "sha256": "1e84c187b6bbfaef42de15d71b7520453774126019c64e589d4590ce7bc6ec77"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_backward_58.9/fx_graph_transformed.py",
+      "sha256": "1e84c187b6bbfaef42de15d71b7520453774126019c64e589d4590ce7bc6ec77"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_backward_58.9/ir_post_fusion.txt",
+      "sha256": "6b95c82b7b11b2e2f08e97bbf69d5f6012026d33269f82e1920f214ba379949c"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_backward_58.9/ir_pre_fusion.txt",
+      "sha256": "08d6b0cd3b72fabe9a4dbfd965c00fe166aeb14bf73e9a006f32f40dc954b7a4"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_backward_58.9/output_code.py",
+      "sha256": "9d9d79d735e7fc44ce9d923a3a2097de9aa8ced7b7e725f46988828e9800ff1c"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_forward_56.8/fx_graph_readable.py",
+      "sha256": "8e809db6f64fe5172bbeab88e08ab2173ff157055fe8ed9318eb22c1e98e62f9"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_forward_56.8/fx_graph_transformed.py",
+      "sha256": "b019512f68f8b977a926ef25782695bfa722f9731afd6f5bc80d21653d33d8a1"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_forward_56.8/ir_post_fusion.txt",
+      "sha256": "b183a47e991d4e14c84204c6c7e4364fb15d307046f0ef9e860f63aa2d8f0206"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_forward_56.8/ir_pre_fusion.txt",
+      "sha256": "7634e16750da55a694d63e75619e5730f607259c905798871d69352bd32c1e2f"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__16_forward_56.8/output_code.py",
+      "sha256": "4fb4dd2f42218ec158d337f03ccfe69f6ea75306caa40dd086314fc57d08ca4f"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_backward_62.11/fx_graph_readable.py",
+      "sha256": "1c1d4178d56f0d63af7c3b4304965e6f7b88897e4d02ba4800f0480146c2b878"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_backward_62.11/fx_graph_transformed.py",
+      "sha256": "1c1d4178d56f0d63af7c3b4304965e6f7b88897e4d02ba4800f0480146c2b878"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_backward_62.11/ir_post_fusion.txt",
+      "sha256": "eb822584e6b6c82f11c97fec645867f6bd5706c0712d9cb1112e8e2ba086e390"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_backward_62.11/ir_pre_fusion.txt",
+      "sha256": "25383b0c08edcceecfb71f9af39d79419471b4924eda2a56003f713b70acab55"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_backward_62.11/output_code.py",
+      "sha256": "730891834a1b56eca2676a0220b9d4c8c44a4a34ceca50dc8f46e1bc07335443"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_forward_60.10/fx_graph_readable.py",
+      "sha256": "a5c33698adb68b1d90f5a877f73175c88af9c40c571d07d55950284ab30a2517"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_forward_60.10/fx_graph_transformed.py",
+      "sha256": "d4f28e0b03396264b7643af26e7ce92f1720059a3170b02eb84a184ceb260a87"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_forward_60.10/ir_post_fusion.txt",
+      "sha256": "af928a703c3fd6cce939b43723c16c305c925e8a190d906be5cb272642f6c1a5"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_forward_60.10/ir_pre_fusion.txt",
+      "sha256": "1ec0f9a61f2c4f2e27c7ca41dd2dc23091f7afd99281912d1f02ab5eb0c237cd"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/debug/torch_compile_debug/run_2026_09_15_19_36_20_104931-pid_1650288/torchinductor/model__18_forward_60.10/output_code.py",
+      "sha256": "bd6ece15ea116aad8120b61eb5631b0b53caae2c0cfe67886f416eccea4f75a7"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/harness_source.py",
+      "sha256": "99ea9caab2bf6d398f3c8775f0a2a35cea2aff2ad8e1a457e82591e410cc880c"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/result.json",
+      "sha256": "095c7e140b6f3fa23cfb81539f2fa1f3f4071e5f0409a1fdfc092f6dd61d60d2"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/target-observations/1650288-ReplacementPatternEntry-0001/contract_observation.json",
+      "sha256": "ffb299d405afc7bf2e2d92f8fa826aca6d46a23fe1b81b5e5966114718636db4"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/target-observations/1650288-ReplacementPatternEntry-0001/fx_graph_readable.py",
+      "sha256": "e6768a877374f4147cb88a9bd5965723438fcd58d66474465a9c7523ce4be7f4"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/target-observations/1650288-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+      "sha256": "0f7d2f434c524256338114a0340cc8cbacf90f860d3875a16ab81c5076e4d1b6"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/target-observations/1650288-ReplacementPatternEntry-0002/contract_observation.json",
+      "sha256": "1969189b041e58ec7ff55d5bd3c6c2e8d61fbaaf3db7fffe0978d26e3cad6a33"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/target-observations/1650288-ReplacementPatternEntry-0002/fx_graph_readable.py",
+      "sha256": "cefd4b072a73831cd581dd4d3a184cc424ce7957b91a462fe183eb18126a3476"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/target-observations/1650288-ReplacementPatternEntry-0002/fx_graph_transformed.py",
+      "sha256": "0f7d2f434c524256338114a0340cc8cbacf90f860d3875a16ab81c5076e4d1b6"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/target-observations/1650288-ReplacementPatternEntry-0003/contract_observation.json",
+      "sha256": "32529b7016a434a9315f4189b1e9864073b0f96a2204020f7d4e9404f5a18276"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/target-observations/1650288-ReplacementPatternEntry-0003/fx_graph_readable.py",
+      "sha256": "f9d8761877ea340698d051bb7552fc1278b389dcf2119e3103c45e94e89f6ba1"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/target-observations/1650288-ReplacementPatternEntry-0003/fx_graph_transformed.py",
+      "sha256": "51beeceed7fe36a3c5e5db8b880d44963847bb0354304850ad441108e51b16cf"
+    }
+  ]
+}

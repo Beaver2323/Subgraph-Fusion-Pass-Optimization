@@ -1,0 +1,12 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+[W915 19:39:14.557092140 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:39:30.241000 1697409 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__10_inference_30 debug trace: /home/z50063656/tmp/t102-training-performance-20260915/functional-20260915T193905+0800/pattern-1/off/debug/torch_compile_debug/run_2026_09_15_19_39_16_459728-pid_1697409/torchinductor/model__10_inference_30.0
+Traceback (most recent call last):
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py", line 459, in <module>
+    main()
+  File "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/t102_t107_attention_performance_worker.py", line 359, in main
+    raise RuntimeError("OFF仍命中fuse_attention")
+RuntimeError: OFF仍命中fuse_attention

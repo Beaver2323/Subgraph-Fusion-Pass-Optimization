@@ -1,0 +1,1273 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-102",
+  "backend": "triton_experimental",
+  "status": "performance-disposition-complete-for-listed-units",
+  "acceptance_units": [
+    {
+      "unit": "pattern-1",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-1",
+      "performance_status": "measured",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.7502799853682518,
+            "p99": 0.8090142160654091
+          },
+          "on": {
+            "p50": 0.5409149453043938,
+            "p99": 0.6233635451644663
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.6333300173282623,
+            "p99": 0.6728528046607971
+          },
+          "on": {
+            "p50": 0.41557998955249786,
+            "p99": 0.46982659816741945
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": 27.90492138226207,
+          "p99": 22.94776373693943
+        },
+        "event_ms": {
+          "p50": 34.381763348965364,
+          "p99": 30.17394073221238
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.0291813323593881,
+        "host_ms_on": 1.0341264134045678,
+        "event_ms_off": 1.0383164752919263,
+        "event_ms_on": 1.0241208816040557
+      },
+      "verdict": "PERF_IMPROVED",
+      "product_action": "不改变默认开关；非完整模型",
+      "raw_results": {
+        "off1": {
+          "path": "issues/REF-sfdp-pattern-1-native/evidence/benchmark-20260915T195318+0800/off1/result.json",
+          "sha256": "e2b1327ef15334674ad2cf85487ab5edcf6193a39f79b3ec3afcda57c99a01cf"
+        },
+        "on1": {
+          "path": "issues/REF-sfdp-pattern-1-native/evidence/benchmark-20260915T195318+0800/on1/result.json",
+          "sha256": "e5707e08497d3d44f1086f594a4c435f1dff8cd52b2271214da332fb71b9e369"
+        },
+        "on2": {
+          "path": "issues/REF-sfdp-pattern-1-native/evidence/benchmark-20260915T195318+0800/on2/result.json",
+          "sha256": "dae88470cd85976d5cff682ecaf6bd3fc49c9cae56d94b24dcd8202637e0a803"
+        },
+        "off2": {
+          "path": "issues/REF-sfdp-pattern-1-native/evidence/benchmark-20260915T195318+0800/off2/result.json",
+          "sha256": "dce54553b81623e65600d07ae86734b36ea1f3b1a26b424478889e72de594bcc"
+        },
+        "off3": {
+          "path": "issues/REF-sfdp-pattern-1-native/evidence/benchmark-20260915T195318+0800/off3/result.json",
+          "sha256": "a632a28f02a05a32f3a6b38c0709b5b1beaa4f769744dce0d26c86d6e3e50b4a"
+        },
+        "on3": {
+          "path": "issues/REF-sfdp-pattern-1-native/evidence/benchmark-20260915T195318+0800/on3/result.json",
+          "sha256": "72e279ad9329b6c3737add77748bae781053705079cfccefae01c588217baa5a"
+        }
+      },
+      "measurement_workload": "sfdp-pattern-1-registered-half-training-forward",
+      "input_spec": [
+        {
+          "parameter": "query",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "key",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "value",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "inv_scale",
+          "kind": "python-scalar",
+          "python_type": "float",
+          "value": 2.0
+        }
+      ],
+      "memory": {
+        "off1": {
+          "allocated": 44032,
+          "reserved": 316669952
+        },
+        "on1": {
+          "allocated": 16845312,
+          "reserved": 316669952
+        },
+        "on2": {
+          "allocated": 16845312,
+          "reserved": 316669952
+        },
+        "off2": {
+          "allocated": 44032,
+          "reserved": 316669952
+        },
+        "off3": {
+          "allocated": 44032,
+          "reserved": 316669952
+        },
+        "on3": {
+          "allocated": 16845312,
+          "reserved": 316669952
+        }
+      },
+      "compile_ms": {
+        "off1": 32751.7097000964,
+        "on1": 14061.714730225503,
+        "on2": 13535.439379978925,
+        "off2": 32295.87241029367,
+        "off3": 32279.75833043456,
+        "on3": 13475.51316022873
+      },
+      "codegen_review": {
+        "off1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_div_isfinite_matmul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_div_matmul_mul_sub_1.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_div_isfinite_matmul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_div_matmul_mul_sub_1.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_div_isfinite_matmul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_div_matmul_mul_sub_1.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        }
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "model_e2e": false,
+        "scope": "training-forward-only",
+        "aggregation": "三OFF/三ON各臂p50/p99中位数；高波动或时钟冲突记MIXED"
+      },
+      "bundle": "results/current/T-102/attention_bundles/pattern-1.json"
+    },
+    {
+      "unit": "pattern-2",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-2",
+      "performance_status": "measured",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.7583200931549072,
+            "p99": 0.8223140100017213
+          },
+          "on": {
+            "p50": 0.5437401123344898,
+            "p99": 0.6033922685310251
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.6427199840545654,
+            "p99": 0.6700711792707443
+          },
+          "on": {
+            "p50": 0.42016999423503876,
+            "p99": 0.45106899976730347
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": 28.296755256435446,
+          "p99": 26.6226452192196
+        },
+        "event_ms": {
+          "p50": 34.62627510281876,
+          "p99": 32.683420251231595
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.1444629591497315,
+        "host_ms_on": 1.0387549743168647,
+        "event_ms_off": 1.1402590053029966,
+        "event_ms_on": 1.041032272471646
+      },
+      "verdict": "PERF_IMPROVED",
+      "product_action": "不改变默认开关；非完整模型",
+      "raw_results": {
+        "off1": {
+          "path": "issues/REF-sfdp-pattern-2-native/evidence/benchmark-20260915T195318+0800/off1/result.json",
+          "sha256": "fc0cd8b19d4695f6249e6da5de7b6aedb633b46e9cdf6e21a2435d8776162051"
+        },
+        "on1": {
+          "path": "issues/REF-sfdp-pattern-2-native/evidence/benchmark-20260915T195318+0800/on1/result.json",
+          "sha256": "72129ac409f895aa6fc70cd1bb2ae30039475df05ef2f23b2a909a1d9db408fe"
+        },
+        "on2": {
+          "path": "issues/REF-sfdp-pattern-2-native/evidence/benchmark-20260915T195318+0800/on2/result.json",
+          "sha256": "669118eaa5c3575b61352b1c264a56fa8021291d5f9b543fd685ba03ab14ada9"
+        },
+        "off2": {
+          "path": "issues/REF-sfdp-pattern-2-native/evidence/benchmark-20260915T195318+0800/off2/result.json",
+          "sha256": "e503c5447f1428331c5ee388cdb9ebcda00076c29301acb37738c6503112e274"
+        },
+        "off3": {
+          "path": "issues/REF-sfdp-pattern-2-native/evidence/benchmark-20260915T195318+0800/off3/result.json",
+          "sha256": "d88463d2244b3bfe24898075b47eef5ead44d3d23d551ef9eb776e6f631aec49"
+        },
+        "on3": {
+          "path": "issues/REF-sfdp-pattern-2-native/evidence/benchmark-20260915T195318+0800/on3/result.json",
+          "sha256": "f81a53fb3ef57968821762a2b0df89f3cf98a4f70cae11a942754926f89d36d8"
+        }
+      },
+      "measurement_workload": "sfdp-pattern-2-registered-half-training-forward",
+      "input_spec": [
+        {
+          "parameter": "query",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "key",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "value",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "scale_factor",
+          "kind": "python-scalar",
+          "python_type": "float",
+          "value": 2.0
+        }
+      ],
+      "memory": {
+        "off1": {
+          "allocated": 44032,
+          "reserved": 316669952
+        },
+        "on1": {
+          "allocated": 16845312,
+          "reserved": 316669952
+        },
+        "on2": {
+          "allocated": 16845312,
+          "reserved": 316669952
+        },
+        "off2": {
+          "allocated": 44032,
+          "reserved": 316669952
+        },
+        "off3": {
+          "allocated": 44032,
+          "reserved": 316669952
+        },
+        "on3": {
+          "allocated": 16845312,
+          "reserved": 316669952
+        }
+      },
+      "compile_ms": {
+        "off1": 32598.904789891094,
+        "on1": 13865.35301990807,
+        "on2": 14166.851059999317,
+        "off2": 33288.9923597686,
+        "off3": 32395.961639937013,
+        "on3": 13606.758879963309
+      },
+      "codegen_review": {
+        "off1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_isfinite_matmul_mul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_matmul_mul_sub_1.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_isfinite_matmul_mul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_matmul_mul_sub_1.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_isfinite_matmul_mul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_matmul_mul_sub_1.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        }
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "model_e2e": false,
+        "scope": "training-forward-only",
+        "aggregation": "三OFF/三ON各臂p50/p99中位数；高波动或时钟冲突记MIXED"
+      },
+      "bundle": "results/current/T-102/attention_bundles/pattern-2.json"
+    },
+    {
+      "unit": "pattern-3",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-3",
+      "performance_status": "measured",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.9352951310575008,
+            "p99": 1.0984358470886955
+          },
+          "on": {
+            "p50": 0.5425398703664541,
+            "p99": 0.600026524625719
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.8026899993419647,
+            "p99": 0.8790121829509748
+          },
+          "on": {
+            "p50": 0.4179999977350235,
+            "p99": 0.4643261873722077
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": 41.99265532869545,
+          "p99": 45.374458943957904
+        },
+        "event_ms": {
+          "p50": 47.92510208452894,
+          "p99": 47.17636497216733
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.0329264538634964,
+        "host_ms_on": 1.023064092944567,
+        "event_ms_off": 1.0348184596030254,
+        "event_ms_on": 1.0319074316345593
+      },
+      "verdict": "PERF_IMPROVED",
+      "product_action": "不改变默认开关；非完整模型",
+      "raw_results": {
+        "off1": {
+          "path": "issues/REF-sfdp-pattern-3-native/evidence/benchmark-20260915T195318+0800/off1/result.json",
+          "sha256": "fece7c2c35e90417a570193e4367c1a3ac9ef61cac9d50f45fdb6e026b0559b5"
+        },
+        "on1": {
+          "path": "issues/REF-sfdp-pattern-3-native/evidence/benchmark-20260915T195318+0800/on1/result.json",
+          "sha256": "a2ee9014fb3c68c58dbcb83b20e97e5b2dce5fccbec82f499528ac5ff1a17011"
+        },
+        "on2": {
+          "path": "issues/REF-sfdp-pattern-3-native/evidence/benchmark-20260915T195318+0800/on2/result.json",
+          "sha256": "bf2864dd6c4aff62200e148488f0035c61ba06b23433d3ea151156c6160f6793"
+        },
+        "off2": {
+          "path": "issues/REF-sfdp-pattern-3-native/evidence/benchmark-20260915T195318+0800/off2/result.json",
+          "sha256": "4d9fa2ccba9aa5a530e29feb05a6e8f32f1e165a0deb13daec771f76b3497de8"
+        },
+        "off3": {
+          "path": "issues/REF-sfdp-pattern-3-native/evidence/benchmark-20260915T195318+0800/off3/result.json",
+          "sha256": "5d2ecd43a933a33d168ce20a543d58067abf35acb8d5f8895b1cefe41d6a95cd"
+        },
+        "on3": {
+          "path": "issues/REF-sfdp-pattern-3-native/evidence/benchmark-20260915T195318+0800/on3/result.json",
+          "sha256": "2cb4b08cf4633bf14bc71023b6150dca68491d384d6e57e84f8c6ee40647c094"
+        }
+      },
+      "measurement_workload": "sfdp-pattern-3-registered-half-low-dropout-training-forward",
+      "input_spec": [
+        {
+          "parameter": "query",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "key",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "value",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "inv_scale_factor",
+          "kind": "python-scalar",
+          "python_type": "float",
+          "value": 2.0
+        }
+      ],
+      "memory": {
+        "off1": {
+          "allocated": 49152,
+          "reserved": 318767104
+        },
+        "on1": {
+          "allocated": 16847360,
+          "reserved": 318767104
+        },
+        "on2": {
+          "allocated": 16847360,
+          "reserved": 318767104
+        },
+        "off2": {
+          "allocated": 49152,
+          "reserved": 318767104
+        },
+        "off3": {
+          "allocated": 49152,
+          "reserved": 318767104
+        },
+        "on3": {
+          "allocated": 16847360,
+          "reserved": 318767104
+        }
+      },
+      "compile_ms": {
+        "off1": 32611.669349949807,
+        "on1": 13755.103909876198,
+        "on2": 13758.221809752285,
+        "off2": 32262.384139932692,
+        "off3": 32188.013540115207,
+        "on3": 13509.207439608872
+      },
+      "codegen_review": {
+        "off1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_div_isfinite_matmul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_div_matmul_mul_sub_1.run": 1,
+            "torch.ops.npu._npu_dropout.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_div_isfinite_matmul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_div_matmul_mul_sub_1.run": 1,
+            "torch.ops.npu._npu_dropout.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_div_isfinite_matmul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_div_matmul_mul_sub_1.run": 1,
+            "torch.ops.npu._npu_dropout.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        }
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "model_e2e": false,
+        "scope": "training-forward-only",
+        "aggregation": "三OFF/三ON各臂p50/p99中位数；高波动或时钟冲突记MIXED"
+      },
+      "bundle": "results/current/T-102/attention_bundles/pattern-3.json"
+    },
+    {
+      "unit": "pattern-4",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-4",
+      "performance_status": "measured",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.9289651643484831,
+            "p99": 0.9748388454318052
+          },
+          "on": {
+            "p50": 0.5398199427872896,
+            "p99": 0.5887703550979501
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.7933899760246277,
+            "p99": 0.8253253781795502
+          },
+          "on": {
+            "p50": 0.4195699989795685,
+            "p99": 0.4502726098895074
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": 41.89018452959053,
+          "p99": 39.60331414192322
+        },
+        "event_ms": {
+          "p50": 47.11680111187281,
+          "p99": 45.44301898450163
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.0202084921783232,
+        "host_ms_on": 1.038150240862363,
+        "event_ms_off": 1.0211307779683376,
+        "event_ms_on": 1.028618831371149
+      },
+      "verdict": "PERF_IMPROVED",
+      "product_action": "不改变默认开关；非完整模型",
+      "raw_results": {
+        "off1": {
+          "path": "issues/REF-sfdp-pattern-4-native/evidence/benchmark-20260915T195318+0800/off1/result.json",
+          "sha256": "86fe289b7a6892273f28300a80a2ebed1c1b1c4cd322be77fa334e301f0d0a7c"
+        },
+        "on1": {
+          "path": "issues/REF-sfdp-pattern-4-native/evidence/benchmark-20260915T195318+0800/on1/result.json",
+          "sha256": "998584605f2740fa5d3f7cb146bbb3ae79418f940f979d9821f0033b1f42637d"
+        },
+        "on2": {
+          "path": "issues/REF-sfdp-pattern-4-native/evidence/benchmark-20260915T195318+0800/on2/result.json",
+          "sha256": "c1b3ea4da190d545ab720cbb12bc9717db3a5e10eb1a6d923174813c46e6524f"
+        },
+        "off2": {
+          "path": "issues/REF-sfdp-pattern-4-native/evidence/benchmark-20260915T195318+0800/off2/result.json",
+          "sha256": "14773e994109521fe922c258743e8f61951d50763d21aaa4a35d7cc180f054cf"
+        },
+        "off3": {
+          "path": "issues/REF-sfdp-pattern-4-native/evidence/benchmark-20260915T195318+0800/off3/result.json",
+          "sha256": "c71f5d3f93f520751c1f72a70dd8ba4a059a3b9ab69f93023cb87f2ed3f0cc12"
+        },
+        "on3": {
+          "path": "issues/REF-sfdp-pattern-4-native/evidence/benchmark-20260915T195318+0800/on3/result.json",
+          "sha256": "8233714918f04d7f953ee3153ff4db0bfac6cea74351ea4c883b86ce059e2e1c"
+        }
+      },
+      "measurement_workload": "sfdp-pattern-4-registered-half-low-dropout-training-forward",
+      "input_spec": [
+        {
+          "parameter": "query",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "key",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "value",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "scale_factor",
+          "kind": "python-scalar",
+          "python_type": "float",
+          "value": 2.0
+        }
+      ],
+      "memory": {
+        "off1": {
+          "allocated": 49152,
+          "reserved": 318767104
+        },
+        "on1": {
+          "allocated": 16847360,
+          "reserved": 318767104
+        },
+        "on2": {
+          "allocated": 16847360,
+          "reserved": 318767104
+        },
+        "off2": {
+          "allocated": 49152,
+          "reserved": 318767104
+        },
+        "off3": {
+          "allocated": 49152,
+          "reserved": 318767104
+        },
+        "on3": {
+          "allocated": 16847360,
+          "reserved": 318767104
+        }
+      },
+      "compile_ms": {
+        "off1": 32320.983809884638,
+        "on1": 13614.213780034333,
+        "on2": 13583.76827975735,
+        "off2": 31699.535769876093,
+        "off3": 31870.320530142635,
+        "on3": 13544.88810012117
+      },
+      "codegen_review": {
+        "off1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_isfinite_matmul_mul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_matmul_mul_sub_1.run": 1,
+            "torch.ops.npu._npu_dropout.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_isfinite_matmul_mul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_matmul_mul_sub_1.run": 1,
+            "torch.ops.npu._npu_dropout.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__to_copy_all_isfinite_matmul_mul_0.run": 1,
+            "torch.ops.aten.any.dims": 1,
+            "triton_unk_fused__softmax__to_copy_all_amax_matmul_mul_sub_1.run": 1,
+            "torch.ops.npu._npu_dropout.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "torch.ops.npu.npu_fusion_attention_v3.default": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        }
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "model_e2e": false,
+        "scope": "training-forward-only",
+        "aggregation": "三OFF/三ON各臂p50/p99中位数；高波动或时钟冲突记MIXED"
+      },
+      "bundle": "results/current/T-102/attention_bundles/pattern-4.json"
+    },
+    {
+      "unit": "pattern-5",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-5",
+      "performance_status": "measured",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.5647402722388506,
+            "p99": 0.6495424173772365
+          },
+          "on": {
+            "p50": 0.7921599317342043,
+            "p99": 0.8438139408826854
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.4410099983215332,
+            "p99": 0.49399241089820883
+          },
+          "on": {
+            "p50": 0.6752499938011169,
+            "p99": 0.701853615641594
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": -40.26977898951203,
+          "p99": -29.908981816751968
+        },
+        "event_ms": {
+          "p50": -53.114441026528205,
+          "p99": -42.07781337479224
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.059922886821968,
+        "host_ms_on": 1.0229320564121236,
+        "event_ms_off": 1.0769051853608615,
+        "event_ms_on": 1.0316554830452096
+      },
+      "verdict": "PERF_REGRESSED",
+      "product_action": "不改变默认开关；非完整模型",
+      "raw_results": {
+        "off1": {
+          "path": "issues/REF-sfdp-pattern-5-native/evidence/benchmark-20260915T195318+0800/off1/result.json",
+          "sha256": "7591cf50094c30adc56e17d93cfc13b82b21bc48a8db3c629ac139d890201362"
+        },
+        "on1": {
+          "path": "issues/REF-sfdp-pattern-5-native/evidence/benchmark-20260915T195318+0800/on1/result.json",
+          "sha256": "c10c2683c726cee0048120c23d035365265e69606d5e80a20048e16e69ec090a"
+        },
+        "on2": {
+          "path": "issues/REF-sfdp-pattern-5-native/evidence/benchmark-20260915T195318+0800/on2/result.json",
+          "sha256": "f7c1c8297bddb1060c3c4a3ffb79a2d99e24533b7194268b1c40e7537e18b52a"
+        },
+        "off2": {
+          "path": "issues/REF-sfdp-pattern-5-native/evidence/benchmark-20260915T195318+0800/off2/result.json",
+          "sha256": "fdc8b5d4a2db7cf90637e94b1624cd618b5420004155af9120de2649f8803432"
+        },
+        "off3": {
+          "path": "issues/REF-sfdp-pattern-5-native/evidence/benchmark-20260915T195318+0800/off3/result.json",
+          "sha256": "3ffbe437eec75ba2e0fb10c7b8dee3940cc71dee2d2824621a314d0eff81c3b9"
+        },
+        "on3": {
+          "path": "issues/REF-sfdp-pattern-5-native/evidence/benchmark-20260915T195318+0800/on3/result.json",
+          "sha256": "90f5534ddcd753004d27250114a041e771572c243488491e7c52f27e2331524c"
+        }
+      },
+      "measurement_workload": "sfdp-pattern-5-registered-half-training-forward",
+      "input_spec": [
+        {
+          "parameter": "query",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "key",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "value",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": true
+        },
+        {
+          "parameter": "attn_mask",
+          "shape": [
+            1,
+            1,
+            8,
+            8
+          ],
+          "stride": [
+            64,
+            64,
+            8,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": false
+        }
+      ],
+      "memory": {
+        "off1": {
+          "allocated": 43008,
+          "reserved": 316669952
+        },
+        "on1": {
+          "allocated": 77312,
+          "reserved": 316669952
+        },
+        "on2": {
+          "allocated": 77312,
+          "reserved": 316669952
+        },
+        "off2": {
+          "allocated": 43008,
+          "reserved": 316669952
+        },
+        "off3": {
+          "allocated": 43008,
+          "reserved": 316669952
+        },
+        "on3": {
+          "allocated": 77312,
+          "reserved": 316669952
+        }
+      },
+      "compile_ms": {
+        "off1": 20487.28412995115,
+        "on1": 46086.739289574325,
+        "on2": 46766.87029004097,
+        "off2": 20476.821329910308,
+        "off3": 20567.93778995052,
+        "on3": 46644.596739672124
+      },
+      "codegen_review": {
+        "off1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__softmax_add_div_matmul_0.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "triton_unk_fused__to_copy_0.run": 1,
+            "triton_unk_fused__to_copy_mul_1.run": 2,
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__safe_softmax_add_matmul_2.run": 1,
+            "torch.ops.aten.any.dim": 1,
+            "triton_unk_fused__safe_softmax_add_matmul_3.run": 1,
+            "triton_unk_fused_matmul_4.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "triton_unk_fused__to_copy_0.run": 1,
+            "triton_unk_fused__to_copy_mul_1.run": 2,
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__safe_softmax_add_matmul_2.run": 1,
+            "torch.ops.aten.any.dim": 1,
+            "triton_unk_fused__safe_softmax_add_matmul_3.run": 1,
+            "triton_unk_fused_matmul_4.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__softmax_add_div_matmul_0.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__softmax_add_div_matmul_0.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "triton_unk_fused__to_copy_0.run": 1,
+            "triton_unk_fused__to_copy_mul_1.run": 2,
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__safe_softmax_add_matmul_2.run": 1,
+            "torch.ops.aten.any.dim": 1,
+            "triton_unk_fused__safe_softmax_add_matmul_3.run": 1,
+            "triton_unk_fused_matmul_4.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        }
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "model_e2e": false,
+        "scope": "training-forward-only",
+        "aggregation": "三OFF/三ON各臂p50/p99中位数；高波动或时钟冲突记MIXED"
+      },
+      "bundle": "results/current/T-102/attention_bundles/pattern-5.json"
+    }
+  ],
+  "generated_at": "2026-09-15T20:15:39.864626+08:00"
+}

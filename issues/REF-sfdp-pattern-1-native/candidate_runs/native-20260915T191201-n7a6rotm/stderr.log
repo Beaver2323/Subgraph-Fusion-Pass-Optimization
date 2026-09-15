@@ -1,0 +1,41 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_sdpa_rewriter_1_gpu (attention_community_npu.main.<locals>.NpuCase.test_sdpa_rewriter_1_gpu) ... [W915 19:12:22.531667670 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:12:40.119000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model___30 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model___30.0
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:12:40.618000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__11_forward_35 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__11_forward_35.1
+W0915 19:12:40.778000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__11_backward_37 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__11_backward_37.2
+/home/z50063656/Pass/src/pytorch/torch/utils/checkpoint.py:242: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  check_backward_validity(args)
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:12:41.056000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__13_inference_38 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__13_inference_38.3
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:12:41.492000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__14_forward_43 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__14_forward_43.4
+W0915 19:12:41.643000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__14_backward_45 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__14_backward_45.5
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:12:41.912000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__16_inference_46 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__16_inference_46.6
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:12:42.483000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__17_forward_51 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__17_forward_51.7
+W0915 19:12:42.627000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__17_backward_53 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__17_backward_53.8
+/home/z50063656/Pass/src/pytorch/torch/utils/checkpoint.py:242: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  check_backward_validity(args)
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:12:42.996000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__19_inference_54 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__19_inference_54.9
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:12:43.469000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__20_forward_59 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__20_forward_59.10
+W0915 19:12:43.631000 1215418 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__20_backward_61 debug trace: /home/z50063656/tmp/t102-native-m971rqag/adapter/debug/torch_compile_debug/run_2026_09_15_19_12_22_224677-pid_1215418/torchinductor/model__20_backward_61.11
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 21.628s
+
+OK

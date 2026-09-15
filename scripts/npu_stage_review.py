@@ -61,6 +61,13 @@ def verify(root, task, unit, review):
                        and baseline.get('native_assertions_passed') is True)
     state = dict(baseline_passed=baseline_passed,candidate_passed=candidate_passed)
     if review.get('deployment'):
+        if task == 'T-102' and unit in {f'AU-fuse-attention-sfdp-pattern-{n}' for n in range(1,6)}:
+            spec = importlib.util.spec_from_file_location(
+                'training_deployment_review', Path(__file__).with_name('validate_t102_training_deployment.py'))
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            state.update(module.verify(root, review['deployment']))
+            return state
         if task != 'T-106' or unit != 'AU-fuse-attention-sfdp-pattern-22':
             raise ValueError('部署评审器尚未支持此单元')
         spec = importlib.util.spec_from_file_location(

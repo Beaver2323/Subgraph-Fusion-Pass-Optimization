@@ -49,6 +49,11 @@ def verify_bundle(bundle):
         require('installed_deployment' in bundle, '22号缺已验证部署引用')
         require(verify_deployment(ROOT, bundle['installed_deployment'])['installed_passed'], '22号部署未通过')
         require(gate['installed_deployment']['sha256'] == bundle['installed_deployment']['sha256'], '部署绑定变更')
+    if pattern in range(1,6):
+        from validate_t102_training_deployment import verify as verify_training_deployment
+        require('installed_deployment' in bundle, 'T-102 缺少注册窄部署引用')
+        require(verify_training_deployment(ROOT, bundle['installed_deployment'])['installed_passed'], '训练注册部署未验证')
+        require(gate['installed_deployment']['sha256'] == bundle['installed_deployment']['sha256'], '部署绑定变更')
     require(community['status']=='community-contract-passed' and community['native_assertions_passed'] is True
             and community['tests_ran']==1 and community['tests_skipped']==0
             and community['isolated_registration_candidate'] is False
@@ -191,7 +196,7 @@ def main():
         path=Path(gate[name]['path'])
         require(sha(path)==gate[name]['sha256'], '原gate绑定变更')
         bundle[name]=item(path)
-    if pattern == 22:
+    if pattern == 22 or pattern in range(1,6):
         path = Path(gate['installed_deployment']['path'])
         require(sha(path) == gate['installed_deployment']['sha256'], '部署原件变化')
         bundle['installed_deployment'] = item(path)
@@ -208,13 +213,17 @@ def main():
     function.update(unit=unit,source_evidence={m:bundle['raw_results'][m] for m in ('off','on')},
                     community_evidence=bundle['community_functional'],codegen_review={m:reviews[m] for m in ('off','on')},
                     reviewer=bundle['reviewer'],comparison_verdict='BEHAVIOR_UNCHANGED',repair_status='not-needed-product-unchanged',
-                    community_alignment=dict(status='PARTIAL_ALIGNED' if pattern in (19,20,21,22,24) else 'FULL_ALIGNED',
+                    community_alignment=dict(status='PARTIAL_ALIGNED' if pattern in (3,4,5,19,20,21,22,24) else 'FULL_ALIGNED',
                         aligned_scope=[f'原社区方法完整执行；记录{len(community["tensor_assertions"])}个Tensor比较；独立微图数值和精确OFF/ON通过'],
-                        divergent_scope=['NPU数学展开与CUDA融合kernel路径不同'] if pattern in (21,22,24) else [],
-                        open_scope=['原社区无数值oracle，派生微图不能回填'] if pattern in (19,20) else ['未覆盖的dtype/形状/梯度不外推'],
+                        divergent_scope=['NPU数学展开与CUDA融合kernel路径不同'] if pattern in (5,21,22,24) else [],
+                        open_scope=['原社区无数值oracle，派生微图不能回填'] if pattern in (3,4,19,20) else ['未覆盖的dtype/形状/梯度不外推'],
                         disposition='保留当前产品配置；局部时延不等于模型端到端收益'))
     if pattern == 22:
         function.update(repair_status='installed-original-neighbors-boundary-verified',
+                        installed_deployment=bundle['installed_deployment'])
+    if pattern in range(1,6):
+        function.update(repair_status='installed-original-neighbors-boundary-verified',
+                        comparison_verdict='NEWLY_SUPPORTED',
                         installed_deployment=bundle['installed_deployment'])
     if pattern == 19:
         function['community_alignment']['divergent_scope'].append(
@@ -252,6 +261,10 @@ def main():
             row.update(performance_status='measured',verdict=computed['verdict'],
                        evidence_bundle=str(bundle_path.relative_to(ROOT)))
     plan['generated_at']=bundle['generated_at']
+    if task == 'T-102' and len(plan['acceptance_units']) == 5 and all(
+            row['performance_status'] == 'measured' for row in plan['acceptance_units']):
+        plan['status']='performance-disposition-complete'
+        plan['implementation']['status']='implemented-runtime-validated'
     plan_path.write_text(json.dumps(plan,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps({'task':task,'pattern':pattern,**computed},ensure_ascii=False))
 

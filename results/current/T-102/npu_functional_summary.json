@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "task_id": "T-102",
+  "backend": "triton_experimental",
+  "status": "functional-passed-performance-gates-signed",
+  "units": [
+    {
+      "unit": "pattern-1",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-1",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-102/functional/pattern-1.json",
+      "gate": "results/current/T-102/performance_gates/pattern-1-executed.json"
+    },
+    {
+      "unit": "pattern-2",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-2",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-102/functional/pattern-2.json",
+      "gate": "results/current/T-102/performance_gates/pattern-2-executed.json"
+    },
+    {
+      "unit": "pattern-3",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-3",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-102/functional/pattern-3.json",
+      "gate": "results/current/T-102/performance_gates/pattern-3-executed.json"
+    },
+    {
+      "unit": "pattern-4",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-4",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-102/functional/pattern-4.json",
+      "gate": "results/current/T-102/performance_gates/pattern-4-executed.json"
+    },
+    {
+      "unit": "pattern-5",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-5",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-102/functional/pattern-5.json",
+      "gate": "results/current/T-102/performance_gates/pattern-5-executed.json"
+    }
+  ],
+  "generated_at": "2026-09-15T20:15:39.864078+08:00"
+}

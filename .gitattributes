@@ -7,3 +7,8 @@ issues/REF-respecialize-current-device-native/current_device_and_codegen.patch w
 issues/REF-e8m0-log2-pattern-native/e8m0_installed_source.patch whitespace=-blank-at-eol,-blank-at-eof
 # 2026-09-15：同样保留 select-load 修复原始补丁的空白上下文，不豁免实际源码格式。
 issues/REF-sfdp-pattern-22-native/select_load_shape_bounds.patch whitespace=-blank-at-eol,-blank-at-eof
+# 2026-09-15：训练注册补丁保留 unified diff 的空白上下文；源码不豁免。
+issues/REF-sfdp-pattern-1-native/sfdp_training_registration.patch whitespace=-blank-at-eol,-blank-at-eof
+# 部署边界同样保存编译器原始生成文本，不重排其字节。
+issues/REF-sfdp-pattern-1-native/deployment-20260915-training/*-boundary/debug/** -whitespace
+issues/REF-sfdp-pattern-1-native/deployment-20260915-training/*-boundary/target-observations/**/fx_graph_*.py -whitespace

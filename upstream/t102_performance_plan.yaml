@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "task_id": "T-102",
-  "generated_at": "2026-09-10T22:55:21+08:00",
-  "status": "prepared-awaiting-gpu-and-npu-functional-gates",
+  "generated_at": "2026-09-15T20:15:39.778496+08:00",
+  "status": "performance-disposition-complete",
   "implementation": {
-    "status": "implemented-awaiting-runtime-validation",
+    "status": "implemented-runtime-validated",
     "entrypoint": "runners/t102_t107_attention_performance_worker.py",
     "launcher": "scripts/run_t102_t107_attention_performance.py"
   },
@@ -71,22 +71,22 @@
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-1",
       "worker_unit": "pattern-1",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
           "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_1_gpu"
         ],
-        "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
+        "reason": "2026-09-15：1号推理OFF被dropout=0的3号推理注册接替；1/2/5统一测本次修复对应的half training前向，保留注册shape/stride/dtype/requires_grad/scalar。只删本编号，其他attention接替仍拒绝计时；不是社区原生benchmark。"
       },
       "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_1 counter>=1；数值正确且无break/fallback。",
       "workloads": [
         {
-          "workload_id": "sfdp-pattern-1-registered-half-inference",
+          "workload_id": "sfdp-pattern-1-registered-half-training-forward",
           "role": "target-level-derived",
-          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half inference首个非bs1候选并把完整shape/stride/dtype写入结果",
-          "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
+          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half training首个非bs1候选，保留requires_grad；完整shape/stride/dtype写入结果",
+          "measurement_scope": "仅training forward微图；不含backward、首次编译或完整模型，不冒称推理收益"
         }
       ],
       "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
@@ -100,27 +100,28 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-102/attention_bundles/pattern-1.json"
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-2",
       "worker_unit": "pattern-2",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
           "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_2_gpu"
         ],
-        "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
+        "reason": "2026-09-15：1号推理OFF被dropout=0的3号推理注册接替；1/2/5统一测本次修复对应的half training前向，保留注册shape/stride/dtype/requires_grad/scalar。只删本编号，其他attention接替仍拒绝计时；不是社区原生benchmark。"
       },
       "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_2 counter>=1；数值正确且无break/fallback。",
       "workloads": [
         {
-          "workload_id": "sfdp-pattern-2-registered-half-inference",
+          "workload_id": "sfdp-pattern-2-registered-half-training-forward",
           "role": "target-level-derived",
-          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half inference首个非bs1候选并把完整shape/stride/dtype写入结果",
-          "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
+          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half training首个非bs1候选，保留requires_grad；完整shape/stride/dtype写入结果",
+          "measurement_scope": "仅training forward微图；不含backward、首次编译或完整模型，不冒称推理收益"
         }
       ],
       "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
@@ -134,13 +135,14 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-102/attention_bundles/pattern-2.json"
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-3",
       "worker_unit": "pattern-3",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -168,13 +170,14 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-102/attention_bundles/pattern-3.json"
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-4",
       "worker_unit": "pattern-4",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_IMPROVED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -202,27 +205,28 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-102/attention_bundles/pattern-4.json"
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-5",
       "worker_unit": "pattern-5",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_REGRESSED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
           "test/inductor/test_fused_attention.py::SDPAPatternRewriterGpuTests.test_sdpa_rewriter_5_gpu"
         ],
-        "reason": "社区transformer/sdpa benchmark直接从已融合SDPA起步，不能测FX rewrite；worker改用注册器为同编号生成的half inference输入，保留实际pattern shape/stride/dtype/scalar合同。"
+        "reason": "2026-09-15：1号推理OFF被dropout=0的3号推理注册接替；1/2/5统一测本次修复对应的half training前向，保留注册shape/stride/dtype/requires_grad/scalar。只删本编号，其他attention接替仍拒绝计时；不是社区原生benchmark。"
       },
       "functional_gate": "GPU原生reference有效；NPU triton_experimental OFF无fuse_attention，ON精确_sfdp_pattern_5 counter>=1；数值正确且无break/fallback。",
       "workloads": [
         {
-          "workload_id": "sfdp-pattern-5-registered-half-inference",
+          "workload_id": "sfdp-pattern-5-registered-half-training-forward",
           "role": "target-level-derived",
-          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half inference首个非bs1候选并把完整shape/stride/dtype写入结果",
-          "measurement_scope": "单个attention rewrite微图；不是社区原生benchmark，也不是模型端到端"
+          "shape_contract": "由冻结源码_get_sfdp_patterns(device)选择同编号half training首个非bs1候选，保留requires_grad；完整shape/stride/dtype写入结果",
+          "measurement_scope": "仅training forward微图；不含backward、首次编译或完整模型，不冒称推理收益"
         }
       ],
       "off_on_control": "整轮joint两臂均开启；OFF仅删除精确编号注册，保留相邻优化；观察器核验真实目标，其他attention顶替则拒绝计时。",
@@ -236,7 +240,8 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-102/attention_bundles/pattern-5.json"
     }
   ]
 }

@@ -1,0 +1,1 @@
+worker_status=passed pattern=1 mode=off phase=benchmark exact_pattern_counter=0

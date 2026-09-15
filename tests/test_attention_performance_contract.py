@@ -20,6 +20,8 @@ class AttentionPerformanceContractTests(unittest.TestCase):
                 return 3.0
         value = Scalar()
         self.assertEqual(worker.normalize_scale_argument('inv_scale', value), 3.0)
+        self.assertEqual(worker.normalize_scale_argument('scale_factor', value), 3.0)
+        self.assertEqual(worker.normalize_scale_argument('inv_scale_factor', value), 3.0)
         self.assertIs(worker.normalize_scale_argument('attn_mask', value), value)
         self.assertEqual(worker.input_description('inv_scale', 3.0),
                          dict(parameter='inv_scale',kind='python-scalar',python_type='float',value=3.0))
@@ -147,11 +149,26 @@ class AttentionPerformanceContractTests(unittest.TestCase):
             worker.select_registration([('_sfdp_pattern_3_half_inference',{})],3)
 
     def test_normal_inference_is_not_replaced_by_training(self):
-        candidates=[('_sfdp_pattern_1_half_training',{}),('_sfdp_pattern_1_half_inference',{})]
-        name,_,values,training=worker.select_registration(candidates,1)
+        candidates=[('_sfdp_pattern_13_half_training',{}),('_sfdp_pattern_13_half_inference',{})]
+        name,_,values,training=worker.select_registration(candidates,13)
         self.assertTrue(name.endswith('_inference'))
         self.assertFalse(training)
         self.assertEqual(values,{})
+
+    def test_repaired_training_contract_preserves_non_dropout_scalars(self):
+        for number in (1,2,5):
+            with self.subTest(number=number):
+                original={'scalar_workaround':{'inv_scale':2.0}}
+                candidates=[(f'_sfdp_pattern_{number}_half_inference',{}),
+                            (f'_sfdp_pattern_{number}_half_training',original)]
+                name,chosen,values,training=worker.select_registration(candidates,number)
+                self.assertTrue(name.endswith('_training'))
+                self.assertIs(chosen,original)
+                self.assertTrue(training)
+                self.assertEqual(values,{'inv_scale':2.0})
+                self.assertEqual(worker.workload_for_pattern(number),f'sfdp-pattern-{number}-registered-half-training-forward')
+                with self.assertRaisesRegex(ValueError,'执行阶段'):
+                    worker.select_registration(candidates[:1],number)
 
     def test_dropout_parameter_is_required(self):
         with self.assertRaisesRegex(ValueError,'dropout参数'):

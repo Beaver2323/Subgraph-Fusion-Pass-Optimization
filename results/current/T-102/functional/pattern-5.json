@@ -1,0 +1,200 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-15T19:52:19.954431+08:00",
+  "task_id": "T-102",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-5",
+  "pattern": 5,
+  "pid": 1872144,
+  "python_executable": "/home/z50063656/envs/Pass/bin/python",
+  "physical_device": "5",
+  "torch_version": "2.14.0a0+git8e86e0a",
+  "torch_npu_version": "2.14.0a0+git83cc452",
+  "mode": "on",
+  "phase": "functional",
+  "backend": "triton_experimental",
+  "backend_selected_before_import": true,
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "pytorch_worktree_status": "",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "registration_name": "_sfdp_pattern_5_half_training",
+  "exact_pattern_counter": 1,
+  "general_fuse_attention_counter": 2,
+  "measurement_workload": "sfdp-pattern-5-registered-half-training-forward",
+  "measurement_stage": "training-forward-only",
+  "dropout_p": 0.0,
+  "oracle_design": "同输入eager对照；本次修复的training注册，计时仅前向、不含backward；原社区完整合同另绑gate",
+  "measurement_adapter": "torch._dynamo.dont_skip_tracing(search_fn); local-wrapper-only; fullgraph-retained",
+  "input_spec": [
+    {
+      "parameter": "query",
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": true
+    },
+    {
+      "parameter": "key",
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": true
+    },
+    {
+      "parameter": "value",
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": true
+    },
+    {
+      "parameter": "attn_mask",
+      "shape": [
+        1,
+        1,
+        8,
+        8
+      ],
+      "stride": [
+        64,
+        64,
+        8,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    }
+  ],
+  "off_control_scope": "remove-exact-pattern-entries-only; joint and neighboring passes stay enabled",
+  "target_control": {
+    "mode": "on",
+    "whole_pass_disabled": false
+  },
+  "input_initialization": "fixed-seed-normal-std0.25; preserve-shape-stride-dtype; named-scale-trace-placeholder-to-python-scalar",
+  "argument_initialization": [
+    "fixed-seed-normal-std0.25-or-original-scalar",
+    "fixed-seed-normal-std0.25-or-original-scalar",
+    "fixed-seed-normal-std0.25-or-original-scalar",
+    "fixed-seed-normal-std0.25-or-original-scalar"
+  ],
+  "observations": [
+    {
+      "capture_scope": "pattern-entry-apply-after-extra-check",
+      "target": "_sfdp_pattern_5_half_training",
+      "entry_type": "ReplacementPatternEntry",
+      "handler_returned": true,
+      "graph_changed": true,
+      "test_body_modified": false,
+      "device_modified": false,
+      "assertions_modified": false,
+      "product_gate_bypassed": false,
+      "numerical_correctness_proven_by_observer": false
+    }
+  ],
+  "compile_ms": 48204.26322007552,
+  "worker_sha256": "d50a3751b1306d912141e276e6c715ea1c9c46fad05a3b638521ce0a02792f55",
+  "target_control_sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+  "observer_sha256": "31f01c5f2ab802a26d9aea61468b8107d4f4c6c86028460269bac0cb97038618",
+  "source_snapshots": {
+    "t102_t107_attention_performance_worker.py": "d50a3751b1306d912141e276e6c715ea1c9c46fad05a3b638521ce0a02792f55",
+    "target_entry_control.py": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+    "native_contract_observer.py": "31f01c5f2ab802a26d9aea61468b8107d4f4c6c86028460269bac0cb97038618"
+  },
+  "gate_sha256": null,
+  "unit": "pattern-5",
+  "source_evidence": {
+    "off": {
+      "path": "issues/REF-sfdp-pattern-5-native/evidence/functional-20260915T194634+0800/off/result.json",
+      "sha256": "6e71f607b32a5c2200e0f2df759a6300692ce42493a86b32f2d19eef4bed4e2d"
+    },
+    "on": {
+      "path": "issues/REF-sfdp-pattern-5-native/evidence/functional-20260915T194634+0800/on/result.json",
+      "sha256": "9e8074bbf53250242f3be0dd7edc379f573fe983f4e688bcc74d7bf25a20f80d"
+    }
+  },
+  "community_evidence": {
+    "path": "issues/REF-sfdp-pattern-5-native/evidence/t102-native-0gliytfd/adapter/result.json",
+    "sha256": "bb80e9df74dc2fcd6d8350dbb4c673866258671ccfd0f340120c6b79bdfb538c"
+  },
+  "codegen_review": {
+    "off": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__softmax_add_div_matmul_0.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    },
+    "on": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "triton_unk_fused__to_copy_0.run": 1,
+        "triton_unk_fused__to_copy_mul_1.run": 2,
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__safe_softmax_add_matmul_2.run": 1,
+        "torch.ops.aten.any.dim": 1,
+        "triton_unk_fused__safe_softmax_add_matmul_3.run": 1,
+        "triton_unk_fused_matmul_4.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    }
+  },
+  "reviewer": "Codex：逐图及原样本复核",
+  "comparison_verdict": "NEWLY_SUPPORTED",
+  "repair_status": "installed-original-neighbors-boundary-verified",
+  "community_alignment": {
+    "status": "PARTIAL_ALIGNED",
+    "aligned_scope": [
+      "原社区方法完整执行；记录30个Tensor比较；独立微图数值和精确OFF/ON通过"
+    ],
+    "divergent_scope": [
+      "NPU数学展开与CUDA融合kernel路径不同"
+    ],
+    "open_scope": [
+      "未覆盖的dtype/形状/梯度不外推"
+    ],
+    "disposition": "保留当前产品配置；局部时延不等于模型端到端收益"
+  },
+  "installed_deployment": {
+    "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/deployment.json",
+    "sha256": "b1338ccf237115c8a6912fd4bb2cf30b3aa96c9baa7d7c6c98c11d1059d6c6f9"
+  }
+}

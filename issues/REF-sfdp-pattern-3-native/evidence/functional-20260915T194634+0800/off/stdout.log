@@ -1,0 +1,1 @@
+worker_status=passed pattern=3 mode=off phase=functional exact_pattern_counter=0

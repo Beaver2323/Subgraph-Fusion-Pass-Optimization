@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-09-15T19:18:00.644974+08:00",
+  "task_id": "T-102",
+  "candidate_cases": {
+    "1": {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/t102-native-m971rqag/adapter/result.json",
+      "sha256": "7285b68a10982bfd65c298dcb3307e0cb72a00e3928160eba60b9ac7f444855f"
+    },
+    "2": {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/t102-native-ibuudjyk/adapter/result.json",
+      "sha256": "cd1a0f13c25ca858cd6cf1a6dc7d0a303859fb3310c9830ecd75e7f3859d410f"
+    },
+    "3": {
+      "path": "issues/REF-sfdp-pattern-3-native/evidence/t102-native-5rrs8ipf/adapter/result.json",
+      "sha256": "cbee9b3098f0c0c2466dc72caae5c209692a7b49b8efbde8a0b73041f02866a2"
+    },
+    "4": {
+      "path": "issues/REF-sfdp-pattern-4-native/evidence/t102-native-4rfr5ybv/adapter/result.json",
+      "sha256": "37fce6f75b635ee625d3a32670e0c150c00f47841c89eced4c0c29b9f1ff4057"
+    },
+    "5": {
+      "path": "issues/REF-sfdp-pattern-5-native/evidence/t102-native-p5mtyp04/adapter/result.json",
+      "sha256": "6337a58567ba0506869792ea9796bf5680835a4d733466833ca34ea77770669e"
+    }
+  },
+  "candidate_boundary": {
+    "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/candidate-boundary/result.json",
+    "sha256": "347ad33a1db2e46c2574ada520f8db9eb1231606dcc5672dd64ccfc01e6660a2"
+  },
+  "before_initializer": {
+    "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/before-__init__.py",
+    "sha256": "d11e1c9a3da36633e0a8d4d7baecc119140b8b3fff2b11a09b0947056cbc3538"
+  },
+  "candidate_sha256": "7feb336e69df3dfd2a0d376ae8b9e2c26e1b1363b26580fa5c8839a67b3e588a",
+  "deployed": false
+}

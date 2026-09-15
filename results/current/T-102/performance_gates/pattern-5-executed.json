@@ -1,0 +1,151 @@
+{
+  "task_id": "T-102",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-5",
+  "backend": "triton_experimental",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "correctness": "passed",
+  "numerical_execution": true,
+  "target_rewrite": "confirmed",
+  "graph_breaks": 0,
+  "fallbacks": 0,
+  "product_disabled": false,
+  "measurement_workload": "sfdp-pattern-5-registered-half-training-forward",
+  "worker_sha256": "d50a3751b1306d912141e276e6c715ea1c9c46fad05a3b638521ce0a02792f55",
+  "target_control_sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05",
+  "observer_sha256": "31f01c5f2ab802a26d9aea61468b8107d4f4c6c86028460269bac0cb97038618",
+  "input_spec": [
+    {
+      "parameter": "query",
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": true
+    },
+    {
+      "parameter": "key",
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": true
+    },
+    {
+      "parameter": "value",
+      "shape": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "stride": [
+        512,
+        128,
+        16,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": true
+    },
+    {
+      "parameter": "attn_mask",
+      "shape": [
+        1,
+        1,
+        8,
+        8
+      ],
+      "stride": [
+        64,
+        64,
+        8,
+        1
+      ],
+      "dtype": "torch.float16",
+      "requires_grad": false
+    }
+  ],
+  "registration_name": "_sfdp_pattern_5_half_training",
+  "dropout_p": 0.0,
+  "reviewed_at": "2026-09-15T19:53:08.670553+08:00",
+  "reviewer": "Codex：原社区合同及目标OFF/ON生成代码逐图复核",
+  "manual_codegen_review": "逐图复核5号带加性mask训练前向，OFF无attention改写，ON本编号精确改写；两臂最终均NPU bmm数学链，ON含提升与safe_softmax，不是fusion_attention内核。数值通过且未见CPU转移；原安装方法30次Tensor/8次本编号与4次邻接1号分开，不外推反向性能。",
+  "community_oracle_scope": "原社区已执行的数值断言及独立性能输入比较",
+  "codegen_review": {
+    "off": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__softmax_add_div_matmul_0.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    },
+    "on": {
+      "code_executed": false,
+      "output_code_count": 1,
+      "calls": {
+        "triton_unk_fused__to_copy_0.run": 1,
+        "triton_unk_fused__to_copy_mul_1.run": 2,
+        "extern_kernels.bmm": 2,
+        "triton_unk_fused__safe_softmax_add_matmul_2.run": 1,
+        "torch.ops.aten.any.dim": 1,
+        "triton_unk_fused__safe_softmax_add_matmul_3.run": 1,
+        "triton_unk_fused_matmul_4.run": 1
+      },
+      "suspicious_cpu_lines": [],
+      "verdict": "manual-review-required"
+    }
+  },
+  "gpu_reference": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/results/current/T-102/gpu_reference_review.json",
+    "sha256": "54eeb28d2a80f0a783b9e57df9dffb8b63f0ef4fc154dd9ccde68fe99f569dba"
+  },
+  "community_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-5-native/evidence/t102-native-0gliytfd/adapter/result.json",
+    "sha256": "bb80e9df74dc2fcd6d8350dbb4c673866258671ccfd0f340120c6b79bdfb538c"
+  },
+  "off_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-5-native/evidence/functional-20260915T194634+0800/off/result.json",
+    "sha256": "6e71f607b32a5c2200e0f2df759a6300692ce42493a86b32f2d19eef4bed4e2d"
+  },
+  "target_functional": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-5-native/evidence/functional-20260915T194634+0800/on/result.json",
+    "sha256": "9e8074bbf53250242f3be0dd7edc379f573fe983f4e688bcc74d7bf25a20f80d"
+  },
+  "installed_deployment": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-1-native/deployment-20260915-training/deployment.json",
+    "sha256": "b1338ccf237115c8a6912fd4bb2cf30b3aa96c9baa7d7c6c98c11d1059d6c6f9"
+  },
+  "worker_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-5-native/evidence/functional-20260915T194634+0800/t102_t107_attention_performance_worker.py",
+    "sha256": "d50a3751b1306d912141e276e6c715ea1c9c46fad05a3b638521ce0a02792f55"
+  },
+  "target_control_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-5-native/evidence/functional-20260915T194634+0800/target_entry_control.py",
+    "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+  },
+  "observer_snapshot": {
+    "path": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-5-native/evidence/functional-20260915T194634+0800/native_contract_observer.py",
+    "sha256": "31f01c5f2ab802a26d9aea61468b8107d4f4c6c86028460269bac0cb97038618"
+  }
+}

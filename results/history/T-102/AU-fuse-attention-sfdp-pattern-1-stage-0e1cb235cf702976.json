@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-09-14T20:52:00+08:00",
+  "task_id": "T-102",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-1",
+  "case_id": "REF-sfdp-pattern-1-native",
+  "backend": "triton_experimental",
+  "baseline": {
+    "path": "issues/REF-sfdp-pattern-1-native/evidence/t102-native-oen9jamj/adapter/result.json",
+    "sha256": "270997aa4ba919f928cae66b209bb142dc2c661c9634d144057c1e63748eba37"
+  },
+  "candidate": {
+    "path": "issues/REF-sfdp-pattern-1-native/evidence/t102-native-opzfel5b/adapter/result.json",
+    "sha256": "1ea9e39ec511396a9589d0122683d99473ad01cb25c13f5d17b2b503d0b20ad5"
+  },
+  "candidate_verified": true,
+  "correctness_scope": "安装态初始FP32推理输出通过，训练首次target断言失败；隔离候选完整原方法20次输出/梯度比较通过",
+  "repair_status": "isolated-candidate-verified-not-deployed",
+  "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
+  "reason": "NPU训练matmul_backward与softmax backward mul/sub形态不符合预生成训练注册；安装态不能命中完整原合同",
+  "next_action": "独立候选回归与产品注册入口评审；不改现有精度保护，不把候选当安装态PASS",
+  "performance_gate_issued": false,
+  "report": "issues/REF-sfdp-pattern-1-native/修复验证报告.md"
+}

@@ -27,7 +27,8 @@ def installed_product_snapshot():
              '_inductor/triton_experimental/codegen/triton.py',
              '_inductor/triton_experimental/__init__.py',
              '_inductor/triton_experimental/config.py',
-             '_inductor/triton_experimental/e8m0.py']
+             '_inductor/triton_experimental/e8m0.py',
+             '_inductor/triton_experimental/sfdp_training.py']
     return {name: {'path': str(package / name),
                    'sha256': hashlib.sha256((package / name).read_bytes()).hexdigest()}
             for name in paths if (package / name).is_file()}
@@ -60,6 +61,8 @@ def main() -> int:
     parser.add_argument('--candidate-device', type=Path, help='T-087 独立源码 device.py，只在子进程加载，不修改安装态')
     parser.add_argument('--e8m0-candidate', action='store_true')
     parser.add_argument('--attention-registration-candidate', action='store_true')
+    parser.add_argument('--attention-registration-module', type=Path,
+                        help='T-102 产品化注册候选源码；必须同时显式选择隔离候选')
     parser.add_argument('--attention-select-slice-candidate', action='store_true')
     parser.add_argument('--attention-math-codegen', action='store_true')
     parser.add_argument('--conv-hf32', choices=('default','off'), default='default')
@@ -83,6 +86,8 @@ def main() -> int:
     if args.attention_registration_candidate and (not args.adapter or args.task not in
             {'T-102','T-103','T-104','T-105','T-106','T-107'}):
         parser.error('attention 注册候选只允许用于 T-102～T-107 原 adapter')
+    if args.attention_registration_module and (not args.attention_registration_candidate or args.task != 'T-102'):
+        parser.error('产品化注册候选仅用于 T-102 隔离候选运行')
     if args.attention_select_slice_candidate and (not args.adapter or args.task != 'T-106'
             or args.case not in {f'REF-sfdp-pattern-{n}-native' for n in (21,22,23,24)}
             or args.attention_registration_candidate):
@@ -130,6 +135,8 @@ def main() -> int:
             command.append('--e8m0-candidate')
         if args.attention_registration_candidate:
             command.append('--registration-candidate')
+        if args.attention_registration_module:
+            command.extend(['--registration-module', str(args.attention_registration_module.resolve(strict=True))])
         if args.attention_select_slice_candidate:
             command.append('--select-slice-candidate')
         if args.attention_math_codegen:

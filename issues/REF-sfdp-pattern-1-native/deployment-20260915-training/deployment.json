@@ -1,0 +1,82 @@
+{
+  "generated_at": "2026-09-15T19:39:27.085396+08:00",
+  "task_id": "T-102",
+  "backend": "triton_experimental",
+  "deployed": true,
+  "pytorch_modified": false,
+  "product_disable_bypassed": false,
+  "candidate_sha256": "7feb336e69df3dfd2a0d376ae8b9e2c26e1b1363b26580fa5c8839a67b3e588a",
+  "candidate_cases": {
+    "1": {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/t102-native-m971rqag/adapter/result.json",
+      "sha256": "7285b68a10982bfd65c298dcb3307e0cb72a00e3928160eba60b9ac7f444855f"
+    },
+    "2": {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/t102-native-ibuudjyk/adapter/result.json",
+      "sha256": "cd1a0f13c25ca858cd6cf1a6dc7d0a303859fb3310c9830ecd75e7f3859d410f"
+    },
+    "3": {
+      "path": "issues/REF-sfdp-pattern-3-native/evidence/t102-native-5rrs8ipf/adapter/result.json",
+      "sha256": "cbee9b3098f0c0c2466dc72caae5c209692a7b49b8efbde8a0b73041f02866a2"
+    },
+    "4": {
+      "path": "issues/REF-sfdp-pattern-4-native/evidence/t102-native-4rfr5ybv/adapter/result.json",
+      "sha256": "37fce6f75b635ee625d3a32670e0c150c00f47841c89eced4c0c29b9f1ff4057"
+    },
+    "5": {
+      "path": "issues/REF-sfdp-pattern-5-native/evidence/t102-native-p5mtyp04/adapter/result.json",
+      "sha256": "6337a58567ba0506869792ea9796bf5680835a4d733466833ca34ea77770669e"
+    }
+  },
+  "candidate_boundary": {
+    "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/candidate-boundary/result.json",
+    "sha256": "347ad33a1db2e46c2574ada520f8db9eb1231606dcc5672dd64ccfc01e6660a2"
+  },
+  "installed_cases": {
+    "1": {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/t102-native-9ebqlhu3/adapter/result.json",
+      "sha256": "f5e2f993f603bb6f7fcf2b23c611d83e95c432bb8f5a8c875e6220ecf3941bf4"
+    },
+    "2": {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/t102-native-xfsnbo7j/adapter/result.json",
+      "sha256": "efe347488ceeee4bc973b751ba232e8c56ced70c5b683eb80dc7a8356ed3f1c8"
+    },
+    "3": {
+      "path": "issues/REF-sfdp-pattern-3-native/evidence/t102-native-9qcchep4/adapter/result.json",
+      "sha256": "07ecd480d8be6cb89f35803d8e3ae1089eeb79e86bf52e8525ae1c81da65f383"
+    },
+    "4": {
+      "path": "issues/REF-sfdp-pattern-4-native/evidence/t102-native-tjn3i22y/adapter/result.json",
+      "sha256": "bd10d3c0aed7af78edc3ea64bb095e103cb38a8cf2a4e07e98019913c543266e"
+    },
+    "5": {
+      "path": "issues/REF-sfdp-pattern-5-native/evidence/t102-native-0gliytfd/adapter/result.json",
+      "sha256": "bb80e9df74dc2fcd6d8350dbb4c673866258671ccfd0f340120c6b79bdfb538c"
+    }
+  },
+  "installed_boundary": {
+    "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/installed-boundary/result.json",
+    "sha256": "095c7e140b6f3fa23cfb81539f2fa1f3f4071e5f0409a1fdfc092f6dd61d60d2"
+  },
+  "source_files": {
+    "__init__.py": {
+      "target": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/__init__.py",
+      "before": {
+        "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/before-__init__.py",
+        "sha256": "d11e1c9a3da36633e0a8d4d7baecc119140b8b3fff2b11a09b0947056cbc3538"
+      },
+      "after": {
+        "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/after-__init__.py",
+        "sha256": "8aa275ca3ecba7d3b609cbaad6076f16c46f54c4603e73777efc11676f2011b9"
+      }
+    },
+    "sfdp_training.py": {
+      "target": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/sfdp_training.py",
+      "before": null,
+      "after": {
+        "path": "issues/REF-sfdp-pattern-1-native/deployment-20260915-training/after-sfdp_training.py",
+        "sha256": "7feb336e69df3dfd2a0d376ae8b9e2c26e1b1363b26580fa5c8839a67b3e588a"
+      }
+    }
+  }
+}

@@ -107,9 +107,9 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
 
     def test_dynamic_and_pending_evidence_are_not_conflated(self):
         rows = matrix.build_rows("2026-09-06T00:00:00+08:00")
-        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 49)
+        self.assertEqual(sum(bool(row["comparison_result_path"]) for row in rows), 54)
         self.assertEqual(
-            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 49
+            sum(row["denominator_eligible"] == "yes-frozen" for row in rows), 54
         )
         self.assertEqual(
             sum(row["current_phase"] == "awaiting-gpu-reference" for row in rows), 0
@@ -120,14 +120,22 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                           'npu-candidate-verified-awaiting-product-review','npu-contract-review','npu-adapter-review',
                           'npu-installed-repair-verification-running',
                           'npu-installed-repair-verified-awaiting-performance'}
-        self.assertEqual(sum(row['current_phase'] in pending_phases for row in rows), 18)
+        self.assertEqual(sum(row['current_phase'] in pending_phases for row in rows), 13)
         progress = [row for row in rows if row["npu_progress_path"]]
         progress_tasks = {r['task_id'] for r in progress}
-        self.assertTrue({'T-098','T-102'} <= progress_tasks)
+        self.assertTrue({'T-098','T-103'} <= progress_tasks)
         self.assertTrue(progress_tasks <= {'T-098','T-102','T-103','T-104','T-105','T-106','T-107'})
-        candidate = next(r for r in progress if r['acceptance_unit_id']=='AU-fuse-attention-sfdp-pattern-1')
-        self.assertEqual(candidate['repair_status'],'isolated-candidate-verified-not-deployed')
-        self.assertEqual(candidate['npu_execution_status'],'failed')
+        pending = next(r for r in progress if r['acceptance_unit_id']=='AU-fuse-attention-sfdp-pattern-6')
+        self.assertEqual(pending['repair_status'],'baseline-failed-diagnosis-pending')
+        self.assertEqual(pending['npu_execution_status'],'failed')
+        for number in range(1,6):
+            repaired_training=next(r for r in rows if r['acceptance_unit_id']==f'AU-fuse-attention-sfdp-pattern-{number}')
+            self.assertEqual(repaired_training['repair_status'],'installed-original-neighbors-boundary-verified')
+            self.assertEqual(repaired_training['comparison_verdict'],'NEWLY_SUPPORTED')
+            self.assertTrue(repaired_training['comparison_result_path'])
+        old=matrix.read_json(ROOT/'issues/REF-sfdp-pattern-1-native/evidence/t102-native-oen9jamj/adapter/result.json')
+        self.assertEqual(old['status'],'failed-or-target-missing')
+        self.assertFalse(old['native_assertions_passed'])
         self.assertTrue(all(not r['comparison_result_path'] for r in progress))
         installed = [row for row in rows if row["repair_status"] == "installed-fix-verified-not-upstream-merged"]
         self.assertEqual(len(installed), 2)
@@ -139,7 +147,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             28,
         )
         self.assertEqual(
-            sum(row["current_phase"] == "formally-closed" for row in rows), 21
+            sum(row["current_phase"] == "formally-closed" for row in rows), 26
         )
         self.assertEqual(
             sum(
@@ -162,7 +170,7 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
                 row["performance_evidence_path"].startswith("results/current/")
                 for row in rows
             ),
-            49,
+            54,
         )
 
         repaired = next(r for r in rows if r['acceptance_unit_id']=='AU-fuse-attention-sfdp-pattern-22')
@@ -263,17 +271,33 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
             if row["acceptance_unit_id"] == "AU-fuse-attention-sfdp-pattern-16"
         )
         self.assertEqual(
-            pattern_1["community_alignment_status"], "NOT_ALIGNED_REPAIR_REQUIRED"
+            pattern_1["community_alignment_status"], "FULL_ALIGNED"
         )
         self.assertEqual(
             pattern_16["community_alignment_status"],
             "backend-specific-partial-alignment",
         )
-        self.assertEqual(pattern_1["community_alignment_source"], "explicit-stage-review")
+        self.assertEqual(pattern_1["community_alignment_source"], "explicit")
         self.assertEqual(pattern_16["community_alignment_source"], "manifest-preparation-contract")
-        self.assertFalse(pattern_1["comparison_result_path"])
+        self.assertTrue(pattern_1["comparison_result_path"])
         self.assertFalse(pattern_16["comparison_result_path"])
         self.assertIn("设备行为尚未形成结论", pattern_16["community_alignment_disposition"])
+
+    def test_t102_installed_training_keeps_partial_alignment_visible(self):
+        rows={row['acceptance_unit_id']:row for row in matrix.build_rows('2026-09-15T20:00:00+08:00')}
+        for number in range(1,6):
+            with self.subTest(pattern=number):
+                row=rows[f'AU-fuse-attention-sfdp-pattern-{number}']
+                self.assertEqual(row['community_alignment_status'],
+                                 'PARTIAL_ALIGNED' if number in (3,4,5) else 'FULL_ALIGNED')
+                raw=matrix.read_json(ROOT/f'results/current/T-102/functional/pattern-{number}.json')
+                self.assertEqual(raw['measurement_stage'],'training-forward-only')
+                self.assertTrue(any(x.get('requires_grad') for x in raw['input_spec']))
+                self.assertIn('installed_deployment',raw)
+                if number in (3,4):
+                    self.assertIn('原社区无数值oracle',row['community_open_scope'])
+                if number==5:
+                    self.assertIn('数学展开',row['community_divergent_scope'])
 
     def test_t081_t083_results_bind_backend_and_learning_evidence(self):
         rows = matrix.build_rows("2026-09-08T03:17:00+08:00")

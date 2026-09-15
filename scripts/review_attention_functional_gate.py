@@ -19,7 +19,7 @@ WORKER = ROOT/'runners/t102_t107_attention_performance_worker.py'
 spec = importlib.util.spec_from_file_location('attention_gate_worker', WORKER)
 worker = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(worker)
-NAMES = {'result.json', 'execution.json', 'stdout.log', 'stderr.log',
+NAMES = {'result.json', 'execution.json', 'stdout.log', 'stderr.log', 'candidate_source.py', 'harness_source.py',
          'fx_graph_readable.py', 'fx_graph_transformed.py', 'ir_pre_fusion.txt',
          'ir_post_fusion.txt', 'output_code.py', 'contract_observation.json'}
 
@@ -101,8 +101,14 @@ def community_for_gate(stage, pattern, explicit=None):
         path = ROOT/stage['baseline']['path']
         require(sha(path) == stage['baseline']['sha256'], '社区原件哈希不符')
         return path
-    from validate_attention_slice_deployment import verify as verify_deployment
-    require(pattern == 22 and stage.get('deployment'), '仅已登记部署支持显式安装态复验')
+    if pattern in range(1,6):
+        from validate_t102_training_deployment import verify as verify_deployment, COUNTS
+        tensors, exact = COUNTS[pattern]
+    else:
+        from validate_attention_slice_deployment import verify as verify_deployment
+        require(pattern == 22, '该编号尚未定义部署验收')
+        tensors, exact = 12, 4
+    require(stage.get('deployment'), '仅已登记部署支持显式安装态复验')
     require(verify_deployment(ROOT, stage['deployment'])['installed_passed'], '安装态部署回归未完成')
     path = explicit.resolve(strict=True)
     issue = ROOT/'issues'/f'REF-sfdp-pattern-{pattern}-native'
@@ -112,11 +118,13 @@ def community_for_gate(stage, pattern, explicit=None):
             and raw.get('isolated_codegen_candidate') is False
             and raw.get('isolated_registration_candidate') is False
             and raw.get('numerical_assertions_modified') is False
-            and len(raw.get('tensor_assertions', [])) == 12
+            and len(raw.get('tensor_assertions', [])) == tensors
             and all(t.get('passed') is True for t in raw['tensor_assertions'])
-            and raw.get('exact_target_observations') == 4, '缺完整无候选原方法覆盖')
+            and raw.get('exact_target_observations') == exact, '缺完整无候选原方法覆盖')
     deployment = read(ROOT/stage['deployment']['path'])
-    require(raw.get('loaded_source_sha256', {}).get(deployment['target']) == deployment['after_sha256'],
+    deployed_sources = ([(item['target'], item['after']['sha256']) for item in deployment['source_files'].values()]
+                        if pattern in range(1,6) else [(deployment['target'], deployment['after_sha256'])])
+    require(all(raw.get('loaded_source_sha256', {}).get(target) == digest for target,digest in deployed_sources),
             '原例未加载已验证的部署文件')
     parents = [p for p in (issue/'adapter_runs').glob('*/run_result.json')
                if Path(read(p)['raw_artifact_dir']).name == path.parent.parent.name]
@@ -165,7 +173,7 @@ def main():
                 reviewer='Codex：原社区合同及目标OFF/ON生成代码逐图复核',
                 manual_codegen_review=args.review_note,
                 community_oracle_scope=('原社区不比较输出；本gate数值仅覆盖注册派生微图'
-                    if args.pattern in (19,20) else '原社区已执行的数值断言及独立性能输入比较'),
+                    if args.pattern in (3,4,19,20) else '原社区已执行的数值断言及独立性能输入比较'),
                 codegen_review=reviews,
                 gpu_reference=item(current/'gpu_reference_review.json'),
                 community_functional=item(community),

@@ -1,6 +1,6 @@
 # PyTorch Inductor 原生优化到 NPU 的持续兼容性工作流
 
-> 更新时间：2026-09-15 17:21 CST（UTC+08:00）
+> 更新时间：2026-09-15 19:56 CST（UTC+08:00）
 > 适用主线：PyTorch community-native Inductor optimization contract
 > → NPU `triton_experimental` compatibility tracker。
 
@@ -657,6 +657,12 @@ dropout、training/inference 及特殊 layout 的断言范围仍必须按社区�
 记录转换前后合同，禁止把所有零维Tensor无差别转标量或删除guard。
 `review_attention_completion.py --check-current`只读仓库证据复核，不把执行过的原件误报为未设备执行。
 生成代码定位实验按阶段独立归档，修改生成代码的候选不是产品修复，也不能代替原社区全合同复验。
+
+2026-09-15 T-102执行补充：若推理OFF被邻接接替，可在原单元确有训练合同、且本次修复正是该训练路径时，
+另行定义具名training-forward工作负载，保留失败证据、修改前后的阶段/输入说明，并重新做独立功能门禁。
+不能把训练结果冒称推理收益，不能因为改阶段后合法就删除旧归因缺口，也不能将某编号的特许处置自动扩展到其他编号。
+性能报告须注明compile_ms计时起止；若先行lazy_init发生在计时外，不得把compile_ms称包含注册追踪的完整冷启动。
+部分交付以已验签单元为范围；必须单列产品提交/安装态/社区CI/wheel状态及历史再认证缺口，统计完成不等于所有输入域支持。
 
 遇到同合同的不同入口时保留原 ID/证据，用 `canonical_acceptance_unit_id` 和
 `independent_unit_contribution=0` 标记别名；统计同时显示跟踪 ID 数与独立单元数，历史结果不删、不冒充再认证。

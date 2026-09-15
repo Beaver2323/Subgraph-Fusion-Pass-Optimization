@@ -1,6 +1,11 @@
 # Attention 性能测例的执行阶段与 dropout 合同复核
 
-> 更新时间：2026-09-15 00:25 CST（UTC+08:00）。本报告解释准备与执行约束；各编号实测结果另列，不能整体视为通过。
+> 更新时间：2026-09-15 19:49 CST（UTC+08:00）。本报告解释准备与执行约束；各编号实测结果另列，不能整体视为通过。
+
+本轮T-102修订：1号推理OFF被3号dropout=0推理图接替；1/2/5改测本次修复对应的training前向合同。
+2号性能入口另发现scale参数名遗漏，按原Python标量guard补齐具名占位转换。均不放宽OFF/ON门禁，
+旧失败原件保留，见[合同修订](../issues/REF-sfdp-pattern-1-native/性能合同修订说明.md)与[输入适配](../issues/REF-sfdp-pattern-2-native/性能输入适配报告.md)。
+21号现已获用户单独接受归因受限结项（不计实测/收益/默认关闭免测）；17已去重归并15。下段保留早期执行背景。
 
 当前pattern13已完成独立OFF/ON与六臂性能，`PERF_REGRESSED`，
 详见[结果及学习说明](../results/current/T-104/pattern-13_讲解.md)。其余编号继续按门禁逐项推进。
@@ -31,10 +36,12 @@ inference_name = name + "_inference"
 
 | 编号 | 准备的执行阶段 | 数值和归因条件 |
 |---|---|---|
+| 1/2/5 | half training，保留requires_grad；仅前向，不含backward | 与本轮已部署注册修复同阶段；不删除邻接制造OFF，不外推推理收益 |
 | 3/4/6/7/9/12/28 | half training 注册，保留 requires_grad；仅测前向；dropout=1e-11 | 原社区完整合同先验证；新性能图单独比较 eager；必须本编号精确命中 |
 | 19 | 同编号 FP32 inference，与原社区dtype域一致 | 额外half+FP32 mask编译失败原件保留；新图仍须独立门禁 |
 | 其他已确认编号 | 同编号 half inference | 独立 OFF/ON、数值、精确编号与实际生成代码复核 |
-| 16/17/29 | 暂不执行性能 | GPU 本编号合同仍未确认；不借用邻接编号 |
+| 16/29 | 暂不执行性能 | GPU 本编号合同仍未确认；不借用邻接编号 |
+| 17 | 不做独立性能 | 静态等价去重别名，归并15，历史记录保留 |
 
 极低非零 dropout 的设计来自冻结社区测试，而不是任意放宽容差：
 
@@ -56,7 +63,7 @@ dropout_p = 0.00000000001
 # runners/t102_t107_attention_performance_worker.py: select_registration
 suffix = '_training' if training else '_inference'
 eligible = [item for item in candidates if item[0].endswith(suffix)]
-if training:
+if pattern in LOW_DROPOUT_TRAINING_PATTERNS:
     workaround['dropout_p'] = 1e-11
 # 原注册dict不修改；没有所需阶段时拒绝替换为其他阶段。
 ```

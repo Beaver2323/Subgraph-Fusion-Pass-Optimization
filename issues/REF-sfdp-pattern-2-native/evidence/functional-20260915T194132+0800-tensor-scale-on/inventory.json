@@ -1,0 +1,50 @@
+{
+  "source_run_dir": "/home/z50063656/tmp/t102-training-performance-20260915/functional-20260915T194132+0800/pattern-2/on",
+  "failed_precheck": true,
+  "files": [
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/debug/torch_compile_debug/run_2026_09_15_19_43_56_914174-pid_1764890/torchinductor/model__10_forward_31.0/fx_graph_readable.py",
+      "sha256": "d013e36806ddae5dca76773da86bde517f0b0ab8d3e07a3c5d929db7df0e27c2"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/debug/torch_compile_debug/run_2026_09_15_19_43_56_914174-pid_1764890/torchinductor/model__10_forward_31.0/fx_graph_transformed.py",
+      "sha256": "1f179abfc6f9a232323179c290e7b861691c57844a8c19fd313a9822d450ad0d"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/debug/torch_compile_debug/run_2026_09_15_19_43_56_914174-pid_1764890/torchinductor/model__10_forward_31.0/ir_post_fusion.txt",
+      "sha256": "292ce5a8b669b56506d3ed74bc36bdf3463a2d6810955ddea358a4d67f0d9e3d"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/debug/torch_compile_debug/run_2026_09_15_19_43_56_914174-pid_1764890/torchinductor/model__10_forward_31.0/ir_pre_fusion.txt",
+      "sha256": "3bb1d27f803fddcd5ce8a472b3bac6995a5b4b27b4c5abb0788be42b8395ca3b"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/debug/torch_compile_debug/run_2026_09_15_19_43_56_914174-pid_1764890/torchinductor/model__10_forward_31.0/output_code.py",
+      "sha256": "f1e2a1ccb48033eb95c5cc8a4608a8e6ed6950dcb3bb7aacea640af63b85979f"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/execution.json",
+      "sha256": "8d303f1945515dd6ad66fa288fc63b37577efa2d93524164b2ecf8dcd9b9cdbd"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/snapshot-native_contract_observer.py",
+      "sha256": "31f01c5f2ab802a26d9aea61468b8107d4f4c6c86028460269bac0cb97038618"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/snapshot-t102_t107_attention_performance_worker.py",
+      "sha256": "65d772122a6e0214b46fca20b0dfc219c8cf22ac1b4f9b52b8bb132c9403992f"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/snapshot-target_entry_control.py",
+      "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/stderr.log",
+      "sha256": "641947f4cb6ffa28221c5541485c12c1527e8b6cd38a9da99f3bc6e137603a03"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-2-native/evidence/functional-20260915T194132+0800-tensor-scale-on/stdout.log",
+      "sha256": "a8cebb3a1bf5837c81a1cfdf6ffd93ffa469ccb641db54456db8933baafae19e"
+    }
+  ]
+}

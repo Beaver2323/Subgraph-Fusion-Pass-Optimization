@@ -1,0 +1,192 @@
+{
+  "generated_at": "2026-09-15T19:17:37.900237+08:00",
+  "status": "passed",
+  "backend": "triton_experimental",
+  "pid": 1278292,
+  "physical_npu": "5",
+  "candidate": true,
+  "product_module": "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/issues/REF-sfdp-pattern-1-native/candidate/sfdp_training.py",
+  "product_sha256": "7feb336e69df3dfd2a0d376ae8b9e2c26e1b1363b26580fa5c8839a67b3e588a",
+  "harness_sha256": "99ea9caab2bf6d398f3c8775f0a2a35cea2aff2ad8e1a457e82591e410cc880c",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "scenarios": [
+    {
+      "name": "div-fp32-training",
+      "passed": true,
+      "target": 1,
+      "actual_targets": [
+        "_sfdp_pattern_1_training"
+      ],
+      "tensor_comparisons": 4,
+      "dtype": "torch.float32",
+      "strides": [
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "mul-fp16-strided-training",
+      "passed": true,
+      "target": 2,
+      "actual_targets": [
+        "_sfdp_pattern_2_half_training"
+      ],
+      "tensor_comparisons": 4,
+      "dtype": "torch.float16",
+      "strides": [
+        [
+          256,
+          128,
+          1,
+          8
+        ],
+        [
+          256,
+          128,
+          1,
+          8
+        ],
+        [
+          256,
+          128,
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "reused-intermediate-negative",
+      "passed": true,
+      "target": null,
+      "actual_targets": [],
+      "tensor_comparisons": 5,
+      "dtype": "torch.float32",
+      "strides": [
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "tensor-scale-negative",
+      "passed": true,
+      "target": null,
+      "actual_targets": [],
+      "tensor_comparisons": 4,
+      "dtype": "torch.float32",
+      "strides": [
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "add-mask-fp32-training",
+      "passed": true,
+      "target": 5,
+      "actual_targets": [
+        "_sfdp_pattern_5_training"
+      ],
+      "tensor_comparisons": 4,
+      "dtype": "torch.float32",
+      "strides": [
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "scalar-mask-negative",
+      "passed": true,
+      "target": null,
+      "actual_targets": [],
+      "tensor_comparisons": 4,
+      "dtype": "torch.float32",
+      "strides": [
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ],
+        [
+          256,
+          128,
+          16,
+          1
+        ]
+      ]
+    }
+  ],
+  "numerical_tolerance": {
+    "atol": 0.001,
+    "rtol": 0.2
+  }
+}

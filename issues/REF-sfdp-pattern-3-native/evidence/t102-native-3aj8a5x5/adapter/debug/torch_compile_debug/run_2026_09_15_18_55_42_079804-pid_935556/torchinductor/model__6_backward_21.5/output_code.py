@@ -1,0 +1,116 @@
+# AOT ID: ['6_backward']
+from ctypes import c_void_p, c_long, c_int
+import torch
+import math
+import random
+import os
+import tempfile
+from math import inf, nan
+from cmath import nanj
+from torch._inductor.hooks import run_intermediate_hooks
+from torch._inductor.utils import maybe_profile
+from torch._inductor.codegen.memory_planning import _align as align
+from torch import device, empty_strided
+from torch._inductor.async_compile import AsyncCompile
+from torch._inductor.select_algorithm import extern_kernels
+from torch._C._dynamo.guards import copy_if_misaligned
+
+aten = torch.ops.aten
+inductor_ops = torch.ops.inductor
+_quantized = torch.ops._quantized
+assert_size_stride = torch._C._dynamo.guards.assert_size_stride
+assert_size_stride_grouped = torch._C._dynamo.guards.assert_size_stride_grouped
+assert_alignment = torch._C._dynamo.guards.assert_alignment
+empty_strided_cpu = torch._C._dynamo.guards._empty_strided_cpu
+empty_strided_cpu_pinned = torch._C._dynamo.guards._empty_strided_cpu_pinned
+empty_strided_cuda = torch._C._dynamo.guards._empty_strided_cuda
+empty_strided_xpu = torch._C._dynamo.guards._empty_strided_xpu
+empty_strided_mtia = torch._C._dynamo.guards._empty_strided_mtia
+reinterpret_tensor = torch._C._dynamo.guards._reinterpret_tensor
+alloc_from_pool = torch.ops.inductor._alloc_from_pool
+async_compile = AsyncCompile()
+empty_strided_p2p = torch._C._distributed_c10d._SymmetricMemory.empty_strided_p2p
+import torch_npu
+empty_strided_npu = torch_npu._C._empty_strided_npu
+
+
+async_compile.wait(globals())
+del async_compile
+
+class Runner:
+    def __init__(self, partitions):
+        self.partitions = partitions
+
+    def recursively_apply_fns(self, fns):
+        new_callables = []
+        for fn, c in zip(fns, self.partitions):
+            new_callables.append(fn(c))
+        self.partitions = new_callables
+
+    def call(self, args):
+        primals_1, primals_2, primals_3, getitem_9, tangents_1 = args
+        args.clear()
+        with torch.npu.utils.device(0):
+            torch.npu.set_device(0)
+            # Topologically Sorted Source Nodes: [], Original ATen: [npu.npu_fusion_attention_v3]
+            # [Provenance debug handles] torch.ops.npu.npu_fusion_attention_v3.default:2
+            buf0 = torch.ops.npu.npu_fusion_attention_v3.default(primals_1, primals_2, primals_3, 2, 'BNSD', None, None, None, 0.3333333333333333, 0.6, pre_tockens=2147483647, next_tockens=2147483647, inner_precise=0, prefix=None, actual_seq_qlen=None, actual_seq_kvlen=None, sparse_mode=0, gen_mask_parallel=True, sync=False, softmax_layout='', sink=None)
+            buf1 = buf0[0]
+            assert_alignment(buf1, 16, 'torch.ops.npu.npu_fusion_attention_v3.default')
+            buf2 = buf0[1]
+            assert_alignment(buf2, 16, 'torch.ops.npu.npu_fusion_attention_v3.default')
+            buf3 = buf0[2]
+            assert_alignment(buf3, 16, 'torch.ops.npu.npu_fusion_attention_v3.default')
+            buf5 = buf0[4]
+            assert_alignment(buf5, 16, 'torch.ops.npu.npu_fusion_attention_v3.default')
+            buf6 = buf0[5]
+            assert_alignment(buf6, 16, 'torch.ops.npu.npu_fusion_attention_v3.default')
+            del buf0
+            tangents_1 = copy_if_misaligned(tangents_1)
+            # Topologically Sorted Source Nodes: [], Original ATen: [npu.npu_fusion_attention_grad_v3]
+            # [Provenance debug handles] torch.ops.npu.npu_fusion_attention_grad_v3.default:3
+            buf7 = torch.ops.npu.npu_fusion_attention_grad_v3.default(primals_1, primals_2, primals_3, tangents_1, 2, 'BNSD', pse=None, padding_mask=None, atten_mask=None, softmax_max=buf2, softmax_sum=buf3, softmax_in=getitem_9, attention_in=buf1, scale_value=0.3333333333333333, keep_prob=0.6, pre_tockens=2147483647, next_tockens=2147483647, inner_precise=0, seed=buf5, offset=buf6, prefix=None, actual_seq_qlen=None, actual_seq_kvlen=None, sparse_mode=0, gen_mask_parallel=True, sync=False, softmax_layout='', sink=None)
+            del buf1
+            del buf2
+            del buf3
+            del buf5
+            del buf6
+            del getitem_9
+            del primals_1
+            del primals_2
+            del primals_3
+            del tangents_1
+            buf8 = buf7[0]
+            assert_alignment(buf8, 16, 'torch.ops.npu.npu_fusion_attention_grad_v3.default')
+            buf9 = buf7[1]
+            assert_alignment(buf9, 16, 'torch.ops.npu.npu_fusion_attention_grad_v3.default')
+            buf10 = buf7[2]
+            assert_alignment(buf10, 16, 'torch.ops.npu.npu_fusion_attention_grad_v3.default')
+            del buf7
+        return (buf8, buf9, buf10, )
+
+runner = Runner(partitions=[])
+call = runner.call
+recursively_apply_fns = runner.recursively_apply_fns
+
+
+def get_args():
+    from torch._dynamo.testing import rand_strided
+    primals_1 = rand_strided((4, 2, 16, 32), (1024, 512, 32, 1), device='npu:0', dtype=torch.float32)
+    primals_2 = rand_strided((4, 2, 16, 32), (1024, 512, 32, 1), device='npu:0', dtype=torch.float32)
+    primals_3 = rand_strided((4, 2, 16, 32), (1024, 512, 32, 1), device='npu:0', dtype=torch.float32)
+    getitem_9 = rand_strided((0, ), (1, ), device='npu:0', dtype=torch.float32)
+    tangents_1 = rand_strided((4, 2, 16, 32), (1024, 512, 32, 1), device='npu:0', dtype=torch.float32)
+    return [primals_1, primals_2, primals_3, getitem_9, tangents_1]
+
+
+def benchmark_compiled_module(args, times=10, repeat=10):
+    from torch._inductor.utils import print_performance
+    fn = lambda: call(list(args))
+    return print_performance(fn, times=times, repeat=repeat, device='npu')
+
+
+if __name__ == "__main__":
+    from torch._inductor.wrapper_benchmark import compiled_module_main
+    args = get_args()
+    compiled_module_main('None', lambda times, repeat: benchmark_compiled_module(args, times=times, repeat=repeat))

@@ -1,0 +1,25 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_sdpa_rewriter_2_gpu (attention_community_npu.main.<locals>.NpuCase.test_sdpa_rewriter_2_gpu) ... [W915 19:13:03.949384550 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:13:21.644000 1234715 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model___30 debug trace: /home/z50063656/tmp/t102-native-ibuudjyk/adapter/debug/torch_compile_debug/run_2026_09_15_19_13_03_640269-pid_1234715/torchinductor/model___30.0
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:13:22.144000 1234715 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__11_forward_35 debug trace: /home/z50063656/tmp/t102-native-ibuudjyk/adapter/debug/torch_compile_debug/run_2026_09_15_19_13_03_640269-pid_1234715/torchinductor/model__11_forward_35.1
+W0915 19:13:22.299000 1234715 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__11_backward_37 debug trace: /home/z50063656/tmp/t102-native-ibuudjyk/adapter/debug/torch_compile_debug/run_2026_09_15_19_13_03_640269-pid_1234715/torchinductor/model__11_backward_37.2
+/home/z50063656/Pass/src/pytorch/torch/utils/checkpoint.py:242: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  check_backward_validity(args)
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:13:22.579000 1234715 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__13_inference_38 debug trace: /home/z50063656/tmp/t102-native-ibuudjyk/adapter/debug/torch_compile_debug/run_2026_09_15_19_13_03_640269-pid_1234715/torchinductor/model__13_inference_38.3
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 19:13:23.012000 1234715 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__14_forward_43 debug trace: /home/z50063656/tmp/t102-native-ibuudjyk/adapter/debug/torch_compile_debug/run_2026_09_15_19_13_03_640269-pid_1234715/torchinductor/model__14_forward_43.4
+W0915 19:13:23.163000 1234715 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__14_backward_45 debug trace: /home/z50063656/tmp/t102-native-ibuudjyk/adapter/debug/torch_compile_debug/run_2026_09_15_19_13_03_640269-pid_1234715/torchinductor/model__14_backward_45.5
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 19.742s
+
+OK

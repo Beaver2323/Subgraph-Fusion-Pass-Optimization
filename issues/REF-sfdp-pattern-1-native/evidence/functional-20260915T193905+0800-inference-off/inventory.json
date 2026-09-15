@@ -1,0 +1,62 @@
+{
+  "source_run_dir": "/home/z50063656/tmp/t102-training-performance-20260915/functional-20260915T193905+0800/pattern-1/off",
+  "failed_precheck": true,
+  "files": [
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/debug/torch_compile_debug/run_2026_09_15_19_39_16_459728-pid_1697409/torchinductor/model__10_inference_30.0/fx_graph_readable.py",
+      "sha256": "435fe62432c2767b96d9de3c75215dd43db63f4b357b18ad760ae9a40377abfd"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/debug/torch_compile_debug/run_2026_09_15_19_39_16_459728-pid_1697409/torchinductor/model__10_inference_30.0/fx_graph_transformed.py",
+      "sha256": "435fe62432c2767b96d9de3c75215dd43db63f4b357b18ad760ae9a40377abfd"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/debug/torch_compile_debug/run_2026_09_15_19_39_16_459728-pid_1697409/torchinductor/model__10_inference_30.0/ir_post_fusion.txt",
+      "sha256": "3bc2ed953dc06a15251c22cdf45bf70e3014e5816a95e6dea3d52216ea44e93d"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/debug/torch_compile_debug/run_2026_09_15_19_39_16_459728-pid_1697409/torchinductor/model__10_inference_30.0/ir_pre_fusion.txt",
+      "sha256": "3bc2ed953dc06a15251c22cdf45bf70e3014e5816a95e6dea3d52216ea44e93d"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/debug/torch_compile_debug/run_2026_09_15_19_39_16_459728-pid_1697409/torchinductor/model__10_inference_30.0/output_code.py",
+      "sha256": "c251810ffe08c521f5fa8762b2ae8ec98c620992fb9a7f1b96fd465387e1f77a"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/execution.json",
+      "sha256": "619f7a0dfc3bd227afee7ac35103ac8254d570f99b1d831157bb452c578f0976"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/snapshot-native_contract_observer.py",
+      "sha256": "31f01c5f2ab802a26d9aea61468b8107d4f4c6c86028460269bac0cb97038618"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/snapshot-t102_t107_attention_performance_worker.py",
+      "sha256": "bb65e0dfe1e893c2010ba19d7c3a25122f8cdc741746d0e88519ea903172bb63"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/snapshot-target_entry_control.py",
+      "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/stderr.log",
+      "sha256": "78231c90580bc774937ed62f953a1bd9fa758ebfda8b03129d3c7f1ad780272b"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/stdout.log",
+      "sha256": "9cea4b50259633a4b7652c4c3d3a02fd9673ee2a919465db4d378781aed16eff"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/target-observations/1697409-ReplacementPatternEntry-0001/contract_observation.json",
+      "sha256": "d93f93fdafa107c444eb6e58bb418e8726605b53c9c5b99eb061208b6cdb39e5"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/target-observations/1697409-ReplacementPatternEntry-0001/fx_graph_readable.py",
+      "sha256": "5bf338a734a79b9c6c1fa9377d54d766e5cef11b51231061a02e62548d47d42d"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-1-native/evidence/functional-20260915T193905+0800-inference-off/target-observations/1697409-ReplacementPatternEntry-0001/fx_graph_transformed.py",
+      "sha256": "e47e1a4e728b24d4dfdd720d8991daff5d6e9c4bd41192d3b3e3495fd6bc9d2f"
+    }
+  ]
+}

@@ -1,15 +1,15 @@
 # 当前 Acceptance Unit 兼容性矩阵
 
-> 生成时间：2026-09-15T17:20:20+08:00
+> 生成时间：2026-09-15T20:15:40+08:00
 > 数据源：`upstream/*manifest.yaml`、`results/current/` 与逐任务性能计划/汇总。
 > 后端边界：GPU reference 固定为 `inductor-default`；NPU 动态验证、比较、修复验证与性能固定为 `triton_experimental`。
 > 历史 251 行 registration 矩阵不参与本表 verdict；其用途与边界见 `report/archive/legacy-20260820-0828/pass_src_20260820/README.md`。
 
 ## 状态摘要
 
-- 跟踪记录：**71**；去重后独立 acceptance units：**69**；已冻结 reference：**49**；存在覆盖扩展未闭环：**0**。
+- 跟踪记录：**71**；去重后独立 acceptance units：**69**；已冻结 reference：**54**；存在覆盖扩展未闭环：**0**。
 - T-112 是 T-084 的同合同补证，独立分母贡献为 0，保留记录但不重复计数。
-- 已形成 NPU/comparison：**49**；已有正式性能处置：**49**；其余为性能计划态。
+- 已形成 NPU/comparison：**54**；已有正式性能处置：**54**；其余为性能计划态。
 - 性能无法独立归因、经用户接受结项：**1**；计入最终处置，不计实测、收益或默认关闭免测。
 - `comparison`/性能处置数量只说明已登记 variants；存在 pending extension 的单元必须以“覆盖”和“当前阶段”列为准，不能外推为全域闭环。
 - 没有正式comparison的原合同显示`base-contract-not-yet-closed`；不能因为未声明扩展缺口就写fully-covered。
@@ -67,11 +67,11 @@
 | T-096 | AU-misc-patterns-e8m0-rceil-log2 | post_grad | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | NEWLY_SUPPORTED | installed-fix-verified-not-upstream-merged | PARTIAL_ALIGNED / 保留数学oracle和已测NPU特殊值行为；原三例已修复，额外边界明确标为NPU派生扩展 | measured / PERF_REGRESSED | formally-closed |
 | T-098 | AU-efficient-conv-bn-eval-efficient-conv-bn-eval-graph-transform-inlined | pre_grad | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | failed | 首四个Linear组合通过；首个FP32 Conv1d前向378/6016元素超过原容差，单精度模式完整112组合未完成 | not-run | test-precision-mode-adaptation-pending | NOT_ALIGNED_REPAIR_REQUIRED / 用显式HF32=False对应社区TF32-OFF意图，复验完整原方法；保留默认失败，不放宽容差，不称默认产品已修复 | prepared-awaiting-functional-gate / planned | npu-regression-open |
 | T-100 | AU-binary-folding-folded-op | freezing | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | BEHAVIOR_UNCHANGED | not-needed | FULL_ALIGNED / 保留当前产品配置；性能只解释本社区派生子图 | measured / PERF_IMPROVED | formally-closed |
-| T-102 | AU-fuse-attention-sfdp-pattern-1 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | failed | 安装态初始FP32推理输出通过，训练首次target断言失败；隔离候选完整原方法20次输出/梯度比较通过 | not-run | isolated-candidate-verified-not-deployed | NOT_ALIGNED_REPAIR_REQUIRED / 独立候选回归与产品注册入口评审；不改现有精度保护，不把候选当安装态PASS | prepared-awaiting-functional-gate / planned | npu-candidate-verified-awaiting-product-review |
-| T-102 | AU-fuse-attention-sfdp-pattern-2 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | failed | 安装态仍保留训练失败；隔离候选原方法 tests=1/skip=0，FP32/FP16推理训练10次Tensor比较、4次本编号改写通过 | not-run | isolated-candidate-verified-not-deployed | NOT_ALIGNED_REPAIR_REQUIRED / 完成产品入口和负例/邻接边界评审，再按授权部署并无候选复验；不得签发安装态性能门禁。 | prepared-awaiting-functional-gate / planned | npu-candidate-verified-awaiting-product-review |
-| T-102 | AU-fuse-attention-sfdp-pattern-3 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | failed | 原方法 tests=1/skip=0；已通过Tensor比较=0；本编号精确改写=0；原合同未通过；后续分支不计覆盖；没有数值比较证据，不计精度PASS | not-run | baseline-failed-diagnosis-pending | NOT_ALIGNED_REPAIR_REQUIRED / 人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。 | prepared-awaiting-functional-gate / planned | npu-regression-open |
-| T-102 | AU-fuse-attention-sfdp-pattern-4 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | failed | 原方法 tests=1/skip=0；已通过Tensor比较=0；本编号精确改写=0；原合同未通过；后续分支不计覆盖；没有数值比较证据，不计精度PASS | not-run | baseline-failed-diagnosis-pending | NOT_ALIGNED_REPAIR_REQUIRED / 人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。 | prepared-awaiting-functional-gate / planned | npu-regression-open |
-| T-102 | AU-fuse-attention-sfdp-pattern-5 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | failed | 原方法 tests=1/skip=0；已通过Tensor比较=1；本编号精确改写=1；原合同未通过；后续分支不计覆盖 | not-run | baseline-failed-diagnosis-pending | NOT_ALIGNED_REPAIR_REQUIRED / 人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。 | prepared-awaiting-functional-gate / planned | npu-regression-open |
+| T-102 | AU-fuse-attention-sfdp-pattern-1 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | NEWLY_SUPPORTED | installed-original-neighbors-boundary-verified | FULL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益 | measured / PERF_IMPROVED | formally-closed |
+| T-102 | AU-fuse-attention-sfdp-pattern-2 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | NEWLY_SUPPORTED | installed-original-neighbors-boundary-verified | FULL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益 | measured / PERF_IMPROVED | formally-closed |
+| T-102 | AU-fuse-attention-sfdp-pattern-3 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | NEWLY_SUPPORTED | installed-original-neighbors-boundary-verified | PARTIAL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益 | measured / PERF_IMPROVED | formally-closed |
+| T-102 | AU-fuse-attention-sfdp-pattern-4 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | NEWLY_SUPPORTED | installed-original-neighbors-boundary-verified | PARTIAL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益 | measured / PERF_IMPROVED | formally-closed |
+| T-102 | AU-fuse-attention-sfdp-pattern-5 | joint_graph | fully-covered | valid-reference-frozen | triton_experimental | passed | passed | NEWLY_SUPPORTED | installed-original-neighbors-boundary-verified | PARTIAL_ALIGNED / 保留当前产品配置；局部时延不等于模型端到端收益 | measured / PERF_REGRESSED | formally-closed |
 | T-103 | AU-fuse-attention-sfdp-pattern-6 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | failed | 原方法 tests=1/skip=0；已通过Tensor比较=0；本编号精确改写=0；原合同未通过；后续分支不计覆盖；没有数值比较证据，不计精度PASS | not-run | baseline-failed-diagnosis-pending | NOT_ALIGNED_REPAIR_REQUIRED / 人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。 | prepared-awaiting-functional-gate / planned | npu-regression-open |
 | T-103 | AU-fuse-attention-sfdp-pattern-7 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | failed | 原方法 tests=1/skip=0；已通过Tensor比较=1；本编号精确改写=1；原合同未通过；后续分支不计覆盖 | not-run | baseline-failed-diagnosis-pending | NOT_ALIGNED_REPAIR_REQUIRED / 人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。 | prepared-awaiting-functional-gate / planned | npu-regression-open |
 | T-103 | AU-fuse-attention-sfdp-pattern-8 | joint_graph | base-contract-not-yet-closed | gpu-contract-reviewed-awaiting-npu | triton_experimental | failed | 原方法 tests=1/skip=0；已通过Tensor比较=1；本编号精确改写=0；原合同未通过；后续分支不计覆盖 | not-run | baseline-failed-diagnosis-pending | NOT_ALIGNED_REPAIR_REQUIRED / 人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。 | prepared-awaiting-functional-gate / planned | npu-regression-open |

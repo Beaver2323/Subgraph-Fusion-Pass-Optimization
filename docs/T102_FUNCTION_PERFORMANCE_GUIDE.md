@@ -1,11 +1,12 @@
 # T-102 功能与性能测例讲解
 
-> 更新时间：2026-09-14 22:50 CST（UTC+08:00）
-> 状态：5/5 GPU精确编号确认；5例NPU安装态原合同均已实测，训练匹配断言未通过。pattern 1隔离候选通过未部署；无新性能结论。
+> 更新时间：2026-09-15 20:20 CST（UTC+08:00）
+> 状态：5/5 GPU精确编号确认，5/5 NPU原合同、安装态修复及性能处置完成；4改善、1回退。
 
-逐例失败栈与FX/IR/output_code位于 `issues/REF-sfdp-pattern-编号-native/安装态基线复核.md`；
-pattern 1另见自己的[根因与候选验证](../issues/REF-sfdp-pattern-1-native/修复验证报告.md)，
-pattern 3的[NPU dropout训练图差异](../issues/REF-sfdp-pattern-3-native/训练图结构差异分析.md)不能借pattern 1候选直接判修复。
+最新逐pattern代码、数值范围、GPU/NPU对照、OFF/ON生成代码与实测见[T-102交付索引](../results/current/T-102/README.md)。
+逐例旧失败栈与FX/IR/output_code位于 `issues/REF-sfdp-pattern-编号-native/安装态基线复核.md`，不覆盖；
+共同注册修复及五原方法、边界证据见[修复验证](../issues/REF-sfdp-pattern-1-native/修复验证报告.md)。
+3/4原社区没有随机输出/梯度数值比较，5号实际为数学展开，三项部分对齐限制仍保留。
 
 NPU功能、修复验证和性能统一使用 `triton_experimental`；后端在导入`torch`/`torch_npu`前选择，OFF/ON每臂使用新进程。
 
@@ -38,7 +39,7 @@ def _sfdp_replacement_1(...):
     return _scaled_dot_product_attention(...)  # 或pattern 16的CUDA保真数学路径
 ```
 
-意图：无mask、无dropout，scale=1/inv_scale。GPU原方法与精确编号已经验证。NPU安装态推理可执行，但训练图与预生成注册结构不匹配；隔离候选按实际NPU decomposition生成训练注册，原方法20次Tensor比较、8次精确改写通过。仍未部署、未签性能。具体代码和调用链见[根因](../issues/REF-sfdp-pattern-1-native/根因分析.md)与[候选验证](../issues/REF-sfdp-pattern-1-native/修复验证报告.md)。
+意图：无mask、无dropout，scale=1/inv_scale。GPU原方法与精确编号已经验证。旧NPU训练图与预生成注册不匹配；现按活动NPU decomposition重建训练匹配图，安装态原方法20次Tensor比较、8次精确改写通过，独立性能PERF_IMPROVED。具体代码和调用链见[根因](../issues/REF-sfdp-pattern-1-native/根因分析.md)与[修复验证](../issues/REF-sfdp-pattern-1-native/修复验证报告.md)。
 
 ### AU-fuse-attention-sfdp-pattern-2
 
@@ -102,7 +103,9 @@ def _sfdp_replacement_5(...):
 
 ## 性能测例
 
-社区 `benchmarks/transformer/sdpa.py` 已直接调用 fused SDPA，只能比较kernel，不能隔离本FX rewrite。worker选择同编号注册输入：普通编号用half inference；3/4/6/7/9/12/28用half training和社区极低非零dropout=1e-11设计，保留requires_grad，仅测前向，避免置零后冒用邻接编号。它属于tracker派生微图，不是社区原生benchmark、完整训练或模型端到端；新图必须另过精确目标与数值门禁，目前只是准备。详见[阶段选择与社区依据](../report/attention_performance_contract_review_20260914.md)。
+社区 `benchmarks/transformer/sdpa.py` 已直接调用 fused SDPA，只能比较kernel，不能隔离本FX rewrite。T-102五项均使用half training注册输入、保留requires_grad但仅计前向；1/2/5测本次修复的训练路径，3/4采用社区极低非零dropout=1e-11设计，避免置零后冒用邻接编号。它属于tracker派生微图，不是社区原生benchmark、完整训练或模型端到端；本批五项已各过精确目标、数值门禁及六臂计时，4改善、5号回退。compile_ms在joint lazy_init之后开始，不含完整冷启动。详见[阶段选择与社区依据](../report/attention_performance_contract_review_20260914.md)。
+
+真实预检问题及最小适配见[1号推理OFF被邻接接替](../issues/REF-sfdp-pattern-1-native/性能合同修订说明.md)与[2号scale占位转Python标量](../issues/REF-sfdp-pattern-2-native/性能输入适配报告.md)；不删除相邻注册，不放宽产品guard。
 
 2026-09-14 20:48 CST补强：注册用torch.empty不得直接参与数值/计时；固定seed、正态std=0.25初始化张量，保留shape/stride/dtype及0D标量常量。
 两臂都启用joint passes，OFF只删除精确编号entry；不得关闭整轮joint。如果相邻attention接替OFF，则拒绝收益归因。

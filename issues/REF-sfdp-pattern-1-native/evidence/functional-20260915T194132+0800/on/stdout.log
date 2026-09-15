@@ -1,0 +1,1 @@
+worker_status=passed pattern=1 mode=on phase=functional exact_pattern_counter=1
