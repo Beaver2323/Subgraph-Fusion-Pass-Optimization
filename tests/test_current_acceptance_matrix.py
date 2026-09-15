@@ -337,6 +337,43 @@ class CurrentAcceptanceMatrixTests(unittest.TestCase):
     def test_committed_outputs_are_current(self):
         matrix.check_outputs()
 
+    def test_readable_matrix_translates_all_current_status_codes(self):
+        rows = matrix.build_rows("2026-09-15T21:49:00+08:00")
+        fields = ("stage", "coverage_status", "reference_status", "npu_execution_status",
+                  "comparison_verdict", "repair_status", "community_alignment_status",
+                  "performance_status", "performance_verdict", "current_phase")
+        before = matrix.render_csv(rows)
+        rendered = matrix.render_markdown(rows, "2026-09-15T21:49:00+08:00")
+        for row in rows:
+            for field in fields:
+                with self.subTest(unit=row['acceptance_unit_id'], field=field):
+                    self.assertIn(row[field], matrix.DISPLAY_LABELS)
+                    self.assertTrue(any('\u4e00' <= c <= '\u9fff'
+                                        for c in matrix.display_label(row[field])))
+        self.assertEqual(matrix.render_csv(rows), before)
+        self.assertIn("编译阶段（不是进度）", rendered)
+        self.assertIn("GPU对照证据", rendered)
+        self.assertNotIn("| fully-covered |", rendered)
+        self.assertNotIn("| valid-reference-frozen |", rendered)
+
+    def test_freezing_is_compilation_stage_not_unfinished_state(self):
+        rows = matrix.build_rows("2026-09-15T21:49:00+08:00")
+        row = next(r for r in rows if r['acceptance_unit_id'] == 'AU-binary-folding-folded-op')
+        self.assertEqual(row['stage'], 'freezing')
+        self.assertEqual(row['current_phase'], 'formally-closed')
+        rendered = matrix.render_markdown(rows, "2026-09-15T21:49:00+08:00")
+        line = next(line for line in rendered.splitlines() if line.startswith('| T-100 |'))
+        self.assertIn('推理参数冻结阶段', line)
+        self.assertIn('已完成验收', line)
+        self.assertIn('性能改善', line)
+
+    def test_reference_aliases_share_label_without_merging_suite_scope(self):
+        self.assertEqual(matrix.display_label('frozen-reference-valid'),
+                         matrix.display_label('valid-reference-frozen'))
+        self.assertNotEqual(matrix.display_label('valid-reference-suite'),
+                            matrix.display_label('valid-reference-frozen'))
+        self.assertIn('NPU验收未完成', matrix.display_label('gpu-contract-reviewed-awaiting-npu'))
+
 
 if __name__ == "__main__":
     unittest.main()
