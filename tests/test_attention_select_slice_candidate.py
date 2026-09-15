@@ -41,6 +41,26 @@ def emit_candidate(line, extent=4, direct=False, indirect=False):
 
 
 class SelectSliceCandidateTests(unittest.TestCase):
+    def test_record_requires_proven_static_zero_offset_storage(self):
+        import sympy
+        sources = [(FIXTURE/f'before-{name}.py').read_text() for name in
+                   ('_maybe_record_select_lane_load', '_maybe_rewrite_select_lane_load')]
+        record, _ = candidate.candidate_sources(*sources)
+        x = sympy.Symbol('x1', integer=True)
+        for extent, offset, expected in ((14, 0, 14), (14, 1, None),
+                                         (sympy.Symbol('n'), 0, None), (0, 0, None)):
+            with self.subTest(extent=extent, offset=offset):
+                layout = SimpleNamespace(storage_size=lambda:extent, offset=offset)
+                graph = SimpleNamespace(get_buffer=lambda name:SimpleNamespace(get_layout=lambda:layout))
+                ns = dict(sympy=sympy, ncfg=SimpleNamespace(select_extract_slice=True),
+                          triton_codegen_linearize=True, V=SimpleNamespace(graph=graph))
+                exec(compile(record, '<isolated-record-guard>', 'exec'), ns)
+                kernel = SimpleNamespace(inside_reduction=False, _npu_select_lane_loads={},
+                    range_tree_nodes={x:SimpleNamespace(root=SimpleNamespace(is_reduction=False))},
+                    args=SimpleNamespace(input=lambda name:'in_ptr0'))
+                ns['_maybe_record_select_lane_load'](kernel, 'buf0', SimpleNamespace(name='tmp0'), 2*x)
+                self.assertEqual(kernel._npu_select_lane_loads['tmp0']['storage_size'], expected)
+
     def test_unknown_source_fails_closed(self):
         with self.assertRaises(ValueError):
             candidate.candidate_sources('def wrong(): pass', 'def wrong(): pass')

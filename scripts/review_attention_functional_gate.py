@@ -95,6 +95,39 @@ def review_arm(path, pattern, mode):
     return record, {k:v for k,v in code.items() if k != 'files'}
 
 
+def community_for_gate(stage, pattern, explicit=None):
+    """历史失败不覆盖；部署后的同卡完整原件必须显式指定并关联已验签部署。"""
+    if explicit is None:
+        path = ROOT/stage['baseline']['path']
+        require(sha(path) == stage['baseline']['sha256'], '社区原件哈希不符')
+        return path
+    from validate_attention_slice_deployment import verify as verify_deployment
+    require(pattern == 22 and stage.get('deployment'), '仅已登记部署支持显式安装态复验')
+    require(verify_deployment(ROOT, stage['deployment'])['installed_passed'], '安装态部署回归未完成')
+    path = explicit.resolve(strict=True)
+    issue = ROOT/'issues'/f'REF-sfdp-pattern-{pattern}-native'
+    require(path.is_relative_to(issue/'evidence') and path.name == 'result.json', '原例必须为对应issue已归档证据')
+    raw = read(path)
+    require(raw.get('status') == 'community-contract-passed'
+            and raw.get('isolated_codegen_candidate') is False
+            and raw.get('isolated_registration_candidate') is False
+            and raw.get('numerical_assertions_modified') is False
+            and len(raw.get('tensor_assertions', [])) == 12
+            and all(t.get('passed') is True for t in raw['tensor_assertions'])
+            and raw.get('exact_target_observations') == 4, '缺完整无候选原方法覆盖')
+    deployment = read(ROOT/stage['deployment']['path'])
+    require(raw.get('loaded_source_sha256', {}).get(deployment['target']) == deployment['after_sha256'],
+            '原例未加载已验证的部署文件')
+    parents = [p for p in (issue/'adapter_runs').glob('*/run_result.json')
+               if Path(read(p)['raw_artifact_dir']).name == path.parent.parent.name]
+    require(len(parents) == 1, '原例父运行不唯一或缺失')
+    parent = read(parents[0])
+    require(parent['return_code'] == 0 and parent['installed_product_before'] == parent['installed_product_after']
+            and parent['attention_select_slice_candidate'] is False
+            and parent['attention_registration_candidate'] is False, '父运行失败、候选污染或安装态变动')
+    return path
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--pattern', required=True, type=int)
@@ -103,6 +136,7 @@ def main():
     parser.add_argument('--gate-root', required=True, type=Path)
     parser.add_argument('--review-note', required=True, help='本编号实际FX/IR/codegen的人工复核结论')
     parser.add_argument('--write', action='store_true')
+    parser.add_argument('--community-run', type=Path, help='已验证部署之后的同卡完整原例归档；不覆盖旧baseline')
     args = parser.parse_args()
     require(Path.cwd().resolve() == WORK, '从 /home/z50063656/tmp 执行')
     require(args.pattern in set(range(1,25)) | {28,30}
@@ -112,8 +146,7 @@ def main():
     au = f'AU-fuse-attention-sfdp-pattern-{args.pattern}'
     current = ROOT/'results/current'/task
     stage = read(current/'npu_stage_reviews.json')['units'][au]
-    community = ROOT/stage['baseline']['path']
-    require(sha(community) == stage['baseline']['sha256'], '社区原件哈希不符')
+    community = community_for_gate(stage, args.pattern, args.community_run)
     require(read(community).get('isolated_codegen_candidate', False) is False,
             '隔离codegen候选不能签安装态性能gate')
     source = args.functional_run.resolve(strict=True)/f'pattern-{args.pattern}'
@@ -122,6 +155,7 @@ def main():
     for mode in ('off','on'):
         records[mode], reviews[mode] = review_arm(source/mode, args.pattern, mode)
     require(records['off']['physical_device'] == records['on']['physical_device'], 'OFF/ON跨物理设备')
+    require(str(read(community)['physical_npu']) == records['on']['physical_device'], '原社区与功能/性能必须同卡')
     fields = ('task_id','acceptance_unit_id','backend','pytorch_commit','correctness',
               'numerical_execution','target_rewrite','graph_breaks','fallbacks','product_disabled',
               'measurement_workload','worker_sha256','target_control_sha256','observer_sha256','input_spec',
@@ -137,6 +171,8 @@ def main():
                 community_functional=item(community),
                 off_functional=item(source/'off/result.json'),
                 target_functional=item(source/'on/result.json'))
+    if args.community_run:
+        gate['installed_deployment'] = item(ROOT/stage['deployment']['path'])
     # 完整验证在写入归档前完成；标准库导入worker不会初始化torch或设备。
     with tempfile.TemporaryDirectory(prefix='attention-gate-check-', dir=WORK) as temp:
         probe = Path(temp)/'gate.json'

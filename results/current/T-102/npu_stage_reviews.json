@@ -34,14 +34,20 @@
         "path": "issues/REF-sfdp-pattern-2-native/evidence/t102-native-iqguocqa/adapter/result.json",
         "sha256": "e140048204ebdbac867b0491f590e03c07b0bb6d485ec30f195275e8a13c2eb7"
       },
-      "candidate_verified": false,
-      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=1；本编号精确改写=1；原合同未通过；后续分支不计覆盖",
-      "repair_status": "baseline-failed-diagnosis-pending",
+      "candidate": {
+        "path": "issues/REF-sfdp-pattern-2-native/evidence/t102-native-xlrlulf8/adapter/result.json",
+        "sha256": "6aac963a76be2297906787eeb534f5fbec35416539c3e6a825bc0830b075928c"
+      },
+      "candidate_reviewed_at": "2026-09-15T10:34:00+08:00",
+      "candidate_kind": "registration",
+      "candidate_verified": true,
+      "correctness_scope": "安装态仍保留训练失败；隔离候选原方法 tests=1/skip=0，FP32/FP16推理训练10次Tensor比较、4次本编号改写通过",
+      "repair_status": "isolated-candidate-verified-not-deployed",
       "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
       "reason": "数值、精确目标及训练/推理范围以本例原断言和实际观测为准；不由总counter推导完整对齐。",
-      "next_action": "人工检查各分支FX/IR/codegen及原断言范围；失败先定位首处分歧，不自动套用pattern 1候选；通过后另建合法性能门禁。",
+      "next_action": "完成产品入口和负例/邻接边界评审，再按授权部署并无候选复验；不得签发安装态性能门禁。",
       "performance_gate_issued": false,
-      "report": "issues/REF-sfdp-pattern-2-native/安装态基线复核.md",
+      "report": "issues/REF-sfdp-pattern-2-native/注册候选验证报告.md",
       "gpu_review": {
         "path": "results/current/T-102/gpu_reference_review.json",
         "sha256": "54eeb28d2a80f0a783b9e57df9dffb8b63f0ef4fc154dd9ccde68fe99f569dba"

@@ -1,0 +1,120 @@
+{
+  "pattern": 22,
+  "task_id": "T-106",
+  "executed_gate": {
+    "path": "results/current/T-106/performance_gates/pattern-22-executed.json",
+    "sha256": "c761149d0c23d2fbfed0a743ef360ea5370509f57fa23220eacd11664ba215a2"
+  },
+  "reviewer": "Codex：逐图及原样本复核",
+  "review_note": "六臂原件及独立功能已逐图审核：三OFF精确及总attention均0，三ON均1且目标22；同模式三轮call函数一致，ON目标边界FX前后分别同哈希。OFF两次FP16 NPU BMM、四个softmax相关Triton核；ON两次FP32 NPU BMM、安全softmax六核及图内NPU any，另有类型转换，无CPU调用、无融合FA。全部返回Tensor数值通过，九个进程互异且同物理NPU5；源码匹配已验证部署。六臂预热10、双时钟各100样本独占串行，不计编译时间为时延；按既定规则汇总，不改变默认配置，不外推模型收益。",
+  "generated_at": "2026-09-15T11:54:50.905386+08:00",
+  "raw_results": {
+    "off": {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/functional-20260915T112026+0800/off/result.json",
+      "sha256": "6b9320839296e3c574390cf1b4672a4ed58c286a0e2b35fc44975d5b56e1874e"
+    },
+    "on": {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/functional-20260915T112026+0800/on/result.json",
+      "sha256": "2ca0df0717b9313d45754ebd68336a1457d1eb86d346e673713f75a208626eee"
+    },
+    "off1": {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/off1/result.json",
+      "sha256": "a5bd1c0485ac8612b336dba04dae3ff8474cf1f5a2183bb21919069ad0c4beef"
+    },
+    "on1": {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/on1/result.json",
+      "sha256": "e17a1341aea98cebb9c386da9e045375aaf284fe2929173316103935b0e5d5ac"
+    },
+    "on2": {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/on2/result.json",
+      "sha256": "ca892d2c4df8887d6690fedfebe6b0b3653c0f95c3f50d82d904906461a38221"
+    },
+    "off2": {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/off2/result.json",
+      "sha256": "0612a7b4913623e9d4c55a3354e9dec35f871b5066dce29ce03bd4c1635fc2cc"
+    },
+    "off3": {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/off3/result.json",
+      "sha256": "0d698e1c9c9915777c62b357464ba66a17c2ac0aa964d5d17297b0a985963271"
+    },
+    "on3": {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/on3/result.json",
+      "sha256": "7230efe45f08133fc0e9fc8bdec4d0db1a839d139dd7ef008c807d99205f7052"
+    }
+  },
+  "gpu_reference": {
+    "path": "results/current/T-106/gpu_reference_review.json",
+    "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
+  },
+  "community_functional": {
+    "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-c4y7hlyd/adapter/result.json",
+    "sha256": "acd0e666f5fe724ff515c8c1b7d5d6216b34dba90b4db80c8344f9db08db5977"
+  },
+  "worker_snapshot": {
+    "path": "issues/REF-sfdp-pattern-22-native/evidence/functional-20260915T112026+0800/t102_t107_attention_performance_worker.py",
+    "sha256": "bb65e0dfe1e893c2010ba19d7c3a25122f8cdc741746d0e88519ea903172bb63"
+  },
+  "target_control_snapshot": {
+    "path": "issues/REF-sfdp-pattern-22-native/evidence/functional-20260915T112026+0800/target_entry_control.py",
+    "sha256": "3ecca08047e1f7efd592a64a39ace3083aab7b540fb5c5222b6736398555fa05"
+  },
+  "observer_snapshot": {
+    "path": "issues/REF-sfdp-pattern-22-native/evidence/functional-20260915T112026+0800/native_contract_observer.py",
+    "sha256": "31f01c5f2ab802a26d9aea61468b8107d4f4c6c86028460269bac0cb97038618"
+  },
+  "installed_deployment": {
+    "path": "issues/REF-sfdp-pattern-22-native/deployment-20260915-select-load/deployment.json",
+    "sha256": "f09573d5a37928500448635710bdea97816f2bebae0cb367246ef8f27f49dcf7"
+  },
+  "inventories": [
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/functional-20260915T112026+0800/inventory.json",
+      "sha256": "d3bfe126c674278c97705200c7f2bb672e73d2e6b6a655c14c9e9f788990b030"
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/inventory.json",
+      "sha256": "1275b868a17086b6850c92ff321273c36be9fddab9f7fd7792d36a64f2497750"
+    }
+  ],
+  "aggregate": {
+    "timing": {
+      "host_ms": {
+        "off": {
+          "p50": 0.7424599025398493,
+          "p99": 0.7923924038186698
+        },
+        "on": {
+          "p50": 0.9127601515501738,
+          "p99": 0.9972898568958071
+        }
+      },
+      "event_ms": {
+        "off": {
+          "p50": 0.6170700192451477,
+          "p99": 0.6565398091077804
+        },
+        "on": {
+          "p50": 0.79721999168396,
+          "p99": 0.840294007062912
+        }
+      }
+    },
+    "improvement_percent": {
+      "host_ms": {
+        "p50": -22.937299162924706,
+        "p99": -25.8580789126325
+      },
+      "event_ms": {
+        "p50": -29.194413408576715,
+        "p99": -27.988279675660266
+      }
+    },
+    "round_p50_spread_ratio": {
+      "host_ms_off": 1.0538381672652166,
+      "host_ms_on": 1.1089957798917862,
+      "event_ms_off": 1.0589515084031569,
+      "event_ms_on": 1.0965470635453927
+    },
+    "verdict": "PERF_REGRESSED"
+  }
+}

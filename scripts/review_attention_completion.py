@@ -44,6 +44,11 @@ def verify_bundle(bundle):
     require(gate['task_id'] == worker.task_for_pattern(pattern)
             and au == f'AU-fuse-attention-sfdp-pattern-{pattern}'
             and gate['backend'] == 'triton_experimental', 'gate归属错误')
+    if pattern == 22:
+        from validate_attention_slice_deployment import verify as verify_deployment
+        require('installed_deployment' in bundle, '22号缺已验证部署引用')
+        require(verify_deployment(ROOT, bundle['installed_deployment'])['installed_passed'], '22号部署未通过')
+        require(gate['installed_deployment']['sha256'] == bundle['installed_deployment']['sha256'], '部署绑定变更')
     require(community['status']=='community-contract-passed' and community['native_assertions_passed'] is True
             and community['tests_ran']==1 and community['tests_skipped']==0
             and community['isolated_registration_candidate'] is False
@@ -186,6 +191,10 @@ def main():
         path=Path(gate[name]['path'])
         require(sha(path)==gate[name]['sha256'], '原gate绑定变更')
         bundle[name]=item(path)
+    if pattern == 22:
+        path = Path(gate['installed_deployment']['path'])
+        require(sha(path) == gate['installed_deployment']['sha256'], '部署原件变化')
+        bundle['installed_deployment'] = item(path)
     for name,key in (('off','off_functional'),('on','target_functional')):
         bundle['raw_results'][name]=item(Path(gate[key]['path']))
     bundle['raw_results'].update({name:item(destination/name/'result.json') for name in ORDER})
@@ -199,11 +208,14 @@ def main():
     function.update(unit=unit,source_evidence={m:bundle['raw_results'][m] for m in ('off','on')},
                     community_evidence=bundle['community_functional'],codegen_review={m:reviews[m] for m in ('off','on')},
                     reviewer=bundle['reviewer'],comparison_verdict='BEHAVIOR_UNCHANGED',repair_status='not-needed-product-unchanged',
-                    community_alignment=dict(status='PARTIAL_ALIGNED' if pattern in (19,20,21,24) else 'FULL_ALIGNED',
+                    community_alignment=dict(status='PARTIAL_ALIGNED' if pattern in (19,20,21,22,24) else 'FULL_ALIGNED',
                         aligned_scope=[f'原社区方法完整执行；记录{len(community["tensor_assertions"])}个Tensor比较；独立微图数值和精确OFF/ON通过'],
-                        divergent_scope=['NPU数学展开与CUDA融合kernel路径不同'] if pattern in (21,24) else [],
+                        divergent_scope=['NPU数学展开与CUDA融合kernel路径不同'] if pattern in (21,22,24) else [],
                         open_scope=['原社区无数值oracle，派生微图不能回填'] if pattern in (19,20) else ['未覆盖的dtype/形状/梯度不外推'],
                         disposition='保留当前产品配置；局部时延不等于模型端到端收益'))
+    if pattern == 22:
+        function.update(repair_status='installed-original-neighbors-boundary-verified',
+                        installed_deployment=bundle['installed_deployment'])
     if pattern == 19:
         function['community_alignment']['divergent_scope'].append(
             '本次FP32微图ON仍为两次NPU bmm与safe_softmax数学展开，不能记为融合FA内核收益')

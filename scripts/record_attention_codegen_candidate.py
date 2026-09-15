@@ -60,9 +60,11 @@ def main():
             require(checked==item, '归档原件或父运行哈希不符')
         require(len({m['candidate_sha256'] for m in metas})==1
                 and len({m['installed_source_sha256'] for m in metas})==1, '邻接候选来源变化')
-        require(verify(ROOT,'T-106',au,previous)==dict(baseline_passed=False,candidate_passed=True),
+        state = verify(ROOT,'T-106',au,previous)
+        require(state['baseline_passed'] is False and state['candidate_passed'] is True,
                 '安装态/候选边界不符')
-        print('codegen_candidate_archive=OK original=1 neighbors=3 installed_repair=false device_execution=false')
+        print('codegen_candidate_archive=OK original=1 neighbors=3 '
+              f'installed_repair={str(state.get("installed_passed", False)).lower()} device_execution=false')
         return
     require(all(getattr(a,f'pattern_{n}_run') is not None for n in (21,22,23,24)), '需要原例和三个邻接的明确运行记录')
     runs={};metas=[]

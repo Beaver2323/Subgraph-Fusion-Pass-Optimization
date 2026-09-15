@@ -1,0 +1,91 @@
+/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/dynamo/__init__.py:153: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+[W915 10:24:42.848492500 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:56.955000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__0_inference_0.0
+W0915 10:24:56.955000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpwt3lypdw
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:57.187000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_inference_1 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__1_inference_1.1
+W0915 10:24:57.188000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpi3y8mtkb
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:57.405000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__2_inference_2 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__2_inference_2.2
+W0915 10:24:57.405000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmp0zn28e1u
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:57.617000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__3_inference_3 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__3_inference_3.3
+W0915 10:24:57.617000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmp1oppl7ct
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:57.824000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__4_inference_4 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__4_inference_4.4
+W0915 10:24:57.824000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpn32_3mbp
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:58.035000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__5_inference_5 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__5_inference_5.5
+W0915 10:24:58.035000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmp7kgrvjl8
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:58.263000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__6_inference_6 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__6_inference_6.6
+W0915 10:24:58.263000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmp8wtq9_jj
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:58.472000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__7_inference_7 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__7_inference_7.7
+W0915 10:24:58.472000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpt07cygz9
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:58.674000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__8_inference_8 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__8_inference_8.8
+W0915 10:24:58.674000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpo9b1jycz
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:58.877000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__9_inference_9 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__9_inference_9.9
+W0915 10:24:58.877000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpwgu7tfdm
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:59.078000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__10_inference_10 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__10_inference_10.10
+W0915 10:24:59.079000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpzfyobi3r
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:59.281000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__11_inference_11 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__11_inference_11.11
+W0915 10:24:59.282000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpznzjnin2
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:59.507000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__12_inference_12 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__12_inference_12.12
+W0915 10:24:59.507000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmp4170f7on
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:59.712000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__13_inference_13 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__13_inference_13.13
+W0915 10:24:59.713000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmparng0otj
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:24:59.917000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__14_inference_14 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__14_inference_14.14
+W0915 10:24:59.917000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmp3i5gbpbo
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:25:00.122000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__15_inference_15 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__15_inference_15.15
+W0915 10:25:00.123000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpagu1g_3b
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:25:00.589000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__16_inference_16 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__16_inference_16.16
+W0915 10:25:00.589000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpmyt_jyh6
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:25:00.794000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__17_inference_17 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__17_inference_17.17
+W0915 10:25:00.794000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpgxt4dsq2
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:25:01.002000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__18_inference_18 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__18_inference_18.18
+W0915 10:25:01.002000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpop7qxraa
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:25:01.212000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__19_inference_19 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__19_inference_19.19
+W0915 10:25:01.212000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmp4u09m8ag
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:25:01.449000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__20_inference_20 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__20_inference_20.20
+W0915 10:25:01.449000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmpkyxov929
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0915 10:25:02.230000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__21_inference_21 debug trace: /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/debug/torch_compile_debug/run_2026_09_15_10_24_42_499897-pid_1086438/torchinductor/model__21_inference_21.21
+W0915 10:25:02.230000 1086438 /home/z50063656/Pass/src/pytorch/torch/_inductor/utils.py:1533] [0/0] on error, temporary cache dir kept at /home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline/inductor-cache/tmp_522zb9v

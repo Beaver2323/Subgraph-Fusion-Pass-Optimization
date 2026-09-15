@@ -1,6 +1,6 @@
 # 后续批次与覆盖边界
 
-> 更新时间：2026-09-15T01:37:00+08:00
+> 更新时间：2026-09-15T11:59:00+08:00
 
 机器清单见 `upstream/task_backlog.json`；本表由 `scripts/build_task_backlog.py` 生成。
 

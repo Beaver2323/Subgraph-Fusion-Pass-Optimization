@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-09-15T10:46:06.844188+08:00",
+  "status": "finished-awaiting-evidence-review",
+  "physical_npu": 6,
+  "device_execution": true,
+  "arms": [
+    {
+      "arm": "installed",
+      "command": [
+        "/home/z50063656/envs/Pass/bin/python",
+        "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/attention_select_slice_boundary.py",
+        "--arm",
+        "installed",
+        "--output",
+        "/home/z50063656/tmp/attention-slice-boundary-5k498lwi/installed"
+      ],
+      "return_code": 0
+    }
+  ]
+}

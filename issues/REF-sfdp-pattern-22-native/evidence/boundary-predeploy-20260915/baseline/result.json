@@ -1,0 +1,779 @@
+{
+  "generated_at": "2026-09-15T10:33:59.219876+08:00",
+  "status": "passed",
+  "arm": "baseline",
+  "device_execution": true,
+  "backend": "triton_experimental",
+  "pid": 1142137,
+  "physical_npu": "6",
+  "python": "/home/z50063656/envs/Pass/bin/python",
+  "pytorch_commit": "8e86e0a23e3679c2bf3406cf0837fcb6297a5d9b",
+  "torch_npu_version": "2.14.0a0+git83cc452",
+  "candidate": null,
+  "installed_before": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381",
+  "installed_after": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381",
+  "source_sha256": "2cd0545509ad4b4a0f129b2f462191e5dc206fc465070801153aada30feeb7d7",
+  "target_exercised": true,
+  "cases": [
+    {
+      "index": 0,
+      "dtype": "float32",
+      "width": 2,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "dtype": "float32",
+      "width": 2,
+      "lane": 1,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "dtype": "float32",
+      "width": 8,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "dtype": "float32",
+      "width": 8,
+      "lane": 7,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "dtype": "float16",
+      "width": 2,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "dtype": "float16",
+      "width": 2,
+      "lane": 1,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "dtype": "float16",
+      "width": 4,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "dtype": "float16",
+      "width": 4,
+      "lane": 3,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "dtype": "float16",
+      "width": 8,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "dtype": "float16",
+      "width": 8,
+      "lane": 7,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "dtype": "bfloat16",
+      "width": 2,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "dtype": "bfloat16",
+      "width": 2,
+      "lane": 1,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "dtype": "bfloat16",
+      "width": 4,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 15,
+      "dtype": "bfloat16",
+      "width": 4,
+      "lane": 3,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 16,
+      "dtype": "bfloat16",
+      "width": 8,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "dtype": "bfloat16",
+      "width": 8,
+      "lane": 7,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "offset",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 1,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 19,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "strided",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            2
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "full",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "shared",
+      "dynamic": true,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        },
+        {
+          "rows": 11,
+          "storage_offset": 0,
+          "stride": [
+            44,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            11,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    }
+  ],
+  "emitted": [
+    {
+      "case": 0,
+      "file": "emitted-000.txt",
+      "sha256": "c8b32564d2f718f4e35929775cf896db0f95e05d6292b75e5ed325e6bd91a30e",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 1,
+      "file": "emitted-001.txt",
+      "sha256": "553642757eee146d3d64115a39b9c889301f0c22679803889ba1fc4962e09a56",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 2,
+      "file": "emitted-002.txt",
+      "sha256": "f09bd0245948b7c349fc8f4892ae302f1ee4a4c9d1139f84f5411e47f7d2c5f5",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 3,
+      "file": "emitted-003.txt",
+      "sha256": "e583faafd48b5c26598d3a8da2536b5f63dec784056aa6c7f77210bd980c0d26",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 4,
+      "file": "emitted-004.txt",
+      "sha256": "46763ea24cf0dd2aecc0ba3a7f58ebfc68649b5e51c49b246526f1dfa48bd231",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 5,
+      "file": "emitted-005.txt",
+      "sha256": "134dae39e401e1eee7b7c16f0991e0d00c32e63aaf69252a38255e22b7cbfc3d",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 6,
+      "file": "emitted-006.txt",
+      "sha256": "910a7b5e0d6dd5621495dd07eb8aa3c40ea0d46d7db0f6ab9187aed19b169c34",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 7,
+      "file": "emitted-007.txt",
+      "sha256": "d9b3e845b66b29a5ac92759ac6b1cc0b9dc88449cbbd18f2fe443a2468105abf",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 8,
+      "file": "emitted-008.txt",
+      "sha256": "ff247edffc5ca6c83d18638d0a1ca8eeb75452fcc7d9d12f4e8b602357915f60",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 9,
+      "file": "emitted-009.txt",
+      "sha256": "d9f82b570937004d4c707d15ac3065fd953cbd3196faae99efd5a2f9f8120d4b",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 10,
+      "file": "emitted-010.txt",
+      "sha256": "2350510cf087ebcc43c7c4448e2a443485b5f1e3b2ad9a9662488bc1deaea2ff",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 11,
+      "file": "emitted-011.txt",
+      "sha256": "52bed52385f773e2ace6206f4aa3de5a032a8f6b8b7220cb38e775deac2809f6",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 12,
+      "file": "emitted-012.txt",
+      "sha256": "910a7b5e0d6dd5621495dd07eb8aa3c40ea0d46d7db0f6ab9187aed19b169c34",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 13,
+      "file": "emitted-013.txt",
+      "sha256": "d9b3e845b66b29a5ac92759ac6b1cc0b9dc88449cbbd18f2fe443a2468105abf",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 14,
+      "file": "emitted-014.txt",
+      "sha256": "ff247edffc5ca6c83d18638d0a1ca8eeb75452fcc7d9d12f4e8b602357915f60",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 15,
+      "file": "emitted-015.txt",
+      "sha256": "d9f82b570937004d4c707d15ac3065fd953cbd3196faae99efd5a2f9f8120d4b",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 16,
+      "file": "emitted-016.txt",
+      "sha256": "2350510cf087ebcc43c7c4448e2a443485b5f1e3b2ad9a9662488bc1deaea2ff",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 17,
+      "file": "emitted-017.txt",
+      "sha256": "52bed52385f773e2ace6206f4aa3de5a032a8f6b8b7220cb38e775deac2809f6",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 18,
+      "file": "emitted-018.txt",
+      "sha256": "e583faafd48b5c26598d3a8da2536b5f63dec784056aa6c7f77210bd980c0d26",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 19,
+      "file": "emitted-019.txt",
+      "sha256": "e35ee8be2f35bf5e1449d4caca057255682a5f5f62b8126947a983e84543bb38",
+      "per_load_shape": false,
+      "bounded_load": false
+    },
+    {
+      "case": 20,
+      "file": "emitted-020.txt",
+      "sha256": "ed9aede786fb6ae47efc10b18a113503464036daedabbeb0d00dcd2c66a1728e",
+      "per_load_shape": false,
+      "bounded_load": false
+    }
+  ],
+  "limitation": "设备数值/编译边界回归，不是内存sanitizer；不证明所有动态布局或安装态已修复"
+}

@@ -1,0 +1,34 @@
+op0: SchedulerNode(ComputedBuffer)
+op0.writes = [MemoryDep('buf0', c0, {c0: s21*s3*s32})]
+op0.unmet_dependencies = []
+op0.met_dependencies = 
+    [   MemoryDep('arg2_1', c1*s67 + s26, {c0: s3, c1: s21}),
+        MemoryDep('arg6_1', c0, {c0: s21*s3*s32})]
+op0.min_input_distance = 0
+op0.max_input_distance = 0
+op0.outputs = [
+    buf0: ComputedBuffer
+    buf0.layout = FixedLayout('npu:0', torch.float32, size=[s3, s21, s32], stride=[s21*s32, s32, 1])
+    buf0.users = [NodeUser(node=OUTPUT, can_inplace=False, is_weak=False)]
+]
+op0.group.device = npu:0
+op0.group.iteration = (s21*s3*s32, 1)
+op0.sizes = ((s3, s21, s32), ())
+arg2_1_layout = FixedLayout('npu:0', torch.float32, size=[1, s21, s67], stride=[s21*s67, s67, 1])
+arg6_1_layout = FixedLayout('npu:0', torch.float32, size=[s3, s21, s32], stride=[s21*s32, s32, 1])
+buf0_layout = FixedLayout('npu:0', torch.float32, size=[s3, s21, s32], stride=[s21*s32, s32, 1])
+class op0_loop_body:
+    var_ranges = {p0: s3, p1: s21, p2: s32}
+    index0 = p1*s67 + s26
+    index1 = p0*s21*s32 + p1*s32 + p2
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('arg2_1', get_index)
+        get_index_1 = self.get_index('index1')
+        load_1 = ops.load('arg6_1', get_index_1)
+        add = ops.add(load, load_1)
+        get_index_2 = self.get_index('index1')
+        store = ops.store('buf0', get_index_2, add, None)
+        return store
+
+

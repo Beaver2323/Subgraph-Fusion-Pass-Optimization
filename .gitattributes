@@ -5,3 +5,5 @@ issues/**/evidence/** -whitespace
 issues/REF-respecialize-current-device-native/current_device.patch whitespace=-blank-at-eol,-blank-at-eof
 issues/REF-respecialize-current-device-native/current_device_and_codegen.patch whitespace=-blank-at-eol,-blank-at-eof
 issues/REF-e8m0-log2-pattern-native/e8m0_installed_source.patch whitespace=-blank-at-eol,-blank-at-eof
+# 2026-09-15：同样保留 select-load 修复原始补丁的空白上下文，不豁免实际源码格式。
+issues/REF-sfdp-pattern-22-native/select_load_shape_bounds.patch whitespace=-blank-at-eol,-blank-at-eof

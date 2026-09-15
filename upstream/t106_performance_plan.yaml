@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "T-106",
-  "generated_at": "2026-09-14T23:56:23.597516+08:00",
+  "generated_at": "2026-09-15T11:54:50.905386+08:00",
   "status": "prepared-awaiting-gpu-and-npu-functional-gates",
   "implementation": {
     "status": "implemented-awaiting-runtime-validation",
@@ -105,8 +105,8 @@
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-22",
       "worker_unit": "pattern-22",
-      "performance_status": "prepared-awaiting-functional-gate",
-      "verdict": "planned",
+      "performance_status": "measured",
+      "verdict": "PERF_REGRESSED",
       "case_source": {
         "kind": "tracker-derived-from-community-functional-case",
         "nodeids": [
@@ -134,7 +134,8 @@
       "negative_cases": [
         "ON未命中精确编号、OFF仍命中、数值/梯度错误、fallback或显式产品disable均拒绝计时",
         "不得把其他joint pass变化归因给本pattern"
-      ]
+      ],
+      "evidence_bundle": "results/current/T-106/attention_bundles/pattern-22.json"
     },
     {
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-23",

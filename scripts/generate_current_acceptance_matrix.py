@@ -707,6 +707,15 @@ def build_rows(generated_at: str) -> list[dict]:
                         community_divergent_scope=stage['reason'],
                         community_alignment_disposition=stage['next_action'],
                         updated_at=max(row['updated_at'],stage['generated_at']))
+                    if state.get('deployed'):
+                        verified = state.get('installed_passed', False)
+                        row.update(
+                            current_phase=('npu-installed-repair-verified-awaiting-performance' if verified
+                                           else 'npu-installed-repair-verification-running'),
+                            repair_status=('installed-original-neighbors-boundary-verified' if verified
+                                           else 'deployed-awaiting-installed-verification'),
+                            npu_execution_status=('community-contract-passed-not-final' if verified
+                                                  else 'installed-verification-pending'))
             if not row['comparison_result_path'] and row['coverage_status'] == 'fully-covered':
                 # 未登记额外variant缺口不等于原合同已经完成设备验收。
                 row['coverage_status'] = ('duplicate-noncounting' if not row['independent_unit_contribution']

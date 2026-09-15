@@ -1,5 +1,6 @@
 """性能证据归档范围与历史保护；不导入torch，不执行设备。"""
 import importlib.util
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -14,6 +15,30 @@ spec.loader.exec_module(archive)
 
 
 class AttentionArchiveTests(unittest.TestCase):
+    def test_explicit_installed_reference_needs_verified_deployment(self):
+        import validate_attention_slice_deployment as deployment
+        with patch.object(deployment, 'verify', return_value={'installed_passed': False}):
+            with self.assertRaisesRegex(ValueError, '部署回归未完成'):
+                archive.community_for_gate({'deployment': {'path': 'fixture'}}, 22, Path('/missing'))
+
+    def test_old_baseline_reference_is_preserved(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); p = root/'old.json'; p.write_text('{}')
+            stage = {'baseline': {'path': p.name, 'sha256': archive.sha(p)}}
+            with patch.object(archive, 'ROOT', root):
+                self.assertEqual(archive.community_for_gate(stage, 22), p)
+
+    def test_isolated_or_incomplete_explicit_community_cannot_sign(self):
+        import validate_attention_slice_deployment as deployment
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            p = root/'issues/REF-sfdp-pattern-22-native/evidence/run/adapter/result.json'
+            p.parent.mkdir(parents=True); p.write_text(json.dumps({'status': 'community-contract-passed'}))
+            with patch.object(archive, 'ROOT', root), patch.object(deployment, 'verify',
+                    return_value={'installed_passed': True}):
+                with self.assertRaisesRegex(ValueError, '无候选原方法覆盖'):
+                    archive.community_for_gate({'deployment': {'path': 'fixture'}}, 22, p)
+
     def test_excludes_cache_and_trace_preserves_actual_debug_and_sources(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

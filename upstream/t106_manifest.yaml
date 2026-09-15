@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-14T23:56:23.597516+08:00",
+  "generated_at": "2026-09-15T11:54:50.905386+08:00",
   "status": "partially-completed",
   "source_baselines": {
     "pytorch": {
@@ -34,8 +34,8 @@
   },
   "counting_policy": {
     "current_manifest_units": 4,
-    "current_frozen_denominator_units": 2,
-    "current_formally_closed_units": 2,
+    "current_frozen_denominator_units": 3,
+    "current_formally_closed_units": 3,
     "denominator_rule": "原生GPU suite有效、零skip并完成人工目标归属复核后冻结"
   },
   "acceptance_units": [
@@ -101,9 +101,9 @@
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-22",
       "contract_name": "SDPA pattern 22：T5加法mask且返回K/V",
       "stage": "joint_graph",
-      "review_status": "prepared-awaiting-gpu-reference",
-      "denominator_eligible": "yes-provisional",
-      "coverage_phase": "awaiting-gpu-reference",
+      "review_status": "frozen",
+      "denominator_eligible": "yes-frozen",
+      "coverage_phase": "formally-closed",
       "upstream_sources": [
         {
           "path": "torch/_inductor/fx_passes/fuse_attention.py",
@@ -126,8 +126,8 @@
           "expected_reference_match": true,
           "expected_behavior": "CUDA应命中该编号pattern，并生成scaled-dot-product attention等价实现；保持多输出合同",
           "expected_counter": "inductor_pattern_matcher_per_pattern中_sfdp_pattern_22前缀>=1",
-          "reference_status": "not-run",
-          "npu_status": "not-run"
+          "reference_status": "valid-reference",
+          "npu_status": "passed"
         }
       ],
       "tracking": {

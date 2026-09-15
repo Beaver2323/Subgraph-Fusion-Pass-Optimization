@@ -1,16 +1,20 @@
 # T-106 功能与性能测例讲解
 
-> 更新时间：2026-09-14 23:59 CST（UTC+08:00）
-> 状态：4/4 GPU精确编号确认；21/23/24号NPU原例通过（Tensor比较分别2/6/1次）；22号已改图但实际数值失败。23/24六臂计时和归档已完成，分别PERF_IMPROVED/PERF_REGRESSED，本批2/4正式闭环。
+> 更新时间：2026-09-15 12:01 CST（UTC+08:00）
+> 状态：4/4 GPU精确编号确认；NPU四个原例均已通过安装态复验。22号修复后六臂PERF_REGRESSED；23/24原六臂分别PERF_IMPROVED/PERF_REGRESSED，本批3/4正式闭环。21号单pattern性能归因仍阻塞。
 
-[23号功能性能讲解](../results/current/T-106/pattern-23_讲解.md)、[24号数学路径与回退讲解](../results/current/T-106/pattern-24_讲解.md)含代码框、真实生成代码、原样本和GPU/NPU差异。
+[22号修复及性能讲解](../results/current/T-106/pattern-22_讲解.md)、[23号功能性能讲解](../results/current/T-106/pattern-23_讲解.md)、[24号数学路径与回退讲解](../results/current/T-106/pattern-24_讲解.md)含代码框、真实生成代码、原样本和GPU/NPU差异。
 
 21号性能OFF被22号接替，不能把整轮attention关闭后所得时延算作21号收益，见[归因阻断](../issues/REF-sfdp-pattern-21-native/性能归因阻断.md)。
 22号已定位共享mask的extract_slice广播尺寸错误；仅改生成副本的4处尺寸后，3种子24次逐kernel比较及最终输出均零误差。
-该诊断不等于通用修复完成：带存储边界保护的codegen隔离候选原例正在运行，仍待完整结果和邻接验证，未部署安装态。
+随后通用codegen候选原例及三个邻接通过，部署前边界通过后已备份窄部署两个方法；
+安装态原例及三个邻接合计21次Tensor/9改写、边界22场景/23执行通过，无候选新进程复验。
+22号同NPU5原例、独立OFF/ON及六臂计时均完成：host/Event p50时延增加22.94%/29.19%，
+保留正确性修复，不调整默认开关。23/24性能仍绑定历史运行源码，不因新增邻接功能复验而迁移到新源码。
 
 21/22/24各自的原件和`代码断言适配分析.md`已放对应issue；代码符号断言适配未改变产品选择或数值容差。
-21/24复验通过；22第一次输出比较3772/4096元素超差，现已另立[数值失败分析与调用栈](../issues/REF-sfdp-pattern-22-native/数值失败分析.md)。
+21/24复验通过；22第一次输出比较3772/4096元素超差的历史保留在[数值失败分析与调用栈](../issues/REF-sfdp-pattern-22-native/数值失败分析.md)，
+后续[根因报告](../issues/REF-sfdp-pattern-22-native/根因分析.md)、[修复验证报告](../issues/REF-sfdp-pattern-22-native/修复验证报告.md)和[部署原件](../issues/REF-sfdp-pattern-22-native/部署与边界回归报告.md)不覆盖旧失败。
 不能把最初的符号断言问题与随后实际暴露的数值问题混为同一个结论。原1个延期项保留。
 
 NPU功能、修复验证和性能统一使用 `triton_experimental`；后端在导入`torch`/`torch_npu`前选择，OFF/ON每臂使用新进程。

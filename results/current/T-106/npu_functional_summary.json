@@ -17,7 +17,14 @@
       "status": "functional-passed-performance-gate-signed",
       "functional_evidence": "results/current/T-106/functional/pattern-24.json",
       "gate": "results/current/T-106/performance_gates/pattern-24-executed.json"
+    },
+    {
+      "unit": "pattern-22",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-22",
+      "status": "functional-passed-performance-gate-signed",
+      "functional_evidence": "results/current/T-106/functional/pattern-22.json",
+      "gate": "results/current/T-106/performance_gates/pattern-22-executed.json"
     }
   ],
-  "generated_at": "2026-09-14T23:56:23.660217+08:00"
+  "generated_at": "2026-09-15T11:54:51.444660+08:00"
 }

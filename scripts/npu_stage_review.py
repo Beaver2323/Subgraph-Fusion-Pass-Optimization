@@ -1,5 +1,6 @@
 """有原件约束的NPU失败/候选阶段评审；不能升级成正式comparison或安装态修复。"""
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -58,4 +59,13 @@ def verify(root, task, unit, review):
     baseline_passed = (baseline.get('status') == 'community-contract-passed'
                        and baseline.get('tests_ran') == 1 and baseline.get('tests_skipped') == 0
                        and baseline.get('native_assertions_passed') is True)
-    return dict(baseline_passed=baseline_passed,candidate_passed=candidate_passed)
+    state = dict(baseline_passed=baseline_passed,candidate_passed=candidate_passed)
+    if review.get('deployment'):
+        if task != 'T-106' or unit != 'AU-fuse-attention-sfdp-pattern-22':
+            raise ValueError('部署评审器尚未支持此单元')
+        spec = importlib.util.spec_from_file_location(
+            'attention_deployment_review', Path(__file__).with_name('validate_attention_slice_deployment.py'))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        state.update(module.verify(root, review['deployment']))
+    return state

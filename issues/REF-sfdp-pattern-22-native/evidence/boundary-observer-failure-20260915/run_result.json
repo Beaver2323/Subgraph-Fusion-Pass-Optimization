@@ -1,0 +1,32 @@
+{
+  "generated_at": "2026-09-15T10:24:26.202711+08:00",
+  "status": "finished-awaiting-evidence-review",
+  "physical_npu": 6,
+  "device_execution": true,
+  "arms": [
+    {
+      "arm": "baseline",
+      "command": [
+        "/home/z50063656/envs/Pass/bin/python",
+        "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/attention_select_slice_boundary.py",
+        "--arm",
+        "baseline",
+        "--output",
+        "/home/z50063656/tmp/attention-slice-boundary-13h1b6l2/baseline"
+      ],
+      "return_code": 1
+    },
+    {
+      "arm": "candidate",
+      "command": [
+        "/home/z50063656/envs/Pass/bin/python",
+        "/home/z50063656/Pass/Subgraph-Fusion-Pass-Optimization/runners/attention_select_slice_boundary.py",
+        "--arm",
+        "candidate",
+        "--output",
+        "/home/z50063656/tmp/attention-slice-boundary-13h1b6l2/candidate"
+      ],
+      "return_code": 1
+    }
+  ]
+}

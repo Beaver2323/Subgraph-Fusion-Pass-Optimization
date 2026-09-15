@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""等待项目设备锁后串行运行select-load修复前/候选设备回归，保留完整日志。"""
+"""功能测试共享性能互斥锁、独占指定设备；两臂串行并保留完整日志。"""
 import argparse
 from datetime import datetime
 import fcntl
@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from run_prepared_performance import run_arm
 
 ROOT = Path(__file__).resolve().parents[1]
 WORK = Path('/home/z50063656/tmp')
@@ -19,6 +20,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--npu', type=int, required=True)
     p.add_argument('--wait-timeout', type=int, default=7200)
+    p.add_argument('--installed', action='store_true', help='仅运行不加载候选的安装态边界')
     args = p.parse_args()
     if Path.cwd().resolve() != WORK or args.npu < 0 or args.wait_timeout < 0:
         p.error('从规定tmp执行，设备和等待时间不能为负')
@@ -30,12 +32,15 @@ def main():
     save()
     print(f'boundary_output={output}',flush=True)
     start = time.monotonic()
-    with (WORK/'pass-tracker-npu-performance.lock').open('a') as lock:
+    with (WORK/'pass-tracker-npu-performance.lock').open('a') as lock, \
+            (WORK/f'pass-tracker-npu-{args.npu}.lock').open('a') as device_lock:
         while True:
             try:
-                fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                fcntl.flock(lock.fileno(), fcntl.LOCK_SH | fcntl.LOCK_NB)
+                fcntl.flock(device_lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
                 break
             except BlockingIOError:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
                 if time.monotonic()-start >= args.wait_timeout:
                     state['status'] = 'not-run-lock-timeout'
                     save()
@@ -45,14 +50,14 @@ def main():
         save()
         env = dict(os.environ, ASCEND_RT_VISIBLE_DEVICES=str(args.npu), SET_NPU_DEVICE='0',
                    TORCHINDUCTOR_NPU_BACKEND='triton_experimental')
-        for arm in ('baseline', 'candidate'):
+        for arm in (('installed',) if args.installed else ('baseline', 'candidate')):
             command = [sys.executable,str(ROOT/'runners/attention_select_slice_boundary.py'),
                        '--arm',arm,'--output',str(output/arm)]
             state['device_execution'] = True
             print(f'boundary_arm={arm} START',flush=True)
             with (output/f'{arm}.stdout.log').open('w') as out, (output/f'{arm}.stderr.log').open('w') as err:
                 try:
-                    rc = subprocess.run(command,cwd=WORK,env=env,stdout=out,stderr=err,timeout=1800).returncode
+                    rc = run_arm(command,WORK,out,err,timeout=1800,env=env)
                 except subprocess.TimeoutExpired:
                     rc = 124
             state['arms'].append(dict(arm=arm,command=command,return_code=rc))

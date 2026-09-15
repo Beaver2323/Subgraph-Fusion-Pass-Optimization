@@ -29,7 +29,7 @@
       }
     },
     "AU-fuse-attention-sfdp-pattern-22": {
-      "generated_at": "2026-09-15T00:23:29.710963+08:00",
+      "generated_at": "2026-09-15T11:01:05+08:00",
       "task_id": "T-106",
       "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-22",
       "case_id": "REF-sfdp-pattern-22-native",
@@ -39,13 +39,13 @@
         "sha256": "2015f6e58e5788695d0e1d0fd0e60bcfc96a2dd1709bdb857940606ebd791596"
       },
       "candidate_verified": true,
-      "correctness_scope": "原方法 tests=1/skip=0；已通过Tensor比较=0；本编号精确改写=1；原合同未通过；后续分支不计覆盖；没有数值比较证据，不计精度PASS",
-      "repair_status": "isolated-codegen-candidate-verified-not-deployed",
-      "community_alignment_status": "NOT_ALIGNED_REPAIR_REQUIRED",
-      "reason": "原例4组/12个Tensor及近邻21/23/24全部通过；仅进程内候选，安装态原数值失败保留。",
-      "next_action": "补独立设备边界回归并评审部署；部署后重新验证原例和邻接，之前不得签安装态性能gate。",
+      "correctness_scope": "旧安装态原数值失败原件保留；窄部署后无候选新进程原方法1/1、skip=0，12次Tensor比较及4次精确改写通过；邻接21/23/24合计9次Tensor及5次改写通过；安装态边界22场景/23执行通过。",
+      "repair_status": "installed-original-neighbors-boundary-verified",
+      "community_alignment_status": "PARTIAL_ALIGNED",
+      "reason": "两个select-load方法已备份窄部署并完成安装态回归；原数值断言不改。21/22/24仍使用经审核的数学展开代码符号适配，不宣称与CUDA kernel实现完全一致。",
+      "next_action": "复核部署后同后端合法OFF/ON及派生性能输入；数值门禁通过后才独占串行计时。不得沿用旧源码性能结论，不把本轮功能回归计作完整单元闭环。",
       "performance_gate_issued": false,
-      "report": "issues/REF-sfdp-pattern-22-native/修复候选验证报告.md",
+      "report": "issues/REF-sfdp-pattern-22-native/部署与边界回归报告.md",
       "gpu_review": {
         "path": "results/current/T-106/gpu_reference_review.json",
         "sha256": "fa8964fb6a3aad69d555285f36fb7cea6f4c40f16157e85235950f3243dbee00"
@@ -66,6 +66,10 @@
         "exact_rewrites": 4
       },
       "candidate_kind": "codegen",
+      "deployment": {
+        "path": "issues/REF-sfdp-pattern-22-native/deployment-20260915-select-load/deployment.json",
+        "sha256": "f09573d5a37928500448635710bdea97816f2bebae0cb367246ef8f27f49dcf7"
+      },
       "neighbor_candidates": {
         "21": {
           "path": "issues/REF-sfdp-pattern-21-native/evidence/t106-native-i2427mng/adapter/result.json",
@@ -154,5 +158,5 @@
       }
     }
   },
-  "generated_at": "2026-09-15T00:23:29.710963+08:00"
+  "generated_at": "2026-09-15T11:01:05+08:00"
 }

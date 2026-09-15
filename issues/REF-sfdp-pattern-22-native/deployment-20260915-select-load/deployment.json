@@ -1,0 +1,55 @@
+{
+  "generated_at": "2026-09-15T10:44:00+08:00",
+  "task_id": "T-106",
+  "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-22",
+  "backend": "triton_experimental",
+  "deployed": true,
+  "verification_status": "passed-original-and-three-neighbors-and-boundary",
+  "verified_at": "2026-09-15T11:01:05+08:00",
+  "installed_cases": {
+    "21": {
+      "path": "issues/REF-sfdp-pattern-21-native/evidence/t106-native-6t1pel2i/adapter/result.json",
+      "sha256": "b7deee04c9982c62799ec1be6d38cdb064b2af7fb5abe5e3bedf18719675c87d"
+    },
+    "22": {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/t106-native-ft072a_v/adapter/result.json",
+      "sha256": "beff27f441a14cdf8adeed8a268d2358541da375cd8c4c356caacbcc0485ee4f"
+    },
+    "23": {
+      "path": "issues/REF-sfdp-pattern-23-native/evidence/t106-native-4z08akwv/adapter/result.json",
+      "sha256": "0870ecb498f0cbb0f34e0f792d4675c2e67e78467826490d7de5c431c56486da"
+    },
+    "24": {
+      "path": "issues/REF-sfdp-pattern-24-native/evidence/t106-native-dww6b2ee/adapter/result.json",
+      "sha256": "833091753e2f57313f500167e162f33d140e8530dd2f3a82d292769577af3d2a"
+    }
+  },
+  "installed_boundary_result": {
+    "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/result.json",
+    "sha256": "2ee42c50d68ee27d8d80ee68dd8bea6d50c8e079da4a91bdaa948c48b9ab1d1c"
+  },
+  "installed_boundary_runner_sha256": "5be369112a6a3dfc7ffe2dfba9b5f80dc24c9d545fcacb770c61f02af26de507",
+  "target": "/home/z50063656/envs/Pass/lib/python3.11/site-packages/torch_npu/_inductor/triton_experimental/codegen/triton.py",
+  "before_sha256": "0e7ff7e98c8a540c89e7ebd6ef0214927a7c3ee7e7f3bdb98bdd248b2f0ff381",
+  "after_sha256": "86f310ce99960eb12ead8b67db7264c068a56f9ecb5e0e7a43a6e48cbcad5a57",
+  "backup": "triton.before.py",
+  "installed_snapshot": "triton.after.py",
+  "changed_methods": ["_maybe_record_select_lane_load", "_maybe_rewrite_select_lane_load"],
+  "other_ast_unchanged": true,
+  "source_worktree": "/home/z50063656/Pass/worktrees/torch_npu_t106_select_load",
+  "source_branch": "fix/t106-select-load-20260915",
+  "source_base": "83cc452480c3546fd5cccf853bfe3a360ce9dbfc",
+  "source_methods_equal_tested_candidate": true,
+  "source_committed": false,
+  "product_merged": false,
+  "candidate_sha256": "6222c9e872f94d4366db4b5dc88f659c54723cfa5bdcc67321c4d14f62650c1e",
+  "candidate_boundary_result": "../evidence/boundary-predeploy-20260915/candidate/result.json",
+  "candidate_boundary_result_sha256": "e29b5e1095abd6df8043d7708775a7f42d2fcc8dd8bd6db6a56ee3a28ef9ba87",
+  "candidate_boundary_runner_sha256": "2cd0545509ad4b4a0f129b2f462191e5dc206fc465070801153aada30feeb7d7",
+  "candidate_boundary_scenarios": 22,
+  "candidate_boundary_executions": 23,
+  "pytorch_modified": false,
+  "product_disable_bypassed": false,
+  "performance_gate_issued": false,
+  "authorization": "用户明确允许候选及边界通过后备份、窄改Pass的triton_experimental安装文件、无候选新进程复验；允许空闲NPU并行功能，性能独占串行。"
+}

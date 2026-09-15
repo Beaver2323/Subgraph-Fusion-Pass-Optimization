@@ -516,7 +516,307 @@
         "aggregation": "三OFF/三ON各臂p50/p99中位数；高波动或时钟冲突记MIXED"
       },
       "bundle": "results/current/T-106/attention_bundles/pattern-24.json"
+    },
+    {
+      "unit": "pattern-22",
+      "acceptance_unit_id": "AU-fuse-attention-sfdp-pattern-22",
+      "performance_status": "measured",
+      "timing": {
+        "host_ms": {
+          "off": {
+            "p50": 0.7424599025398493,
+            "p99": 0.7923924038186698
+          },
+          "on": {
+            "p50": 0.9127601515501738,
+            "p99": 0.9972898568958071
+          }
+        },
+        "event_ms": {
+          "off": {
+            "p50": 0.6170700192451477,
+            "p99": 0.6565398091077804
+          },
+          "on": {
+            "p50": 0.79721999168396,
+            "p99": 0.840294007062912
+          }
+        }
+      },
+      "improvement_percent": {
+        "host_ms": {
+          "p50": -22.937299162924706,
+          "p99": -25.8580789126325
+        },
+        "event_ms": {
+          "p50": -29.194413408576715,
+          "p99": -27.988279675660266
+        }
+      },
+      "round_p50_spread_ratio": {
+        "host_ms_off": 1.0538381672652166,
+        "host_ms_on": 1.1089957798917862,
+        "event_ms_off": 1.0589515084031569,
+        "event_ms_on": 1.0965470635453927
+      },
+      "verdict": "PERF_REGRESSED",
+      "product_action": "不改变默认开关；非完整模型",
+      "raw_results": {
+        "off1": {
+          "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/off1/result.json",
+          "sha256": "a5bd1c0485ac8612b336dba04dae3ff8474cf1f5a2183bb21919069ad0c4beef"
+        },
+        "on1": {
+          "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/on1/result.json",
+          "sha256": "e17a1341aea98cebb9c386da9e045375aaf284fe2929173316103935b0e5d5ac"
+        },
+        "on2": {
+          "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/on2/result.json",
+          "sha256": "ca892d2c4df8887d6690fedfebe6b0b3653c0f95c3f50d82d904906461a38221"
+        },
+        "off2": {
+          "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/off2/result.json",
+          "sha256": "0612a7b4913623e9d4c55a3354e9dec35f871b5066dce29ce03bd4c1635fc2cc"
+        },
+        "off3": {
+          "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/off3/result.json",
+          "sha256": "0d698e1c9c9915777c62b357464ba66a17c2ac0aa964d5d17297b0a985963271"
+        },
+        "on3": {
+          "path": "issues/REF-sfdp-pattern-22-native/evidence/benchmark-20260915T114030+0800/on3/result.json",
+          "sha256": "7230efe45f08133fc0e9fc8bdec4d0db1a839d139dd7ef008c807d99205f7052"
+        }
+      },
+      "measurement_workload": "sfdp-pattern-22-registered-half-inference",
+      "input_spec": [
+        {
+          "parameter": "query",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": false
+        },
+        {
+          "parameter": "key",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": false
+        },
+        {
+          "parameter": "value",
+          "shape": [
+            2,
+            4,
+            8,
+            16
+          ],
+          "stride": [
+            512,
+            128,
+            16,
+            1
+          ],
+          "dtype": "torch.float16",
+          "requires_grad": false
+        },
+        {
+          "parameter": "attn_mask",
+          "shape": [
+            2,
+            1,
+            1,
+            4
+          ],
+          "stride": [
+            4,
+            4,
+            4,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      ],
+      "memory": {
+        "off1": {
+          "allocated": 55296,
+          "reserved": 316669952
+        },
+        "on1": {
+          "allocated": 59904,
+          "reserved": 316669952
+        },
+        "on2": {
+          "allocated": 59904,
+          "reserved": 316669952
+        },
+        "off2": {
+          "allocated": 55296,
+          "reserved": 316669952
+        },
+        "off3": {
+          "allocated": 55296,
+          "reserved": 316669952
+        },
+        "on3": {
+          "allocated": 59904,
+          "reserved": 316669952
+        }
+      },
+      "compile_ms": {
+        "off1": 92913.92910992727,
+        "on1": 131505.26282005012,
+        "on2": 128710.05304995924,
+        "off2": 90540.38812033832,
+        "off3": 90425.72906985879,
+        "on3": 130776.55092999339
+      },
+      "codegen_review": {
+        "off1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "triton_unk_fused_matmul_permute_0.run": 2,
+            "triton_unk_fused_matmul_permute_1.run": 1,
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__softmax__to_copy_add_matmul_2.run": 1,
+            "triton_unk_fused__softmax__to_copy_add_matmul_3.run": 1,
+            "triton_unk_fused__softmax__to_copy_add_matmul_4.run": 1,
+            "triton_unk_fused__softmax__to_copy_add_matmul_5.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on1": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "triton_unk_fused__to_copy_matmul_mul_permute_0.run": 1,
+            "triton_unk_fused__to_copy_matmul_mul_permute_transpose_1.run": 1,
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_2.run": 1,
+            "torch.ops.aten.any.dim": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_3.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_4.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_5.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_6.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_7.run": 1,
+            "triton_unk_fused__to_copy_matmul_permute_8.run": 1,
+            "triton_unk_fused_matmul_9.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "triton_unk_fused__to_copy_matmul_mul_permute_0.run": 1,
+            "triton_unk_fused__to_copy_matmul_mul_permute_transpose_1.run": 1,
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_2.run": 1,
+            "torch.ops.aten.any.dim": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_3.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_4.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_5.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_6.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_7.run": 1,
+            "triton_unk_fused__to_copy_matmul_permute_8.run": 1,
+            "triton_unk_fused_matmul_9.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off2": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "triton_unk_fused_matmul_permute_0.run": 2,
+            "triton_unk_fused_matmul_permute_1.run": 1,
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__softmax__to_copy_add_matmul_2.run": 1,
+            "triton_unk_fused__softmax__to_copy_add_matmul_3.run": 1,
+            "triton_unk_fused__softmax__to_copy_add_matmul_4.run": 1,
+            "triton_unk_fused__softmax__to_copy_add_matmul_5.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "off3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "triton_unk_fused_matmul_permute_0.run": 2,
+            "triton_unk_fused_matmul_permute_1.run": 1,
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__softmax__to_copy_add_matmul_2.run": 1,
+            "triton_unk_fused__softmax__to_copy_add_matmul_3.run": 1,
+            "triton_unk_fused__softmax__to_copy_add_matmul_4.run": 1,
+            "triton_unk_fused__softmax__to_copy_add_matmul_5.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        },
+        "on3": {
+          "code_executed": false,
+          "output_code_count": 1,
+          "calls": {
+            "triton_unk_fused__to_copy_matmul_mul_permute_0.run": 1,
+            "triton_unk_fused__to_copy_matmul_mul_permute_transpose_1.run": 1,
+            "extern_kernels.bmm": 2,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_2.run": 1,
+            "torch.ops.aten.any.dim": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_3.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_4.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_5.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_6.run": 1,
+            "triton_unk_fused__safe_softmax__to_copy_add_matmul_7.run": 1,
+            "triton_unk_fused__to_copy_matmul_permute_8.run": 1,
+            "triton_unk_fused_matmul_9.run": 1
+          },
+          "suspicious_cpu_lines": [],
+          "verdict": "manual-review-required"
+        }
+      },
+      "measurement_contract": {
+        "order": [
+          "off1",
+          "on1",
+          "on2",
+          "off2",
+          "off3",
+          "on3"
+        ],
+        "fresh_processes": 6,
+        "warmup": 10,
+        "runs_per_arm": 100,
+        "model_e2e": false,
+        "scope": "inference-forward",
+        "aggregation": "三OFF/三ON各臂p50/p99中位数；高波动或时钟冲突记MIXED"
+      },
+      "bundle": "results/current/T-106/attention_bundles/pattern-22.json"
     }
   ],
-  "generated_at": "2026-09-14T23:56:23.660504+08:00"
+  "generated_at": "2026-09-15T11:54:51.445041+08:00"
 }

@@ -1,0 +1,615 @@
+{
+  "status": "running-not-a-verdict",
+  "cases": [
+    {
+      "index": 0,
+      "dtype": "float32",
+      "width": 2,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "dtype": "float32",
+      "width": 2,
+      "lane": 1,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "dtype": "float32",
+      "width": 8,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "dtype": "float32",
+      "width": 8,
+      "lane": 7,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "dtype": "float16",
+      "width": 2,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "dtype": "float16",
+      "width": 2,
+      "lane": 1,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "dtype": "float16",
+      "width": 4,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "dtype": "float16",
+      "width": 4,
+      "lane": 3,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "dtype": "float16",
+      "width": 8,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "dtype": "float16",
+      "width": 8,
+      "lane": 7,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "dtype": "bfloat16",
+      "width": 2,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "dtype": "bfloat16",
+      "width": 2,
+      "lane": 1,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            14,
+            2,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "dtype": "bfloat16",
+      "width": 4,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 15,
+      "dtype": "bfloat16",
+      "width": 4,
+      "lane": 3,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 16,
+      "dtype": "bfloat16",
+      "width": 8,
+      "lane": 0,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "dtype": "bfloat16",
+      "width": 8,
+      "lane": 7,
+      "layout": "shared",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "offset",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 1,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 19,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "strided",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            56,
+            8,
+            2
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "full",
+      "dynamic": false,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "dtype": "float32",
+      "width": 4,
+      "lane": 3,
+      "layout": "shared",
+      "dynamic": true,
+      "status": "passed",
+      "executions": [
+        {
+          "rows": 7,
+          "storage_offset": 0,
+          "stride": [
+            28,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            7,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        },
+        {
+          "rows": 11,
+          "storage_offset": 0,
+          "stride": [
+            44,
+            4,
+            1
+          ],
+          "output_shape": [
+            3,
+            11,
+            5
+          ],
+          "bitwise_equal": true,
+          "mismatch": 0
+        }
+      ]
+    }
+  ]
+}

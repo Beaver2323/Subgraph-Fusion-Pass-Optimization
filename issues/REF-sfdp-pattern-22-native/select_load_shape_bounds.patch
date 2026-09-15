@@ -1,0 +1,66 @@
+--- a/torch_npu/_inductor/triton_experimental/codegen/triton.py
++++ b/torch_npu/_inductor/triton_experimental/codegen/triton.py
+@@ -1832,8 +1832,18 @@
+             return
+         if not isinstance(prepared_index, sympy.Expr):
+             prepared_index = index
++        # 仅对可证明的零offset静态存储范围拓宽；未知布局保留原load。
++        storage_size = None
++        try:
++            layout = V.graph.get_buffer(name).get_layout()
++            extent = layout.storage_size()
++            if layout.offset == 0 and isinstance(extent, (int, sympy.Integer)) and extent > 0:
++                storage_size = int(extent)
++        except (AttributeError, KeyError, NotImplementedError):
++            pass
+         self._npu_select_lane_loads[var_name] = {
+             "lane": k,
++            "storage_size": storage_size,
+             "index": prepared_index,
+             "pointer": self.args.input(name),
+         }
+@@ -4426,6 +4436,15 @@
+                 new_lines.append(line)
+                 continue
+ 
++            extent = target.get("storage_size")
++            pointer = load_ast.args[0]
++            # 只处理可以直接分离基指针和整数offset的普通加载。
++            if (extent is None or not isinstance(pointer, ast.BinOp)
++                    or not isinstance(pointer.op, ast.Add)
++                    or ast.unparse(pointer.left) != target["pointer"]):
++                new_lines.append(line)
++                continue
++            offset = ast.unparse(pointer.right)
+             lane_var = f"_es_lane{counter}"
+             full_var = f"_es_full{counter}"
+             counter += 1
+@@ -4434,6 +4453,18 @@
+             load_ast.args[0] = ast.parse(
+                 f"({original_pointer}) + {lane_var}", mode="eval"
+             ).body
++            # 偏移1等尾部load不能读取多出的lane；首lane仍保留原mask语义。
++            bound = ast.parse(
++                f"(({offset} + {lane_var}) >= 0) & (({offset} + {lane_var}) < {extent})",
++                mode="eval",
++            ).body
++            mask_kw = next((kw for kw in load_ast.keywords if kw.arg == "mask"), None)
++            if len(load_ast.args) > 1:
++                load_ast.args[1] = ast.BinOp(left=load_ast.args[1], op=ast.BitAnd(), right=bound)
++            elif mask_kw is not None:
++                mask_kw.value = ast.BinOp(left=mask_kw.value, op=ast.BitAnd(), right=bound)
++            else:
++                load_ast.keywords.append(ast.keyword(arg="mask", value=bound))
+             ast.fix_missing_locations(value_ast)
+             new_lines.append(f"{indent}{full_var} = {ast.unparse(value_ast)}")
+             # Emit the slice via the registered first-class op (single source of
+@@ -4441,7 +4472,8 @@
+             slice_expr = self.overrides.extract_slice(
+                 full_var,
+                 "[" + offsets + "]",
+-                "[" + ", ".join(sizes) + "]",
++                "[" + ", ".join("1" if s == inner_slot else f"{full_var}.shape[{s}]"
++                                 for s in range(ndim)) + "]",
+                 "[" + strides + "]",
+             )
+             new_lines.append(f"{indent}{lhs} = {slice_expr}")

@@ -1,0 +1,697 @@
+{
+  "generated_at": "2026-09-15T10:55:24.229922+08:00",
+  "source_run": "/home/z50063656/tmp/attention-slice-boundary-5k498lwi",
+  "files": [
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__0_inference_0.0/fx_graph_readable.py",
+      "sha256": "09083cd4922bd7c7519243d5d25825a905e73d6157edadc26b933a9cd548fcd7",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__0_inference_0.0/fx_graph_transformed.py",
+      "sha256": "09083cd4922bd7c7519243d5d25825a905e73d6157edadc26b933a9cd548fcd7",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__0_inference_0.0/ir_post_fusion.txt",
+      "sha256": "49d03e224d3a96f74c0a317a1279dadbd4a86ab65142bc80eee9ca7962f55b23",
+      "bytes": 2305
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__0_inference_0.0/ir_pre_fusion.txt",
+      "sha256": "787dfeea79a608b235eddc865263a0081cbbd87e06f1b2d7a5b86e7cf9ac84b0",
+      "bytes": 2443
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__0_inference_0.0/output_code.py",
+      "sha256": "689ed101fa57df571701666e5a44f6861a61a240ee4b9da3e2d1a7837d0ecbb2",
+      "bytes": 14447
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__10_inference_10.10/fx_graph_readable.py",
+      "sha256": "e07a072ab077607b6c9fd53a803ea1dc1fb968eb46d2abd52dfa4325f2dcdacd",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__10_inference_10.10/fx_graph_transformed.py",
+      "sha256": "e07a072ab077607b6c9fd53a803ea1dc1fb968eb46d2abd52dfa4325f2dcdacd",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__10_inference_10.10/ir_post_fusion.txt",
+      "sha256": "f7539734544e450b8a7cb0f1750f7a4cb4f878242d4f5c5e1e7ab78cd1895a05",
+      "bytes": 2305
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__10_inference_10.10/ir_pre_fusion.txt",
+      "sha256": "900db15cfe38fd4bbf7797ca7e37a07d2e197ba6722089ad5d44ded1bcf27b40",
+      "bytes": 2443
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__10_inference_10.10/output_code.py",
+      "sha256": "cc5d3043f434042a78f85df3c0ba18ab86757d9bc7f8b3bc2f5257c7a105095e",
+      "bytes": 14493
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__11_inference_11.11/fx_graph_readable.py",
+      "sha256": "aa61fe48306f63ff111368002330b435ef69b9b858bbc8349296f470a3360aed",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__11_inference_11.11/fx_graph_transformed.py",
+      "sha256": "aa61fe48306f63ff111368002330b435ef69b9b858bbc8349296f470a3360aed",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__11_inference_11.11/ir_post_fusion.txt",
+      "sha256": "98a953d4ec2e1e153b1abd5766f03b990d5bcc3123b3d41b85e2d323d0934c95",
+      "bytes": 2313
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__11_inference_11.11/ir_pre_fusion.txt",
+      "sha256": "25a6093f974482abff5dc301a229c6fd717f0043f4d9fa465ae9c25ebe314089",
+      "bytes": 2451
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__11_inference_11.11/output_code.py",
+      "sha256": "bc34cdd842c79cdd5c7e76a96433a707e5dc7e054fa7e5bae9cd399c468f114f",
+      "bytes": 14507
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__12_inference_12.12/fx_graph_readable.py",
+      "sha256": "c42b52ad433e6134d76e9e4294ec687a7ea31384b5b44f19719e10d5d7a84b3e",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__12_inference_12.12/fx_graph_transformed.py",
+      "sha256": "c42b52ad433e6134d76e9e4294ec687a7ea31384b5b44f19719e10d5d7a84b3e",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__12_inference_12.12/ir_post_fusion.txt",
+      "sha256": "bb98491a32997fe1bd0c9e6b55d4449738562529a6c8a332ce8f6cbf6634fc1f",
+      "bytes": 2312
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__12_inference_12.12/ir_pre_fusion.txt",
+      "sha256": "14b2a6e62292b3e503367eb7acbdf0ef985dc40283717b9d66b196349082cb5e",
+      "bytes": 2450
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__12_inference_12.12/output_code.py",
+      "sha256": "de83984b9e411318addd9555724ecfa20ac5bb0c78c8e185a93ec413dc1fad79",
+      "bytes": 14505
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__13_inference_13.13/fx_graph_readable.py",
+      "sha256": "03af4b754164b50e5a70ed1763626f74bd1e1c38a5fd2fc1e9d77c47ae4ba459",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__13_inference_13.13/fx_graph_transformed.py",
+      "sha256": "03af4b754164b50e5a70ed1763626f74bd1e1c38a5fd2fc1e9d77c47ae4ba459",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__13_inference_13.13/ir_post_fusion.txt",
+      "sha256": "8d17dd4a2663583c771392c509ea292bb6013552ee3be31f591e3a0e53820fe1",
+      "bytes": 2320
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__13_inference_13.13/ir_pre_fusion.txt",
+      "sha256": "18a5ecccb30a365e3e8cafb5b7913bcca13971b33694950681e43f88703034c7",
+      "bytes": 2458
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__13_inference_13.13/output_code.py",
+      "sha256": "a345f2a7cfcd178f7e9e41312813ac5f391d819429c07cc1b572512e1338e426",
+      "bytes": 14519
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__14_inference_14.14/fx_graph_readable.py",
+      "sha256": "cef6c68959c9fbace7024fb8b83e550abfc6f17af0e0e11e3d2bb2de9e8c9402",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__14_inference_14.14/fx_graph_transformed.py",
+      "sha256": "cef6c68959c9fbace7024fb8b83e550abfc6f17af0e0e11e3d2bb2de9e8c9402",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__14_inference_14.14/ir_post_fusion.txt",
+      "sha256": "2cb6f2ef3d6279b02033d1d55a361a7ad39e167f4440659938dc1c8d81d8a301",
+      "bytes": 2312
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__14_inference_14.14/ir_pre_fusion.txt",
+      "sha256": "c2dd6f3080bd612ff56be2c148362c0dd8f17ff5d939646e0098a274e9bd30e0",
+      "bytes": 2450
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__14_inference_14.14/output_code.py",
+      "sha256": "4da0e660629de74d630d377795eebd528c8e4e1c6102f8ee0418dd088b71d16c",
+      "bytes": 14505
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__15_inference_15.15/fx_graph_readable.py",
+      "sha256": "6b4ac83f4fc1e9bfbee551abcc70e5cae322c173ba6c0936ef2ab30bf6f32d5d",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__15_inference_15.15/fx_graph_transformed.py",
+      "sha256": "6b4ac83f4fc1e9bfbee551abcc70e5cae322c173ba6c0936ef2ab30bf6f32d5d",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__15_inference_15.15/ir_post_fusion.txt",
+      "sha256": "cd0df6cd97c8da94f863925e33cf704d0217f6abace1f8327647ace657a81710",
+      "bytes": 2320
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__15_inference_15.15/ir_pre_fusion.txt",
+      "sha256": "b177795f8456ec444bd8a8bedb61332f89de10321adf16747deb20f9ce3d3795",
+      "bytes": 2458
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__15_inference_15.15/output_code.py",
+      "sha256": "69a7aa980efd9888741b43b2d3cc54a8d728672df0bba6236ec6f10ea5a56883",
+      "bytes": 14519
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__16_inference_16.16/fx_graph_readable.py",
+      "sha256": "c943361458fc5852bdfda06bea9ccc47959d8d0929894192078eecb5618eabad",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__16_inference_16.16/fx_graph_transformed.py",
+      "sha256": "c943361458fc5852bdfda06bea9ccc47959d8d0929894192078eecb5618eabad",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__16_inference_16.16/ir_post_fusion.txt",
+      "sha256": "baebdf0c10fd7fe4c29a636f5b72ba00b456da8507e66924e998ebdc4d3e606c",
+      "bytes": 2312
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__16_inference_16.16/ir_pre_fusion.txt",
+      "sha256": "63b97bc6e71f0ac3f11378e1a44577dbe54ffd9a009dbf386f0d44fe2da49673",
+      "bytes": 2450
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__16_inference_16.16/output_code.py",
+      "sha256": "bc52ef1e54f5c3fad7889d82cca9d7466d46ed9d44db3caee9495244412b842d",
+      "bytes": 14505
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__17_inference_17.17/fx_graph_readable.py",
+      "sha256": "9be1cc98fe02c1c20b89209b522ce0c4860367759b3de319509f0c40295a39b3",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__17_inference_17.17/fx_graph_transformed.py",
+      "sha256": "9be1cc98fe02c1c20b89209b522ce0c4860367759b3de319509f0c40295a39b3",
+      "bytes": 602
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__17_inference_17.17/ir_post_fusion.txt",
+      "sha256": "85ab21440268ddbee2be40b88e92021e309b291b0e4ace75a2bcb79cf37d8921",
+      "bytes": 2320
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__17_inference_17.17/ir_pre_fusion.txt",
+      "sha256": "7f7e5e646113f44313337cbb409274c4a405dc26488fdfc4eacb3c6b3d629ee3",
+      "bytes": 2458
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__17_inference_17.17/output_code.py",
+      "sha256": "64925c11e1e6d33355326bb8b16f5c6d5b0bd67fbeb8e1ef0b37a22aa56a4c4b",
+      "bytes": 14519
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__18_inference_18.18/fx_graph_readable.py",
+      "sha256": "f0308c04816ffd5671fc762163c909881a0e726d3eae5081f015362d6fd08958",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__18_inference_18.18/fx_graph_transformed.py",
+      "sha256": "f0308c04816ffd5671fc762163c909881a0e726d3eae5081f015362d6fd08958",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__18_inference_18.18/ir_post_fusion.txt",
+      "sha256": "6f974b5fba940c36873004625084606e37dcdcd7d289bbdd33bbd12f8d687a13",
+      "bytes": 2313
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__18_inference_18.18/ir_pre_fusion.txt",
+      "sha256": "abf5219ee5a3bbde8c76def99b4a907f1b80ace5ae6e29f0a1ce43a4bdd26606",
+      "bytes": 2451
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__18_inference_18.18/output_code.py",
+      "sha256": "4b23f555d153eadb2c8a6dc5f2cbb82cb1489f63aa905ea2ddf8c52be29395fb",
+      "bytes": 14412
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__19_inference_19.19/fx_graph_readable.py",
+      "sha256": "f0308c04816ffd5671fc762163c909881a0e726d3eae5081f015362d6fd08958",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__19_inference_19.19/fx_graph_transformed.py",
+      "sha256": "f0308c04816ffd5671fc762163c909881a0e726d3eae5081f015362d6fd08958",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__19_inference_19.19/ir_post_fusion.txt",
+      "sha256": "c3b578c6954b0be7d31b4834bae4371b3083fd4cb732bb3117ade2458ee76193",
+      "bytes": 2313
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__19_inference_19.19/ir_pre_fusion.txt",
+      "sha256": "1d375ac72eb8f6d75cef486372c72e134cf831c4f7f0c77e5b7b99da91489b73",
+      "bytes": 2451
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__19_inference_19.19/output_code.py",
+      "sha256": "f744f5bb0eac9961e4553cba92ec64890f7a9d58fff97325c777d69f508ef395",
+      "bytes": 14462
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__1_inference_1.1/fx_graph_readable.py",
+      "sha256": "58432d3291f9ccf29fa7e2a0cbaca6b276e3da3a84e0d9fdbe6b38fa0dde8753",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__1_inference_1.1/fx_graph_transformed.py",
+      "sha256": "58432d3291f9ccf29fa7e2a0cbaca6b276e3da3a84e0d9fdbe6b38fa0dde8753",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__1_inference_1.1/ir_post_fusion.txt",
+      "sha256": "cec02597697ffed8d699a31614f345f35bd10ebc4f0174e4739ad8128b134b16",
+      "bytes": 2313
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__1_inference_1.1/ir_pre_fusion.txt",
+      "sha256": "471069890e8c66f6df91d85a162e706ac5031c9749361651e72e7270dbd20b4e",
+      "bytes": 2451
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__1_inference_1.1/output_code.py",
+      "sha256": "8f68eee1661b182d7752e71361acdde31af0b115917e1740434da8ab349e1b01",
+      "bytes": 14461
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__20_inference_20.20/fx_graph_readable.py",
+      "sha256": "81d16002fcb22aa0bb9ff924a85beddc1dbcf16317d154744087e37e80e6aeef",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__20_inference_20.20/fx_graph_transformed.py",
+      "sha256": "81d16002fcb22aa0bb9ff924a85beddc1dbcf16317d154744087e37e80e6aeef",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__20_inference_20.20/ir_post_fusion.txt",
+      "sha256": "040cfbe845b7063eb59b8acc76543bef9379ecdf8bdb1c7621d701f7f701ad84",
+      "bytes": 2291
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__20_inference_20.20/ir_pre_fusion.txt",
+      "sha256": "32a251ab92685b2c573ba96cdfff4323cd3ac2db28648894d23f7a9496c1747d",
+      "bytes": 2467
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__20_inference_20.20/output_code.py",
+      "sha256": "9248108e31a739bae5e48679934bd1112adb59d1aa0d372da9e4f09d09928ad4",
+      "bytes": 13757
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__21_inference_21.21/fx_graph_readable.py",
+      "sha256": "8cf8131e494c675e7f1909b8bf1cbad979e426fc48ccdd972fef1c2e867f1655",
+      "bytes": 732
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__21_inference_21.21/fx_graph_transformed.py",
+      "sha256": "8cf8131e494c675e7f1909b8bf1cbad979e426fc48ccdd972fef1c2e867f1655",
+      "bytes": 732
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__21_inference_21.21/ir_post_fusion.txt",
+      "sha256": "5403a14591d9d1b3428d55ad2c7ec7d241cb75170155cc96e5a1857ede1b0570",
+      "bytes": 1422
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__21_inference_21.21/ir_pre_fusion.txt",
+      "sha256": "3c53a8b7286c52b3d32765edfc613854acf849f26b62ce3869677f8d2aad8b00",
+      "bytes": 1486
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__21_inference_21.21/output_code.py",
+      "sha256": "699f3c10722746ea9d947a829d51aebda61f4e208eacc27fb592fedd749b1966",
+      "bytes": 10475
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__2_inference_2.2/fx_graph_readable.py",
+      "sha256": "2cf6387f2e904425830cbf1bc02c9875f115b560d76a5eebf29379b5c38616ed",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__2_inference_2.2/fx_graph_transformed.py",
+      "sha256": "2cf6387f2e904425830cbf1bc02c9875f115b560d76a5eebf29379b5c38616ed",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__2_inference_2.2/ir_post_fusion.txt",
+      "sha256": "9714e09460e1392f343e7cfc0efcdc577e5d6d0e23968762eb5e1d56d92cf489",
+      "bytes": 2305
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__2_inference_2.2/ir_pre_fusion.txt",
+      "sha256": "59826391500a09d2746bcebddd3615e417cc262cbbb68fec1817880b5f291616",
+      "bytes": 2443
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__2_inference_2.2/output_code.py",
+      "sha256": "e578a2fb712dbca2419c8ad9885a8b50cdeaf35caf27e4850e70ea64ebcd7306",
+      "bytes": 14447
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__3_inference_3.3/fx_graph_readable.py",
+      "sha256": "f0308c04816ffd5671fc762163c909881a0e726d3eae5081f015362d6fd08958",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__3_inference_3.3/fx_graph_transformed.py",
+      "sha256": "f0308c04816ffd5671fc762163c909881a0e726d3eae5081f015362d6fd08958",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__3_inference_3.3/ir_post_fusion.txt",
+      "sha256": "6f974b5fba940c36873004625084606e37dcdcd7d289bbdd33bbd12f8d687a13",
+      "bytes": 2313
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__3_inference_3.3/ir_pre_fusion.txt",
+      "sha256": "abf5219ee5a3bbde8c76def99b4a907f1b80ace5ae6e29f0a1ce43a4bdd26606",
+      "bytes": 2451
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__3_inference_3.3/output_code.py",
+      "sha256": "48fe9ebf3d0019e92b019233bfabedf64e601679fdfd34120e583a9c3ce401d0",
+      "bytes": 14461
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__4_inference_4.4/fx_graph_readable.py",
+      "sha256": "4c04c9bc60ec5ff0c59f17a0785ff285bd98400096e9e6844033bd4e06f01909",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__4_inference_4.4/fx_graph_transformed.py",
+      "sha256": "4c04c9bc60ec5ff0c59f17a0785ff285bd98400096e9e6844033bd4e06f01909",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__4_inference_4.4/ir_post_fusion.txt",
+      "sha256": "607a008623281acf9c428afcd05329bc9a8334b619780a137dd988d04827abf0",
+      "bytes": 2305
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__4_inference_4.4/ir_pre_fusion.txt",
+      "sha256": "c61c1067f919934c72080fc38f48fa51f3ee378f90a7d5d81836f2aa905ad065",
+      "bytes": 2443
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__4_inference_4.4/output_code.py",
+      "sha256": "8558fec268c0912a1181687b458c5e9ed604f689078d2c5d123c67a5acfbc7fd",
+      "bytes": 14447
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__5_inference_5.5/fx_graph_readable.py",
+      "sha256": "93f94402e12e855217d4d80f5fae840ff545bad9f5bec8b980e68597370b3ca2",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__5_inference_5.5/fx_graph_transformed.py",
+      "sha256": "93f94402e12e855217d4d80f5fae840ff545bad9f5bec8b980e68597370b3ca2",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__5_inference_5.5/ir_post_fusion.txt",
+      "sha256": "56a8a438a345fd555ba5e3248ead55bb37a02d51c2a8d7a12b2534a0abb86d45",
+      "bytes": 2313
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__5_inference_5.5/ir_pre_fusion.txt",
+      "sha256": "5a800687b265e0439f432ec74540ad922ad54238cc66efe127d122182e4fd751",
+      "bytes": 2451
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__5_inference_5.5/output_code.py",
+      "sha256": "e07d06c2c4d323afb35a9a25e9f1687e7ee14ea02916720a5b203c2941514e2f",
+      "bytes": 14461
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__6_inference_6.6/fx_graph_readable.py",
+      "sha256": "32a7e5fd124293f8f60a4d5afba6bba724ea283c02d727eb0413108b738d097d",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__6_inference_6.6/fx_graph_transformed.py",
+      "sha256": "32a7e5fd124293f8f60a4d5afba6bba724ea283c02d727eb0413108b738d097d",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__6_inference_6.6/ir_post_fusion.txt",
+      "sha256": "63c3b267a70373eae12a2d940e739c3003b459bfc5bb97b458a2fa3e4e6eca16",
+      "bytes": 2305
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__6_inference_6.6/ir_pre_fusion.txt",
+      "sha256": "25f7bdbdd7ca6076e7e174eda7c8ad7198e645c99b9633cc069bdedcc2dee23c",
+      "bytes": 2443
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__6_inference_6.6/output_code.py",
+      "sha256": "2de4ba29ebbb1f597d36e5b2e2c6471b405b18a69a54d0bfacd11e14cafa7644",
+      "bytes": 14492
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__7_inference_7.7/fx_graph_readable.py",
+      "sha256": "eda944b0f9e1af25f6ab7dc664484e5dc2b24a3505033a9cdfc66270f8ed3d17",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__7_inference_7.7/fx_graph_transformed.py",
+      "sha256": "eda944b0f9e1af25f6ab7dc664484e5dc2b24a3505033a9cdfc66270f8ed3d17",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__7_inference_7.7/ir_post_fusion.txt",
+      "sha256": "4d188922c0fc02902c35f31d9a33f50c017c9ba82465ec55b191ea0116b87f34",
+      "bytes": 2313
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__7_inference_7.7/ir_pre_fusion.txt",
+      "sha256": "a1117b09c54992cb7fbde0ec41a3c3ef2da6cf4b95fc62dfc3b475c6bd11371d",
+      "bytes": 2451
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__7_inference_7.7/output_code.py",
+      "sha256": "28eb8280d0b37c9508df7a566000b90d79834a4bae985cae704f961585b177dc",
+      "bytes": 14506
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__8_inference_8.8/fx_graph_readable.py",
+      "sha256": "acb1ed26236bb2beae7129bc9438615b45871a557279945a6958666c061bbadf",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__8_inference_8.8/fx_graph_transformed.py",
+      "sha256": "acb1ed26236bb2beae7129bc9438615b45871a557279945a6958666c061bbadf",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__8_inference_8.8/ir_post_fusion.txt",
+      "sha256": "d7d5ffbefacf583d019b6e50b4f69d7e14f08c32fdb12fb08199807d6b27101f",
+      "bytes": 2305
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__8_inference_8.8/ir_pre_fusion.txt",
+      "sha256": "d672910570cad7cd697fc84c75a906290df2cea60ab4aa258e8a7dbe148d5a46",
+      "bytes": 2443
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__8_inference_8.8/output_code.py",
+      "sha256": "43b7d1bb88af01524f8b2ec47e273f106aee395e822117080be1d5e477d04f88",
+      "bytes": 14492
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__9_inference_9.9/fx_graph_readable.py",
+      "sha256": "f78c055880c5764db41e320129c447d8791d837ba022b67d4f29a319fe0a4417",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__9_inference_9.9/fx_graph_transformed.py",
+      "sha256": "f78c055880c5764db41e320129c447d8791d837ba022b67d4f29a319fe0a4417",
+      "bytes": 597
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__9_inference_9.9/ir_post_fusion.txt",
+      "sha256": "81e338c2a737aac7d48e8b64b4e9a2b1d677f8eed4a3f75604263da4d645e3cd",
+      "bytes": 2313
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__9_inference_9.9/ir_pre_fusion.txt",
+      "sha256": "faa216d92193e1b5c9098acacd31acfc739e6d2383fe3539e0772124afdabf5a",
+      "bytes": 2451
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/debug/torch_compile_debug/run_2026_09_15_10_46_15_975352-pid_1900224/torchinductor/model__9_inference_9.9/output_code.py",
+      "sha256": "d9ce54104f48b066e488c8f38ff4c98c498c01d2b11f8f389c4df30b40735fc2",
+      "bytes": 14506
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-000.txt",
+      "sha256": "2c52165bbded2debdcf841a1d11e663c6317a04c62004b22a504d644e63c85b8",
+      "bytes": 828
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-001.txt",
+      "sha256": "360fc1f8b70dad731be71d9b82648fad4e34686452b04372b304b55842a20f75",
+      "bytes": 842
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-002.txt",
+      "sha256": "ec9a9b31e2e42ed6854a9695624bd162d4306786d82eed336b9f3e6ead07424c",
+      "bytes": 828
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-003.txt",
+      "sha256": "a065761ff56a9d369066bf87cc2e9968c8fabcc9f0a6d53668b7e73e701d73ff",
+      "bytes": 842
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-004.txt",
+      "sha256": "0fcaa723d082ca2349922848f4e65c84d8a959ea4b5c83e26426a586ec292b09",
+      "bytes": 828
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-005.txt",
+      "sha256": "14bfa10b27d4bfd563826d9fe5d345da92dbb28d1b1b8df8c0f49368cdb78d82",
+      "bytes": 842
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-006.txt",
+      "sha256": "905e154915ec3adfcbbf5ac962bc6d0aba51bb34fbd67772ad247bc485759364",
+      "bytes": 843
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-007.txt",
+      "sha256": "1fb288b93533ccc9d2c985b465597f03f0047473c54b8b44aaea06db773305f3",
+      "bytes": 857
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-008.txt",
+      "sha256": "3767c7b1ef5b24479b8043368d6f00c2ced2c1b3171107a99a40d272dfb2e939",
+      "bytes": 843
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-009.txt",
+      "sha256": "c15d91020e780f80bc03425d3df89dc8a1a7d6814441c207a34c6ecc725aee6a",
+      "bytes": 857
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-010.txt",
+      "sha256": "c414ba71f88e98dda96fdf84be4be76f35d713b30c10648e33d357e039dd0fdd",
+      "bytes": 843
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-011.txt",
+      "sha256": "2d877a4ea82291f050ebd7965ba686480a443c0d8634421bc6e60c35bd103ed2",
+      "bytes": 857
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-012.txt",
+      "sha256": "905e154915ec3adfcbbf5ac962bc6d0aba51bb34fbd67772ad247bc485759364",
+      "bytes": 843
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-013.txt",
+      "sha256": "1fb288b93533ccc9d2c985b465597f03f0047473c54b8b44aaea06db773305f3",
+      "bytes": 857
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-014.txt",
+      "sha256": "3767c7b1ef5b24479b8043368d6f00c2ced2c1b3171107a99a40d272dfb2e939",
+      "bytes": 843
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-015.txt",
+      "sha256": "c15d91020e780f80bc03425d3df89dc8a1a7d6814441c207a34c6ecc725aee6a",
+      "bytes": 857
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-016.txt",
+      "sha256": "c414ba71f88e98dda96fdf84be4be76f35d713b30c10648e33d357e039dd0fdd",
+      "bytes": 843
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-017.txt",
+      "sha256": "2d877a4ea82291f050ebd7965ba686480a443c0d8634421bc6e60c35bd103ed2",
+      "bytes": 857
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-018.txt",
+      "sha256": "a065761ff56a9d369066bf87cc2e9968c8fabcc9f0a6d53668b7e73e701d73ff",
+      "bytes": 842
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-019.txt",
+      "sha256": "6c73ca1c1e8a0e291d2c526e3d5cc165b8722dccd354f804730a810a67e09165",
+      "bytes": 842
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/emitted-020.txt",
+      "sha256": "3642a892d10c2a4ca1ff7324f86b3905d1827d2572b5c2bfeeac39c65c0d6bae",
+      "bytes": 615
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/installed_triton_source.py",
+      "sha256": "86f310ce99960eb12ead8b67db7264c068a56f9ecb5e0e7a43a6e48cbcad5a57",
+      "bytes": 338186
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/progress.json",
+      "sha256": "92b31d9ed7f1e029fbe43f5663ed55b59c46d0d1e8f463d3bac58c9f55120908",
+      "bytes": 11194
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/result.json",
+      "sha256": "2ee42c50d68ee27d8d80ee68dd8bea6d50c8e079da4a91bdaa948c48b9ab1d1c",
+      "bytes": 16308
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed/runner_source.py",
+      "sha256": "5be369112a6a3dfc7ffe2dfba9b5f80dc24c9d545fcacb770c61f02af26de507",
+      "bytes": 6997
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed.stderr.log",
+      "sha256": "8afad0adda87261f72427aa5708aadca13a0ee4909967f2291a2ea234d8d4328",
+      "bytes": 10590
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/installed.stdout.log",
+      "sha256": "3c410850e56636d30088cd73eb0dce75ed926d87c4fd2afa3ceef571ef8d6092",
+      "bytes": 5661
+    },
+    {
+      "path": "issues/REF-sfdp-pattern-22-native/evidence/boundary-installed-20260915/run_result.json",
+      "sha256": "c79b40c78891e0ed89ab39edf43662328ecc01fd205c9ec6f6e424460f711524",
+      "bytes": 550
+    }
+  ],
+  "generated_output_code_present": true
+}

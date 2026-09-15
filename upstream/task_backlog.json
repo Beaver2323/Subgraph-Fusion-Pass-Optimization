@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-09-15T01:37:00+08:00",
+  "generated_at": "2026-09-15T11:59:00+08:00",
   "scope": "T-074 FX inventory 的剩余 provisional 单元；不是全 Inductor 分母",
   "source_inventory": {
     "path": "report/upstream_pass_test_index_20260829/acceptance_units.csv",
@@ -2272,7 +2272,7 @@
             "test/inductor/test_fused_attention.py::TestSDPAPatternRewriterTemplate._test_sdpa_rewriter_22"
           ],
           "coverage_hint": "direct-trigger-test",
-          "review_disposition": "awaiting-gpu-reference"
+          "review_disposition": "formally-closed"
         },
         {
           "provisional_unit_id": "AU-fuse-attention-sfdp-pattern-23",
@@ -2310,7 +2310,7 @@
       ],
       "reference_frozen": false,
       "formally_closed": false,
-      "formally_closed_units": 2,
+      "formally_closed_units": 3,
       "ready_acceptance_units": [
         "AU-fuse-attention-sfdp-pattern-21",
         "AU-fuse-attention-sfdp-pattern-22",

@@ -1,0 +1,16 @@
+x0offset = (group_base + i) % x0_blocks * real_block_x0
+x1offset = (group_base + i) // x_cumblk_1 % x1_blocks * real_block_x1
+x2offset = (group_base + i) // x_cumblk_2 % x2_blocks * real_block_x2
+x0index = x0offset + tl.arange(0, real_block_x0)[None, None, :]
+x0 = x0index
+x0mask = x0index < x0numel
+x1index = x1offset + tl.arange(0, real_block_x1)[None, :, None]
+x1 = x1index
+x1mask = x1index < x1numel
+x2index = x2offset + tl.arange(0, real_block_x2)[:, None, None]
+x2 = x2index
+x2mask = x2index < x2numel
+xmask = x0mask & x1mask & x2mask
+_es_lane0 = tl.arange(0, 4)[None, None, :]
+_es_full0 = tl.load(in_ptr0 + (3 + 4 * x1) + _es_lane0, x1mask & ((3 + 4 * x1 + _es_lane0 >= 0) & (3 + 4 * x1 + _es_lane0 < 28)), eviction_policy='evict_last')
+tmp0 = extract_slice(_es_full0, [0, 0, 0], [_es_full0.shape[0], _es_full0.shape[1], 1], [1, 1, 1])
