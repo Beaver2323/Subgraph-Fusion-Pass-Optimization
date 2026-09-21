@@ -1,0 +1,3 @@
+[2026/09/21 10:37:38.763 GMT+08:00] [code check 2026-09-21 10:17:18] create task success
+[2026/09/21 10:37:38.763 GMT+08:00] [codecheck check 2026-09-21 10:37:28] get task results failed, timeout after multiple attempts.
+[2026/09/21 10:37:38.781 GMT+08:00] [ERROR]  : script returned exit code 255, exitMessage is: command run failed

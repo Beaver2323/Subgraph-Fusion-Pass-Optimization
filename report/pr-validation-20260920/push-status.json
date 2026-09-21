@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-09-21T02:30:36.335490+00:00",
+  "checked_at": "2026-09-21T02:51:34.009769+00:00",
   "prs": {
     "46464": {
       "title": "fix(triton_experimental): match SFDP 1-5 training with NPU decompositions",
@@ -9,7 +9,7 @@
       "pipeline": {
         "number": "68808",
         "url": "https://www.openlibing.com/apps/pipelineDetail?projectId=4&pipelineId=9ab4a8ad25bd4afeb808647efc5fc2f1&pipelineRunId=0f3e025422a248138fde878a83d93274&codeHostingPlatformFlag=gitcode",
-        "state": "运行中",
+        "state": "第 1 次定向重试运行中",
         "comment_id": 190803046,
         "updated_at": "2026-09-21T10:12:10+08:00"
       },
@@ -21,6 +21,16 @@
           "body": "compile",
           "note_id": 190802874
         }
+      },
+      "codecheck_retry": {
+        "requested_at": "2026-09-21T02:48:51.966857+00:00",
+        "head": "3b3d6e426fce0f9ff87d993066c8ab0c39a53c3d",
+        "reason": "codecheck result polling timeout",
+        "response": {
+          "id": "b07d78ad0c44381acf05f0d69d4842b29d16e82d",
+          "body": "retry codecheck_pre-commit",
+          "note_id": 190816888
+        }
       }
     },
     "46465": {
@@ -31,7 +41,7 @@
       "pipeline": {
         "number": "68809",
         "url": "https://www.openlibing.com/apps/pipelineDetail?projectId=4&pipelineId=9ab4a8ad25bd4afeb808647efc5fc2f1&pipelineRunId=5b8c0c291ceb4ae9b670165bf1a9c888&codeHostingPlatformFlag=gitcode",
-        "state": "运行中",
+        "state": "第 1 次定向重试运行中",
         "comment_id": 190803052,
         "updated_at": "2026-09-21T10:12:11+08:00"
       },
@@ -43,6 +53,16 @@
           "body": "compile",
           "note_id": 190802903
         }
+      },
+      "codecheck_retry": {
+        "requested_at": "2026-09-21T02:48:53.620601+00:00",
+        "head": "8eb561265599db4da80a8828e461488598645f5a",
+        "reason": "codecheck result polling timeout",
+        "response": {
+          "id": "dccd7d84fa9813948c353c3eab7fd4051e4d2413",
+          "body": "retry codecheck_pre-commit",
+          "note_id": 190816902
+        }
       }
     },
     "46466": {
@@ -53,7 +73,7 @@
       "pipeline": {
         "number": "68810",
         "url": "https://www.openlibing.com/apps/pipelineDetail?projectId=4&pipelineId=9ab4a8ad25bd4afeb808647efc5fc2f1&pipelineRunId=a9da6aa9b0fe418bab3669cb934f7def&codeHostingPlatformFlag=gitcode",
-        "state": "运行中",
+        "state": "第 1 次定向重试运行中",
         "comment_id": 190803058,
         "updated_at": "2026-09-21T10:12:12+08:00"
       },
@@ -65,6 +85,16 @@
           "body": "compile",
           "note_id": 190802918
         }
+      },
+      "codecheck_retry": {
+        "requested_at": "2026-09-21T02:48:55.200883+00:00",
+        "head": "8f2260a798551f815a223b2459ab8da069a468a2",
+        "reason": "codecheck result polling timeout",
+        "response": {
+          "id": "12ce83857674f54f099922f0ce72dc437dcbd002",
+          "body": "retry codecheck_pre-commit",
+          "note_id": 190816907
+        }
       }
     },
     "46468": {
@@ -75,7 +105,7 @@
       "pipeline": {
         "number": "68812",
         "url": "https://www.openlibing.com/apps/pipelineDetail?projectId=4&pipelineId=9ab4a8ad25bd4afeb808647efc5fc2f1&pipelineRunId=ceeea5b39ebc4782a7b9c29a957913c8&codeHostingPlatformFlag=gitcode",
-        "state": "运行中",
+        "state": "第 1 次定向重试运行中",
         "comment_id": 190804402,
         "updated_at": "2026-09-21T10:16:36+08:00"
       },
@@ -86,6 +116,16 @@
           "id": "05e9f3cc310e9b0fe44c3be15eed30dff6a33561",
           "body": "compile",
           "note_id": 190804298
+        }
+      },
+      "codecheck_retry": {
+        "requested_at": "2026-09-21T02:50:47.819204+00:00",
+        "head": "4b7059b2dc8db2e931e0122a115d5f075d33f33d",
+        "reason": "codecheck result polling timeout",
+        "response": {
+          "id": "3816b30a607fe26dbc9bbe418607137400c09a28",
+          "body": "retry codecheck_pre-commit",
+          "note_id": 190817837
         }
       }
     }
