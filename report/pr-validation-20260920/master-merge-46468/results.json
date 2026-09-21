@@ -1,0 +1,155 @@
+[
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_fp16_strided_and_broadcast_inputs",
+    "device": 0,
+    "exit_code": 0,
+    "result": "00.json",
+    "log": "00.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/00/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/00/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_fp16_value_one_preserves_div_rounding_without_refusion",
+    "device": 1,
+    "exit_code": 0,
+    "result": "01.json",
+    "log": "01.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/01/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/01/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_bfloat16_value_-0_75",
+    "device": 0,
+    "exit_code": 0,
+    "result": "02.json",
+    "log": "02.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/02/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/02/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_bfloat16_value_0_1",
+    "device": 1,
+    "exit_code": 0,
+    "result": "03.json",
+    "log": "03.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/03/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/03/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_bfloat16_value_0_3",
+    "device": 0,
+    "exit_code": 0,
+    "result": "04.json",
+    "log": "04.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/04/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/04/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_bfloat16_value_1_3",
+    "device": 1,
+    "exit_code": 0,
+    "result": "05.json",
+    "log": "05.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/05/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/05/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_bfloat16_value_2_0",
+    "device": 0,
+    "exit_code": 0,
+    "result": "06.json",
+    "log": "06.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/06/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/06/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float16_value_-0_75",
+    "device": 1,
+    "exit_code": 0,
+    "result": "07.json",
+    "log": "07.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/07/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/07/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float16_value_0_1",
+    "device": 0,
+    "exit_code": 0,
+    "result": "08.json",
+    "log": "08.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/08/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/08/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float16_value_0_3",
+    "device": 1,
+    "exit_code": 0,
+    "result": "09.json",
+    "log": "09.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/09/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/09/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float16_value_1_3",
+    "device": 0,
+    "exit_code": 0,
+    "result": "10.json",
+    "log": "10.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/10/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/10/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float16_value_2_0",
+    "device": 1,
+    "exit_code": 0,
+    "result": "11.json",
+    "log": "11.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/11/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/11/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float32_value_-0_75",
+    "device": 0,
+    "exit_code": 0,
+    "result": "12.json",
+    "log": "12.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/12/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/12/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float32_value_0_1",
+    "device": 1,
+    "exit_code": 0,
+    "result": "13.json",
+    "log": "13.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/13/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/13/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float32_value_0_3",
+    "device": 0,
+    "exit_code": 0,
+    "result": "14.json",
+    "log": "14.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/14/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/14/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float32_value_1_3",
+    "device": 1,
+    "exit_code": 0,
+    "result": "15.json",
+    "log": "15.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/15/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/15/test.log"
+  },
+  {
+    "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float32_value_2_0",
+    "device": 0,
+    "exit_code": 0,
+    "result": "16.json",
+    "log": "16.log",
+    "original_result": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/16/result.json",
+    "original_log": "/mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/16/test.log"
+  }
+]

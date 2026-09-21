@@ -1,0 +1,22 @@
+/home/z50063656/Pass/src/pytorch/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/home/z50063656/Pass/pr-regression-20260920/runtime-master-merge/46468/torch_npu/dynamo/__init__.py:182: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_fp16_strided_and_broadcast_inputs (pr_regression_test.TestTritonExperimentalAddcdivPrecision.test_fp16_strided_and_broadcast_inputs) ... [W921 10:02:08.834017500 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+2026-09-21 10:02:09,985 - WARNING - [tile-contract] unhealthy-unfixable: load '2*x0 + 128*x1' -> no-rescue at XB=936
+2026-09-21 10:02:09,985 - WARNING - [tile-contract] unhealthy-unfixable: load '2*x0 + 128*x1' -> no-rescue at XB=1024
+2026-09-21 10:02:09,986 - WARNING - [tile-contract] unhealthy-unfixable: load '2*x0 + 128*x1' -> no-rescue at XB=1864
+2026-09-21 10:02:09,987 - WARNING - [tile-contract] unhealthy-unfixable: load '2*x0 + 128*x1' -> no-rescue at XB=2048
+2026-09-21 10:02:09,988 - WARNING - [tile-contract] unhealthy-unfixable: load '2*x0 + 128*x1' -> no-rescue at XB=2792
+2026-09-21 10:02:09,989 - WARNING - [tile-contract] unhealthy-unfixable: load '2*x0 + 128*x1' -> no-rescue at XB=3720
+2026-09-21 10:02:09,989 - WARNING - [tile-contract] unhealthy-unfixable: load '2*x0 + 128*x1' -> no-rescue at XB=4096
+2026-09-21 10:02:09,990 - WARNING - [tile-contract] unhealthy-unfixable: load '2*x0 + 128*x1' -> no-rescue at XB=6144
+W0921 10:02:35.239000 470634 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /mnt/share/z50063656/AscendForge/runs/pr46468-master-merge-20260920/regression/00/debug/torch_compile_debug/run_2026_09_21_10_02_08_767075-pid_470634/torchinductor/model__0_inference_0.0
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 27.653s
+
+OK

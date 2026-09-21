@@ -1,0 +1,13 @@
+{
+  "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float32_value_2_0",
+  "source": "/home/z50063656/Pass/pr-regression-20260920/46468/test/_inductor/test_triton_experimental_addcdiv_precision.py",
+  "torch": "2.14.0a0+git8e86e0a",
+  "torch_npu": "2.14.0a0+git0095e02",
+  "backend_file": "/home/z50063656/Pass/pr-regression-20260920/runtime-master-merge/46468/torch_npu/_inductor/triton_experimental/__init__.py",
+  "pr_head": "2d4e07aa7d44d6b2ce10e49821c818743b78a477",
+  "tests_run": 1,
+  "skips": [],
+  "errors": [],
+  "failures": [],
+  "passed": true
+}
