@@ -1,9 +1,18 @@
 {
-  "checked_at": "2026-09-21T02:17:20.604293+00:00",
+  "checked_at": "2026-09-21T02:30:36.335490+00:00",
   "prs": {
     "46464": {
+      "title": "fix(triton_experimental): match SFDP 1-5 training with NPU decompositions",
+      "draft": false,
       "head": "3b3d6e426fce0f9ff87d993066c8ab0c39a53c3d",
       "cla": "ascend-cla/yes",
+      "pipeline": {
+        "number": "68808",
+        "url": "https://www.openlibing.com/apps/pipelineDetail?projectId=4&pipelineId=9ab4a8ad25bd4afeb808647efc5fc2f1&pipelineRunId=0f3e025422a248138fde878a83d93274&codeHostingPlatformFlag=gitcode",
+        "state": "运行中",
+        "comment_id": 190803046,
+        "updated_at": "2026-09-21T10:12:10+08:00"
+      },
       "ci_trigger": {
         "head": "3b3d6e426fce0f9ff87d993066c8ab0c39a53c3d",
         "command": "compile",
@@ -15,8 +24,17 @@
       }
     },
     "46465": {
+      "title": "fix(triton_experimental): resolve experimental NPU device at runtime for CooR",
+      "draft": false,
       "head": "8eb561265599db4da80a8828e461488598645f5a",
       "cla": "ascend-cla/yes",
+      "pipeline": {
+        "number": "68809",
+        "url": "https://www.openlibing.com/apps/pipelineDetail?projectId=4&pipelineId=9ab4a8ad25bd4afeb808647efc5fc2f1&pipelineRunId=5b8c0c291ceb4ae9b670165bf1a9c888&codeHostingPlatformFlag=gitcode",
+        "state": "运行中",
+        "comment_id": 190803052,
+        "updated_at": "2026-09-21T10:12:11+08:00"
+      },
       "ci_trigger": {
         "head": "8eb561265599db4da80a8828e461488598645f5a",
         "command": "compile",
@@ -28,8 +46,17 @@
       }
     },
     "46466": {
+      "title": "fix(triton_experimental): correct experimental NPU FP32 E8M0 encoding",
+      "draft": false,
       "head": "8f2260a798551f815a223b2459ab8da069a468a2",
       "cla": "ascend-cla/yes",
+      "pipeline": {
+        "number": "68810",
+        "url": "https://www.openlibing.com/apps/pipelineDetail?projectId=4&pipelineId=9ab4a8ad25bd4afeb808647efc5fc2f1&pipelineRunId=a9da6aa9b0fe418bab3669cb934f7def&codeHostingPlatformFlag=gitcode",
+        "state": "运行中",
+        "comment_id": 190803058,
+        "updated_at": "2026-09-21T10:12:12+08:00"
+      },
       "ci_trigger": {
         "head": "8f2260a798551f815a223b2459ab8da069a468a2",
         "command": "compile",
@@ -41,8 +68,17 @@
       }
     },
     "46468": {
+      "title": "fix(triton_experimental): preserve NPU addcdiv low-precision rounding",
+      "draft": false,
       "head": "4b7059b2dc8db2e931e0122a115d5f075d33f33d",
       "cla": "ascend-cla/yes",
+      "pipeline": {
+        "number": "68812",
+        "url": "https://www.openlibing.com/apps/pipelineDetail?projectId=4&pipelineId=9ab4a8ad25bd4afeb808647efc5fc2f1&pipelineRunId=ceeea5b39ebc4782a7b9c29a957913c8&codeHostingPlatformFlag=gitcode",
+        "state": "运行中",
+        "comment_id": 190804402,
+        "updated_at": "2026-09-21T10:16:36+08:00"
+      },
       "ci_trigger": {
         "head": "4b7059b2dc8db2e931e0122a115d5f075d33f33d",
         "command": "compile",
