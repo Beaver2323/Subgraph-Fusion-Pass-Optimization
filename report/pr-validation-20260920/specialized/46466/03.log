@@ -1,0 +1,17 @@
+/home/z50063656/Pass/src/pytorch/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/home/z50063656/Pass/pr-regression-20260920/runtime-v2/46466/torch_npu/dynamo/__init__.py:182: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_non_fp32_inputs_are_not_rewritten (pr_regression_test.TestTritonExperimentalE8M0.test_non_fp32_inputs_are_not_rewritten) ... [W920 21:15:54.891944310 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0920 21:16:17.542000 2106392 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/debug/torch_compile_debug/run_2026_09_20_21_15_54_802288-pid_2106392/torchinductor/model__0_inference_0.0
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0920 21:16:24.920000 2106392 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_inference_1 debug trace: /mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/debug/torch_compile_debug/run_2026_09_20_21_15_54_802288-pid_2106392/torchinductor/model__1_inference_1.1
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 30.891s
+
+OK

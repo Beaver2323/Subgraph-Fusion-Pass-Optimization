@@ -1,0 +1,13 @@
+{
+  "case": "TestTritonExperimentalSfdpTraining.test_training_pattern_pattern_2_float32",
+  "source": "/home/z50063656/Pass/pr-regression-20260920/46464/test/_inductor/test_triton_experimental_sfdp_training.py",
+  "torch": "2.14.0a0+git8e86e0a",
+  "torch_npu": "2.14.0a0+git0095e02",
+  "backend_file": "/home/z50063656/Pass/pr-regression-20260920/runtime-v2/46464/torch_npu/_inductor/triton_experimental/__init__.py",
+  "pr_head": "6bb5dbe3789b27c8640e2c77762b3f3eb0ff263a",
+  "tests_run": 1,
+  "skips": [],
+  "errors": [],
+  "failures": [],
+  "passed": true
+}

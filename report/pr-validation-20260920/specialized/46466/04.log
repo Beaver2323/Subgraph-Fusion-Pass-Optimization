@@ -1,0 +1,15 @@
+/home/z50063656/Pass/src/pytorch/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/home/z50063656/Pass/pr-regression-20260920/runtime-v2/46466/torch_npu/dynamo/__init__.py:182: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_strided_input (pr_regression_test.TestTritonExperimentalE8M0.test_strided_input) ... [W920 21:16:38.073419130 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0920 21:16:59.081000 2113476 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/debug/torch_compile_debug/run_2026_09_20_21_16_38_631708-pid_2113476/torchinductor/model__0_inference_0.0
+[W920 21:16:59.655693860 TensorFactories.cpp:406] Warning: Cannot create tensor with internal format while allow_internal_format=False, tensor will be created with base format. (function operator())
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 21.346s
+
+OK

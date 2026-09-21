@@ -1,0 +1,922 @@
+[
+  {
+    "file": "models/status.tsv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/status.tsv",
+    "sha256": "71037c4879585fadf26a9c85baf5abed3089fa2a86354f5908ed7973c5f7b034"
+  },
+  {
+    "file": "models/identity.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/identity.json",
+    "sha256": "9bb78a6d3926c34caf4bf1c062f62f4c076b8df770a107d3865dde044ea1733e"
+  },
+  {
+    "file": "models/progress.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/progress.json",
+    "sha256": "8ec382b05fe7ec6e7a5d48cd69a12ac0ee13b35b3878e1c564bfb9228ef57f40"
+  },
+  {
+    "file": "models/results/matrix_torchbench_mobilenet_v3_large_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_mobilenet_v3_large_aclgraph_off_dynamic_off.csv",
+    "sha256": "a4f7679667266c36f5180ee8bb03fed893d75f549b3c06c66b6ec6e48e408b3a"
+  },
+  {
+    "file": "models/results/matrix_torchbench_mobilenet_v3_large_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_mobilenet_v3_large_aclgraph_off_dynamic_on.csv",
+    "sha256": "a4f7679667266c36f5180ee8bb03fed893d75f549b3c06c66b6ec6e48e408b3a"
+  },
+  {
+    "file": "models/results/matrix_torchbench_tts_angular_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_tts_angular_aclgraph_off_dynamic_off.csv",
+    "sha256": "efd242015d0cdca8660714aede2db0fc540724ff90f16895c12669ba7dec0b7f"
+  },
+  {
+    "file": "models/results/matrix_torchbench_alexnet_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_alexnet_aclgraph_off_dynamic_off.csv",
+    "sha256": "045f1d0e81825129a96639ccaea21535fb02f0e4aae38fda1d9e7517bea6a165"
+  },
+  {
+    "file": "models/results/matrix_torchbench_tts_angular_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_tts_angular_aclgraph_off_dynamic_on.csv",
+    "sha256": "efd242015d0cdca8660714aede2db0fc540724ff90f16895c12669ba7dec0b7f"
+  },
+  {
+    "file": "models/results/matrix_torchbench_lennard_jones_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_lennard_jones_aclgraph_off_dynamic_off.csv",
+    "sha256": "ef90fe57d8504e27c44ed1ae3b19d9025f486c7829e62e961e22198d13ab1c81"
+  },
+  {
+    "file": "models/results/matrix_torchbench_nvidia_deeprecommender_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_nvidia_deeprecommender_aclgraph_off_dynamic_off.csv",
+    "sha256": "aa6931e4da7bb8b2f28fc83e8caaec3d00a9879a7bfc3203a26ebc971e30b90e"
+  },
+  {
+    "file": "models/results/matrix_torchbench_maml_omniglot_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_maml_omniglot_aclgraph_off_dynamic_off.csv",
+    "sha256": "192c54f7dc5c1e2ae3513b7a853564a34e55b006101e06a3be82890be830bc86"
+  },
+  {
+    "file": "models/results/matrix_torchbench_alexnet_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_alexnet_aclgraph_off_dynamic_on.csv",
+    "sha256": "ec05e1569c99018d3a1a7767e4bd4b9dc8f29ca94975ad3f4a8429339813d98a"
+  },
+  {
+    "file": "models/results/matrix_torchbench_vgg16_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_vgg16_aclgraph_off_dynamic_off.csv",
+    "sha256": "c69d757cd81d12ce75c17e1c77c36f59a407defebc474f3ebb6df257ec721294"
+  },
+  {
+    "file": "models/results/matrix_torchbench_lennard_jones_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_lennard_jones_aclgraph_off_dynamic_on.csv",
+    "sha256": "ef90fe57d8504e27c44ed1ae3b19d9025f486c7829e62e961e22198d13ab1c81"
+  },
+  {
+    "file": "models/results/matrix_torchbench_vgg16_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_vgg16_aclgraph_off_dynamic_on.csv",
+    "sha256": "989454224c85e987e980057f89743b54bd332cbcef94e23773577aa3f78faeb4"
+  },
+  {
+    "file": "models/results/matrix_torchbench_nvidia_deeprecommender_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_nvidia_deeprecommender_aclgraph_off_dynamic_on.csv",
+    "sha256": "cd727ed77b5a4c123bd004f0f2de42ffaae022bf8c6e739ee84c4ec90b81b1ff"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Whisper_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Whisper_aclgraph_off_dynamic_off.csv",
+    "sha256": "fea0b6ee25ae96778fac5ecbd685d156cf86e055acb288bf9faf63f316ddb723"
+  },
+  {
+    "file": "models/results/matrix_torchbench_basic_gnn_sage_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_basic_gnn_sage_aclgraph_off_dynamic_off.csv",
+    "sha256": "7fdf657639918ed2c37fd42cd38460d274b6ff20db56ba9764c204eeac0e7bbd"
+  },
+  {
+    "file": "models/results/matrix_torchbench_maml_omniglot_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_maml_omniglot_aclgraph_off_dynamic_on.csv",
+    "sha256": "782ee8411aaedcd65a4cc131349d41ac2406501245c15b0c19358922629520fb"
+  },
+  {
+    "file": "models/results/matrix_torchbench_basic_gnn_sage_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_basic_gnn_sage_aclgraph_off_dynamic_on.csv",
+    "sha256": "b8ed00c044370d76bb2021eede482cd5e82177460ad469a6099870e08d307bdb"
+  },
+  {
+    "file": "models/results/matrix_torchbench_dlrm_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_dlrm_aclgraph_off_dynamic_off.csv",
+    "sha256": "1d462569a00f9c6c229de909d1a24c11021f6e616d0afc1112306d463942aa8f"
+  },
+  {
+    "file": "models/results/matrix_torchbench_squeezenet1_1_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_squeezenet1_1_aclgraph_off_dynamic_off.csv",
+    "sha256": "fded80b9e47fa084bac217fc3aa075727b067bda6b4776fbbdce25b7f27dca6c"
+  },
+  {
+    "file": "models/results/matrix_torchbench_functorch_maml_omniglot_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_functorch_maml_omniglot_aclgraph_off_dynamic_off.csv",
+    "sha256": "ff8ae43b251c6fff92a22089942ff3e20fd3407d59ddff31f9a6a9294b2e495d"
+  },
+  {
+    "file": "models/results/matrix_torchbench_phlippe_resnet_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_phlippe_resnet_aclgraph_off_dynamic_off.csv",
+    "sha256": "80ef5c4b714ec28ff4c77b1ccdc32078b83aa087dcfb75de24bb339ff905e8ea"
+  },
+  {
+    "file": "models/results/matrix_torchbench_dlrm_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_dlrm_aclgraph_off_dynamic_on.csv",
+    "sha256": "3486560518eb54d67c0c1d2bc225f7a0f247ccfb06f4531c2a656761c12e384c"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Whisper_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Whisper_aclgraph_off_dynamic_on.csv",
+    "sha256": "abfc93b3bb584a20fb18b6776c3d7b64e5f0983c34f2270d2eb9d91eb83dbd6c"
+  },
+  {
+    "file": "models/results/matrix_torchbench_squeezenet1_1_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_squeezenet1_1_aclgraph_off_dynamic_on.csv",
+    "sha256": "35d283bf447f9d08fdcdd561da57aadedbd8f25d72366cfb4a727d516349346c"
+  },
+  {
+    "file": "models/results/matrix_torchbench_dcgan_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_dcgan_aclgraph_off_dynamic_off.csv",
+    "sha256": "4088a04477ce70f7c3cab8dc77018d2fa955e545e45206152fb28e4eba55d7d5"
+  },
+  {
+    "file": "models/results/matrix_torchbench_functorch_maml_omniglot_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_functorch_maml_omniglot_aclgraph_off_dynamic_on.csv",
+    "sha256": "aaf01a7e9703ad7eb9bced350bf279ff4292303c3e1c1c56fe897766e5a3b66a"
+  },
+  {
+    "file": "models/results/matrix_torchbench_LearningToPaint_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_LearningToPaint_aclgraph_off_dynamic_off.csv",
+    "sha256": "4a05a1ad6b0111e8030c53bfbeaf34ad2406362734846afafeb79de00328f2f4"
+  },
+  {
+    "file": "models/results/matrix_torchbench_soft_actor_critic_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_soft_actor_critic_aclgraph_off_dynamic_off.csv",
+    "sha256": "04660e31db94407e8a7d7950d6e6b7a2a8857610588b4c36c9aef2fd69245725"
+  },
+  {
+    "file": "models/results/matrix_torchbench_dcgan_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_dcgan_aclgraph_off_dynamic_on.csv",
+    "sha256": "43f338fb31e4ffea023a6e7bc028f1bcf62e28cb1682bb0449a661a445561b0c"
+  },
+  {
+    "file": "models/results/matrix_torchbench_soft_actor_critic_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_soft_actor_critic_aclgraph_off_dynamic_on.csv",
+    "sha256": "115524b4f0f696ed9b3a295514259fbcc59d93edbfc3f55d10568cb22fd5899e"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_distil_whisper_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_distil_whisper_aclgraph_off_dynamic_off.csv",
+    "sha256": "3781b2979027f923327027b6766f7699c8c7ebe6273a9d656def41f820fb4ad9"
+  },
+  {
+    "file": "models/results/matrix_torchbench_phlippe_resnet_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_phlippe_resnet_aclgraph_off_dynamic_on.csv",
+    "sha256": "54368ecf9c33553a5a10d70293cad827635b761d205c365c9ee14b4ce3cc3059"
+  },
+  {
+    "file": "models/results/matrix_torchbench_timm_vision_transformer_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_timm_vision_transformer_aclgraph_off_dynamic_off.csv",
+    "sha256": "02ab66ef96af38a70d079645c04ef3ad338f5f5b7dc13a6c04cbc7c8fff9054b"
+  },
+  {
+    "file": "models/results/matrix_torchbench_drq_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_drq_aclgraph_off_dynamic_off.csv",
+    "sha256": "b06f36e35092f30f5b0d1b779a722b07ff834ffc6b008a262e852a97da58d525"
+  },
+  {
+    "file": "models/results/matrix_torchbench_resnet18_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_resnet18_aclgraph_off_dynamic_off.csv",
+    "sha256": "ab9d9c0ed6eb119b9f85b8fedfa0303e5d22f6a2eb8b3b40340216e5167b7467"
+  },
+  {
+    "file": "models/results/matrix_torchbench_pytorch_stargan_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_pytorch_stargan_aclgraph_off_dynamic_off.csv",
+    "sha256": "cab60a694594b13ec29c563dfd868351377cd79ca06fa130aa047639a353022f"
+  },
+  {
+    "file": "models/results/matrix_torchbench_drq_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_drq_aclgraph_off_dynamic_on.csv",
+    "sha256": "b06f3fbc5cb65f611bad2b4970aba54c95216fedd7dd6511a2461b4a4951d96f"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_distil_whisper_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_distil_whisper_aclgraph_off_dynamic_on.csv",
+    "sha256": "0ff4669f103a380031503af62c61aab5c09739a7aa73b5c8be7f1a37b31ac92b"
+  },
+  {
+    "file": "models/results/matrix_torchbench_basic_gnn_gcn_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_basic_gnn_gcn_aclgraph_off_dynamic_off.csv",
+    "sha256": "d6763f688dfe6c7c19e96e9f78178fc2e6bdc7158f15c286a90203ef499000f3"
+  },
+  {
+    "file": "models/results/matrix_torchbench_LearningToPaint_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_LearningToPaint_aclgraph_off_dynamic_on.csv",
+    "sha256": "25d6c4fb8e2ef8640a0f631e7c445b921af52fe3d2961ff0f2ae086931402f8f"
+  },
+  {
+    "file": "models/results/matrix_torchbench_basic_gnn_gcn_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_basic_gnn_gcn_aclgraph_off_dynamic_on.csv",
+    "sha256": "376aa98176a61825b2bb0e82231eb319efa2555eaf5e99f8d44ec8c1b4e6b11b"
+  },
+  {
+    "file": "models/results/matrix_torchbench_pytorch_stargan_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_pytorch_stargan_aclgraph_off_dynamic_on.csv",
+    "sha256": "f1aeac964f738e998901799fbf0156888254417013b9560fc43564b08cf4c85b"
+  },
+  {
+    "file": "models/results/matrix_torchbench_timm_vision_transformer_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_timm_vision_transformer_aclgraph_off_dynamic_on.csv",
+    "sha256": "f2e9ff742eb3102ff6cd273500ee7e37cab9f16a510dc1100fdc6ad27f9298c4"
+  },
+  {
+    "file": "models/results/matrix_torchbench_resnet18_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_resnet18_aclgraph_off_dynamic_on.csv",
+    "sha256": "cf47f60c39020d86b17ccd4a67e2b46c107909b1f66afb6817bafc9530719d6c"
+  },
+  {
+    "file": "models/results/matrix_torchbench_llama_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_llama_aclgraph_off_dynamic_off.csv",
+    "sha256": "d06bf83d017a3f82ab1ee18abe39ba59d3d245977a7b7fd0703814a085ef0499"
+  },
+  {
+    "file": "models/results/matrix_torchbench_basic_gnn_edgecnn_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_basic_gnn_edgecnn_aclgraph_off_dynamic_off.csv",
+    "sha256": "7d047908e3e45da4601d70b8933b4e26a135cebbb3aa9b4daa0ff59d05a5570b"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_GPT2_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_GPT2_aclgraph_off_dynamic_off.csv",
+    "sha256": "6bcc7cbf24038e342604ddb41c7d2d2ca93b2a1d9f1b479cc2a39074b36fc0fc"
+  },
+  {
+    "file": "models/results/matrix_torchbench_phlippe_densenet_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_phlippe_densenet_aclgraph_off_dynamic_off.csv",
+    "sha256": "3009b068df1d7b11af709ead074661ad0f5a611a30cde6900fdc24c18e360641"
+  },
+  {
+    "file": "models/results/matrix_torchbench_basic_gnn_edgecnn_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_basic_gnn_edgecnn_aclgraph_off_dynamic_on.csv",
+    "sha256": "ec32d6bcfd333d5dedd350a30cf0e1a5258ed09a9b00faeda48351fd035a6395"
+  },
+  {
+    "file": "models/results/matrix_torchbench_nanogpt_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_nanogpt_aclgraph_off_dynamic_off.csv",
+    "sha256": "13fec9f94935dbcc8527f505f5afb475965a4eacd612823159a5f4ac620094da"
+  },
+  {
+    "file": "models/results/matrix_torchbench_shufflenet_v2_x1_0_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_shufflenet_v2_x1_0_aclgraph_off_dynamic_off.csv",
+    "sha256": "b0837507d28b1c610f82a0fde11f61c049c32395fa52bf6cf6b6a4220fba55c6"
+  },
+  {
+    "file": "models/results/matrix_torchbench_llama_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_llama_aclgraph_off_dynamic_on.csv",
+    "sha256": "bdd7ccc603a608409da7b8324f4c759e0478406ef94bbd34ea6e42b4ff6f93db"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_DistilBert_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_DistilBert_aclgraph_off_dynamic_off.csv",
+    "sha256": "d14ac2ac75df8547176dd13109d1df8c27181e43ff325cba52ac367c8b47b774"
+  },
+  {
+    "file": "models/results/matrix_torchbench_nanogpt_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_nanogpt_aclgraph_off_dynamic_on.csv",
+    "sha256": "729b8b34ee87ed75c6ce71957993a1ca545415caadea7d4d422931d10cd45463"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_GPT2_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_GPT2_aclgraph_off_dynamic_on.csv",
+    "sha256": "101ad350765222bf3b6868c48cad9ce61c6516edea3f03a6e65ae108af30646b"
+  },
+  {
+    "file": "models/results/matrix_torchbench_shufflenet_v2_x1_0_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_shufflenet_v2_x1_0_aclgraph_off_dynamic_on.csv",
+    "sha256": "ab8f4e20b894b9627bf4cd99852ffba0ff1297ce03003e31342772987b53ae60"
+  },
+  {
+    "file": "models/results/matrix_torchbench_phlippe_densenet_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_phlippe_densenet_aclgraph_off_dynamic_on.csv",
+    "sha256": "fe81cd4b4352ebb0f57a5255ae1d410e2a7ee507db0b6ebebc90f327eda9bf3d"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_DistilBert_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_DistilBert_aclgraph_off_dynamic_on.csv",
+    "sha256": "629fb98b06936acd99fa76f2f60f9ac3f7e1c7d4cb91f970be561502c9b65830"
+  },
+  {
+    "file": "models/results/matrix_torchbench_resnet50_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_resnet50_aclgraph_off_dynamic_off.csv",
+    "sha256": "b9d446a74d4219ab91f4886ee37dcf42b2dc44193d682cadca9ad8a5c928214a"
+  },
+  {
+    "file": "models/results/matrix_torchbench_timm_vovnet_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_timm_vovnet_aclgraph_off_dynamic_off.csv",
+    "sha256": "3773e60b1ae43499b8a5ef47767356d273b40edd56cc2c7d439216d5a4d340b4"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Bert_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Bert_aclgraph_off_dynamic_off.csv",
+    "sha256": "d9275bc22755aed2f8e3691ebd7880cb218744e60ae256db051b05e16d50bcd2"
+  },
+  {
+    "file": "models/results/matrix_torchbench_fastNLP_Bert_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_fastNLP_Bert_aclgraph_off_dynamic_off.csv",
+    "sha256": "ec6af65ee3ebee63c443aa7b487e4be8e48d21807f8a73a4bee0cb510486ae3d"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Bart_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Bart_aclgraph_off_dynamic_off.csv",
+    "sha256": "95223f87557ce1070c4b1d5d5c3e473331f39b55fd5b36a82679e99d6fcb3716"
+  },
+  {
+    "file": "models/results/matrix_torchbench_mobilenet_v2_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_mobilenet_v2_aclgraph_off_dynamic_off.csv",
+    "sha256": "108e4e1ec946a6f5232bc1b8e0c78cf347ae700d78c5fe76979da39414efdbd6"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Albert_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Albert_aclgraph_off_dynamic_off.csv",
+    "sha256": "cb60e04c63ec9fe582aa0249a491ca087daf840a91ece8c91a9d102282a25f9d"
+  },
+  {
+    "file": "models/results/matrix_torchbench_resnet50_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_resnet50_aclgraph_off_dynamic_on.csv",
+    "sha256": "3d601169a9601c3f37472259062dee04fb918b98fa7ee936117284ef9079e0d9"
+  },
+  {
+    "file": "models/results/matrix_torchbench_fastNLP_Bert_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_fastNLP_Bert_aclgraph_off_dynamic_on.csv",
+    "sha256": "ea85a755d360216e507e97ad793c8d1d4ea9caab55d5f9459ff5b8f056d64da3"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Bert_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Bert_aclgraph_off_dynamic_on.csv",
+    "sha256": "f0d8a195a27dc141d80a253a986f708d35b2c6794045b1f63c7e05fe623cb834"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Bart_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Bart_aclgraph_off_dynamic_on.csv",
+    "sha256": "662189296e4495ca2936c5d313e1076f7081d9d5b05095359dace956c11e0f07"
+  },
+  {
+    "file": "models/results/matrix_torchbench_resnet50_quantized_qat_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_resnet50_quantized_qat_aclgraph_off_dynamic_off.csv",
+    "sha256": "182aafff3ffb232f8bfb92c71a547090e3b88af535665bcc16cf85b9fec63be7"
+  },
+  {
+    "file": "models/results/matrix_torchbench_doctr_det_predictor_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_doctr_det_predictor_aclgraph_off_dynamic_off.csv",
+    "sha256": "b369096e672c8337482fc189a35f7cc243b01273e4d6df8b64c54757347abe58"
+  },
+  {
+    "file": "models/results/matrix_torchbench_mobilenet_v2_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_mobilenet_v2_aclgraph_off_dynamic_on.csv",
+    "sha256": "3e7465deb402da39fe082b80765997cd026c3834c6f8e06bc79c60facb6d400e"
+  },
+  {
+    "file": "models/results/matrix_torchbench_doctr_det_predictor_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_doctr_det_predictor_aclgraph_off_dynamic_on.csv",
+    "sha256": "77d6ff566872f2570a921b18aa2a4577febda973401e240f071b01308f49cf90"
+  },
+  {
+    "file": "models/results/matrix_torchbench_BERT_pytorch_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_BERT_pytorch_aclgraph_off_dynamic_off.csv",
+    "sha256": "ba5dd41a5c9518cd7c944caffca7b2e56109f2787fda82c2b82679eacf6b7aa9"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Albert_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Albert_aclgraph_off_dynamic_on.csv",
+    "sha256": "73083886632d366e37c49ab958790ff0c5b59373dfb22f3f10391d13e59f59ac"
+  },
+  {
+    "file": "models/results/matrix_torchbench_timm_vovnet_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_timm_vovnet_aclgraph_off_dynamic_on.csv",
+    "sha256": "25d971d2790367c6827f6d434fadd880b2fc355852d8b5d7324dc9b9ee489b5d"
+  },
+  {
+    "file": "models/results/matrix_torchbench_resnet50_quantized_qat_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_resnet50_quantized_qat_aclgraph_off_dynamic_on.csv",
+    "sha256": "3abbc0d846ed62852939d6c54daa4f93a837b9143286e77331e8060faf8a466e"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_T5_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_T5_aclgraph_off_dynamic_off.csv",
+    "sha256": "b2bbd908857655629335b8030c8eed5d779b055f2bb5f34bd81c9e34603ed52c"
+  },
+  {
+    "file": "models/results/matrix_torchbench_BERT_pytorch_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_BERT_pytorch_aclgraph_off_dynamic_on.csv",
+    "sha256": "1ed633808cf4e0aec4e861e459d3e71c425b9818a92719759453ac55737dcc98"
+  },
+  {
+    "file": "models/results/matrix_torchbench_speech_transformer_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_speech_transformer_aclgraph_off_dynamic_off.csv",
+    "sha256": "d04c159ccd76c91b34297d891bc612b1d6a1ccf26a241d7abe2a3c38197a5f40"
+  },
+  {
+    "file": "models/results/matrix_torchbench_resnet152_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_resnet152_aclgraph_off_dynamic_off.csv",
+    "sha256": "51a6ed3f58150e36f491276f48c0f793a8ac43c438c1886ac38705b39a6c27bb"
+  },
+  {
+    "file": "models/results/matrix_torchbench_timm_regnet_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_timm_regnet_aclgraph_off_dynamic_off.csv",
+    "sha256": "a953f8c46858b192d0f9148ef0fb1e341b9a95a400c287e4e8892ccb19b4b5c0"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Bert_large_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Bert_large_aclgraph_off_dynamic_off.csv",
+    "sha256": "2e614e55832df1a0f6504c94977575bc449a2a8b26f1aa301de3cdfed7383f08"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_T5_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_T5_aclgraph_off_dynamic_on.csv",
+    "sha256": "12f1b707b1907b43142f5a3a731dc505c0941f7b2cf83afb868fd5f8ddb28a3c"
+  },
+  {
+    "file": "models/results/matrix_torchbench_resnet152_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_resnet152_aclgraph_off_dynamic_on.csv",
+    "sha256": "cf447610522ed61f6b264ec40a7298ddf44c946384e434a809b8c23a41f674b3"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_Bert_large_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_Bert_large_aclgraph_off_dynamic_on.csv",
+    "sha256": "943f5d4c58321f997019fb16eb7cb20dec929cc1f6646c8e409e474ee0f798bd"
+  },
+  {
+    "file": "models/results/matrix_torchbench_timm_regnet_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_timm_regnet_aclgraph_off_dynamic_on.csv",
+    "sha256": "5eb532ea39cfedb2271a6d2f2176452bac60ea5de387aec5d3d64d852d14676b"
+  },
+  {
+    "file": "models/results/matrix_torchbench_speech_transformer_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_speech_transformer_aclgraph_off_dynamic_on.csv",
+    "sha256": "98f958fa8ea26bf4ebe03456a886019de5ca1f3336ec95b66421e011ad24c3ac"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_T5_base_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_T5_base_aclgraph_off_dynamic_off.csv",
+    "sha256": "fef83126afa16b4ea1e3173b2b2c953b7a861ba4e9a34077a2a7e13a0b91a6d5"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_GPT2_large_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_GPT2_large_aclgraph_off_dynamic_off.csv",
+    "sha256": "e7edcaa8f42b36017e39dda607ec79d5ce92544650bbe44a92da910cdf381fa8"
+  },
+  {
+    "file": "models/results/matrix_torchbench_timm_vision_transformer_large_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_timm_vision_transformer_large_aclgraph_off_dynamic_off.csv",
+    "sha256": "1ca57e83a0d2f03d593c0eee112d86b641307ada6cd770979d33eea748946021"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_T5_base_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_T5_base_aclgraph_off_dynamic_on.csv",
+    "sha256": "a627bc69a6f1dd97584eee50145236e553b607834e05fb74bdd4936727a812f2"
+  },
+  {
+    "file": "models/results/matrix_torchbench_timm_vision_transformer_large_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_timm_vision_transformer_large_aclgraph_off_dynamic_on.csv",
+    "sha256": "0fb180e41c310ff225f58edbe74f95f354c2d46e126903e4b99f9a26b7b41310"
+  },
+  {
+    "file": "models/results/matrix_torchbench_hf_GPT2_large_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_hf_GPT2_large_aclgraph_off_dynamic_on.csv",
+    "sha256": "129649f403d951a92af9716bf81a5362fc0d92d1c613c9bce7e9d0d2723b9704"
+  },
+  {
+    "file": "models/results/matrix_torchbench_Background_Matting_aclgraph_off_dynamic_off.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_Background_Matting_aclgraph_off_dynamic_off.csv",
+    "sha256": "04cc8c204bde82ed22a814a08d8f7d834f5bc14febb70a7b398bc1b2afbca868"
+  },
+  {
+    "file": "models/results/matrix_torchbench_Background_Matting_aclgraph_off_dynamic_on.csv",
+    "source": "/mnt/share/z50063656/AscendForge/runs/combined-four-prs-cann92-20260920/results/matrix_torchbench_Background_Matting_aclgraph_off_dynamic_on.csv",
+    "sha256": "6a1f4528db166f6620a1da364742ae6dc87a9be5404c65913cfa050bcc65f275"
+  },
+  {
+    "file": "specialized/46464/00.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/00.json",
+    "sha256": "2f6318f351c842737fde6a5af838606bb085aa05722e279d2613bb9ca71d70ef"
+  },
+  {
+    "file": "specialized/46464/00.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/00.log",
+    "sha256": "422506725ea2d581d71c63730a34f8a76f475c600f834d1fbb09e91d6cbd621b"
+  },
+  {
+    "file": "specialized/46464/01.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/01.json",
+    "sha256": "ba260caadf394d5166491e4a46739fe4400b71c6be2e22bd21a395ef0f0d312c"
+  },
+  {
+    "file": "specialized/46464/01.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/01.log",
+    "sha256": "320bb692cf23915526ddaaf6248c86f99e7efe1deb065b32c5f6b79afcd24f8d"
+  },
+  {
+    "file": "specialized/46464/02.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/02.json",
+    "sha256": "11936f186717a60c68bb6cf63caa33a4fc66860d803581dbd403ed54da27c1c5"
+  },
+  {
+    "file": "specialized/46464/02.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/02.log",
+    "sha256": "a806ea0bb685440529225eab2adc5accb5d87b70b8f5ae98a403a87bb9a72faf"
+  },
+  {
+    "file": "specialized/46464/03.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/03.json",
+    "sha256": "186e080de1c3763a588e12ebceecbb8ca87ff3d6841ef2cdfcf644f6e3cb690f"
+  },
+  {
+    "file": "specialized/46464/03.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/03.log",
+    "sha256": "fd0d9b36d77c8b8d8e1ac0266f7ddd3d83e4d5935997511a2ad905652f25b971"
+  },
+  {
+    "file": "specialized/46464/04.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/04.json",
+    "sha256": "86c7cb24219b1b3ca1ac1e697033a31c7199e6bb9b4a419ff5e2647091f3ac80"
+  },
+  {
+    "file": "specialized/46464/04.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/04.log",
+    "sha256": "a9310278bdd2f56ce997b564e5053979ba7ac180f1dc656da1c8f41fa0c9e964"
+  },
+  {
+    "file": "specialized/46464/05.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/05.json",
+    "sha256": "7a6a35f32e228f3b47f19657bb334d854c76690de6293e59e9530441770728cd"
+  },
+  {
+    "file": "specialized/46464/05.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/05.log",
+    "sha256": "a8d4e4bd7e309df5a51348658cd7d764587c2f82fb6af2fe7fa15ab7abb12aaf"
+  },
+  {
+    "file": "specialized/46464/06.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/06.json",
+    "sha256": "959d9a26dcdd9449d150677e7fd69ed46d9bf92eb065e8279269b65efaafd6d1"
+  },
+  {
+    "file": "specialized/46464/06.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/06.log",
+    "sha256": "de3e46bce7ba9e6719b4085e48d86ba8d6ba7d0f6500e7d3e10c51cefd28729a"
+  },
+  {
+    "file": "specialized/46464/07.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/07.json",
+    "sha256": "31c0c401b8ca985f883581696b8b6f067541f9b0f65bb1868641abf7e7861802"
+  },
+  {
+    "file": "specialized/46464/07.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/07.log",
+    "sha256": "5fe70e3770446a5f337f8e6a9c9ced3aaf31afdd67f88024265ef383672735a2"
+  },
+  {
+    "file": "specialized/46464/08.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/08.json",
+    "sha256": "62025a49fdf962047a7fd08caf28284bb006b00d9afe013886bcb424e64112f0"
+  },
+  {
+    "file": "specialized/46464/08.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/08.log",
+    "sha256": "4cf8d2922674a19cfef8fa80de6d505085b72e723f4de54e50fe4f08e6f52c14"
+  },
+  {
+    "file": "specialized/46464/09.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/09.json",
+    "sha256": "fad9f7ea878720235d2d19ffc34928dd5791856d57c25101f6b9e23f64aade1d"
+  },
+  {
+    "file": "specialized/46464/09.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/09.log",
+    "sha256": "6722ef3b1f41a43fa85863380bfdb08c418d35d3e6361827ead0cabee7428495"
+  },
+  {
+    "file": "specialized/46464/identity.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46464/identity.json",
+    "sha256": "47c25d91752549d68634cb27b3b5f132f167279d779d8d3882936b7a9c113c4e"
+  },
+  {
+    "file": "specialized/46464/test_triton_experimental_sfdp_training.py",
+    "source": "/home/z50063656/Pass/pr-regression-20260920/46464/test/_inductor/test_triton_experimental_sfdp_training.py",
+    "sha256": "32dca1078b7e18fff8f3de433be46054a1e7afaa644723b14bc108481bb9bdc1"
+  },
+  {
+    "file": "specialized/46465/00.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/00.json",
+    "sha256": "bd84199604b342e04a3841b47c43af8d3bd3335ea70336466162b5637b2c2247"
+  },
+  {
+    "file": "specialized/46465/00.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/00.log",
+    "sha256": "48fbba2c5c483334477fb901d0ec1c6899e372cfa58d9d8f28b3499777a406c0"
+  },
+  {
+    "file": "specialized/46465/01.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/01.json",
+    "sha256": "ac51ff8faf5c783f4a157fca265e1f6468cc08799e309d5c5055b83f59c435d0"
+  },
+  {
+    "file": "specialized/46465/01.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/01.log",
+    "sha256": "e014cef30ea0b298ea9590286e5aed412cb29593cd6f45a7fbd8588c61eee006"
+  },
+  {
+    "file": "specialized/46465/02.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/02.json",
+    "sha256": "2943d1d1de41fc5eea3f5d931980c5bb695b5c34f6faf072d3385126f83f56c7"
+  },
+  {
+    "file": "specialized/46465/02.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/02.log",
+    "sha256": "56ad9e10a0ae4033beaa458d6612bc37f379d125f6a1ee37f1bec1d7d5b808d1"
+  },
+  {
+    "file": "specialized/46465/identity.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/identity.json",
+    "sha256": "107ee0d6cb7b7c4178e74c487e2ce40b1ef1d29026435a9254207f11d88ac8d3"
+  },
+  {
+    "file": "specialized/46465/test_triton_experimental_compile_on_one_rank.py",
+    "source": "/home/z50063656/Pass/pr-regression-20260920/46465/test/_inductor/test_triton_experimental_compile_on_one_rank.py",
+    "sha256": "d2484bdc093fb4c545fede8e11edceeee44a8b53ef156a8f110ae33f0520f2cf"
+  },
+  {
+    "file": "specialized/46466/00.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/00.json",
+    "sha256": "22b663762c4f5d2a93349f4555400c47891a5a94182493dcb2a7670ee981efcf"
+  },
+  {
+    "file": "specialized/46466/00.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/00.log",
+    "sha256": "4612e7419ed52747800b3b12ee9084a77240e7109e389d5aaf80c3a4620edf44"
+  },
+  {
+    "file": "specialized/46466/01.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/01.json",
+    "sha256": "3ace1ec7a00e33a9bc8b54faa641d33900fe48f900f529453551112b2c0e572e"
+  },
+  {
+    "file": "specialized/46466/01.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/01.log",
+    "sha256": "f35793d88d799f86a4f987e3f7f6213307718c893f3de0ba9eb3c42368301421"
+  },
+  {
+    "file": "specialized/46466/02.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/02.json",
+    "sha256": "6d701e81837433f6be0ea347f81eddc299c38f521315e3b4435afff37087b241"
+  },
+  {
+    "file": "specialized/46466/02.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/02.log",
+    "sha256": "d4fc384ae2a92f1e031a357dbb3adffb69799580676acab041413a750777522e"
+  },
+  {
+    "file": "specialized/46466/03.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/03.json",
+    "sha256": "81efd3d8f1f9ddc413f31749880964ad56d5d29615074a7eef7768fc7a1aecd6"
+  },
+  {
+    "file": "specialized/46466/03.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/03.log",
+    "sha256": "a25d05e8c10c41bc09012c20a344e187dcae0a821e21deba17ba7e6b294c6154"
+  },
+  {
+    "file": "specialized/46466/04.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/04.json",
+    "sha256": "6b5028bed4ee1199464860ce4aebfdb5c5a95f0ff6a0a9c61b877734425515fa"
+  },
+  {
+    "file": "specialized/46466/04.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/04.log",
+    "sha256": "0c7aec01512f402fc5fabe6f588d4d24f8300389bba44e460f8f99b56d6931d9"
+  },
+  {
+    "file": "specialized/46466/identity.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46466/identity.json",
+    "sha256": "e75851b1353aa8e172c729166aa2a08acc55ca03c9aa6f41a76d82f73f5f354b"
+  },
+  {
+    "file": "specialized/46466/test_triton_experimental_e8m0.py",
+    "source": "/home/z50063656/Pass/pr-regression-20260920/46466/test/_inductor/test_triton_experimental_e8m0.py",
+    "sha256": "dc82c5721052f1f62fd85d3f08d3e915fb45b05430b8faaad16d82dd5d8f2a67"
+  },
+  {
+    "file": "specialized/46468/00.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/00/result.json",
+    "sha256": "915818dce1af6b8a9b869bf02947fb4f9a3d6b14c1370fdee281e90c9d7ed28c"
+  },
+  {
+    "file": "specialized/46468/00.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/00/test.log",
+    "sha256": "4636153160615ed8cc39402c94f8936acec86920a0dba1325057a793f137bc27"
+  },
+  {
+    "file": "specialized/46468/01.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/01/result.json",
+    "sha256": "dd04149c2de18cc5898294334df6b758f6293a2219df80550ed226af349d0aee"
+  },
+  {
+    "file": "specialized/46468/01.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/01/test.log",
+    "sha256": "e4d8a2bafed290726b27bee24d1ca9ddfd2eae1c105b808fdaf7963beef0ef8c"
+  },
+  {
+    "file": "specialized/46468/02.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/02/result.json",
+    "sha256": "cc93ebb42f3a7069328f8d7d300f8a99c30df390829e7dc27a92efa46e6c224f"
+  },
+  {
+    "file": "specialized/46468/02.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/02/test.log",
+    "sha256": "52119c179dff1c137542b351da34ec08ecb99c119b4f5faeb4f90a947acda584"
+  },
+  {
+    "file": "specialized/46468/03.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/03/result.json",
+    "sha256": "cac38317a25712c9999687eaef50878bd0029e688c2317d8ed5a5603b2177c18"
+  },
+  {
+    "file": "specialized/46468/03.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/03/test.log",
+    "sha256": "bc7f6c8078c74b60bb43524e9d52bb363ab0602194dfe560e2d5802ffd69c495"
+  },
+  {
+    "file": "specialized/46468/04.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/04/result.json",
+    "sha256": "ca3492bfa598bca898734cb95ba2135c8ea4e3e2065639d6487662c4e7f412bf"
+  },
+  {
+    "file": "specialized/46468/04.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/04/test.log",
+    "sha256": "3ffb042d16dc6d8082caf29fc780abb639909c2df75c09eb399160de43153ceb"
+  },
+  {
+    "file": "specialized/46468/05.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/05/result.json",
+    "sha256": "f8451754f0c9f7707be9356ef4eb4536d3126809ae4d97aa6116f6da780768d8"
+  },
+  {
+    "file": "specialized/46468/05.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/05/test.log",
+    "sha256": "274e325102adf923ed1af4d41818cd69b17bafe7530d4bbcf6cd50adde3ef9c4"
+  },
+  {
+    "file": "specialized/46468/06.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/06/result.json",
+    "sha256": "3937be93beaad04092bac8eeec3d593235815a4dd6b748a52b3685b4baf9b4ae"
+  },
+  {
+    "file": "specialized/46468/06.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/06/test.log",
+    "sha256": "f635fb250ee4089aa68b81128f5740079868af28a2bf5798b35c46197e7e41a9"
+  },
+  {
+    "file": "specialized/46468/07.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/07/result.json",
+    "sha256": "81713cd37cfa10d0173b7354663e09ffd5fc8a40dac59bdafdd0b24fb53db006"
+  },
+  {
+    "file": "specialized/46468/07.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/07/test.log",
+    "sha256": "18888d7b49fc77a77a599c4e0cab706e93e01787a60ba770d4ef4f9570845d82"
+  },
+  {
+    "file": "specialized/46468/08.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/08/result.json",
+    "sha256": "e95290c68f8b5611e804dc783d0b277f5a67fe91b2c19ac05090341328a93315"
+  },
+  {
+    "file": "specialized/46468/08.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/08/test.log",
+    "sha256": "19cf3d841be591196c854d97bff591c64f7e460197f22b80521b3829648b744b"
+  },
+  {
+    "file": "specialized/46468/09.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/09/result.json",
+    "sha256": "1ca0e9167583df4de2bb6e0047bbdad10012d3b08e85a27b4442d8369a5c8597"
+  },
+  {
+    "file": "specialized/46468/09.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/09/test.log",
+    "sha256": "98c4a5fe326c7d564208fd3db8b6a1a4bda7b5050d64113f703094fb9d1597f1"
+  },
+  {
+    "file": "specialized/46468/10.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/10/result.json",
+    "sha256": "cc164bbf40c71c94a420e9ac671e921413e9f5593d222eabcaf8cf59b549195d"
+  },
+  {
+    "file": "specialized/46468/10.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/10/test.log",
+    "sha256": "54a199b776dec2eee96dde1488a02cd4e5321c8eec501c438e69b704977ae658"
+  },
+  {
+    "file": "specialized/46468/11.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/11/result.json",
+    "sha256": "265d390382e1a193e2aa7a80b977009d7dc9c8afb8b677376b91fba6c3a7cecb"
+  },
+  {
+    "file": "specialized/46468/11.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/11/test.log",
+    "sha256": "3f75cda72be2c40164dfc8fcbc72c4d328e9c00f907bf89dde1b1b0301fc03e1"
+  },
+  {
+    "file": "specialized/46468/12.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/12/result.json",
+    "sha256": "7d40ab628a55a5440289cb5f7551f975ddc6a630ebbbd1e3db118458cbf9d4de"
+  },
+  {
+    "file": "specialized/46468/12.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/12/test.log",
+    "sha256": "3e2d0126d61a82e1a3ead1b92b34fcd03f5a8d754f7223b8b18f50e4651084ba"
+  },
+  {
+    "file": "specialized/46468/13.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/13/result.json",
+    "sha256": "bc2aeff684de60032a54e7610c0abd38500a632ec0360574cdb9d711cd185f60"
+  },
+  {
+    "file": "specialized/46468/13.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/13/test.log",
+    "sha256": "32fde16b62d7df4505009b323c85b981dc58eebb431e6cdec729190c9a27531a"
+  },
+  {
+    "file": "specialized/46468/14.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/14/result.json",
+    "sha256": "6d10d60fb6256cb1c7baeef4881fa8afe55730200bc379a82c2e3784628a7df4"
+  },
+  {
+    "file": "specialized/46468/14.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/14/test.log",
+    "sha256": "480d4ee8c1f42bfa6f54a91b92954886e7bf21277df6a30d5a33d54dceac59ff"
+  },
+  {
+    "file": "specialized/46468/15.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/15/result.json",
+    "sha256": "8b8b7a7c3b85b4eaa7c91e499618042d8160aa734358b7b80cf823acc2f9ee50"
+  },
+  {
+    "file": "specialized/46468/15.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/15/test.log",
+    "sha256": "33babe4d497ba23f866c2c40e0305da96f0dbc1d0410ad9a72c7d31506983a3c"
+  },
+  {
+    "file": "specialized/46468/16.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/16/result.json",
+    "sha256": "11ae2b48cff753cc87830cd6c17dae97db90949d34ccdfba9b28fca8a906764a"
+  },
+  {
+    "file": "specialized/46468/16.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/16/test.log",
+    "sha256": "0cc308303e43f58902de757c69cefc85d217b29cf4006ba5b291781df90c9aa3"
+  },
+  {
+    "file": "specialized/46468/identity.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression-identity.json",
+    "sha256": "ba8e72913047993b2088c07d7ef229529cdab33858f76fa4e5a4236bd32e5f32"
+  },
+  {
+    "file": "specialized/46468/test_triton_experimental_addcdiv_precision.py",
+    "source": "/home/z50063656/Pass/pr-regression-20260920/46468/test/_inductor/test_triton_experimental_addcdiv_precision.py",
+    "sha256": "c4ae29c09ae63e9865ba392447eb60a171d804d33dc7aa77fbc26da0cad3931d"
+  },
+  {
+    "file": "bf16-fix/before.log",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46468/03.log",
+    "sha256": "ecdd177b1defb12fa7025e0b23f354253c327e659fce0aef84d270b2ed83a564"
+  },
+  {
+    "file": "bf16-fix/before.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46468/03.json",
+    "sha256": "cc144b3c217159f690957854e3b31ee5a981961ea5e29120f99b2859b9b82464"
+  },
+  {
+    "file": "bf16-fix/original-case-after.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/original-failing-case.json",
+    "sha256": "cac38317a25712c9999687eaef50878bd0029e688c2317d8ed5a5603b2177c18"
+  },
+  {
+    "file": "bf16-fix/fix-and-tests.patch",
+    "source": "/home/z50063656/Pass/pr-regression-20260920/pr46468-bf16-fix.patch",
+    "sha256": "524044ac11bae951fa084a104923a27d2fdf89ec009f7cf07fc1729dc0fc68b7"
+  },
+  {
+    "file": "bf16-fix/lowering.py",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/lowering.py",
+    "sha256": "34237c1802b78052d850f65130553d6d29368d3467fe77807f6c6fe10170ddc3"
+  },
+  {
+    "file": "bf16-fix/regression-results.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression-results.json",
+    "sha256": "86049a5c9eaadc2f2d31935b4d5d016b890f8d6217b48a87cd11aa1236a6a308"
+  },
+  {
+    "file": "bf16-fix/identity.json",
+    "source": "/mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression-identity.json",
+    "sha256": "ba8e72913047993b2088c07d7ef229529cdab33858f76fa4e5a4236bd32e5f32"
+  }
+]

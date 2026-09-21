@@ -1,0 +1,3 @@
+dev,name,batch_size,speedup,abs_latency,compilation_latency,compression_ratio,eager_peak_mem,dynamo_peak_mem,calls_captured,unique_graphs,graph_breaks,unique_graph_breaks
+npu,maml_omniglot,5,eager_two_runs_differ,0,0,0,0,0,0,0,0,0
+npu,maml_omniglot,5,0.992536,4.479910,224.016664,0.986078,0.021541,0.021846,28,2,9,6

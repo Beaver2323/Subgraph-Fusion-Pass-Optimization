@@ -1,0 +1,2 @@
+dev,name,batch_size,accuracy,calls_captured,unique_graphs,graph_breaks,unique_graph_breaks
+npu,pytorch_stargan,16,pass_accuracy,182,1,0,0

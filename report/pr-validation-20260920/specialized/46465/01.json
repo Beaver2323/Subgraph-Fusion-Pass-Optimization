@@ -1,0 +1,13 @@
+{
+  "case": "TestTritonExperimentalCompileOnOneRank.test_generated_code_identical_across_devices",
+  "source": "/home/z50063656/Pass/pr-regression-20260920/46465/test/_inductor/test_triton_experimental_compile_on_one_rank.py",
+  "torch": "2.14.0a0+git8e86e0a",
+  "torch_npu": "2.14.0a0+git0095e02",
+  "backend_file": "/home/z50063656/Pass/pr-regression-20260920/runtime-v2/46465/torch_npu/_inductor/triton_experimental/__init__.py",
+  "pr_head": "10dfa1448e20ebb414e80a774205f83ade7fe7f9",
+  "tests_run": 1,
+  "skips": [],
+  "errors": [],
+  "failures": [],
+  "passed": true
+}

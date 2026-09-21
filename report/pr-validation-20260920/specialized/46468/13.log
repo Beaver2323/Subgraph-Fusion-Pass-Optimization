@@ -1,0 +1,15 @@
+/home/z50063656/Pass/src/pytorch/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/home/z50063656/Pass/pr-regression-20260920/runtime-bf16-fix/46468/torch_npu/dynamo/__init__.py:182: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_scaled_addcdiv_matches_eager_float32_value_0_1 (pr_regression_test.TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_float32_value_0_1) ... [W920 23:31:52.021226340 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0920 23:32:17.676000 662322 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /mnt/share/z50063656/AscendForge/runs/pr46468-bf16-fix-20260920/regression/13/debug/torch_compile_debug/run_2026_09_20_23_31_52_943495-pid_662322/torchinductor/model__0_inference_0.0
+[AUTOTUNE] mspti device-time bench unavailable (mspti device-time bench failed at runtime); falling back to event-based autotune. Event timing is unreliable for small NPU kernels (host dispatch cost dwarfs device compute), so autotune may pick a suboptimal config.
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 26.174s
+
+OK

@@ -1,0 +1,26 @@
+/home/z50063656/Pass/src/pytorch/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/home/z50063656/Pass/pr-regression-20260920/runtime-v2/46465/torch_npu/dynamo/__init__.py:182: UserWarning: Register eager implementation for the 'npu' backend of dynamo, as torch_npu was not compiled with torchair.
+  warnings.warn(
+test_generated_code_identical_across_devices (pr_regression_test.TestTritonExperimentalCompileOnOneRank.test_generated_code_identical_across_devices) ... [W920 21:11:35.653482520 NPUCachingAllocator.cpp:168] Warning: The current CANN and Soc versions require processing for 32 padding size, with memory allocation. (function operator())
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+Compiled module path: /mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/inductor-cache/tmpfkyyxlmi/6t/c6tqxw656tvjnsbmhc2l3kbshytohiguynl2ihmvq6orcrl3ncci.py
+W0920 21:12:00.011000 2058777 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__0_inference_0 debug trace: /mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/debug/torch_compile_debug/run_2026_09_20_21_11_35_576536-pid_2058777/torchinductor/model__0_inference_0.0
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+Compiled module path: /mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/inductor-cache/tmplzgmja0x/mf/cmf7aq6wifgom3hzmqtdx3s227kzj5o4smfpf5bovx5qsfg62aa7.py
+W0920 21:12:10.020000 2058777 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__1_inference_1 debug trace: /mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/debug/torch_compile_debug/run_2026_09_20_21_11_35_576536-pid_2058777/torchinductor/model__1_inference_1.1
+[AUTOTUNE] mspti device-time bench unavailable (mspti device-time bench failed at runtime); falling back to event-based autotune. Event timing is unreliable for small NPU kernels (host dispatch cost dwarfs device compute), so autotune may pick a suboptimal config.
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0920 21:12:19.231000 2058777 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__2_inference_2 debug trace: /mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/debug/torch_compile_debug/run_2026_09_20_21_11_35_576536-pid_2058777/torchinductor/model__2_inference_2.2
+/home/z50063656/Pass/src/pytorch/torch/_dynamo/pgo.py:605: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+W0920 21:12:28.185000 2058777 /home/z50063656/Pass/src/pytorch/torch/_inductor/debug.py:587] [0/0] model__3_inference_3 debug trace: /mnt/share/z50063656/AscendForge/runs/pr-regressions-20260920-v2/46465/debug/torch_compile_debug/run_2026_09_20_21_11_35_576536-pid_2058777/torchinductor/model__3_inference_3.3
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 53.410s
+
+OK

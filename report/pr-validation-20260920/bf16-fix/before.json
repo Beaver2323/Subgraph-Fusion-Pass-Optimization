@@ -1,0 +1,18 @@
+{
+  "case": "TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_bfloat16_value_0_1",
+  "source": "/home/z50063656/Pass/pr-regression-20260920/46468/test/_inductor/test_triton_experimental_addcdiv_precision.py",
+  "torch": "2.14.0a0+git8e86e0a",
+  "torch_npu": "2.14.0a0+git0095e02",
+  "backend_file": "/home/z50063656/Pass/pr-regression-20260920/runtime-v2/46468/torch_npu/_inductor/triton_experimental/__init__.py",
+  "pr_head": "cc0ded239cb1bad9981cf62f48adea79a5c79402",
+  "tests_run": 1,
+  "skips": [],
+  "errors": [],
+  "failures": [
+    [
+      "test_scaled_addcdiv_matches_eager_bfloat16_value_0_1 (pr_regression_test.TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_bfloat16_value_0_1)",
+      "Traceback (most recent call last):\n  File \"/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py\", line 3829, in wrapper\n    method(*args, **kwargs)\n  File \"/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py\", line 744, in instantiated_test\n    test(self, **param_kwargs)\n  File \"/home/z50063656/Pass/pr-regression-20260920/46468/test/_inductor/test_triton_experimental_addcdiv_precision.py\", line 67, in test_scaled_addcdiv_matches_eager\n    self.check_scaled_addcdiv(inputs, value)\n  File \"/home/z50063656/Pass/pr-regression-20260920/46468/test/_inductor/test_triton_experimental_addcdiv_precision.py\", line 95, in check_scaled_addcdiv\n    self.assertEqual(actual, expected, atol=0, rtol=0)\n  File \"/home/z50063656/Pass/src/pytorch/torch/testing/_internal/common_utils.py\", line 4879, in assertEqual\n    raise error_metas.pop()[0].to_error(  # type: ignore[index]\nAssertionError: Tensor-likes are not equal!\n\nMismatched elements: 374 / 4096 (9.1%)\nGreatest absolute difference: 0.015625 at index (0, 0)\nGreatest relative difference: 0.2041015625 at index (34, 49)\n\nTo execute this test, run the following from the base repo dir:\n    python test/_inductor/test_triton_experimental_addcdiv_precision.py TestTritonExperimentalAddcdivPrecision.test_scaled_addcdiv_matches_eager_bfloat16_value_0_1\n\nThis message can be suppressed by setting PYTORCH_PRINT_REPRO_ON_FAILURE=0\n"
+    ]
+  ],
+  "passed": false
+}

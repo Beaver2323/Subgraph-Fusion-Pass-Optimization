@@ -1,0 +1,3 @@
+dev,name,batch_size,speedup,abs_latency,compilation_latency,compression_ratio,eager_peak_mem,dynamo_peak_mem,calls_captured,unique_graphs,graph_breaks,unique_graph_breaks
+npu,Background_Matting,4,eager_two_runs_differ,0,0,0,0,0,0,0,0,0
+npu,Background_Matting,4,1.048168,192.846250,1043.879772,1.142978,12.284394,10.747713,355,2,9,6

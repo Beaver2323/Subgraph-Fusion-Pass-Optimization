@@ -1,0 +1,2 @@
+dev,name,batch_size,accuracy,calls_captured,unique_graphs,graph_breaks,unique_graph_breaks
+npu,squeezenet1_1,4,pass_accuracy,134,1,0,0

@@ -1,0 +1,2 @@
+dev,name,batch_size,accuracy,calls_captured,unique_graphs,graph_breaks,unique_graph_breaks
+npu,doctr_det_predictor,4,pass_accuracy,723,4,4,2
